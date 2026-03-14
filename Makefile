@@ -1,4 +1,4 @@
-.PHONY: generate test e2e lint clean readme smoke
+.PHONY: generate test e2e lint clean readme smoke aidlcli
 
 # Generated top-level directories.
 GENERATED_DIRS := android com fuzztest libgui_test_server parcelables src
@@ -26,6 +26,10 @@ readme:
 # Regenerate E2E smoke tests.
 smoke:
 	go run ./tools/cmd/gen_e2e_smoke .
+
+# Build the aidlcli tool.
+aidlcli:
+	go build -o aidlcli ./tools/cmd/aidlcli
 
 # Remove all generated code.
 clean:

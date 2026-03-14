@@ -1,4 +1,5 @@
 /aidlgen
+/aidlcli
 *.test
 *.out
 *.prof
