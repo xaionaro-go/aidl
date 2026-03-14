@@ -35,6 +35,11 @@ and invoking Android Binder services using AIDL-generated Go bindings.`,
 		defaultMapSize,
 		"binder mmap size in bytes",
 	)
+	cmd.PersistentFlags().Int(
+		"target-api",
+		0,
+		"Android API level to target (0 = auto-detect from device)",
+	)
 
 	cmd.AddCommand(newServiceCmd())
 	cmd.AddCommand(newAIDLCmd())

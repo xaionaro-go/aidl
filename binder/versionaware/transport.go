@@ -54,9 +54,13 @@ func (t *Transport) ensureDetected() {
 		return
 	}
 	t.detected = true
-	// API level detection will be implemented in Phase 2.
-	// For now, use the default (build-time) table.
-	t.apiLevel = DefaultAPILevel
+
+	// Try to detect the device's API level from /system/build.prop.
+	// Fall back to the build-time default if detection fails.
+	t.apiLevel = detectAPILevel()
+	if t.apiLevel == 0 {
+		t.apiLevel = DefaultAPILevel
+	}
 	t.table = tableForAPI(t.apiLevel)
 }
 

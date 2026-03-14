@@ -9,6 +9,7 @@ import (
 	"github.com/facebookincubator/go-belt/tool/logger"
 	"github.com/spf13/cobra"
 	"github.com/xaionaro-go/aidl/binder"
+	"github.com/xaionaro-go/aidl/binder/versionaware"
 	"github.com/xaionaro-go/aidl/kernelbinder"
 	"github.com/xaionaro-go/aidl/servicemanager"
 )
@@ -33,12 +34,21 @@ func OpenConn(
 		return nil, fmt.Errorf("reading --map-size flag: %w", err)
 	}
 
+	targetAPI, err := cmd.Root().PersistentFlags().GetInt("target-api")
+	if err != nil {
+		return nil, fmt.Errorf("reading --target-api flag: %w", err)
+	}
+
 	driver, err := kernelbinder.Open(ctx, binder.WithMapSize(uint32(mapSize)))
 	if err != nil {
 		return nil, fmt.Errorf("opening binder driver: %w", err)
 	}
 
-	sm := servicemanager.New(driver)
+	// Wrap with version-aware transport so that ResolveCode returns
+	// the correct transaction codes for the target device's API level.
+	transport := versionaware.NewTransport(driver, targetAPI)
+
+	sm := servicemanager.New(transport)
 
 	return &Conn{
 		Driver: driver,
