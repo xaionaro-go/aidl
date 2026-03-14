@@ -1195,26 +1195,54 @@ Global flags: `--format json|text|auto`, `--binder-device`, `--map-size`.
 
 ### Examples
 
+> **Note:** Generated proxy commands use transaction codes compiled from the AIDL snapshot in
+> `tools/pkg/3rdparty/`. If the device runs a different Android version, some proxy methods may
+> return parse errors due to transaction code mismatches. The `service` subcommands and
+> ServiceManager-level lookups work across all versions.
+
+<details>
+<summary>List and inspect services</summary>
+
+```bash
+# List all registered binder services with alive/dead status
+aidlcli service list
+
+# Inspect a specific service (show handle, descriptor, alive status)
+aidlcli service inspect SurfaceFlinger
+
+# List methods available on a service (from generated registry)
+aidlcli service methods activity
+
+# Send a raw binder transaction (service name, transaction code, optional hex data)
+aidlcli service transact SurfaceFlinger 64
+```
+
+</details>
+
 <details>
 <summary>Get GPS coordinates</summary>
 
 ```bash
+# List all location providers
+aidlcli android.location.ILocationManager get-all-providers
+# Example output: {"result":["passive","network","fused","gps_hardware","gps"]}
+
 # Check if GPS provider is enabled
 aidlcli android.location.ILocationManager is-provider-enabled-for-user \
   --provider gps --userId 0
 
-# List all location providers
-aidlcli android.location.ILocationManager get-all-providers
+# Get GNSS hardware info
+aidlcli android.location.ILocationManager get-gnss-hardware-model-name
+# Example output: {"result":"S.LSI,K041,SPOTNAV_4.15.4_9_250930_R1_291847"}
+
+aidlcli android.location.ILocationManager get-gnss-year-of-hardware
+# Example output: {"result":2023}
 
 # Get last known GPS location (returns Location parcelable with lat/lon/alt)
 aidlcli android.location.ILocationManager get-last-location \
   --provider gps \
   --packageName com.android.shell \
   --attributionTag ""
-
-# Get GNSS hardware info
-aidlcli android.location.ILocationManager get-gnss-hardware-model-name
-aidlcli android.location.ILocationManager get-gnss-year-of-hardware
 ```
 
 </details>
@@ -1266,7 +1294,7 @@ aidlcli android.hardware.camera.provider.ICameraProvider set-torch-mode \
   --cameraDeviceName "0" --enabled true
 ```
 
-Note: Full camera capture requires a callback-driven session flow (open → configure streams → capture request → receive frames). The individual steps are available as commands, but the session orchestration needs a script or the Go API directly.
+Note: Full camera capture requires a callback-driven session flow (open -> configure streams -> capture request -> receive frames). The individual steps are available as commands, but the session orchestration needs a script or the Go API directly.
 
 </details>
 
@@ -1292,56 +1320,16 @@ Note: Actual audio capture requires opening an input stream via `IModule.openInp
 </details>
 
 <details>
-<summary>Send a notification</summary>
+<summary>Query battery, power, and thermal status</summary>
 
 ```bash
-# Notifications are managed through the NotificationManager service.
-# Check if a notification channel exists:
-aidlcli android.app.INotificationManager get-notification-channel \
-  --callingPkg com.android.shell \
-  --userId 0 \
-  --pkg com.android.shell \
-  --channelId default
-
-# Get notification policy (DND settings)
-aidlcli android.app.INotificationManager get-notification-policy \
-  --pkg com.android.shell
-
-# Check notification access
-aidlcli android.app.INotificationManager is-notification-policy-access-granted \
-  --pkg com.android.shell
-
-# Cancel a notification by tag and ID
-aidlcli android.app.INotificationManager cancel-notification-with-tag \
-  --pkg com.android.shell \
-  --opPkg com.android.shell \
-  --tag "" \
-  --id 1 \
-  --userId 0
-```
-
-Note: Posting a new notification requires building a `Notification` parcelable with icon, title, text, channel, and other fields. Use `aidlcli service transact` with a pre-built parcel or the Go API.
-
-</details>
-
-<details>
-<summary>Query battery and thermal status</summary>
-
-```bash
-# Get battery health status
-aidlcli android.hardware.health.IHealth get-health-info
-
-# Get charge status
-aidlcli android.hardware.health.IHealth get-charge-status
-
-# Get battery capacity percentage
-aidlcli android.hardware.health.IHealth get-capacity
-
-# Get current thermal status
+# Get current thermal status (0=none, 1=light, 2=moderate, ...)
 aidlcli android.os.IThermalService get-current-thermal-status
+# Example output: {"result":0}
 
 # Check if device is in power save mode
 aidlcli android.os.IPowerManager is-power-save-mode
+# Example output: {"result":false}
 
 # Check if device is interactive (screen on)
 aidlcli android.os.IPowerManager is-interactive
@@ -1360,38 +1348,41 @@ aidlcli android.os.IPowerManager reboot \
 # Check if a package is installed
 aidlcli android.content.pm.IPackageManager is-package-available \
   --packageName com.android.settings --userId 0
-
-# Get package info
-aidlcli android.content.pm.IPackageManager get-package-info \
-  --packageName com.android.settings --flags 0 --userId 0
-
-# Get the installer of a package
-aidlcli android.content.pm.IPackageManager get-installer-package-name \
-  --packageName com.android.chrome
+# Example output: {"result":true}
 
 # Check a permission
 aidlcli android.content.pm.IPackageManager check-permission \
   --permName android.permission.INTERNET \
-  --pkgName com.android.chrome --userId 0
+  --pkgName com.android.settings --userId 0
+
+# Get the installer of a package
+aidlcli android.content.pm.IPackageManager get-installer-package-name \
+  --packageName com.android.chrome
 ```
 
 </details>
 
 <details>
-<summary>Manage display and brightness</summary>
+<summary>Display info</summary>
 
 ```bash
-# Get physical display IDs
+# Get display IDs
 aidlcli android.hardware.display.IDisplayManager get-display-ids \
   --includeDisabled false
+# Example output: {"result":[0]}
+```
 
-# Get display brightness
-aidlcli android.hardware.display.IDisplayManager get-brightness \
-  --displayId 0
+</details>
 
-# Set display brightness
-aidlcli android.hardware.display.IDisplayManager set-brightness \
-  --displayId 0 --brightness 0.5
+<details>
+<summary>Clipboard operations</summary>
+
+```bash
+# Check if clipboard has text
+aidlcli android.content.IClipboard has-clipboard-text \
+  --callingPackage com.android.shell \
+  --attributionTag "" --userId 0 --deviceId 0
+# Example output: {"result":false}
 ```
 
 </details>
@@ -1410,45 +1401,6 @@ aidlcli android.hardware.bluetooth.IBluetoothHci send-hci-command \
 
 # Close Bluetooth HCI
 aidlcli android.hardware.bluetooth.IBluetoothHci close
-```
-
-</details>
-
-<details>
-<summary>Clipboard operations</summary>
-
-```bash
-# Check if clipboard has text
-aidlcli android.content.IClipboard has-clipboard-text \
-  --callingPackage com.android.shell \
-  --attributionTag "" --userId 0 --deviceId 0
-
-# Get primary clipboard content
-aidlcli android.content.IClipboard get-primary-clip \
-  --pkg com.android.shell \
-  --attributionTag "" --userId 0 --deviceId 0
-```
-
-</details>
-
-<details>
-<summary>Telephony and SMS</summary>
-
-```bash
-# Get device IMEI
-aidlcli com.android.internal.telephony.ITelephony get-imei-for-slot \
-  --slotIndex 0 --callingPackage com.android.shell --callingFeatureId ""
-
-# Check if phone is ringing
-aidlcli com.android.internal.telephony.ITelephony is-ringing \
-  --callingPackage com.android.shell
-
-# Get active phone type (0=NONE, 1=GSM, 2=CDMA)
-aidlcli com.android.internal.telephony.ITelephony get-active-phone-type
-
-# Get network country ISO
-aidlcli com.android.internal.telephony.ITelephony get-network-country-iso-for-phone \
-  --phoneId 0 --callingPackage com.android.shell --callingFeatureId ""
 ```
 
 </details>
@@ -1474,6 +1426,51 @@ aidlcli android.app.IActivityManager force-stop-package \
 # Check if app freezer is supported
 aidlcli android.app.IActivityManager is-app-freezer-supported
 ```
+
+</details>
+
+<details>
+<summary>Telephony</summary>
+
+```bash
+# Get active phone type (0=NONE, 1=GSM, 2=CDMA)
+aidlcli com.android.internal.telephony.ITelephony get-active-phone-type
+
+# Get network country ISO
+aidlcli com.android.internal.telephony.ITelephony get-network-country-iso-for-phone \
+  --phoneId 0 --callingPackage com.android.shell --callingFeatureId ""
+```
+
+</details>
+
+### Verified Devices
+
+Commands are tested against the following devices. "SM" = uses ServiceManager lookup (version-independent), "Proxy" = uses generated proxy transaction codes (version-dependent).
+
+<details>
+<summary>Verification matrix</summary>
+
+| Command | Type | Pixel 8a (API 36) | Emulator (API 35) |
+|---|---|---|---|
+| `service list` | SM | PASS | PASS |
+| `service inspect` | SM | PASS | PASS |
+| `location get-all-providers` | SM | PASS | PASS |
+| `location is-provider-enabled-for-user` | SM | PASS | PASS |
+| `location get-gnss-hardware-model-name` | SM | PASS | PASS |
+| `location get-gnss-year-of-hardware` | SM | PASS | PASS |
+| `thermal get-current-thermal-status` | SM | PASS | PASS |
+| `power is-power-save-mode` | SM | PASS | PASS |
+| `pm is-package-available` | SM | PASS | PASS |
+| `display get-display-ids` | SM | PASS | PASS |
+| `clipboard has-clipboard-text` | SM | PASS | PASS |
+| `am is-user-a-monkey` | Proxy | FAIL* | PASS |
+| `am get-process-limit` | Proxy | FAIL* | PASS |
+| `am check-permission` | Proxy | FAIL* | PASS |
+| `power is-interactive` | Proxy | FAIL* | PASS |
+| `pm check-permission` | Proxy | FAIL* | PASS |
+| `telephony get-active-phone-type` | Proxy | FAIL* | PASS |
+
+\* Proxy-based commands fail on API 36 due to AIDL transaction code changes between the compiled snapshot and Android 16. Regenerating from API 36 AIDL sources would fix these.
 
 </details>
 
