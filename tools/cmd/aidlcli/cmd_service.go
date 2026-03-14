@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/xaionaro-go/aidl/binder"
@@ -23,6 +24,7 @@ func newServiceCmd() *cobra.Command {
 	cmd.AddCommand(newServiceListCmd())
 	cmd.AddCommand(newServiceInspectCmd())
 	cmd.AddCommand(newServiceTransactCmd())
+	cmd.AddCommand(newServiceMethodsCmd())
 
 	return cmd
 }
@@ -198,4 +200,112 @@ func queryDescriptor(
 	}
 
 	return desc
+}
+
+func newServiceMethodsCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "methods <name>",
+		Short: "List methods of a binder service interface",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			name := args[0]
+
+			conn, err := OpenConn(ctx, cmd)
+			if err != nil {
+				return err
+			}
+			defer conn.Close(ctx)
+
+			svc, err := conn.GetService(ctx, name)
+			if err != nil {
+				return err
+			}
+
+			descriptor := queryDescriptor(ctx, svc)
+
+			mode, err := cmd.Root().PersistentFlags().GetString("format")
+			if err != nil {
+				return fmt.Errorf("reading --format flag: %w", err)
+			}
+
+			if generatedRegistry == nil {
+				fmt.Fprintf(os.Stdout, "unknown interface %s — no methods in registry\n", descriptor)
+				return nil
+			}
+
+			info := generatedRegistry.ByDescriptor(descriptor)
+			if info == nil {
+				fmt.Fprintf(os.Stdout, "unknown interface %s — no methods in registry\n", descriptor)
+				return nil
+			}
+
+			f := NewFormatter(mode, os.Stdout)
+			switch f.Mode {
+			case "json":
+				f.writeJSON(map[string]any{
+					"descriptor": descriptor,
+					"methods":    methodsToJSON(info.Methods),
+				})
+			default:
+				fmt.Fprintf(f.W, "Interface: %s (%d methods)\n\n", descriptor, len(info.Methods))
+				for _, m := range info.Methods {
+					fmt.Fprintf(f.W, "  %s\n", formatMethodSignature(m))
+				}
+			}
+
+			return nil
+		},
+	}
+}
+
+// formatMethodSignature renders a MethodInfo as "kebab-name(params...) -> returnType".
+func formatMethodSignature(m MethodInfo) string {
+	var b strings.Builder
+	b.WriteString(camelToKebab(m.Name))
+	b.WriteByte('(')
+	for i, p := range m.Params {
+		if i > 0 {
+			b.WriteString(", ")
+		}
+		b.WriteString(p.Name)
+		b.WriteByte(' ')
+		b.WriteString(p.Type)
+	}
+	b.WriteByte(')')
+
+	if m.ReturnType != "" {
+		b.WriteString(" -> ")
+		b.WriteString(m.ReturnType)
+	}
+
+	return b.String()
+}
+
+// methodsToJSON converts a slice of MethodInfo into a JSON-friendly representation.
+func methodsToJSON(methods []MethodInfo) []map[string]any {
+	result := make([]map[string]any, 0, len(methods))
+	for _, m := range methods {
+		entry := map[string]any{
+			"name": camelToKebab(m.Name),
+		}
+
+		if len(m.Params) > 0 {
+			params := make([]map[string]string, 0, len(m.Params))
+			for _, p := range m.Params {
+				params = append(params, map[string]string{
+					"name": p.Name,
+					"type": p.Type,
+				})
+			}
+			entry["params"] = params
+		}
+
+		if m.ReturnType != "" {
+			entry["return_type"] = m.ReturnType
+		}
+
+		result = append(result, entry)
+	}
+	return result
 }
