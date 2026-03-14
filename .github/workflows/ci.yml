@@ -23,10 +23,10 @@ jobs:
           go-version: ${{ matrix.go-version }}
 
       - name: Unit tests
-        run: go test -v -race ./tools/pkg/... ./binder/ ./parcel/
+        run: go test -v -race $(go list -e ./tools/pkg/... | grep -v /3rdparty/) ./binder/ ./parcel/
 
       - name: Vet
-        run: go vet ./tools/pkg/... ./binder/ ./parcel/ ./kernelbinder/ ./servicemanager/ ./errors/ ./tools/...
+        run: go vet $(go list -e ./tools/pkg/... ./tools/... | grep -v /3rdparty/) ./binder/ ./parcel/ ./kernelbinder/ ./servicemanager/ ./errors/
 
       - name: Build commands and tools
         run: go build ./tools/cmd/...
