@@ -5,6 +5,9 @@ import (
 	"unicode"
 )
 
+// generatedRegistry is populated by registry_gen.go's init() function.
+var generatedRegistry *Registry
+
 // Registry holds the set of known binder services, indexed by descriptor.
 type Registry struct {
 	Services map[string]*ServiceInfo

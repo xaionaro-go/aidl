@@ -38,6 +38,7 @@ and invoking Android Binder services using AIDL-generated Go bindings.`,
 
 	cmd.AddCommand(newServiceCmd())
 	cmd.AddCommand(newAIDLCmd())
+	addGeneratedCommands(cmd)
 
 	return cmd
 }
