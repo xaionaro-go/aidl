@@ -31,6 +31,46 @@ var scanDirs = []string{
 	"libgui_test_server",
 }
 
+// knownServiceNames maps AIDL interface descriptors to their well-known
+// Android ServiceManager names. Used to avoid slow enumeration of all
+// services when looking up a service by descriptor at runtime.
+var knownServiceNames = map[string]string{
+	"android.app.IActivityManager":                     "activity",
+	"android.app.IActivityTaskManager":                 "activity_task",
+	"android.app.IAlarmManager":                        "alarm",
+	"android.app.INotificationManager":                 "notification",
+	"android.app.IProcessObserver":                     "processinfo",
+	"android.app.IUiModeManager":                       "uimode",
+	"android.app.IWallpaperManager":                    "wallpaper",
+	"android.app.admin.IDevicePolicyManager":           "device_policy",
+	"android.app.job.IJobScheduler":                    "jobscheduler",
+	"android.app.usage.IUsageStatsManager":             "usagestats",
+	"android.content.IClipboard":                       "clipboard",
+	"android.content.pm.IPackageManager":               "package",
+	"android.hardware.display.IDisplayManager":         "display",
+	"android.hardware.input.IInputManager":             "input",
+	"android.location.ILocationManager":                "location",
+	"android.media.IAudioService":                      "audio",
+	"android.media.session.ISessionManager":            "media_session",
+	"android.net.IConnectivityManager":                 "connectivity",
+	"android.net.INetworkPolicyManager":                "netpolicy",
+	"android.net.wifi.IWifiManager":                    "wifi",
+	"android.os.IBatteryPropertiesRegistrar":           "batteryproperties",
+	"android.os.IPowerManager":                         "power",
+	"android.os.IUserManager":                          "user",
+	"android.os.IVibratorManagerService":               "vibrator_manager",
+	"android.os.IThermalService":                       "thermalservice",
+	"android.os.storage.IStorageManager":               "mount",
+	"android.permission.IPermissionManager":            "permissionmgr",
+	"android.view.IWindowManager":                      "window",
+	"android.view.accessibility.IAccessibilityManager": "accessibility",
+	"com.android.internal.telephony.ITelephony":        "phone",
+	"com.android.internal.telephony.ISms":              "isms",
+	"com.android.internal.telephony.ISub":              "isub",
+	"android.gui.ISurfaceComposer":                     "SurfaceFlingerAIDL",
+	"android.hardware.health.IHealth":                  "health",
+}
+
 // primitiveTypes maps Go type names to cobra flag helpers.
 var primitiveTypes = map[string]flagInfo{
 	"string":  {FlagMethod: "String", GetMethod: "GetString", ZeroVal: `""`},
@@ -1063,6 +1103,7 @@ func writeCommandsGen(outDir string, interfaces []*interfaceInfo) error {
 	// importAliases lazily (only imports that are actually used).
 	var body bytes.Buffer
 	writeAddGeneratedCommands(&body, commandables)
+	writeKnownServiceNamesMap(&body)
 	writeFindServiceByDescriptorFunc(&body)
 
 	for _, ci := range commandables {
@@ -1209,12 +1250,39 @@ func writeAddGeneratedCommands(buf *bytes.Buffer, commandables []commandableIfac
 	buf.WriteString("}\n\n")
 }
 
+func writeKnownServiceNamesMap(buf *bytes.Buffer) {
+	// Sort keys for deterministic output.
+	keys := make([]string, 0, len(knownServiceNames))
+	for k := range knownServiceNames {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	buf.WriteString("// knownServiceNames maps AIDL descriptors to well-known Android\n")
+	buf.WriteString("// ServiceManager names, allowing fast lookup without enumeration.\n")
+	buf.WriteString("var knownServiceNames = map[string]string{\n")
+	for _, k := range keys {
+		fmt.Fprintf(buf, "\t%q: %q,\n", k, knownServiceNames[k])
+	}
+	buf.WriteString("}\n\n")
+}
+
 func writeFindServiceByDescriptorFunc(buf *bytes.Buffer) {
 	buf.WriteString(`func findServiceByDescriptor(
 	ctx context.Context,
 	conn *Conn,
 	descriptor string,
 ) (binder.IBinder, error) {
+	// Try the static map of well-known service names first to avoid
+	// slow enumeration of all registered services.
+	if name, ok := knownServiceNames[descriptor]; ok {
+		svc, err := conn.SM.CheckService(ctx, name)
+		if err == nil && svc != nil {
+			return svc, nil
+		}
+	}
+
+	// Fall back to enumeration.
 	services, err := conn.SM.ListServices(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("listing services: %w", err)
@@ -1268,17 +1336,13 @@ func writeMethodCmd(
 	funcName := cmdMethodFuncName(iface, m)
 	kebabName := camelToKebab(m.Name)
 	shortDesc := buildShortDesc(m)
-	hasParams := len(m.Params) > 0
 
 	qualifier := alias
 
 	fmt.Fprintf(buf, "func %s() *cobra.Command {\n", funcName)
 
-	if hasParams {
-		buf.WriteString("\tcmd := &cobra.Command{\n")
-	} else {
-		buf.WriteString("\treturn &cobra.Command{\n")
-	}
+	// Always use a named cmd variable so we can add the --service-name flag.
+	buf.WriteString("\tcmd := &cobra.Command{\n")
 	fmt.Fprintf(buf, "\t\tUse:   %q,\n", kebabName)
 	fmt.Fprintf(buf, "\t\tShort: %q,\n", shortDesc)
 
@@ -1290,7 +1354,14 @@ func writeMethodCmd(
 	buf.WriteString("\t\t\t}\n")
 	buf.WriteString("\t\t\tdefer conn.Close(ctx)\n\n")
 
-	fmt.Fprintf(buf, "\t\t\tsvc, err := findServiceByDescriptor(ctx, conn, %q)\n", iface.Descriptor)
+	// Check --service-name first, then fall back to descriptor discovery.
+	buf.WriteString("\t\t\tserviceName, _ := cmd.Flags().GetString(\"service-name\")\n")
+	buf.WriteString("\t\t\tvar svc binder.IBinder\n")
+	buf.WriteString("\t\t\tif serviceName != \"\" {\n")
+	buf.WriteString("\t\t\t\tsvc, err = conn.GetService(ctx, serviceName)\n")
+	buf.WriteString("\t\t\t} else {\n")
+	fmt.Fprintf(buf, "\t\t\t\tsvc, err = findServiceByDescriptor(ctx, conn, %q)\n", iface.Descriptor)
+	buf.WriteString("\t\t\t}\n")
 	buf.WriteString("\t\t\tif err != nil {\n")
 	buf.WriteString("\t\t\t\treturn err\n")
 	buf.WriteString("\t\t\t}\n\n")
@@ -1324,17 +1395,16 @@ func writeMethodCmd(
 
 	buf.WriteString("\t\t\treturn nil\n")
 	buf.WriteString("\t\t},\n")
+	buf.WriteString("\t}\n\n")
 
-	if hasParams {
-		buf.WriteString("\t}\n\n")
-		for _, p := range m.Params {
-			writeParamFlag(buf, p, gc)
-		}
-		buf.WriteString("\n\treturn cmd\n")
-	} else {
-		buf.WriteString("\t}\n")
+	// Always add the --service-name flag for explicit service resolution.
+	buf.WriteString("\tcmd.Flags().String(\"service-name\", \"\", \"ServiceManager name to use instead of descriptor discovery\")\n")
+
+	for _, p := range m.Params {
+		writeParamFlag(buf, p, gc)
 	}
 
+	buf.WriteString("\n\treturn cmd\n")
 	buf.WriteString("}\n\n")
 }
 
