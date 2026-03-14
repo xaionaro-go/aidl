@@ -1445,7 +1445,7 @@ aidlcli com.android.internal.telephony.ITelephony get-network-country-iso-for-ph
 
 ### Verified Devices
 
-Commands are tested against the following devices. "SM" = uses ServiceManager lookup (version-independent), "Proxy" = uses generated proxy transaction codes (version-dependent).
+Commands are tested against the following devices. The runtime uses version-aware transaction code resolution (`binder/versionaware`) with tables for API 34, 35, and 36. "SM" = ServiceManager-level lookup, "Proxy" = generated proxy method with version-aware code resolution.
 
 <details>
 <summary>Verification matrix</summary>
@@ -1454,23 +1454,21 @@ Commands are tested against the following devices. "SM" = uses ServiceManager lo
 |---|---|---|---|
 | `service list` | SM | PASS | PASS |
 | `service inspect` | SM | PASS | PASS |
-| `location get-all-providers` | SM | PASS | PASS |
-| `location is-provider-enabled-for-user` | SM | PASS | PASS |
-| `location get-gnss-hardware-model-name` | SM | PASS | PASS |
-| `location get-gnss-year-of-hardware` | SM | PASS | PASS |
-| `thermal get-current-thermal-status` | SM | PASS | PASS |
-| `power is-power-save-mode` | SM | PASS | PASS |
-| `pm is-package-available` | SM | PASS | PASS |
-| `display get-display-ids` | SM | PASS | PASS |
-| `clipboard has-clipboard-text` | SM | PASS | PASS |
-| `am is-user-a-monkey` | Proxy | FAIL* | PASS |
-| `am get-process-limit` | Proxy | FAIL* | PASS |
-| `am check-permission` | Proxy | FAIL* | PASS |
-| `power is-interactive` | Proxy | FAIL* | PASS |
-| `pm check-permission` | Proxy | FAIL* | PASS |
-| `telephony get-active-phone-type` | Proxy | FAIL* | PASS |
+| `location get-all-providers` | Proxy | PASS | PASS |
+| `location is-provider-enabled-for-user` | Proxy | PASS | PASS |
+| `location get-gnss-hardware-model-name` | Proxy | PASS | PASS |
+| `location get-gnss-year-of-hardware` | Proxy | PASS | PASS |
+| `thermal get-current-thermal-status` | Proxy | PASS | PASS |
+| `power is-power-save-mode` | Proxy | PASS | PASS |
+| `power is-interactive` | Proxy | PASS | PASS |
+| `pm is-package-available` | Proxy | PASS | PASS |
+| `display get-display-ids` | Proxy | PASS | PASS |
+| `clipboard has-clipboard-text` | Proxy | PASS | PASS |
+| `am check-permission` | Proxy | PASS | PASS |
+| `am is-user-a-monkey` | Proxy | FLAKY* | PASS |
+| `am get-process-limit` | Proxy | FLAKY* | PASS |
 
-\* Proxy-based commands fail on API 36 due to AIDL transaction code changes between the compiled snapshot and Android 16. Regenerating from API 36 AIDL sources would fix these.
+\* Some IActivityManager methods return empty replies intermittently on the Pixel 8a, likely due to the device's firmware AIDL revision having additional methods beyond the `android-16.0.0_r1` snapshot. The transaction code offset may be off by 1-2 for some methods.
 
 </details>
 
