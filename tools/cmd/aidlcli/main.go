@@ -42,13 +42,6 @@ and invoking Android Binder services using AIDL-generated Go bindings.`,
 	return cmd
 }
 
-func newServiceCmd() *cobra.Command {
-	return &cobra.Command{
-		Use:   "service",
-		Short: "List, inspect, and transact with binder services",
-	}
-}
-
 func main() {
 	if err := newRootCmd().Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
