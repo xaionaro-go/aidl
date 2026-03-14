@@ -245,9 +245,9 @@ func TestAidlcli_ServiceList(t *testing.T) {
 
 	names := make([]string, 0, len(rows))
 	for _, row := range rows {
-		name, ok := row["Name"]
+		name, ok := row["NAME"]
 		require.True(t, ok, "row missing NAME field: %v", row)
-		_, hasStatus := row["Status"]
+		_, hasStatus := row["STATUS"]
 		assert.True(t, hasStatus, "row missing STATUS field: %v", row)
 		names = append(names, name)
 	}
