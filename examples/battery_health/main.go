@@ -2,7 +2,7 @@
 //
 // Build:
 //
-//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o battery_health ./examples/battery_health/
+//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/battery_health ./examples/battery_health/
 //	adb push battery_health /data/local/tmp/ && adb shell /data/local/tmp/battery_health
 package main
 

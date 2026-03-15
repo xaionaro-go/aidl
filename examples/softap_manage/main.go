@@ -10,7 +10,7 @@
 //
 // Build:
 //
-//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o softap_manage ./examples/softap_manage/
+//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/softap_manage ./examples/softap_manage/
 //	adb push softap_manage /data/local/tmp/ && adb shell /data/local/tmp/softap_manage
 package main
 

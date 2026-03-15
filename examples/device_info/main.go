@@ -3,7 +3,7 @@
 //
 // Build:
 //
-//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o device_info ./examples/device_info/
+//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/device_info ./examples/device_info/
 //	adb push device_info /data/local/tmp/ && adb shell /data/local/tmp/device_info
 package main
 

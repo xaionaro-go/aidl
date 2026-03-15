@@ -2,7 +2,7 @@
 //
 // Build:
 //
-//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o storage_info ./examples/storage_info/
+//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/storage_info ./examples/storage_info/
 //	adb push storage_info /data/local/tmp/ && adb shell /data/local/tmp/storage_info
 package main
 

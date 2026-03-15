@@ -162,8 +162,8 @@ More examples: [`examples/`](examples/)
 **Install and deploy:**
 
 ```bash
-GOOS=linux GOARCH=arm64 go build -o bindercli ./cmd/bindercli/
-adb push bindercli /data/local/tmp/
+GOOS=linux GOARCH=arm64 go build -o build/bindercli ./cmd/bindercli/
+adb push build/bindercli /data/local/tmp/
 ```
 
 **Try it:**
@@ -189,8 +189,8 @@ See the full [bindercli reference](#bindercli) for all subcommands and more exam
 Binaries are pure Go (no CGO) and run directly on Android:
 
 ```bash
-GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o list_services ./examples/list_services/
-adb push list_services /data/local/tmp/
+GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/list_services ./examples/list_services/
+adb push build/list_services /data/local/tmp/
 adb shell /data/local/tmp/list_services
 ```
 
@@ -1206,8 +1206,8 @@ Requires access to `/dev/binder` on the target device (typically available as `s
 Build and deploy:
 
 ```bash
-GOOS=linux GOARCH=arm64 go build -o bindercli ./cmd/bindercli/
-adb push bindercli /data/local/tmp/
+GOOS=linux GOARCH=arm64 go build -o build/bindercli ./cmd/bindercli/
+adb push build/bindercli /data/local/tmp/
 ```
 
 Core subcommands:

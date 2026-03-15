@@ -2,7 +2,7 @@
 //
 // Build:
 //
-//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o activity_manager ./examples/activity_manager/
+//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/activity_manager ./examples/activity_manager/
 //	adb push activity_manager /data/local/tmp/ && adb shell /data/local/tmp/activity_manager
 package main
 

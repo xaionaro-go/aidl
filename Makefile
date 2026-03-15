@@ -29,15 +29,16 @@ vet:
 
 # Build all commands, tools, and examples.
 build:
-	go build ./tools/cmd/...
-	go build ./cmd/...
-	@for d in examples/*/; do echo "Building $$d..."; go build "./$$d"; done
+	@mkdir -p build
+	@for d in tools/cmd/*/; do echo "Building $$d..."; go build -o "build/$$(basename $$d)" "./$$d"; done
+	@for d in cmd/*/; do echo "Building $$d..."; go build -o "build/$$(basename $$d)" "./$$d"; done
+	@for d in examples/*/; do echo "Building $$d..."; go build -o "build/$$(basename $$d)" "./$$d"; done
 
 # Build bindercli release binaries for arm64 and amd64.
 release:
-	@mkdir -p builds
-	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o builds/bindercli-linux-arm64 ./cmd/bindercli/
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o builds/bindercli-linux-amd64 ./cmd/bindercli/
+	@mkdir -p build
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o build/bindercli-linux-arm64 ./cmd/bindercli/
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/bindercli-linux-amd64 ./cmd/bindercli/
 
 # Run linter.
 lint:
@@ -57,8 +58,8 @@ genbindercli:
 
 # Build the bindercli tool.
 bindercli:
-	@mkdir -p builds
-	go build -o builds/bindercli ./cmd/bindercli
+	@mkdir -p build
+	go build -o build/bindercli ./cmd/bindercli
 
 # List all available bindercli subcommands.
 list-commands:

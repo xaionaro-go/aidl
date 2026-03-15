@@ -2,7 +2,7 @@
 //
 // Build:
 //
-//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o audio_status ./examples/audio_status/
+//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/audio_status ./examples/audio_status/
 //	adb push audio_status /data/local/tmp/ && adb shell /data/local/tmp/audio_status
 package main
 

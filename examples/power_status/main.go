@@ -2,7 +2,7 @@
 //
 // Build:
 //
-//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o power_status ./examples/power_status/
+//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/power_status ./examples/power_status/
 //	adb push power_status /data/local/tmp/ && adb shell /data/local/tmp/power_status
 package main
 

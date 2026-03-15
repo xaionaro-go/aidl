@@ -2,7 +2,7 @@
 //
 // Build:
 //
-//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o package_query ./examples/package_query/
+//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/package_query ./examples/package_query/
 //	adb push package_query /data/local/tmp/ && adb shell /data/local/tmp/package_query
 package main
 

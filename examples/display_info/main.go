@@ -2,7 +2,7 @@
 //
 // Build:
 //
-//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o display_info ./examples/display_info/
+//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/display_info ./examples/display_info/
 //	adb push display_info /data/local/tmp/ && adb shell /data/local/tmp/display_info
 package main
 

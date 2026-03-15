@@ -3,4 +3,4 @@
 *.test
 *.out
 *.prof
-/builds/
+/build/

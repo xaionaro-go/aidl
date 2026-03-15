@@ -2,7 +2,7 @@
 //
 // Build:
 //
-//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o list_services ./examples/list_services/
+//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/list_services ./examples/list_services/
 //	adb push list_services /data/local/tmp/ && adb shell /data/local/tmp/list_services
 package main
 

@@ -6,7 +6,7 @@
 //
 // Build:
 //
-//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o softap_tether_offload ./examples/softap_tether_offload/
+//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/softap_tether_offload ./examples/softap_tether_offload/
 //	adb push softap_tether_offload /data/local/tmp/ && adb shell /data/local/tmp/softap_tether_offload
 package main
 

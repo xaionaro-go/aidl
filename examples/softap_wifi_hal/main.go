@@ -13,7 +13,7 @@
 //
 // Build:
 //
-//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o softap_wifi_hal ./examples/softap_wifi_hal/
+//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/softap_wifi_hal ./examples/softap_wifi_hal/
 //	adb push softap_wifi_hal /data/local/tmp/ && adb shell /data/local/tmp/softap_wifi_hal
 package main
 
