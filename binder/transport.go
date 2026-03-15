@@ -20,6 +20,11 @@ type Transport interface {
 	AcquireHandle(ctx context.Context, handle uint32) (_err error)
 	ReleaseHandle(ctx context.Context, handle uint32) (_err error)
 
+	RegisterReceiver(
+		ctx context.Context,
+		receiver TransactionReceiver,
+	) uintptr
+
 	RequestDeathNotification(
 		ctx context.Context,
 		handle uint32,

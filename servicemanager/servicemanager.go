@@ -186,6 +186,51 @@ func (sm *ServiceManager) IsDeclared(
 	return val, nil
 }
 
+// AddService publishes a Go service under the given name so that other
+// processes can discover it via GetService/CheckService.
+func (sm *ServiceManager) AddService(
+	ctx context.Context,
+	name ServiceName,
+	service binder.TransactionReceiver,
+	allowIsolated bool,
+	dumpPriority int32,
+) (_err error) {
+	logger.Tracef(ctx, "AddService(%q)", name)
+	defer func() { logger.Tracef(ctx, "/AddService(%q): %v", name, _err) }()
+
+	transport := sm.transport()
+
+	cookie := transport.RegisterReceiver(ctx, service)
+
+	code, err := sm.remote.ResolveCode(serviceManagerDescriptor, "addService")
+	if err != nil {
+		return fmt.Errorf("servicemanager: AddService(%q): %w", name, err)
+	}
+
+	data := parcel.New()
+	data.WriteInterfaceToken(serviceManagerDescriptor)
+	data.WriteString16(string(name))
+	data.WriteLocalBinder(cookie)
+
+	var allowIsolatedInt int32
+	if allowIsolated {
+		allowIsolatedInt = 1
+	}
+	data.WriteInt32(allowIsolatedInt)
+	data.WriteInt32(dumpPriority)
+
+	reply, err := sm.remote.Transact(ctx, code, 0, data)
+	if err != nil {
+		return fmt.Errorf("servicemanager: AddService(%q): %w", name, err)
+	}
+
+	if err := binder.ReadStatus(reply); err != nil {
+		return fmt.Errorf("servicemanager: AddService(%q): %w", name, err)
+	}
+
+	return nil
+}
+
 // transport extracts the VersionAwareTransport from the ProxyBinder.
 func (sm *ServiceManager) transport() binder.VersionAwareTransport {
 	pb, ok := sm.remote.(*binder.ProxyBinder)

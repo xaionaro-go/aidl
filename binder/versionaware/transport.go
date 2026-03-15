@@ -644,6 +644,13 @@ func (t *Transport) ReleaseHandle(
 	return t.inner.ReleaseHandle(ctx, handle)
 }
 
+func (t *Transport) RegisterReceiver(
+	ctx context.Context,
+	receiver binder.TransactionReceiver,
+) uintptr {
+	return t.inner.RegisterReceiver(ctx, receiver)
+}
+
 func (t *Transport) RequestDeathNotification(
 	ctx context.Context,
 	handle uint32,

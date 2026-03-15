@@ -13,12 +13,14 @@ import (
 
 // mockTransport captures the last Transact call and returns a predetermined reply.
 type mockTransport struct {
-	lastHandle uint32
-	lastCode   binder.TransactionCode
-	lastFlags  binder.TransactionFlags
-	lastData   *parcel.Parcel
-	replyFunc  func() *parcel.Parcel
-	err        error
+	lastHandle   uint32
+	lastCode     binder.TransactionCode
+	lastFlags    binder.TransactionFlags
+	lastData     *parcel.Parcel
+	replyFunc    func() *parcel.Parcel
+	err          error
+	lastReceiver binder.TransactionReceiver
+	nextCookie   uintptr
 }
 
 func (m *mockTransport) Transact(
@@ -38,8 +40,13 @@ func (m *mockTransport) Transact(
 	return m.replyFunc(), nil
 }
 
-func (m *mockTransport) AcquireHandle(_ context.Context, _ uint32) error { return nil }
-func (m *mockTransport) ReleaseHandle(_ context.Context, _ uint32) error { return nil }
+func (m *mockTransport) AcquireHandle(_ context.Context, _ uint32) error  { return nil }
+func (m *mockTransport) ReleaseHandle(_ context.Context, _ uint32) error  { return nil }
+func (m *mockTransport) RegisterReceiver(_ context.Context, receiver binder.TransactionReceiver) uintptr {
+	m.lastReceiver = receiver
+	m.nextCookie++
+	return m.nextCookie
+}
 
 func (m *mockTransport) RequestDeathNotification(
 	_ context.Context,
@@ -260,5 +267,120 @@ func TestGetService_TransportError(t *testing.T) {
 	result, err := sm.GetService(ctx, ServiceName("any.service"))
 	require.Error(t, err)
 	assert.Nil(t, result)
+	assert.ErrorIs(t, err, assert.AnError)
+}
+
+// mockReceiver is a minimal TransactionReceiver for testing.
+type mockReceiver struct{}
+
+func (r *mockReceiver) OnTransaction(
+	_ context.Context,
+	_ binder.TransactionCode,
+	_ *parcel.Parcel,
+) (*parcel.Parcel, error) {
+	return parcel.New(), nil
+}
+
+func TestAddService(t *testing.T) {
+	ctx := context.Background()
+
+	mt := &mockTransport{
+		replyFunc: buildSuccessReply(func(_ *parcel.Parcel) {}),
+	}
+
+	receiver := &mockReceiver{}
+	sm := New(mt)
+	err := sm.AddService(ctx, ServiceName("my.new.service"), receiver, true, 4)
+	require.NoError(t, err)
+
+	// Verify the receiver was registered.
+	assert.Equal(t, binder.TransactionReceiver(receiver), mt.lastReceiver)
+
+	// Verify we sent to handle 0 (ServiceManager) with correct code.
+	assert.Equal(t, uint32(0), mt.lastHandle)
+	assert.Equal(t, binder.FirstCallTransaction, mt.lastCode)
+	assert.Equal(t, binder.TransactionFlags(0), mt.lastFlags)
+
+	// Verify the sent parcel data.
+	mt.lastData.SetPosition(0)
+
+	token, err := mt.lastData.ReadInterfaceToken()
+	require.NoError(t, err)
+	assert.Equal(t, serviceManagerDescriptor, token)
+
+	svcName, err := mt.lastData.ReadString16()
+	require.NoError(t, err)
+	assert.Equal(t, "my.new.service", svcName)
+
+	// Read the local binder object (flat_binder_object).
+	handle, err := mt.lastData.ReadStrongBinder()
+	require.NoError(t, err)
+	// The cookie is 1 (first call to RegisterReceiver on this mock).
+	assert.Equal(t, uint32(1), handle)
+
+	// allowIsolated = true -> 1
+	allowIsolated, err := mt.lastData.ReadInt32()
+	require.NoError(t, err)
+	assert.Equal(t, int32(1), allowIsolated)
+
+	// dumpPriority = 4
+	dumpPriority, err := mt.lastData.ReadInt32()
+	require.NoError(t, err)
+	assert.Equal(t, int32(4), dumpPriority)
+}
+
+func TestAddService_NotIsolated(t *testing.T) {
+	ctx := context.Background()
+
+	mt := &mockTransport{
+		replyFunc: buildSuccessReply(func(_ *parcel.Parcel) {}),
+	}
+
+	sm := New(mt)
+	err := sm.AddService(ctx, ServiceName("isolated.service"), &mockReceiver{}, false, 0)
+	require.NoError(t, err)
+
+	// Verify allowIsolated is written as 0.
+	mt.lastData.SetPosition(0)
+	_, _ = mt.lastData.ReadInterfaceToken()
+	_, _ = mt.lastData.ReadString16()
+	_, _ = mt.lastData.ReadStrongBinder()
+
+	allowIsolated, err := mt.lastData.ReadInt32()
+	require.NoError(t, err)
+	assert.Equal(t, int32(0), allowIsolated)
+}
+
+func TestAddService_StatusError(t *testing.T) {
+	ctx := context.Background()
+
+	mt := &mockTransport{
+		replyFunc: func() *parcel.Parcel {
+			p := parcel.New()
+			binder.WriteStatus(p, &aidlerrors.StatusError{
+				Exception: aidlerrors.ExceptionSecurity,
+				Message:   "not allowed",
+			})
+			p.SetPosition(0)
+			return p
+		},
+	}
+
+	sm := New(mt)
+	err := sm.AddService(ctx, ServiceName("blocked.service"), &mockReceiver{}, false, 0)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "not allowed")
+}
+
+func TestAddService_TransportError(t *testing.T) {
+	ctx := context.Background()
+
+	mt := &mockTransport{
+		err: assert.AnError,
+	}
+
+	sm := New(mt)
+	err := sm.AddService(ctx, ServiceName("fail.service"), &mockReceiver{}, false, 0)
+	require.Error(t, err)
 	assert.ErrorIs(t, err, assert.AnError)
 }
