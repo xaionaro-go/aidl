@@ -52,6 +52,7 @@ func run(
 ) error {
 	generated := 0
 	skipped := 0
+	extractor := parcelspec.NewJavaExtractor()
 
 	err := filepath.Walk(frameworksBase, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -77,7 +78,7 @@ func run(
 			return nil
 		}
 
-		specs := parcelspec.ExtractSpecs(string(src), packageName)
+		specs := extractor.ExtractSpecs(string(src), packageName)
 		for _, spec := range specs {
 			if len(spec.Fields) == 0 {
 				skipped++

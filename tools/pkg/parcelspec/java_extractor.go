@@ -8,26 +8,58 @@ import (
 	"github.com/xaionaro-go/binder/tools/pkg/javaparser"
 )
 
+// JavaExtractor reuses an ANTLR lexer/parser across multiple files.
+// The DFA cache built by the ATN simulator persists across calls,
+// dramatically reducing allocation and GC pressure.
+type JavaExtractor struct {
+	lexer  *javaparser.JavaLexer
+	stream *antlr.CommonTokenStream
+	parser *javaparser.JavaParser
+}
+
+// NewJavaExtractor creates a reusable extractor.
+func NewJavaExtractor() *JavaExtractor {
+	// Initialize with empty input; will be reset per file.
+	input := antlr.NewInputStream("")
+	lexer := javaparser.NewJavaLexer(input)
+	stream := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
+	parser := javaparser.NewJavaParser(stream)
+	parser.RemoveErrorListeners()
+
+	return &JavaExtractor{
+		lexer:  lexer,
+		stream: stream,
+		parser: parser,
+	}
+}
+
 // ExtractSpecs parses a Java source file and returns ParcelableSpecs
 // for each class that contains a writeToParcel method.
-func ExtractSpecs(
+// Reuses the internal lexer/parser for DFA cache efficiency.
+func (e *JavaExtractor) ExtractSpecs(
 	javaSrc string,
 	packageName string,
 ) []ParcelableSpec {
 	input := antlr.NewInputStream(javaSrc)
-	lexer := javaparser.NewJavaLexer(input)
-	stream := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
-	parser := javaparser.NewJavaParser(stream)
+	e.lexer.SetInputStream(input)
+	e.stream.SetTokenSource(e.lexer)
+	e.parser.SetTokenStream(e.stream)
 
-	// Suppress ANTLR error output during parsing.
-	parser.RemoveErrorListeners()
-
-	tree := parser.CompilationUnit()
+	tree := e.parser.CompilationUnit()
 
 	listener := newParcelableListener(packageName)
 	antlr.ParseTreeWalkerDefault.Walk(listener, tree)
 
 	return listener.specs
+}
+
+// ExtractSpecs is a convenience function that creates a one-shot extractor.
+// For batch processing, use NewJavaExtractor() and call its ExtractSpecs method.
+func ExtractSpecs(
+	javaSrc string,
+	packageName string,
+) []ParcelableSpec {
+	return NewJavaExtractor().ExtractSpecs(javaSrc, packageName)
 }
 
 // javaWriteMethodToSpecType maps Java Parcel write method names
