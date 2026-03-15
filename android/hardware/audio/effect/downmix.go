@@ -2,6 +2,7 @@ package effect
 
 import (
 	"fmt"
+	CameraExtensionSessionStats "github.com/xaionaro-go/binder/android/hardware/CameraExtensionSessionStats"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -15,7 +16,7 @@ const (
 type Downmix struct {
 	Tag    int32
 	Vendor VendorExtension
-	Type   interface{}
+	Type   CameraExtensionSessionStats.Type
 }
 
 var _ parcel.Parcelable = (*Downmix)(nil)
@@ -35,16 +36,16 @@ func (u *Downmix) SetVendor(
 	u.Vendor = v
 }
 
-func (u *Downmix) GetType() (interface{}, bool) {
+func (u *Downmix) GetType() (CameraExtensionSessionStats.Type, bool) {
 	if u.Tag != DownmixTagType {
-		var _zero interface{}
+		var _zero CameraExtensionSessionStats.Type
 		return _zero, false
 	}
 	return u.Type, true
 }
 
 func (u *Downmix) SetType(
-	v interface{},
+	v CameraExtensionSessionStats.Type,
 ) {
 	u.Tag = DownmixTagType
 	u.Type = v
@@ -62,6 +63,7 @@ func (u *Downmix) MarshalParcel(
 			return _err
 		}
 	case DownmixTagType:
+		p.WriteInt32(int32(u.Type))
 	default:
 		return fmt.Errorf("unknown union tag %d for Downmix", u.Tag)
 	}
@@ -89,6 +91,11 @@ func (u *Downmix) UnmarshalParcel(
 			return _err
 		}
 	case DownmixTagType:
+		_raw, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
+		}
+		u.Type = CameraExtensionSessionStats.Type(_raw)
 	default:
 		return fmt.Errorf("unknown union tag %d for Downmix", u.Tag)
 	}

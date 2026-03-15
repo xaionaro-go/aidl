@@ -2,6 +2,7 @@ package effect
 
 import (
 	"fmt"
+	CameraExtensionSessionStats "github.com/xaionaro-go/binder/android/hardware/CameraExtensionSessionStats"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -17,7 +18,7 @@ type NoiseSuppression struct {
 	Tag    int32
 	Vendor VendorExtension
 	Level  interface{}
-	Type   interface{}
+	Type   CameraExtensionSessionStats.Type
 }
 
 var _ parcel.Parcelable = (*NoiseSuppression)(nil)
@@ -52,16 +53,16 @@ func (u *NoiseSuppression) SetLevel(
 	u.Level = v
 }
 
-func (u *NoiseSuppression) GetType() (interface{}, bool) {
+func (u *NoiseSuppression) GetType() (CameraExtensionSessionStats.Type, bool) {
 	if u.Tag != NoiseSuppressionTagType {
-		var _zero interface{}
+		var _zero CameraExtensionSessionStats.Type
 		return _zero, false
 	}
 	return u.Type, true
 }
 
 func (u *NoiseSuppression) SetType(
-	v interface{},
+	v CameraExtensionSessionStats.Type,
 ) {
 	u.Tag = NoiseSuppressionTagType
 	u.Type = v
@@ -80,6 +81,7 @@ func (u *NoiseSuppression) MarshalParcel(
 		}
 	case NoiseSuppressionTagLevel:
 	case NoiseSuppressionTagType:
+		p.WriteInt32(int32(u.Type))
 	default:
 		return fmt.Errorf("unknown union tag %d for NoiseSuppression", u.Tag)
 	}
@@ -108,6 +110,11 @@ func (u *NoiseSuppression) UnmarshalParcel(
 		}
 	case NoiseSuppressionTagLevel:
 	case NoiseSuppressionTagType:
+		_raw, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
+		}
+		u.Type = CameraExtensionSessionStats.Type(_raw)
 	default:
 		return fmt.Errorf("unknown union tag %d for NoiseSuppression", u.Tag)
 	}

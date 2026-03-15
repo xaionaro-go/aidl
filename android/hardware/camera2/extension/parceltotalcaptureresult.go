@@ -1,7 +1,7 @@
 package extension
 
 import (
-	device "github.com/xaionaro-go/binder/android/hardware/camera/device"
+	device "github.com/xaionaro-go/binder/android/frameworks/cameraservice/device"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -15,7 +15,7 @@ type ParcelTotalCaptureResult struct {
 	FrameNumber     int64
 	Partials        []ParcelCaptureResult
 	SessionId       int32
-	PhysicalResult  []interface{}
+	PhysicalResult  []device.PhysicalCaptureResultInfo
 }
 
 var _ parcel.Parcelable = (*ParcelTotalCaptureResult)(nil)
@@ -45,6 +45,11 @@ func (s *ParcelTotalCaptureResult) MarshalParcel(
 		p.WriteInt32(-1)
 	} else {
 		p.WriteInt32(int32(len(s.PhysicalResult)))
+		for _, _item := range s.PhysicalResult {
+			if _err := _item.MarshalParcel(p); _err != nil {
+				return _err
+			}
+		}
 	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
@@ -103,8 +108,11 @@ func (s *ParcelTotalCaptureResult) UnmarshalParcel(
 		return _err
 	}
 	if _count1 >= 0 {
-		s.PhysicalResult = make([]interface{}, _count1)
+		s.PhysicalResult = make([]device.PhysicalCaptureResultInfo, _count1)
 		for _i := int32(0); _i < _count1; _i++ {
+			if _err = s.PhysicalResult[_i].UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 

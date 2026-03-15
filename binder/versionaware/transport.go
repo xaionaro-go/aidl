@@ -159,6 +159,25 @@ func resolvedTableFingerprint(apiLevel int) string {
 	return fmt.Sprintf("api=%d;jars=%s", apiLevel, fp)
 }
 
+// MergeTable adds entries from extra into the transport's version table.
+// Existing entries are not overwritten. This is useful for registering
+// stable AIDL HAL interfaces whose transaction codes are not extracted
+// from framework JARs.
+func (t *Transport) MergeTable(
+	extra VersionTable,
+) {
+	for descriptor, methods := range extra {
+		if t.table[descriptor] == nil {
+			t.table[descriptor] = make(map[string]binder.TransactionCode)
+		}
+		for method, code := range methods {
+			if _, exists := t.table[descriptor][method]; !exists {
+				t.table[descriptor][method] = code
+			}
+		}
+	}
+}
+
 // ResolveCode resolves an AIDL method name to the correct transaction code
 // for the detected device version.
 //

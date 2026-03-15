@@ -1,7 +1,7 @@
 package c2
 
 import (
-	Downmix "github.com/xaionaro-go/binder/android/hardware/audio/effect/Downmix"
+	CameraExtensionSessionStats "github.com/xaionaro-go/binder/android/hardware/CameraExtensionSessionStats"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -9,7 +9,7 @@ import (
 
 type FieldSupportedValuesQuery struct {
 	Field ParamField
-	Type  Downmix.Type
+	Type  CameraExtensionSessionStats.Type
 }
 
 var _ parcel.Parcelable = (*FieldSupportedValuesQuery)(nil)
@@ -43,7 +43,7 @@ func (s *FieldSupportedValuesQuery) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	s.Type = Downmix.Type(_typeRaw)
+	s.Type = CameraExtensionSessionStats.Type(_typeRaw)
 
 	parcel.SkipToParcelableEnd(p, _endPos)
 	return nil

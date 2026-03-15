@@ -1,7 +1,7 @@
 package c2
 
 import (
-	Downmix "github.com/xaionaro-go/binder/android/hardware/audio/effect/Downmix"
+	CameraExtensionSessionStats "github.com/xaionaro-go/binder/android/hardware/CameraExtensionSessionStats"
 	c2FieldDescriptor "github.com/xaionaro-go/binder/android/hardware/media/c2/FieldDescriptor"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -10,7 +10,7 @@ import (
 
 type FieldDescriptor struct {
 	FieldId     FieldId
-	Type        Downmix.Type
+	Type        CameraExtensionSessionStats.Type
 	StructIndex int32
 	Extent      int32
 	Name        string
@@ -61,7 +61,7 @@ func (s *FieldDescriptor) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	s.Type = Downmix.Type(_typeRaw)
+	s.Type = CameraExtensionSessionStats.Type(_typeRaw)
 
 	s.StructIndex, _err = p.ReadInt32()
 	if _err != nil {

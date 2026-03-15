@@ -10,6 +10,7 @@ import (
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/tools/pkg/testutil"
 
+	genRoot "github.com/xaionaro-go/binder/android"
 	genAccessibilityservice "github.com/xaionaro-go/binder/android/accessibilityservice"
 	genAccounts "github.com/xaionaro-go/binder/android/accounts"
 	genAdpf "github.com/xaionaro-go/binder/android/adpf"
@@ -43,6 +44,7 @@ import (
 	genCompanionVirtualAudio "github.com/xaionaro-go/binder/android/companion/virtual/audio"
 	genCompanionVirtualCamera "github.com/xaionaro-go/binder/android/companion/virtual/camera"
 	genCompanionVirtualSensor "github.com/xaionaro-go/binder/android/companion/virtual/sensor"
+	genCompanionVirtualcamera "github.com/xaionaro-go/binder/android/companion/virtualcamera"
 	genCompanionVirtualnative "github.com/xaionaro-go/binder/android/companion/virtualnative"
 	genContent "github.com/xaionaro-go/binder/android/content"
 	genContentIntegrity "github.com/xaionaro-go/binder/android/content/integrity"
@@ -57,6 +59,17 @@ import (
 	genDatabase "github.com/xaionaro-go/binder/android/database"
 	genDebug "github.com/xaionaro-go/binder/android/debug"
 	genFlags "github.com/xaionaro-go/binder/android/flags"
+	genFrameworksAutoDisplay "github.com/xaionaro-go/binder/android/frameworks/automotive/display"
+	genFrameworksAutoPowerpolicy "github.com/xaionaro-go/binder/android/frameworks/automotive/powerpolicy"
+	genFrameworksAutoPowerpolicyInternal "github.com/xaionaro-go/binder/android/frameworks/automotive/powerpolicy/internal_"
+	genFrameworksAutoTelemetry "github.com/xaionaro-go/binder/android/frameworks/automotive/telemetry"
+	genFrameworksCameraserviceDevice "github.com/xaionaro-go/binder/android/frameworks/cameraservice/device"
+	genFrameworksCameraserviceService "github.com/xaionaro-go/binder/android/frameworks/cameraservice/service"
+	genFrameworksDevicestate "github.com/xaionaro-go/binder/android/frameworks/devicestate"
+	genFrameworksLocationAltitude "github.com/xaionaro-go/binder/android/frameworks/location/altitude"
+	genFrameworksSensorservice "github.com/xaionaro-go/binder/android/frameworks/sensorservice"
+	genFrameworksStats "github.com/xaionaro-go/binder/android/frameworks/stats"
+	genFrameworksVibrator "github.com/xaionaro-go/binder/android/frameworks/vibrator"
 	genGraphicsBufferstreams "github.com/xaionaro-go/binder/android/graphics/bufferstreams"
 	genGui "github.com/xaionaro-go/binder/android/gui"
 	genHw "github.com/xaionaro-go/binder/android/hardware"
@@ -89,6 +102,7 @@ import (
 	genHwBroadcastradio "github.com/xaionaro-go/binder/android/hardware/broadcastradio"
 	genHwCameraDevice "github.com/xaionaro-go/binder/android/hardware/camera/device"
 	genHwCameraProvider "github.com/xaionaro-go/binder/android/hardware/camera/provider"
+	genHwCamera2 "github.com/xaionaro-go/binder/android/hardware/camera2"
 	genHwCamera2Extension "github.com/xaionaro-go/binder/android/hardware/camera2/extension"
 	genHwCas "github.com/xaionaro-go/binder/android/hardware/cas"
 	genHwConfirmationui "github.com/xaionaro-go/binder/android/hardware/confirmationui"
@@ -175,6 +189,7 @@ import (
 	genLocation "github.com/xaionaro-go/binder/android/location"
 	genLocationProvider "github.com/xaionaro-go/binder/android/location/provider"
 	genMedia "github.com/xaionaro-go/binder/android/media"
+	genMediaAudio "github.com/xaionaro-go/binder/android/media/audio"
 	genMediaAudioEraser "github.com/xaionaro-go/binder/android/media/audio/eraser"
 	genMediaAudiopolicy "github.com/xaionaro-go/binder/android/media/audiopolicy"
 	genMediaMetrics "github.com/xaionaro-go/binder/android/media/metrics"
@@ -203,6 +218,7 @@ import (
 	genMediaTvExtensionTime "github.com/xaionaro-go/binder/android/media/tv/extension/time"
 	genMediaTvExtensionTune "github.com/xaionaro-go/binder/android/media/tv/extension/tune"
 	genMediaTvInteractive "github.com/xaionaro-go/binder/android/media/tv/interactive"
+	genMediaTvTuner "github.com/xaionaro-go/binder/android/media/tv/tuner"
 	genMediaTvTunerresourcemanager "github.com/xaionaro-go/binder/android/media/tv/tunerresourcemanager"
 	genNet "github.com/xaionaro-go/binder/android/net"
 	genNetVcn "github.com/xaionaro-go/binder/android/net/vcn"
@@ -323,6 +339,7 @@ import (
 	genComInternalView "github.com/xaionaro-go/binder/com/android/internal_/view"
 	genComInternalViewInline "github.com/xaionaro-go/binder/com/android/internal_/view/inline"
 	genComInternalWidget "github.com/xaionaro-go/binder/com/android/internal_/widget"
+	genComMediaPermission "github.com/xaionaro-go/binder/com/android/media/permission"
 	genComNet "github.com/xaionaro-go/binder/com/android/net"
 	genComOnemedia "github.com/xaionaro-go/binder/com/android/onemedia"
 	genComOnemediaPlayback "github.com/xaionaro-go/binder/com/android/onemedia/playback"
@@ -370,6 +387,12 @@ type mockProxyEntry struct {
 }
 
 var allMockProxies = []mockProxyEntry{
+	{"genRoot.DataSourceProxy", func(b binder.IBinder) interface{} { return genRoot.NewDataSourceProxy(b) }},
+	{"genRoot.GraphicBufferSourceProxy", func(b binder.IBinder) interface{} { return genRoot.NewGraphicBufferSourceProxy(b) }},
+	{"genRoot.MediaExtractorProxy", func(b binder.IBinder) interface{} { return genRoot.NewMediaExtractorProxy(b) }},
+	{"genRoot.MediaExtractorServiceProxy", func(b binder.IBinder) interface{} { return genRoot.NewMediaExtractorServiceProxy(b) }},
+	{"genRoot.OMXBufferSourceProxy", func(b binder.IBinder) interface{} { return genRoot.NewOMXBufferSourceProxy(b) }},
+	{"genRoot.OMXNodeProxy", func(b binder.IBinder) interface{} { return genRoot.NewOMXNodeProxy(b) }},
 	{"genAccessibilityservice.AccessibilityServiceClientProxy", func(b binder.IBinder) interface{} {
 		return genAccessibilityservice.NewAccessibilityServiceClientProxy(b)
 	}},
@@ -540,6 +563,8 @@ var allMockProxies = []mockProxyEntry{
 	{"genCompanionVirtualAudio.AudioRoutingCallbackProxy", func(b binder.IBinder) interface{} { return genCompanionVirtualAudio.NewAudioRoutingCallbackProxy(b) }},
 	{"genCompanionVirtualCamera.VirtualCameraCallbackProxy", func(b binder.IBinder) interface{} { return genCompanionVirtualCamera.NewVirtualCameraCallbackProxy(b) }},
 	{"genCompanionVirtualSensor.VirtualSensorCallbackProxy", func(b binder.IBinder) interface{} { return genCompanionVirtualSensor.NewVirtualSensorCallbackProxy(b) }},
+	{"genCompanionVirtualcamera.VirtualCameraCallbackProxy", func(b binder.IBinder) interface{} { return genCompanionVirtualcamera.NewVirtualCameraCallbackProxy(b) }},
+	{"genCompanionVirtualcamera.VirtualCameraServiceProxy", func(b binder.IBinder) interface{} { return genCompanionVirtualcamera.NewVirtualCameraServiceProxy(b) }},
 	{"genCompanionVirtualnative.VirtualDeviceManagerNativeProxy", func(b binder.IBinder) interface{} {
 		return genCompanionVirtualnative.NewVirtualDeviceManagerNativeProxy(b)
 	}},
@@ -613,6 +638,38 @@ var allMockProxies = []mockProxyEntry{
 	{"genDebug.AdbTransportProxy", func(b binder.IBinder) interface{} { return genDebug.NewAdbTransportProxy(b) }},
 	{"genFlags.FeatureFlagsCallbackProxy", func(b binder.IBinder) interface{} { return genFlags.NewFeatureFlagsCallbackProxy(b) }},
 	{"genFlags.FeatureFlagsProxy", func(b binder.IBinder) interface{} { return genFlags.NewFeatureFlagsProxy(b) }},
+	{"genFrameworksAutoDisplay.CarDisplayProxyProxy", func(b binder.IBinder) interface{} { return genFrameworksAutoDisplay.NewCarDisplayProxyProxy(b) }},
+	{"genFrameworksAutoPowerpolicy.CarPowerPolicyChangeCallbackProxy", func(b binder.IBinder) interface{} {
+		return genFrameworksAutoPowerpolicy.NewCarPowerPolicyChangeCallbackProxy(b)
+	}},
+	{"genFrameworksAutoPowerpolicy.CarPowerPolicyServerProxy", func(b binder.IBinder) interface{} {
+		return genFrameworksAutoPowerpolicy.NewCarPowerPolicyServerProxy(b)
+	}},
+	{"genFrameworksAutoPowerpolicyInternal.CarPowerPolicySystemNotificationProxy", func(b binder.IBinder) interface{} {
+		return genFrameworksAutoPowerpolicyInternal.NewCarPowerPolicySystemNotificationProxy(b)
+	}},
+	{"genFrameworksAutoTelemetry.CarTelemetryCallbackProxy", func(b binder.IBinder) interface{} { return genFrameworksAutoTelemetry.NewCarTelemetryCallbackProxy(b) }},
+	{"genFrameworksAutoTelemetry.CarTelemetryProxy", func(b binder.IBinder) interface{} { return genFrameworksAutoTelemetry.NewCarTelemetryProxy(b) }},
+	{"genFrameworksCameraserviceDevice.CameraDeviceCallbackProxy", func(b binder.IBinder) interface{} {
+		return genFrameworksCameraserviceDevice.NewCameraDeviceCallbackProxy(b)
+	}},
+	{"genFrameworksCameraserviceDevice.CameraDeviceUserProxy", func(b binder.IBinder) interface{} {
+		return genFrameworksCameraserviceDevice.NewCameraDeviceUserProxy(b)
+	}},
+	{"genFrameworksCameraserviceService.CameraServiceListenerProxy", func(b binder.IBinder) interface{} {
+		return genFrameworksCameraserviceService.NewCameraServiceListenerProxy(b)
+	}},
+	{"genFrameworksCameraserviceService.CameraServiceProxy", func(b binder.IBinder) interface{} { return genFrameworksCameraserviceService.NewCameraServiceProxy(b) }},
+	{"genFrameworksDevicestate.DeviceStateListenerProxy", func(b binder.IBinder) interface{} { return genFrameworksDevicestate.NewDeviceStateListenerProxy(b) }},
+	{"genFrameworksDevicestate.DeviceStateServiceProxy", func(b binder.IBinder) interface{} { return genFrameworksDevicestate.NewDeviceStateServiceProxy(b) }},
+	{"genFrameworksLocationAltitude.AltitudeServiceProxy", func(b binder.IBinder) interface{} { return genFrameworksLocationAltitude.NewAltitudeServiceProxy(b) }},
+	{"genFrameworksSensorservice.DirectReportChannelProxy", func(b binder.IBinder) interface{} { return genFrameworksSensorservice.NewDirectReportChannelProxy(b) }},
+	{"genFrameworksSensorservice.EventQueueCallbackProxy", func(b binder.IBinder) interface{} { return genFrameworksSensorservice.NewEventQueueCallbackProxy(b) }},
+	{"genFrameworksSensorservice.EventQueueProxy", func(b binder.IBinder) interface{} { return genFrameworksSensorservice.NewEventQueueProxy(b) }},
+	{"genFrameworksSensorservice.SensorManagerProxy", func(b binder.IBinder) interface{} { return genFrameworksSensorservice.NewSensorManagerProxy(b) }},
+	{"genFrameworksStats.StatsProxy", func(b binder.IBinder) interface{} { return genFrameworksStats.NewStatsProxy(b) }},
+	{"genFrameworksVibrator.VibratorControlServiceProxy", func(b binder.IBinder) interface{} { return genFrameworksVibrator.NewVibratorControlServiceProxy(b) }},
+	{"genFrameworksVibrator.VibratorControllerProxy", func(b binder.IBinder) interface{} { return genFrameworksVibrator.NewVibratorControllerProxy(b) }},
 	{"genGraphicsBufferstreams.BufferOwnerProxy", func(b binder.IBinder) interface{} { return genGraphicsBufferstreams.NewBufferOwnerProxy(b) }},
 	{"genGraphicsBufferstreams.BufferSubscriberProxy", func(b binder.IBinder) interface{} { return genGraphicsBufferstreams.NewBufferSubscriberProxy(b) }},
 	{"genGraphicsBufferstreams.BufferSubscriptionProxy", func(b binder.IBinder) interface{} { return genGraphicsBufferstreams.NewBufferSubscriptionProxy(b) }},
@@ -630,6 +687,11 @@ var allMockProxies = []mockProxyEntry{
 	{"genGui.WindowInfosListenerProxy", func(b binder.IBinder) interface{} { return genGui.NewWindowInfosListenerProxy(b) }},
 	{"genGui.WindowInfosPublisherProxy", func(b binder.IBinder) interface{} { return genGui.NewWindowInfosPublisherProxy(b) }},
 	{"genGui.WindowInfosReportedListenerProxy", func(b binder.IBinder) interface{} { return genGui.NewWindowInfosReportedListenerProxy(b) }},
+	{"genHw.CameraClientProxy", func(b binder.IBinder) interface{} { return genHw.NewCameraClientProxy(b) }},
+	{"genHw.CameraProxy", func(b binder.IBinder) interface{} { return genHw.NewCameraProxy(b) }},
+	{"genHw.CameraServiceListenerProxy", func(b binder.IBinder) interface{} { return genHw.NewCameraServiceListenerProxy(b) }},
+	{"genHw.CameraServiceProxy", func(b binder.IBinder) interface{} { return genHw.NewCameraServiceProxy(b) }},
+	{"genHw.CameraServiceProxyProxy", func(b binder.IBinder) interface{} { return genHw.NewCameraServiceProxyProxy(b) }},
 	{"genHw.ConsumerIrServiceProxy", func(b binder.IBinder) interface{} { return genHw.NewConsumerIrServiceProxy(b) }},
 	{"genHw.SensorPrivacyListenerProxy", func(b binder.IBinder) interface{} { return genHw.NewSensorPrivacyListenerProxy(b) }},
 	{"genHw.SensorPrivacyManagerProxy", func(b binder.IBinder) interface{} { return genHw.NewSensorPrivacyManagerProxy(b) }},
@@ -724,6 +786,11 @@ var allMockProxies = []mockProxyEntry{
 	{"genHwCameraDevice.CameraOfflineSessionProxy", func(b binder.IBinder) interface{} { return genHwCameraDevice.NewCameraOfflineSessionProxy(b) }},
 	{"genHwCameraProvider.CameraProviderCallbackProxy", func(b binder.IBinder) interface{} { return genHwCameraProvider.NewCameraProviderCallbackProxy(b) }},
 	{"genHwCameraProvider.CameraProviderProxy", func(b binder.IBinder) interface{} { return genHwCameraProvider.NewCameraProviderProxy(b) }},
+	{"genHwCamera2.CameraDeviceCallbacksProxy", func(b binder.IBinder) interface{} { return genHwCamera2.NewCameraDeviceCallbacksProxy(b) }},
+	{"genHwCamera2.CameraDeviceUserProxy", func(b binder.IBinder) interface{} { return genHwCamera2.NewCameraDeviceUserProxy(b) }},
+	{"genHwCamera2.CameraInjectionCallbackProxy", func(b binder.IBinder) interface{} { return genHwCamera2.NewCameraInjectionCallbackProxy(b) }},
+	{"genHwCamera2.CameraInjectionSessionProxy", func(b binder.IBinder) interface{} { return genHwCamera2.NewCameraInjectionSessionProxy(b) }},
+	{"genHwCamera2.CameraOfflineSessionProxy", func(b binder.IBinder) interface{} { return genHwCamera2.NewCameraOfflineSessionProxy(b) }},
 	{"genHwCamera2Extension.AdvancedExtenderImplProxy", func(b binder.IBinder) interface{} { return genHwCamera2Extension.NewAdvancedExtenderImplProxy(b) }},
 	{"genHwCamera2Extension.CameraExtensionsProxyServiceProxy", func(b binder.IBinder) interface{} {
 		return genHwCamera2Extension.NewCameraExtensionsProxyServiceProxy(b)
@@ -1066,19 +1133,33 @@ var allMockProxies = []mockProxyEntry{
 	{"genLocationProvider.ProviderRequestListenerProxy", func(b binder.IBinder) interface{} { return genLocationProvider.NewProviderRequestListenerProxy(b) }},
 	{"genLocationProvider.S2CellIdsCallbackProxy", func(b binder.IBinder) interface{} { return genLocationProvider.NewS2CellIdsCallbackProxy(b) }},
 	{"genLocationProvider.S2LevelCallbackProxy", func(b binder.IBinder) interface{} { return genLocationProvider.NewS2LevelCallbackProxy(b) }},
+	{"genMedia.AidlBufferSourceProxy", func(b binder.IBinder) interface{} { return genMedia.NewAidlBufferSourceProxy(b) }},
+	{"genMedia.AidlGraphicBufferSourceProxy", func(b binder.IBinder) interface{} { return genMedia.NewAidlGraphicBufferSourceProxy(b) }},
+	{"genMedia.AidlNodeProxy", func(b binder.IBinder) interface{} { return genMedia.NewAidlNodeProxy(b) }},
 	{"genMedia.AudioDeviceVolumeDispatcherProxy", func(b binder.IBinder) interface{} { return genMedia.NewAudioDeviceVolumeDispatcherProxy(b) }},
+	{"genMedia.AudioFlingerClientProxy", func(b binder.IBinder) interface{} { return genMedia.NewAudioFlingerClientProxy(b) }},
+	{"genMedia.AudioFlingerServiceProxy", func(b binder.IBinder) interface{} { return genMedia.NewAudioFlingerServiceProxy(b) }},
 	{"genMedia.AudioFocusDispatcherProxy", func(b binder.IBinder) interface{} { return genMedia.NewAudioFocusDispatcherProxy(b) }},
 	{"genMedia.AudioModeDispatcherProxy", func(b binder.IBinder) interface{} { return genMedia.NewAudioModeDispatcherProxy(b) }},
+	{"genMedia.AudioPolicyServiceClientProxy", func(b binder.IBinder) interface{} { return genMedia.NewAudioPolicyServiceClientProxy(b) }},
+	{"genMedia.AudioPolicyServiceProxy", func(b binder.IBinder) interface{} { return genMedia.NewAudioPolicyServiceProxy(b) }},
+	{"genMedia.AudioRecordProxy", func(b binder.IBinder) interface{} { return genMedia.NewAudioRecordProxy(b) }},
 	{"genMedia.AudioRoutesObserverProxy", func(b binder.IBinder) interface{} { return genMedia.NewAudioRoutesObserverProxy(b) }},
 	{"genMedia.AudioServerStateDispatcherProxy", func(b binder.IBinder) interface{} { return genMedia.NewAudioServerStateDispatcherProxy(b) }},
 	{"genMedia.AudioServiceProxy", func(b binder.IBinder) interface{} { return genMedia.NewAudioServiceProxy(b) }},
+	{"genMedia.AudioTrackCallbackProxy", func(b binder.IBinder) interface{} { return genMedia.NewAudioTrackCallbackProxy(b) }},
+	{"genMedia.AudioTrackProxy", func(b binder.IBinder) interface{} { return genMedia.NewAudioTrackProxy(b) }},
 	{"genMedia.CapturePresetDevicesRoleDispatcherProxy", func(b binder.IBinder) interface{} { return genMedia.NewCapturePresetDevicesRoleDispatcherProxy(b) }},
+	{"genMedia.CaptureStateListenerProxy", func(b binder.IBinder) interface{} { return genMedia.NewCaptureStateListenerProxy(b) }},
 	{"genMedia.CommunicationDeviceDispatcherProxy", func(b binder.IBinder) interface{} { return genMedia.NewCommunicationDeviceDispatcherProxy(b) }},
 	{"genMedia.DeviceVolumeBehaviorDispatcherProxy", func(b binder.IBinder) interface{} { return genMedia.NewDeviceVolumeBehaviorDispatcherProxy(b) }},
 	{"genMedia.DevicesForAttributesCallbackProxy", func(b binder.IBinder) interface{} { return genMedia.NewDevicesForAttributesCallbackProxy(b) }},
+	{"genMedia.EffectClientProxy", func(b binder.IBinder) interface{} { return genMedia.NewEffectClientProxy(b) }},
+	{"genMedia.EffectProxy", func(b binder.IBinder) interface{} { return genMedia.NewEffectProxy(b) }},
 	{"genMedia.LoudnessCodecUpdatesDispatcherProxy", func(b binder.IBinder) interface{} { return genMedia.NewLoudnessCodecUpdatesDispatcherProxy(b) }},
 	{"genMedia.MediaHTTPConnectionProxy", func(b binder.IBinder) interface{} { return genMedia.NewMediaHTTPConnectionProxy(b) }},
 	{"genMedia.MediaHTTPServiceProxy", func(b binder.IBinder) interface{} { return genMedia.NewMediaHTTPServiceProxy(b) }},
+	{"genMedia.MediaMetricsServiceProxy", func(b binder.IBinder) interface{} { return genMedia.NewMediaMetricsServiceProxy(b) }},
 	{"genMedia.MediaResourceMonitorProxy", func(b binder.IBinder) interface{} { return genMedia.NewMediaResourceMonitorProxy(b) }},
 	{"genMedia.MediaRoute2ProviderServiceCallbackProxy", func(b binder.IBinder) interface{} { return genMedia.NewMediaRoute2ProviderServiceCallbackProxy(b) }},
 	{"genMedia.MediaRoute2ProviderServiceProxy", func(b binder.IBinder) interface{} { return genMedia.NewMediaRoute2ProviderServiceProxy(b) }},
@@ -1088,26 +1169,40 @@ var allMockProxies = []mockProxyEntry{
 	{"genMedia.MediaRouterServiceProxy", func(b binder.IBinder) interface{} { return genMedia.NewMediaRouterServiceProxy(b) }},
 	{"genMedia.MediaScannerListenerProxy", func(b binder.IBinder) interface{} { return genMedia.NewMediaScannerListenerProxy(b) }},
 	{"genMedia.MediaScannerServiceProxy", func(b binder.IBinder) interface{} { return genMedia.NewMediaScannerServiceProxy(b) }},
+	{"genMedia.MediaTranscodingServiceProxy", func(b binder.IBinder) interface{} { return genMedia.NewMediaTranscodingServiceProxy(b) }},
 	{"genMedia.MuteAwaitConnectionCallbackProxy", func(b binder.IBinder) interface{} { return genMedia.NewMuteAwaitConnectionCallbackProxy(b) }},
+	{"genMedia.NativeSpatializerCallbackProxy", func(b binder.IBinder) interface{} { return genMedia.NewNativeSpatializerCallbackProxy(b) }},
 	{"genMedia.NearbyMediaDevicesProviderProxy", func(b binder.IBinder) interface{} { return genMedia.NewNearbyMediaDevicesProviderProxy(b) }},
 	{"genMedia.NearbyMediaDevicesUpdateCallbackProxy", func(b binder.IBinder) interface{} { return genMedia.NewNearbyMediaDevicesUpdateCallbackProxy(b) }},
 	{"genMedia.PlaybackConfigDispatcherProxy", func(b binder.IBinder) interface{} { return genMedia.NewPlaybackConfigDispatcherProxy(b) }},
+	{"genMedia.PlayerProxy", func(b binder.IBinder) interface{} { return genMedia.NewPlayerProxy(b) }},
 	{"genMedia.PreferredMixerAttributesDispatcherProxy", func(b binder.IBinder) interface{} { return genMedia.NewPreferredMixerAttributesDispatcherProxy(b) }},
 	{"genMedia.RecordingConfigDispatcherProxy", func(b binder.IBinder) interface{} { return genMedia.NewRecordingConfigDispatcherProxy(b) }},
 	{"genMedia.RemoteDisplayCallbackProxy", func(b binder.IBinder) interface{} { return genMedia.NewRemoteDisplayCallbackProxy(b) }},
 	{"genMedia.RemoteDisplayProviderProxy", func(b binder.IBinder) interface{} { return genMedia.NewRemoteDisplayProviderProxy(b) }},
 	{"genMedia.RemoteSessionCallbackProxy", func(b binder.IBinder) interface{} { return genMedia.NewRemoteSessionCallbackProxy(b) }},
 	{"genMedia.RemoteVolumeObserverProxy", func(b binder.IBinder) interface{} { return genMedia.NewRemoteVolumeObserverProxy(b) }},
+	{"genMedia.ResourceManagerClientProxy", func(b binder.IBinder) interface{} { return genMedia.NewResourceManagerClientProxy(b) }},
+	{"genMedia.ResourceManagerServiceProxy", func(b binder.IBinder) interface{} { return genMedia.NewResourceManagerServiceProxy(b) }},
+	{"genMedia.ResourceObserverProxy", func(b binder.IBinder) interface{} { return genMedia.NewResourceObserverProxy(b) }},
+	{"genMedia.ResourceObserverServiceProxy", func(b binder.IBinder) interface{} { return genMedia.NewResourceObserverServiceProxy(b) }},
 	{"genMedia.RingtonePlayerProxy", func(b binder.IBinder) interface{} { return genMedia.NewRingtonePlayerProxy(b) }},
+	{"genMedia.SoundDoseCallbackProxy", func(b binder.IBinder) interface{} { return genMedia.NewSoundDoseCallbackProxy(b) }},
+	{"genMedia.SoundDoseProxy", func(b binder.IBinder) interface{} { return genMedia.NewSoundDoseProxy(b) }},
 	{"genMedia.SpatializerCallbackProxy", func(b binder.IBinder) interface{} { return genMedia.NewSpatializerCallbackProxy(b) }},
 	{"genMedia.SpatializerHeadToSoundStagePoseCallbackProxy", func(b binder.IBinder) interface{} { return genMedia.NewSpatializerHeadToSoundStagePoseCallbackProxy(b) }},
 	{"genMedia.SpatializerHeadTrackerAvailableCallbackProxy", func(b binder.IBinder) interface{} { return genMedia.NewSpatializerHeadTrackerAvailableCallbackProxy(b) }},
+	{"genMedia.SpatializerHeadTrackingCallbackProxy", func(b binder.IBinder) interface{} { return genMedia.NewSpatializerHeadTrackingCallbackProxy(b) }},
 	{"genMedia.SpatializerHeadTrackingModeCallbackProxy", func(b binder.IBinder) interface{} { return genMedia.NewSpatializerHeadTrackingModeCallbackProxy(b) }},
 	{"genMedia.SpatializerOutputCallbackProxy", func(b binder.IBinder) interface{} { return genMedia.NewSpatializerOutputCallbackProxy(b) }},
+	{"genMedia.SpatializerProxy", func(b binder.IBinder) interface{} { return genMedia.NewSpatializerProxy(b) }},
 	{"genMedia.StrategyNonDefaultDevicesDispatcherProxy", func(b binder.IBinder) interface{} { return genMedia.NewStrategyNonDefaultDevicesDispatcherProxy(b) }},
 	{"genMedia.StrategyPreferredDevicesDispatcherProxy", func(b binder.IBinder) interface{} { return genMedia.NewStrategyPreferredDevicesDispatcherProxy(b) }},
 	{"genMedia.StreamAliasingDispatcherProxy", func(b binder.IBinder) interface{} { return genMedia.NewStreamAliasingDispatcherProxy(b) }},
+	{"genMedia.TranscodingClientCallbackProxy", func(b binder.IBinder) interface{} { return genMedia.NewTranscodingClientCallbackProxy(b) }},
+	{"genMedia.TranscodingClientProxy", func(b binder.IBinder) interface{} { return genMedia.NewTranscodingClientProxy(b) }},
 	{"genMedia.VolumeControllerProxy", func(b binder.IBinder) interface{} { return genMedia.NewVolumeControllerProxy(b) }},
+	{"genMediaAudio.HalAdapterVendorExtensionProxy", func(b binder.IBinder) interface{} { return genMediaAudio.NewHalAdapterVendorExtensionProxy(b) }},
 	{"genMediaAudioEraser.EraserCallbackProxy", func(b binder.IBinder) interface{} { return genMediaAudioEraser.NewEraserCallbackProxy(b) }},
 	{"genMediaAudiopolicy.AudioPolicyCallbackProxy", func(b binder.IBinder) interface{} { return genMediaAudiopolicy.NewAudioPolicyCallbackProxy(b) }},
 	{"genMediaMetrics.MediaMetricsManagerProxy", func(b binder.IBinder) interface{} { return genMediaMetrics.NewMediaMetricsManagerProxy(b) }},
@@ -1351,6 +1446,18 @@ var allMockProxies = []mockProxyEntry{
 		return genMediaTvInteractive.NewTvInteractiveAppSessionCallbackProxy(b)
 	}},
 	{"genMediaTvInteractive.TvInteractiveAppSessionProxy", func(b binder.IBinder) interface{} { return genMediaTvInteractive.NewTvInteractiveAppSessionProxy(b) }},
+	{"genMediaTvTuner.TunerDemuxProxy", func(b binder.IBinder) interface{} { return genMediaTvTuner.NewTunerDemuxProxy(b) }},
+	{"genMediaTvTuner.TunerDescramblerProxy", func(b binder.IBinder) interface{} { return genMediaTvTuner.NewTunerDescramblerProxy(b) }},
+	{"genMediaTvTuner.TunerDvrCallbackProxy", func(b binder.IBinder) interface{} { return genMediaTvTuner.NewTunerDvrCallbackProxy(b) }},
+	{"genMediaTvTuner.TunerDvrProxy", func(b binder.IBinder) interface{} { return genMediaTvTuner.NewTunerDvrProxy(b) }},
+	{"genMediaTvTuner.TunerFilterCallbackProxy", func(b binder.IBinder) interface{} { return genMediaTvTuner.NewTunerFilterCallbackProxy(b) }},
+	{"genMediaTvTuner.TunerFilterProxy", func(b binder.IBinder) interface{} { return genMediaTvTuner.NewTunerFilterProxy(b) }},
+	{"genMediaTvTuner.TunerFrontendCallbackProxy", func(b binder.IBinder) interface{} { return genMediaTvTuner.NewTunerFrontendCallbackProxy(b) }},
+	{"genMediaTvTuner.TunerFrontendProxy", func(b binder.IBinder) interface{} { return genMediaTvTuner.NewTunerFrontendProxy(b) }},
+	{"genMediaTvTuner.TunerLnbCallbackProxy", func(b binder.IBinder) interface{} { return genMediaTvTuner.NewTunerLnbCallbackProxy(b) }},
+	{"genMediaTvTuner.TunerLnbProxy", func(b binder.IBinder) interface{} { return genMediaTvTuner.NewTunerLnbProxy(b) }},
+	{"genMediaTvTuner.TunerServiceProxy", func(b binder.IBinder) interface{} { return genMediaTvTuner.NewTunerServiceProxy(b) }},
+	{"genMediaTvTuner.TunerTimeFilterProxy", func(b binder.IBinder) interface{} { return genMediaTvTuner.NewTunerTimeFilterProxy(b) }},
 	{"genMediaTvTunerresourcemanager.ResourcesReclaimListenerProxy", func(b binder.IBinder) interface{} {
 		return genMediaTvTunerresourcemanager.NewResourcesReclaimListenerProxy(b)
 	}},
@@ -2267,6 +2374,7 @@ var allMockProxies = []mockProxyEntry{
 	{"genComInternalWidget.WeakEscrowTokenRemovedListenerProxy", func(b binder.IBinder) interface{} {
 		return genComInternalWidget.NewWeakEscrowTokenRemovedListenerProxy(b)
 	}},
+	{"genComMediaPermission.NativePermissionControllerProxy", func(b binder.IBinder) interface{} { return genComMediaPermission.NewNativePermissionControllerProxy(b) }},
 	{"genComNet.ProxyCallbackProxy", func(b binder.IBinder) interface{} { return genComNet.NewProxyCallbackProxy(b) }},
 	{"genComNet.ProxyPortListenerProxy", func(b binder.IBinder) interface{} { return genComNet.NewProxyPortListenerProxy(b) }},
 	{"genComNet.ProxyServiceProxy", func(b binder.IBinder) interface{} { return genComNet.NewProxyServiceProxy(b) }},

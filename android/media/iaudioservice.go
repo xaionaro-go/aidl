@@ -315,7 +315,7 @@ type IAudioService interface {
 	GetStreamVolume(ctx context.Context, streamType int32) (int32, error)
 	GetStreamMinVolume(ctx context.Context, streamType int32) (int32, error)
 	GetStreamMaxVolume(ctx context.Context, streamType int32) (int32, error)
-	GetAudioVolumeGroups(ctx context.Context) ([]interface{}, error)
+	GetAudioVolumeGroups(ctx context.Context) ([]AudioVolumeGroup, error)
 	SetVolumeGroupVolumeIndex(ctx context.Context, groupId int32, index int32, flags int32) error
 	GetVolumeGroupVolumeIndex(ctx context.Context, groupId int32) (int32, error)
 	GetVolumeGroupMaxVolumeIndex(ctx context.Context, groupId int32) (int32, error)
@@ -326,7 +326,7 @@ type IAudioService interface {
 	GetLastAudibleStreamVolume(ctx context.Context, streamType int32) (int32, error)
 	SetSupportedSystemUsages(ctx context.Context, systemUsages []int32) error
 	GetSupportedSystemUsages(ctx context.Context) ([]int32, error)
-	GetAudioProductStrategies(ctx context.Context) ([]interface{}, error)
+	GetAudioProductStrategies(ctx context.Context) ([]AudioProductStrategy, error)
 	IsMicrophoneMuted(ctx context.Context) (bool, error)
 	IsUltrasoundSupported(ctx context.Context) (bool, error)
 	IsHotwordStreamSupported(ctx context.Context, lookbackAudio bool) (bool, error)
@@ -411,13 +411,13 @@ type IAudioService interface {
 	IsBluetoothAudioDeviceCategoryFixed(ctx context.Context, address string) (bool, error)
 	SetHdmiSystemAudioSupported(ctx context.Context, on bool) (int32, error)
 	IsHdmiSystemAudioSupported(ctx context.Context) (bool, error)
-	RegisterAudioPolicy(ctx context.Context, policyConfig interface{}, pcb interface{}, hasFocusListener bool, isFocusPolicy bool, isTestFocusPolicy bool, isVolumeController bool, projection interface{}, attributionSource interface{}) (string, error)
+	RegisterAudioPolicy(ctx context.Context, policyConfig AudioPolicyConfig, pcb interface{}, hasFocusListener bool, isFocusPolicy bool, isTestFocusPolicy bool, isVolumeController bool, projection interface{}, attributionSource interface{}) (string, error)
 	UnregisterAudioPolicyAsync(ctx context.Context, pcb interface{}) error
-	GetRegisteredPolicyMixes(ctx context.Context) ([]interface{}, error)
+	GetRegisteredPolicyMixes(ctx context.Context) ([]AudioMix, error)
 	UnregisterAudioPolicy(ctx context.Context, pcb interface{}) error
-	AddMixForPolicy(ctx context.Context, policyConfig interface{}, pcb interface{}) (int32, error)
-	RemoveMixForPolicy(ctx context.Context, policyConfig interface{}, pcb interface{}) (int32, error)
-	UpdateMixingRulesForPolicy(ctx context.Context, mixesToUpdate []interface{}, updatedMixingRules []interface{}, pcb interface{}) (int32, error)
+	AddMixForPolicy(ctx context.Context, policyConfig AudioPolicyConfig, pcb interface{}) (int32, error)
+	RemoveMixForPolicy(ctx context.Context, policyConfig AudioPolicyConfig, pcb interface{}) (int32, error)
+	UpdateMixingRulesForPolicy(ctx context.Context, mixesToUpdate []AudioMix, updatedMixingRules []interface{}, pcb interface{}) (int32, error)
 	SetFocusPropertiesForPolicy(ctx context.Context, duckingBehavior int32, pcb interface{}) (int32, error)
 	SetVolumePolicy(ctx context.Context, policy VolumePolicy) error
 	GetVolumePolicy(ctx context.Context) (VolumePolicy, error)
@@ -1264,8 +1264,8 @@ func (p *AudioServiceProxy) GetStreamMaxVolume(
 
 func (p *AudioServiceProxy) GetAudioVolumeGroups(
 	ctx context.Context,
-) ([]interface{}, error) {
-	var _result []interface{}
+) ([]AudioVolumeGroup, error) {
+	var _result []AudioVolumeGroup
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 
@@ -1290,8 +1290,11 @@ func (p *AudioServiceProxy) GetAudioVolumeGroups(
 	}
 
 	if _count >= 0 {
-		_result = make([]interface{}, _count)
+		_result = make([]AudioVolumeGroup, _count)
 		for _i := int32(0); _i < _count; _i++ {
+			if _err = _result[_i].UnmarshalParcel(_reply); _err != nil {
+				return _result, _err
+			}
 		}
 	}
 	return _result, nil
@@ -1622,8 +1625,8 @@ func (p *AudioServiceProxy) GetSupportedSystemUsages(
 
 func (p *AudioServiceProxy) GetAudioProductStrategies(
 	ctx context.Context,
-) ([]interface{}, error) {
-	var _result []interface{}
+) ([]AudioProductStrategy, error) {
+	var _result []AudioProductStrategy
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 
@@ -1648,8 +1651,11 @@ func (p *AudioServiceProxy) GetAudioProductStrategies(
 	}
 
 	if _count >= 0 {
-		_result = make([]interface{}, _count)
+		_result = make([]AudioProductStrategy, _count)
 		for _i := int32(0); _i < _count; _i++ {
+			if _err = _result[_i].UnmarshalParcel(_reply); _err != nil {
+				return _result, _err
+			}
 		}
 	}
 	return _result, nil
@@ -4030,7 +4036,7 @@ func (p *AudioServiceProxy) IsHdmiSystemAudioSupported(
 
 func (p *AudioServiceProxy) RegisterAudioPolicy(
 	ctx context.Context,
-	policyConfig interface{},
+	policyConfig AudioPolicyConfig,
 	pcb interface{},
 	hasFocusListener bool,
 	isFocusPolicy bool,
@@ -4042,6 +4048,10 @@ func (p *AudioServiceProxy) RegisterAudioPolicy(
 	var _result string
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
+	_data.WriteInt32(1)
+	if _err := policyConfig.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteBool(hasFocusListener)
 	_data.WriteBool(isFocusPolicy)
 	_data.WriteBool(isTestFocusPolicy)
@@ -4087,8 +4097,8 @@ func (p *AudioServiceProxy) UnregisterAudioPolicyAsync(
 
 func (p *AudioServiceProxy) GetRegisteredPolicyMixes(
 	ctx context.Context,
-) ([]interface{}, error) {
-	var _result []interface{}
+) ([]AudioMix, error) {
+	var _result []AudioMix
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 
@@ -4113,8 +4123,11 @@ func (p *AudioServiceProxy) GetRegisteredPolicyMixes(
 	}
 
 	if _count >= 0 {
-		_result = make([]interface{}, _count)
+		_result = make([]AudioMix, _count)
 		for _i := int32(0); _i < _count; _i++ {
+			if _err = _result[_i].UnmarshalParcel(_reply); _err != nil {
+				return _result, _err
+			}
 		}
 	}
 	return _result, nil
@@ -4147,12 +4160,16 @@ func (p *AudioServiceProxy) UnregisterAudioPolicy(
 
 func (p *AudioServiceProxy) AddMixForPolicy(
 	ctx context.Context,
-	policyConfig interface{},
+	policyConfig AudioPolicyConfig,
 	pcb interface{},
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
+	_data.WriteInt32(1)
+	if _err := policyConfig.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "addMixForPolicy")
 	if _err != nil {
@@ -4178,12 +4195,16 @@ func (p *AudioServiceProxy) AddMixForPolicy(
 
 func (p *AudioServiceProxy) RemoveMixForPolicy(
 	ctx context.Context,
-	policyConfig interface{},
+	policyConfig AudioPolicyConfig,
 	pcb interface{},
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
+	_data.WriteInt32(1)
+	if _err := policyConfig.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "removeMixForPolicy")
 	if _err != nil {
@@ -4209,7 +4230,7 @@ func (p *AudioServiceProxy) RemoveMixForPolicy(
 
 func (p *AudioServiceProxy) UpdateMixingRulesForPolicy(
 	ctx context.Context,
-	mixesToUpdate []interface{},
+	mixesToUpdate []AudioMix,
 	updatedMixingRules []interface{},
 	pcb interface{},
 ) (int32, error) {
@@ -4220,6 +4241,11 @@ func (p *AudioServiceProxy) UpdateMixingRulesForPolicy(
 		_data.WriteInt32(-1)
 	} else {
 		_data.WriteInt32(int32(len(mixesToUpdate)))
+		for _, _item := range mixesToUpdate {
+			if _err := _item.MarshalParcel(_data); _err != nil {
+				return _result, _err
+			}
+		}
 	}
 	if updatedMixingRules == nil {
 		_data.WriteInt32(-1)
@@ -10892,7 +10918,18 @@ func (s *AudioServiceStub) OnTransaction(
 		if _, _err := data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_policyConfig interface{}
+		var _arg_policyConfig AudioPolicyConfig
+		{
+			_nullInd, _err := data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_policyConfig.UnmarshalParcel(data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		var _arg_pcb interface{}
 		_arg_hasFocusListener, _err := data.ReadBool()
 		if _err != nil {
@@ -10960,7 +10997,18 @@ func (s *AudioServiceStub) OnTransaction(
 		if _, _err := data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_policyConfig interface{}
+		var _arg_policyConfig AudioPolicyConfig
+		{
+			_nullInd, _err := data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_policyConfig.UnmarshalParcel(data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		var _arg_pcb interface{}
 		_result, _err := s.Impl.AddMixForPolicy(ctx, _arg_policyConfig, _arg_pcb)
 		_reply := parcel.New()
@@ -10975,7 +11023,18 @@ func (s *AudioServiceStub) OnTransaction(
 		if _, _err := data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_policyConfig interface{}
+		var _arg_policyConfig AudioPolicyConfig
+		{
+			_nullInd, _err := data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_policyConfig.UnmarshalParcel(data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		var _arg_pcb interface{}
 		_result, _err := s.Impl.RemoveMixForPolicy(ctx, _arg_policyConfig, _arg_pcb)
 		_reply := parcel.New()
@@ -10991,7 +11050,7 @@ func (s *AudioServiceStub) OnTransaction(
 			return nil, _err
 		}
 		// TODO: array/list param unmarshaling not yet supported in stubs
-		var _arg_mixesToUpdate []interface{}
+		var _arg_mixesToUpdate []AudioMix
 		_ = _arg_mixesToUpdate
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_updatedMixingRules []interface{}

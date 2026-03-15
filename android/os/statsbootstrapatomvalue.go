@@ -1,6 +1,7 @@
 package os
 
 import (
+	stats "github.com/xaionaro-go/binder/android/frameworks/stats"
 	Annotation "github.com/xaionaro-go/binder/android/os/StatsBootstrapAtomValue/Annotation"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -9,7 +10,7 @@ import (
 
 type StatsBootstrapAtomValue struct {
 	Value       Annotation.Primitive
-	Annotations []interface{}
+	Annotations []stats.Annotation
 }
 
 var _ parcel.Parcelable = (*StatsBootstrapAtomValue)(nil)
@@ -25,6 +26,11 @@ func (s *StatsBootstrapAtomValue) MarshalParcel(
 		p.WriteInt32(-1)
 	} else {
 		p.WriteInt32(int32(len(s.Annotations)))
+		for _, _item := range s.Annotations {
+			if _err := _item.MarshalParcel(p); _err != nil {
+				return _err
+			}
+		}
 	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
@@ -49,8 +55,11 @@ func (s *StatsBootstrapAtomValue) UnmarshalParcel(
 		return _err
 	}
 	if _count0 >= 0 {
-		s.Annotations = make([]interface{}, _count0)
+		s.Annotations = make([]stats.Annotation, _count0)
 		for _i := int32(0); _i < _count0; _i++ {
+			if _err = s.Annotations[_i].UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 

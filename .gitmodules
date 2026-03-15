@@ -10,3 +10,9 @@
 [submodule "3rdparty/system-hardware-interfaces"]
 	path = tools/pkg/3rdparty/system-hardware-interfaces
 	url = https://android.googlesource.com/platform/system/hardware/interfaces
+[submodule "tools/pkg/3rdparty/frameworks-hardware-interfaces"]
+	path = tools/pkg/3rdparty/frameworks-hardware-interfaces
+	url = https://android.googlesource.com/platform/frameworks/hardware/interfaces
+[submodule "tools/pkg/3rdparty/frameworks-av"]
+	path = tools/pkg/3rdparty/frameworks-av
+	url = https://android.googlesource.com/platform/frameworks/av

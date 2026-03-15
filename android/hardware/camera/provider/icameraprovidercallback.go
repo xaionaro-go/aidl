@@ -20,9 +20,9 @@ const (
 
 type ICameraProviderCallback interface {
 	AsBinder() binder.IBinder
-	CameraDeviceStatusChange(ctx context.Context, cameraDeviceName string, newStatus common.CameraDeviceStatus) error
+	CameraDeviceStatusChange(ctx context.Context, cameraDeviceName string, newStatus interface{}) error
 	TorchModeStatusChange(ctx context.Context, cameraDeviceName string, newStatus common.TorchModeStatus) error
-	PhysicalCameraDeviceStatusChange(ctx context.Context, cameraDeviceName string, physicalCameraDeviceName string, newStatus common.CameraDeviceStatus) error
+	PhysicalCameraDeviceStatusChange(ctx context.Context, cameraDeviceName string, physicalCameraDeviceName string, newStatus interface{}) error
 }
 
 type CameraProviderCallbackProxy struct {
@@ -44,12 +44,11 @@ var _ ICameraProviderCallback = (*CameraProviderCallbackProxy)(nil)
 func (p *CameraProviderCallbackProxy) CameraDeviceStatusChange(
 	ctx context.Context,
 	cameraDeviceName string,
-	newStatus common.CameraDeviceStatus,
+	newStatus interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraProviderCallback)
 	_data.WriteString16(cameraDeviceName)
-	_data.WriteInt32(int32(newStatus))
 
 	_code, _err := p.remote.ResolveCode(DescriptorICameraProviderCallback, "cameraDeviceStatusChange")
 	if _err != nil {
@@ -101,13 +100,12 @@ func (p *CameraProviderCallbackProxy) PhysicalCameraDeviceStatusChange(
 	ctx context.Context,
 	cameraDeviceName string,
 	physicalCameraDeviceName string,
-	newStatus common.CameraDeviceStatus,
+	newStatus interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraProviderCallback)
 	_data.WriteString16(cameraDeviceName)
 	_data.WriteString16(physicalCameraDeviceName)
-	_data.WriteInt32(int32(newStatus))
 
 	_code, _err := p.remote.ResolveCode(DescriptorICameraProviderCallback, "physicalCameraDeviceStatusChange")
 	if _err != nil {
@@ -149,11 +147,7 @@ func (s *CameraProviderCallbackStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_raw_newStatus, _err := data.ReadInt32()
-		if _err != nil {
-			return nil, _err
-		}
-		_arg_newStatus := common.CameraDeviceStatus(_raw_newStatus)
+		var _arg_newStatus interface{}
 		_err = s.Impl.CameraDeviceStatusChange(ctx, _arg_cameraDeviceName, _arg_newStatus)
 		_reply := parcel.New()
 		if _err != nil {
@@ -195,11 +189,7 @@ func (s *CameraProviderCallbackStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_raw_newStatus, _err := data.ReadInt32()
-		if _err != nil {
-			return nil, _err
-		}
-		_arg_newStatus := common.CameraDeviceStatus(_raw_newStatus)
+		var _arg_newStatus interface{}
 		_err = s.Impl.PhysicalCameraDeviceStatusChange(ctx, _arg_cameraDeviceName, _arg_physicalCameraDeviceName, _arg_newStatus)
 		_reply := parcel.New()
 		if _err != nil {

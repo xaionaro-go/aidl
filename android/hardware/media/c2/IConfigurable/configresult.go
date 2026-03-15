@@ -1,7 +1,7 @@
 package IConfigurable
 
 import (
-	IEffect "github.com/xaionaro-go/binder/android/hardware/audio/effect/IEffect"
+	common "github.com/xaionaro-go/binder/android/frameworks/cameraservice/common"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -10,7 +10,7 @@ import (
 type ConfigResult struct {
 	Params   interface{}
 	Failures []interface{}
-	Status   IEffect.Status
+	Status   common.Status
 }
 
 var _ parcel.Parcelable = (*ConfigResult)(nil)
@@ -24,9 +24,7 @@ func (s *ConfigResult) MarshalParcel(
 	} else {
 		p.WriteInt32(int32(len(s.Failures)))
 	}
-	if _err := s.Status.MarshalParcel(p); _err != nil {
-		return _err
-	}
+	p.WriteInt32(int32(s.Status))
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil
@@ -51,9 +49,11 @@ func (s *ConfigResult) UnmarshalParcel(
 		}
 	}
 
-	if _err = s.Status.UnmarshalParcel(p); _err != nil {
+	_statusRaw, _err := p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
+	s.Status = common.Status(_statusRaw)
 
 	parcel.SkipToParcelableEnd(p, _endPos)
 	return nil

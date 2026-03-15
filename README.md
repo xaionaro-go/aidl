@@ -243,7 +243,16 @@ See the full [bindercli reference](#bindercli) for all subcommands and more exam
 
 <!-- BEGIN GENERATED PACKAGES -->
 
-601 packages, 5493 generated Go files.
+628 packages, 5734 generated Go files.
+
+<details>
+<summary><strong>android</strong> (1 packages)</summary>
+
+| Package | Files | Import Path |
+|---|---|---|
+| [`android`](https://pkg.go.dev/github.com/xaionaro-go/binder/android) | 6 | `github.com/xaionaro-go/binder/android` |
+
+</details>
 
 <details>
 <summary><strong>android/accessibilityservice</strong> (1 packages)</summary>
@@ -335,7 +344,7 @@ See the full [bindercli reference](#bindercli) for all subcommands and more exam
 </details>
 
 <details>
-<summary><strong>android/companion</strong> (7 packages)</summary>
+<summary><strong>android/companion</strong> (8 packages)</summary>
 
 | Package | Files | Import Path |
 |---|---|---|
@@ -345,6 +354,7 @@ See the full [bindercli reference](#bindercli) for all subcommands and more exam
 | [`android/companion/virtual/audio`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/companion/virtual/audio) | 2 | `github.com/xaionaro-go/binder/android/companion/virtual/audio` |
 | [`android/companion/virtual/camera`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/companion/virtual/camera) | 3 | `github.com/xaionaro-go/binder/android/companion/virtual/camera` |
 | [`android/companion/virtual/sensor`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/companion/virtual/sensor) | 4 | `github.com/xaionaro-go/binder/android/companion/virtual/sensor` |
+| [`android/companion/virtualcamera`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/companion/virtualcamera) | 7 | `github.com/xaionaro-go/binder/android/companion/virtualcamera` |
 | [`android/companion/virtualnative`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/companion/virtualnative) | 1 | `github.com/xaionaro-go/binder/android/companion/virtualnative` |
 
 </details>
@@ -404,6 +414,28 @@ See the full [bindercli reference](#bindercli) for all subcommands and more exam
 </details>
 
 <details>
+<summary><strong>android/frameworks</strong> (14 packages)</summary>
+
+| Package | Files | Import Path |
+|---|---|---|
+| [`android/frameworks/automotive/display`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/frameworks/automotive/display) | 3 | `github.com/xaionaro-go/binder/android/frameworks/automotive/display` |
+| [`android/frameworks/automotive/powerpolicy`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/frameworks/automotive/powerpolicy) | 5 | `github.com/xaionaro-go/binder/android/frameworks/automotive/powerpolicy` |
+| [`android/frameworks/automotive/powerpolicy/internal_`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/frameworks/automotive/powerpolicy/internal_) | 2 | `github.com/xaionaro-go/binder/android/frameworks/automotive/powerpolicy/internal_` |
+| [`android/frameworks/automotive/telemetry`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/frameworks/automotive/telemetry) | 4 | `github.com/xaionaro-go/binder/android/frameworks/automotive/telemetry` |
+| [`android/frameworks/cameraservice/common`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/frameworks/cameraservice/common) | 6 | `github.com/xaionaro-go/binder/android/frameworks/cameraservice/common` |
+| [`android/frameworks/cameraservice/device`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/frameworks/cameraservice/device) | 15 | `github.com/xaionaro-go/binder/android/frameworks/cameraservice/device` |
+| [`android/frameworks/cameraservice/device/OutputConfiguration`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/frameworks/cameraservice/device/OutputConfiguration) | 2 | `github.com/xaionaro-go/binder/android/frameworks/cameraservice/device/OutputConfiguration` |
+| [`android/frameworks/cameraservice/service`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/frameworks/cameraservice/service) | 4 | `github.com/xaionaro-go/binder/android/frameworks/cameraservice/service` |
+| [`android/frameworks/devicestate`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/frameworks/devicestate) | 4 | `github.com/xaionaro-go/binder/android/frameworks/devicestate` |
+| [`android/frameworks/devicestate/DeviceStateConfiguration`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/frameworks/devicestate/DeviceStateConfiguration) | 1 | `github.com/xaionaro-go/binder/android/frameworks/devicestate/DeviceStateConfiguration` |
+| [`android/frameworks/location/altitude`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/frameworks/location/altitude) | 5 | `github.com/xaionaro-go/binder/android/frameworks/location/altitude` |
+| [`android/frameworks/sensorservice`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/frameworks/sensorservice) | 4 | `github.com/xaionaro-go/binder/android/frameworks/sensorservice` |
+| [`android/frameworks/stats`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/frameworks/stats) | 8 | `github.com/xaionaro-go/binder/android/frameworks/stats` |
+| [`android/frameworks/vibrator`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/frameworks/vibrator) | 4 | `github.com/xaionaro-go/binder/android/frameworks/vibrator` |
+
+</details>
+
+<details>
 <summary><strong>android/graphics</strong> (5 packages)</summary>
 
 | Package | Files | Import Path |
@@ -433,11 +465,13 @@ See the full [bindercli reference](#bindercli) for all subcommands and more exam
 </details>
 
 <details>
-<summary><strong>android/hardware</strong> (280 packages)</summary>
+<summary><strong>android/hardware</strong> (282 packages)</summary>
 
 | Package | Files | Import Path |
 |---|---|---|
-| [`android/hardware`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/hardware) | 11 | `github.com/xaionaro-go/binder/android/hardware` |
+| [`android/hardware`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/hardware) | 18 | `github.com/xaionaro-go/binder/android/hardware` |
+| [`android/hardware/CameraExtensionSessionStats`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/hardware/CameraExtensionSessionStats) | 1 | `github.com/xaionaro-go/binder/android/hardware/CameraExtensionSessionStats` |
+| [`android/hardware/CameraFeatureCombinationStats`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/hardware/CameraFeatureCombinationStats) | 1 | `github.com/xaionaro-go/binder/android/hardware/CameraFeatureCombinationStats` |
 | [`android/hardware/audio/common`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/hardware/audio/common) | 5 | `github.com/xaionaro-go/binder/android/hardware/audio/common` |
 | [`android/hardware/audio/core`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/hardware/audio/core) | 18 | `github.com/xaionaro-go/binder/android/hardware/audio/core` |
 | [`android/hardware/audio/core/IBluetooth`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/hardware/audio/core/IBluetooth) | 2 | `github.com/xaionaro-go/binder/android/hardware/audio/core/IBluetooth` |
@@ -532,7 +566,7 @@ See the full [bindercli reference](#bindercli) for all subcommands and more exam
 | [`android/hardware/camera/device`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/hardware/camera/device) | 35 | `github.com/xaionaro-go/binder/android/hardware/camera/device` |
 | [`android/hardware/camera/metadata`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/hardware/camera/metadata) | 105 | `github.com/xaionaro-go/binder/android/hardware/camera/metadata` |
 | [`android/hardware/camera/provider`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/hardware/camera/provider) | 4 | `github.com/xaionaro-go/binder/android/hardware/camera/provider` |
-| [`android/hardware/camera2`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/hardware/camera2) | 1 | `github.com/xaionaro-go/binder/android/hardware/camera2` |
+| [`android/hardware/camera2`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/hardware/camera2) | 7 | `github.com/xaionaro-go/binder/android/hardware/camera2` |
 | [`android/hardware/camera2/extension`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/hardware/camera2/extension) | 30 | `github.com/xaionaro-go/binder/android/hardware/camera2/extension` |
 | [`android/hardware/cas`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/hardware/cas) | 13 | `github.com/xaionaro-go/binder/android/hardware/cas` |
 | [`android/hardware/common`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/hardware/common) | 3 | `github.com/xaionaro-go/binder/android/hardware/common` |
@@ -731,12 +765,19 @@ See the full [bindercli reference](#bindercli) for all subcommands and more exam
 </details>
 
 <details>
-<summary><strong>android/media</strong> (46 packages)</summary>
+<summary><strong>android/media</strong> (54 packages)</summary>
 
 | Package | Files | Import Path |
 |---|---|---|
-| [`android/media`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media) | 77 | `github.com/xaionaro-go/binder/android/media` |
+| [`android/media`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media) | 198 | `github.com/xaionaro-go/binder/android/media` |
+| [`android/media/AidlColorAspects`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/AidlColorAspects) | 4 | `github.com/xaionaro-go/binder/android/media/AidlColorAspects` |
+| [`android/media/AudioHalVersion`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/AudioHalVersion) | 1 | `github.com/xaionaro-go/binder/android/media/AudioHalVersion` |
+| [`android/media/IAidlNode`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/IAidlNode) | 1 | `github.com/xaionaro-go/binder/android/media/IAidlNode` |
+| [`android/media/ISoundDose`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/ISoundDose) | 1 | `github.com/xaionaro-go/binder/android/media/ISoundDose` |
 | [`android/media/LoudnessCodecInfo`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/LoudnessCodecInfo) | 1 | `github.com/xaionaro-go/binder/android/media/LoudnessCodecInfo` |
+| [`android/media/SurroundSoundConfig`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/SurroundSoundConfig) | 1 | `github.com/xaionaro-go/binder/android/media/SurroundSoundConfig` |
+| [`android/media/audio`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/audio) | 1 | `github.com/xaionaro-go/binder/android/media/audio` |
+| [`android/media/audio/IHalAdapterVendorExtension`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/audio/IHalAdapterVendorExtension) | 1 | `github.com/xaionaro-go/binder/android/media/audio/IHalAdapterVendorExtension` |
 | [`android/media/audio/common`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/audio/common) | 69 | `github.com/xaionaro-go/binder/android/media/audio/common` |
 | [`android/media/audio/common/AudioHalCapCriterionV2`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/audio/common/AudioHalCapCriterionV2) | 5 | `github.com/xaionaro-go/binder/android/media/audio/common/AudioHalCapCriterionV2` |
 | [`android/media/audio/common/AudioHalCapParameter`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/audio/common/AudioHalCapParameter) | 4 | `github.com/xaionaro-go/binder/android/media/audio/common/AudioHalCapParameter` |
@@ -780,6 +821,7 @@ See the full [bindercli reference](#bindercli) for all subcommands and more exam
 | [`android/media/tv/extension/time`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/tv/extension/time) | 1 | `github.com/xaionaro-go/binder/android/media/tv/extension/time` |
 | [`android/media/tv/extension/tune`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/tv/extension/tune) | 4 | `github.com/xaionaro-go/binder/android/media/tv/extension/tune` |
 | [`android/media/tv/interactive`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/tv/interactive) | 10 | `github.com/xaionaro-go/binder/android/media/tv/interactive` |
+| [`android/media/tv/tuner`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/tv/tuner) | 12 | `github.com/xaionaro-go/binder/android/media/tv/tuner` |
 | [`android/media/tv/tunerresourcemanager`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/tv/tunerresourcemanager) | 12 | `github.com/xaionaro-go/binder/android/media/tv/tunerresourcemanager` |
 
 </details>
@@ -1077,7 +1119,7 @@ See the full [bindercli reference](#bindercli) for all subcommands and more exam
 </details>
 
 <details>
-<summary><strong>com/android</strong> (76 packages)</summary>
+<summary><strong>com/android</strong> (77 packages)</summary>
 
 | Package | Files | Import Path |
 |---|---|---|
@@ -1116,6 +1158,7 @@ See the full [bindercli reference](#bindercli) for all subcommands and more exam
 | [`com/android/internal_/view`](https://pkg.go.dev/github.com/xaionaro-go/binder/com/android/internal_/view) | 3 | `github.com/xaionaro-go/binder/com/android/internal_/view` |
 | [`com/android/internal_/view/inline`](https://pkg.go.dev/github.com/xaionaro-go/binder/com/android/internal_/view/inline) | 2 | `github.com/xaionaro-go/binder/com/android/internal_/view/inline` |
 | [`com/android/internal_/widget`](https://pkg.go.dev/github.com/xaionaro-go/binder/com/android/internal_/widget) | 7 | `github.com/xaionaro-go/binder/com/android/internal_/widget` |
+| [`com/android/media/permission`](https://pkg.go.dev/github.com/xaionaro-go/binder/com/android/media/permission) | 3 | `github.com/xaionaro-go/binder/com/android/media/permission` |
 | [`com/android/net`](https://pkg.go.dev/github.com/xaionaro-go/binder/com/android/net) | 3 | `github.com/xaionaro-go/binder/com/android/net` |
 | [`com/android/onemedia`](https://pkg.go.dev/github.com/xaionaro-go/binder/com/android/onemedia) | 2 | `github.com/xaionaro-go/binder/com/android/onemedia` |
 | [`com/android/onemedia/playback`](https://pkg.go.dev/github.com/xaionaro-go/binder/com/android/onemedia/playback) | 1 | `github.com/xaionaro-go/binder/com/android/onemedia/playback` |

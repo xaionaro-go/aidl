@@ -3,7 +3,7 @@ package rkp
 import (
 	"context"
 	"fmt"
-	device "github.com/xaionaro-go/binder/android/hardware/camera/device"
+	device "github.com/xaionaro-go/binder/android/frameworks/cameraservice/device"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )

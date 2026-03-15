@@ -1,7 +1,7 @@
 package extension
 
 import (
-	device "github.com/xaionaro-go/binder/android/hardware/camera/device"
+	device "github.com/xaionaro-go/binder/android/frameworks/cameraservice/device"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
