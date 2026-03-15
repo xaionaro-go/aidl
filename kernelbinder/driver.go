@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"runtime"
 	"sync"
+	"sync/atomic"
 	"unsafe"
 
 	"github.com/facebookincubator/go-belt/tool/logger"
@@ -35,6 +36,13 @@ type Driver struct {
 	mapSize         uint32
 	mu              sync.Mutex
 	acquiredHandles map[uint32]bool // tracks handles acquired via BC_INCREFS + BC_ACQUIRE
+
+	receivers   map[uintptr]binder.TransactionReceiver
+	receiversMu sync.RWMutex
+	nextCookie  atomic.Uintptr
+
+	readLoopOnce sync.Once
+	readLoopDone chan struct{} // closed when the read loop exits
 }
 
 // Compile-time interface check.
@@ -110,6 +118,8 @@ func Open(
 		mapped:          mapped,
 		mapSize:         mapSize,
 		acquiredHandles: make(map[uint32]bool),
+		receivers:       make(map[uintptr]binder.TransactionReceiver),
+		readLoopDone:    make(chan struct{}),
 	}
 
 	return d, nil
