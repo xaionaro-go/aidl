@@ -1,0 +1,9 @@
+package: android.location
+type: GnssSignalType
+fields:
+    - name: ConstellationType
+      type: int32
+    - name: CarrierFrequencyHz
+      type: float64
+    - name: CodeType
+      type: string16

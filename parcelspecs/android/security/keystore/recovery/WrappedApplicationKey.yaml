@@ -1,0 +1,9 @@
+package: android.security.keystore.recovery
+type: WrappedApplicationKey
+fields:
+    - name: Alias
+      type: string16
+    - name: EncryptedKeyMaterial
+      type: opaque
+    - name: Metadata
+      type: opaque

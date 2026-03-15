@@ -1,0 +1,9 @@
+package: android.os.connectivity
+type: GpsBatteryStats
+fields:
+    - name: LoggingDurationMs
+      type: int64
+    - name: EnergyConsumedMaMs
+      type: int64
+    - name: TimeInGpsSignalQualityLevel
+      type: opaque

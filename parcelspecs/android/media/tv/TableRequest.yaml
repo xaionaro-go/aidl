@@ -1,0 +1,11 @@
+package: android.media.tv
+type: TableRequest
+fields:
+    - name: Dest
+      type: opaque
+    - name: TableId
+      type: int32
+    - name: TableName
+      type: int32
+    - name: Version
+      type: int32

@@ -1,0 +1,11 @@
+package: android.telephony.satellite
+type: SatelliteInfo
+fields:
+    - name: NewParcelUuid(mId)
+      type: opaque
+    - name: Position
+      type: opaque
+    - name: BandList
+      type: opaque
+    - name: EarfcnRangeList
+      type: opaque

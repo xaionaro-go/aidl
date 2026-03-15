@@ -1,0 +1,7 @@
+package: android.view
+type: WindowAnimationFrameStats
+fields:
+    - name: RefreshPeriodNano
+      type: int64
+    - name: FramesPresentedTimeNano
+      type: opaque

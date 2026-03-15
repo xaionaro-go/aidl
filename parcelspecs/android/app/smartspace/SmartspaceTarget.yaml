@@ -1,0 +1,41 @@
+package: android.app.smartspace
+type: SmartspaceTarget
+fields:
+    - name: This.mSmartspaceTargetId
+      type: string16
+    - name: This.mHeaderAction
+      type: opaque
+    - name: This.mBaseAction
+      type: opaque
+    - name: This.mCreationTimeMillis
+      type: int64
+    - name: This.mExpiryTimeMillis
+      type: int64
+    - name: This.mScore
+      type: float32
+    - name: This.mActionChips
+      type: opaque
+    - name: This.mIconGrid
+      type: opaque
+    - name: This.mFeatureType
+      type: int32
+    - name: This.mSensitive
+      type: bool
+    - name: This.mShouldShowExpanded
+      type: bool
+    - name: This.mSourceNotificationKey
+      type: string16
+    - name: This.mComponentName
+      type: opaque
+    - name: This.mUserHandle
+      type: opaque
+    - name: This.mAssociatedSmartspaceTargetId
+      type: string16
+    - name: This.mSliceUri
+      type: opaque
+    - name: This.mWidget
+      type: opaque
+    - name: This.mTemplateData
+      type: opaque
+    - name: This.mRemoteViews
+      type: opaque

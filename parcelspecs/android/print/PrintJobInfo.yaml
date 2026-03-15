@@ -1,0 +1,39 @@
+package: android.print
+type: PrintJobInfo
+fields:
+    - name: Id
+      type: opaque
+    - name: Label
+      type: string16
+    - name: PrinterId
+      type: opaque
+    - name: PrinterName
+      type: string16
+    - name: State
+      type: int32
+    - name: AppId
+      type: int32
+    - name: Tag
+      type: string16
+    - name: CreationTime
+      type: int64
+    - name: Copies
+      type: int32
+    - name: PageRanges
+      type: opaque
+    - name: Attributes
+      type: opaque
+    - name: DocumentInfo
+      type: opaque
+    - name: Progress
+      type: float32
+    - name: Status
+      type: opaque
+    - name: StatusRes
+      type: int32
+    - name: StatusResAppPackageName
+      type: opaque
+    - name: Canceling?1:0
+      type: int32
+    - name: AdvancedOptions
+      type: opaque

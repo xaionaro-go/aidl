@@ -1,0 +1,8 @@
+package: android.content
+type: UriRelativeFilterGroup
+fields:
+    - name: Action
+      type: int32
+    - name: "n"
+      type: int32
+      condition: n>0

@@ -1,0 +1,7 @@
+package: android.app.job
+type: PendingJobReasonsInfo
+fields:
+    - name: TimestampMillis
+      type: int64
+    - name: PendingJobReasons
+      type: opaque

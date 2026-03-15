@@ -1,0 +1,7 @@
+package: android.content.res
+type: ColorStateList
+fields:
+    - name: "N"
+      type: int32
+    - name: Colors
+      type: opaque

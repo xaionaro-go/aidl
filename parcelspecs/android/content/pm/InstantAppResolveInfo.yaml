@@ -1,0 +1,15 @@
+package: android.content.pm
+type: InstantAppResolveInfo
+fields:
+    - name: ShouldLetInstallerDecide
+      type: bool
+    - name: Extras
+      type: opaque
+    - name: Digest
+      type: opaque
+    - name: PackageName
+      type: string16
+    - name: Filters
+      type: opaque
+    - name: VersionCode
+      type: int64

@@ -1,0 +1,11 @@
+package: android.media.audiopolicy
+type: AudioMixingRule
+fields:
+    - name: AllowPrivilegedPlaybackCapture
+      type: bool
+    - name: VoiceCommunicationCaptureAllowed
+      type: bool
+    - name: TargetMixType
+      type: int32
+    - name: Criteria.size()
+      type: int32

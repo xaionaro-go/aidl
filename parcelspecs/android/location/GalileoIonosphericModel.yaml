@@ -1,0 +1,9 @@
+package: android.location
+type: GalileoIonosphericModel
+fields:
+    - name: Ai0
+      type: float64
+    - name: Ai1
+      type: float64
+    - name: Ai2
+      type: float64

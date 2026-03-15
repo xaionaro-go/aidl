@@ -1,0 +1,15 @@
+package: android.content
+type: AutofillOptions
+fields:
+    - name: LoggingLevel
+      type: int32
+    - name: CompatModeEnabled
+      type: bool
+    - name: AugmentedAutofillEnabled
+      type: bool
+    - name: WhitelistedActivitiesForAugmentedAutofill
+      type: opaque
+    - name: AppDisabledExpiration
+      type: int64
+    - name: Size
+      type: int32

@@ -1,0 +1,5 @@
+package: android.content.pm
+type: FeatureGroupInfo
+fields:
+    - name: Features
+      type: opaque

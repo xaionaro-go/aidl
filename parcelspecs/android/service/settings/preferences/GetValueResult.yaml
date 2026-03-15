@@ -1,0 +1,9 @@
+package: android.service.settings.preferences
+type: GetValueResult
+fields:
+    - name: ResultCode
+      type: int32
+    - name: Value
+      type: opaque
+    - name: Metadata
+      type: opaque

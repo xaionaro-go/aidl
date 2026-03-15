@@ -1,0 +1,15 @@
+package: android.view.inputmethod
+type: InputMethodSubtypeArray
+fields:
+    - name: Count
+      type: int32
+      condition: mCount==0
+    - name: Count
+      type: int32
+      condition: compressedData!=null&&decompressedSize>0
+    - name: DecompressedSize
+      type: int32
+      condition: compressedData!=null&&decompressedSize>0
+    - name: CompressedData
+      type: opaque
+      condition: compressedData!=null&&decompressedSize>0

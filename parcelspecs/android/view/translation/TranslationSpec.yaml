@@ -1,0 +1,7 @@
+package: android.view.translation
+type: TranslationSpec
+fields:
+    - name: Language
+      type: string16
+    - name: DataFormat
+      type: int32

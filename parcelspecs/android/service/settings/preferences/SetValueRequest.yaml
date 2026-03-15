@@ -1,0 +1,9 @@
+package: android.service.settings.preferences
+type: SetValueRequest
+fields:
+    - name: ScreenKey
+      type: string8
+    - name: PreferenceKey
+      type: string8
+    - name: PreferenceValue
+      type: opaque

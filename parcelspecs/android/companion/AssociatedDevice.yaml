@@ -1,0 +1,7 @@
+package: android.companion
+type: AssociatedDevice
+fields:
+    - name: GetDeviceType()
+      type: int32
+    - name: Dest
+      type: opaque

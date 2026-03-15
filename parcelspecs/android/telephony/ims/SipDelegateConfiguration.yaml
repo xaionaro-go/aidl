@@ -1,0 +1,47 @@
+package: android.telephony.ims
+type: SipDelegateConfiguration
+fields:
+    - name: Version
+      type: int64
+    - name: TransportType
+      type: int32
+    - name: IsSipCompactFormEnabled
+      type: bool
+    - name: IsSipKeepaliveEnabled
+      type: bool
+    - name: MaxUdpPayloadSize
+      type: int32
+    - name: PublicUserIdentifier
+      type: string16
+    - name: PrivateUserIdentifier
+      type: string16
+    - name: HomeDomain
+      type: string16
+    - name: Imei
+      type: string16
+    - name: Gruu
+      type: opaque
+    - name: SipAuthHeader
+      type: string16
+    - name: SipAuthNonce
+      type: string16
+    - name: ServiceRouteHeader
+      type: string16
+    - name: PathHeader
+      type: string16
+    - name: UserAgentHeader
+      type: string16
+    - name: ContactUserParam
+      type: string16
+    - name: PaniHeader
+      type: string16
+    - name: PlaniHeader
+      type: string16
+    - name: CniHeader
+      type: string16
+    - name: AssociatedUriHeader
+      type: string16
+    - name: IpSecConfiguration!=null
+      type: bool
+    - name: NatAddress!=null
+      type: bool

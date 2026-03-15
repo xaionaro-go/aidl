@@ -1,0 +1,47 @@
+package: android.app
+type: PictureInPictureParams
+fields:
+    - name: "1"
+      type: int32
+      condition: mUserActions!=null
+    - name: UserActions
+      type: opaque
+      condition: mUserActions!=null
+    - name: CloseAction
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: mSourceRectHint!=null
+    - name: Out
+      type: opaque
+      condition: mSourceRectHint!=null
+    - name: "1"
+      type: int32
+      condition: mAutoEnterEnabled!=null
+    - name: AutoEnterEnabled
+      type: bool
+      condition: mAutoEnterEnabled!=null
+    - name: "1"
+      type: int32
+      condition: mSeamlessResizeEnabled!=null
+    - name: SeamlessResizeEnabled
+      type: bool
+      condition: mSeamlessResizeEnabled!=null
+    - name: "1"
+      type: int32
+      condition: mTitle!=null
+    - name: Title
+      type: opaque
+      condition: mTitle!=null
+    - name: "1"
+      type: int32
+      condition: mSubtitle!=null
+    - name: Subtitle
+      type: opaque
+      condition: mSubtitle!=null
+    - name: "1"
+      type: int32
+      condition: mIsLaunchIntoPip!=null
+    - name: IsLaunchIntoPip
+      type: bool
+      condition: mIsLaunchIntoPip!=null

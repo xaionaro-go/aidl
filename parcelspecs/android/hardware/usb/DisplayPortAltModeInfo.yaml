@@ -1,0 +1,13 @@
+package: android.hardware.usb
+type: DisplayPortAltModeInfo
+fields:
+    - name: PartnerSinkStatus
+      type: int32
+    - name: CableStatus
+      type: int32
+    - name: NumLanes
+      type: int32
+    - name: HotPlugDetect
+      type: bool
+    - name: LinkTrainingStatus
+      type: int32

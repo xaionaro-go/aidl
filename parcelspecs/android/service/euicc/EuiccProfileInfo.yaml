@@ -1,0 +1,25 @@
+package: android.service.euicc
+type: EuiccProfileInfo
+fields:
+    - name: Iccid
+      type: string16
+    - name: Nickname
+      type: string16
+    - name: ServiceProviderName
+      type: string16
+    - name: ProfileName
+      type: string16
+    - name: ProfileClass
+      type: int32
+    - name: State
+      type: int32
+    - name: (byte)1
+      type: int32
+      condition: mCarrierIdentifier!=null
+    - name: Dest
+      type: opaque
+      condition: mCarrierIdentifier!=null
+    - name: PolicyRules
+      type: int32
+    - name: AccessRules
+      type: opaque

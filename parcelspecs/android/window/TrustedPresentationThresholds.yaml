@@ -1,0 +1,9 @@
+package: android.window
+type: TrustedPresentationThresholds
+fields:
+    - name: MinAlpha
+      type: float32
+    - name: MinFractionRendered
+      type: float32
+    - name: StabilityRequirementMs
+      type: int32

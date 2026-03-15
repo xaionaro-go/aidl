@@ -1,0 +1,21 @@
+package: android.media
+type: AudioFocusInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: ClientUid
+      type: int32
+    - name: ClientId
+      type: string16
+    - name: PackageName
+      type: string16
+    - name: GainRequest
+      type: int32
+    - name: LossReceived
+      type: int32
+    - name: Flags
+      type: int32
+    - name: SdkTarget
+      type: int32
+    - name: GenCount
+      type: int64

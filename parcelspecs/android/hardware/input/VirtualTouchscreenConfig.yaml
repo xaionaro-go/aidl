@@ -1,0 +1,5 @@
+package: android.hardware.input
+type: VirtualTouchscreenConfig
+fields:
+    - name: Dest
+      type: opaque

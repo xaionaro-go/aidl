@@ -1,0 +1,45 @@
+package: android.service.controls
+type: Control
+fields:
+    - name: ControlId
+      type: string16
+    - name: DeviceType
+      type: int32
+    - name: Title
+      type: opaque
+    - name: Subtitle
+      type: opaque
+    - name: (byte)1
+      type: int32
+      condition: mStructure!=null
+    - name: Structure
+      type: opaque
+      condition: mStructure!=null
+    - name: (byte)1
+      type: int32
+      condition: mZone!=null
+    - name: Zone
+      type: opaque
+      condition: mZone!=null
+    - name: Dest
+      type: opaque
+    - name: (byte)1
+      type: int32
+      condition: mCustomIcon!=null
+    - name: Dest
+      type: opaque
+      condition: mCustomIcon!=null
+    - name: (byte)1
+      type: int32
+      condition: mCustomColor!=null
+    - name: Dest
+      type: opaque
+      condition: mCustomColor!=null
+    - name: Status
+      type: int32
+    - name: Dest
+      type: opaque
+    - name: StatusText
+      type: opaque
+    - name: AuthRequired
+      type: bool

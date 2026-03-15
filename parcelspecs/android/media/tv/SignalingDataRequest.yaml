@@ -1,0 +1,9 @@
+package: android.media.tv
+type: SignalingDataRequest
+fields:
+    - name: Dest
+      type: opaque
+    - name: Group
+      type: int32
+    - name: SignalingDataTypes
+      type: opaque

@@ -1,0 +1,11 @@
+package: android.media.quality
+type: ParamCapability
+fields:
+    - name: Name
+      type: string16
+    - name: IsSupported
+      type: bool
+    - name: Type
+      type: int32
+    - name: Caps
+      type: opaque

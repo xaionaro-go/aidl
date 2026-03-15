@@ -1,0 +1,23 @@
+package: android.content
+type: SyncRequest
+fields:
+    - name: Extras
+      type: opaque
+    - name: SyncFlexTimeSecs
+      type: int64
+    - name: SyncRunTimeSecs
+      type: int64
+    - name: (mIsPeriodic?1:0)
+      type: int32
+    - name: (mDisallowMetered?1:0)
+      type: int32
+    - name: (mIsAuthority?1:0)
+      type: int32
+    - name: (mIsExpedited?1:0)
+      type: int32
+    - name: IsScheduledAsExpeditedJob?1:0
+      type: int32
+    - name: AccountToSync
+      type: opaque
+    - name: Authority
+      type: string16

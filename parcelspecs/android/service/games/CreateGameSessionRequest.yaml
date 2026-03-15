@@ -1,0 +1,7 @@
+package: android.service.games
+type: CreateGameSessionRequest
+fields:
+    - name: TaskId
+      type: int32
+    - name: GamePackageName
+      type: string8

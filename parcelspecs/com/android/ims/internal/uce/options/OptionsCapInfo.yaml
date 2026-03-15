@@ -1,0 +1,7 @@
+package: com.android.ims.internal.uce.options
+type: OptionsCapInfo
+fields:
+    - name: Sdp
+      type: string16
+    - name: CapInfo
+      type: opaque

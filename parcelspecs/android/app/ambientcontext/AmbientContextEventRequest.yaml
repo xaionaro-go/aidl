@@ -1,0 +1,7 @@
+package: android.app.ambientcontext
+type: AmbientContextEventRequest
+fields:
+    - name: NewArraySet<>(mEventTypes)
+      type: opaque
+    - name: Options
+      type: opaque

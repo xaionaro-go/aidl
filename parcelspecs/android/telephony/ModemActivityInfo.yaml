@@ -1,0 +1,11 @@
+package: android.telephony
+type: ModemActivityInfo
+fields:
+    - name: Timestamp
+      type: int64
+    - name: SleepTimeMs
+      type: int32
+    - name: IdleTimeMs
+      type: int32
+    - name: ActivityStatsTechSpecificInfo
+      type: opaque

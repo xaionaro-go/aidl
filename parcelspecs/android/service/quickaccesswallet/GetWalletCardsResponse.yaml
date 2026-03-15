@@ -1,0 +1,9 @@
+package: android.service.quickaccesswallet
+type: GetWalletCardsResponse
+fields:
+    - name: WalletCards.size()
+      type: int32
+    - name: WalletCards
+      type: opaque
+    - name: SelectedIndex
+      type: int32

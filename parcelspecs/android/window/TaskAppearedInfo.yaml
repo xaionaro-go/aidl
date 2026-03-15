@@ -1,0 +1,7 @@
+package: android.window
+type: TaskAppearedInfo
+fields:
+    - name: TaskInfo
+      type: opaque
+    - name: Leash
+      type: opaque

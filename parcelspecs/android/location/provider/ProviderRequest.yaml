@@ -1,0 +1,23 @@
+package: android.location.provider
+type: ProviderRequest
+fields:
+    - name: IntervalMillis
+      type: int64
+    - name: Quality
+      type: int32
+      condition: mIntervalMillis!=INTERVAL_DISABLED
+    - name: MaxUpdateDelayMillis
+      type: int64
+      condition: mIntervalMillis!=INTERVAL_DISABLED
+    - name: LowPower
+      type: bool
+      condition: mIntervalMillis!=INTERVAL_DISABLED
+    - name: AdasGnssBypass
+      type: bool
+      condition: mIntervalMillis!=INTERVAL_DISABLED
+    - name: LocationSettingsIgnored
+      type: bool
+      condition: mIntervalMillis!=INTERVAL_DISABLED
+    - name: WorkSource
+      type: opaque
+      condition: mIntervalMillis!=INTERVAL_DISABLED

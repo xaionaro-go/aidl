@@ -1,0 +1,17 @@
+package: android.content.res
+type: CompatibilityInfo
+fields:
+    - name: CompatibilityFlags
+      type: int32
+    - name: ApplicationDensity
+      type: int32
+    - name: ApplicationScale
+      type: float32
+    - name: ApplicationInvertedScale
+      type: float32
+    - name: ApplicationDensityScale
+      type: float32
+    - name: ApplicationDensityInvertedScale
+      type: float32
+    - name: ApplicationDisplayRotation
+      type: int32

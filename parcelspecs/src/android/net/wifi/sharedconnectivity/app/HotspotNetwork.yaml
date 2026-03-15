@@ -1,0 +1,19 @@
+package: src.android.net.wifi.sharedconnectivity.app
+type: HotspotNetwork
+fields:
+    - name: DeviceId
+      type: int64
+    - name: Dest
+      type: opaque
+    - name: NetworkType
+      type: int32
+    - name: NetworkName
+      type: string16
+    - name: HotspotSsid
+      type: string16
+    - name: HotspotBssid
+      type: string16
+    - name: HotspotSecurityTypes
+      type: opaque
+    - name: Extras
+      type: opaque

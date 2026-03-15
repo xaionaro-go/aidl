@@ -1,0 +1,11 @@
+package: android.view.textclassifier
+type: TextClassificationContext
+fields:
+    - name: PackageName
+      type: string16
+    - name: WidgetType
+      type: string16
+    - name: WidgetVersion
+      type: string16
+    - name: SystemTcMetadata
+      type: opaque

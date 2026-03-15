@@ -1,0 +1,5 @@
+package: android.app.time
+type: TimeConfiguration
+fields:
+    - name: Bundle
+      type: opaque

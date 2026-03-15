@@ -1,0 +1,5 @@
+package: android.app.admin
+type: NoArgsPolicyKey
+fields:
+    - name: GetIdentifier()
+      type: string16

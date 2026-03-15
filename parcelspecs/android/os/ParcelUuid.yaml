@@ -1,0 +1,7 @@
+package: android.os
+type: ParcelUuid
+fields:
+    - name: Uuid.getMostSignificantBits()
+      type: int64
+    - name: Uuid.getLeastSignificantBits()
+      type: int64

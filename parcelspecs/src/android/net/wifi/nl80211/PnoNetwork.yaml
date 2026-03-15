@@ -1,0 +1,9 @@
+package: src.android.net.wifi.nl80211
+type: PnoNetwork
+fields:
+    - name: IsHidden?1:0
+      type: int32
+    - name: Ssid
+      type: opaque
+    - name: Frequencies
+      type: opaque

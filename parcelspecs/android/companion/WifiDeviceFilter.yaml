@@ -1,0 +1,10 @@
+package: android.companion
+type: WifiDeviceFilter
+fields:
+    - name: Flg
+      type: int32
+    - name: Bssid
+      type: opaque
+      condition: mBssid!=null
+    - name: BssidMask
+      type: opaque

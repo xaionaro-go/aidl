@@ -1,0 +1,21 @@
+package: android.telephony
+type: SubscriptionPlan
+fields:
+    - name: CycleRule
+      type: opaque
+    - name: Title
+      type: opaque
+    - name: Summary
+      type: opaque
+    - name: DataLimitBytes
+      type: int64
+    - name: DataLimitBehavior
+      type: int32
+    - name: DataUsageBytes
+      type: int64
+    - name: DataUsageTime
+      type: int64
+    - name: NetworkTypes
+      type: opaque
+    - name: SubscriptionStatus
+      type: int32

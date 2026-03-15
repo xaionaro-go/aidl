@@ -1,0 +1,11 @@
+package: android.telephony
+type: CellularIdentifierDisclosure
+fields:
+    - name: NasProtocolMessage
+      type: int32
+    - name: CellularIdentifier
+      type: int32
+    - name: IsEmergency
+      type: bool
+    - name: Plmn
+      type: string8

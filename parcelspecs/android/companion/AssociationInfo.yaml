@@ -1,0 +1,43 @@
+package: android.companion
+type: AssociationInfo
+fields:
+    - name: Id
+      type: int32
+    - name: UserId
+      type: int32
+    - name: PackageName
+      type: string16
+    - name: DeviceMacAddress
+      type: opaque
+    - name: DisplayName
+      type: opaque
+    - name: DeviceProfile
+      type: string16
+    - name: AssociatedDevice
+      type: opaque
+    - name: SelfManaged
+      type: bool
+    - name: NotifyOnDeviceNearby
+      type: bool
+    - name: Revoked
+      type: bool
+    - name: Pending
+      type: bool
+    - name: TimeApprovedMs
+      type: int64
+    - name: LastTimeConnectedMs
+      type: int64
+    - name: SystemDataSyncFlags
+      type: int32
+    - name: "1"
+      type: int32
+      condition: mDeviceIcon!=null
+    - name: Dest
+      type: opaque
+      condition: mDeviceIcon!=null
+    - name: "1"
+      type: int32
+      condition: Flags.associationTag()&&mDeviceId!=null
+    - name: DeviceId
+      type: opaque
+      condition: Flags.associationTag()&&mDeviceId!=null

@@ -1,0 +1,7 @@
+package: android.hardware.lights
+type: LightState
+fields:
+    - name: Color
+      type: int32
+    - name: PlayerId
+      type: int32

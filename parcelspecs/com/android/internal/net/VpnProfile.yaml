@@ -1,0 +1,61 @@
+package: com.android.internal.net
+type: VpnProfile
+fields:
+    - name: Key
+      type: string16
+    - name: Name
+      type: string16
+    - name: Type
+      type: int32
+    - name: Server
+      type: string16
+    - name: Username
+      type: string16
+    - name: Password
+      type: string16
+    - name: DnsServers
+      type: string16
+    - name: SearchDomains
+      type: string16
+    - name: Routes
+      type: string16
+    - name: Mppe?1:0
+      type: int32
+    - name: L2tpSecret
+      type: string16
+    - name: IpsecIdentifier
+      type: string16
+    - name: IpsecSecret
+      type: string16
+    - name: IpsecUserCert
+      type: string16
+    - name: IpsecCaCert
+      type: string16
+    - name: IpsecServerCert
+      type: string16
+    - name: SaveLogin?1:0
+      type: int32
+    - name: Proxy
+      type: opaque
+    - name: AllowedAlgorithms
+      type: opaque
+    - name: IsBypassable
+      type: bool
+    - name: IsMetered
+      type: bool
+    - name: MaxMtu
+      type: int32
+    - name: AreAuthParamsInline
+      type: bool
+    - name: IsRestrictedToTestNetworks
+      type: bool
+    - name: ExcludeLocalRoutes
+      type: bool
+    - name: RequiresInternetValidation
+      type: bool
+    - name: IkeTunConnParams==null?null:TunnelConnectionParamsUtils.toPersistableBundle(ikeTunConnParams)
+      type: opaque
+    - name: AutomaticNattKeepaliveTimerEnabled
+      type: bool
+    - name: AutomaticIpVersionSelectionEnabled
+      type: bool

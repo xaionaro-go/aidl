@@ -1,0 +1,21 @@
+package: android.location.provider
+type: ProviderProperties
+fields:
+    - name: HasNetworkRequirement
+      type: bool
+    - name: HasSatelliteRequirement
+      type: bool
+    - name: HasCellRequirement
+      type: bool
+    - name: HasMonetaryCost
+      type: bool
+    - name: HasAltitudeSupport
+      type: bool
+    - name: HasSpeedSupport
+      type: bool
+    - name: HasBearingSupport
+      type: bool
+    - name: PowerUsage
+      type: int32
+    - name: Accuracy
+      type: int32

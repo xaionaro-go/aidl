@@ -1,0 +1,35 @@
+package: android.os.storage
+type: StorageVolume
+fields:
+    - name: Id
+      type: string8
+    - name: Path.toString()
+      type: string8
+    - name: InternalPath.toString()
+      type: string8
+    - name: Description
+      type: string8
+    - name: Primary?1:0
+      type: int32
+    - name: Removable?1:0
+      type: int32
+    - name: Emulated?1:0
+      type: int32
+    - name: ExternallyManaged?1:0
+      type: int32
+    - name: AllowMassStorage?1:0
+      type: int32
+    - name: MaxFileSize
+      type: int64
+    - name: Owner
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: mUuid!=null
+    - name: StorageManager.convert(mUuid)
+      type: string8
+      condition: mUuid!=null
+    - name: FsUuid
+      type: string8
+    - name: State
+      type: string8

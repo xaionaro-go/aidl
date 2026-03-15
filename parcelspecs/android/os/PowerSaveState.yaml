@@ -1,0 +1,13 @@
+package: android.os
+type: PowerSaveState
+fields:
+    - name: (byte)(batterySaverEnabled?1:0)
+      type: int32
+    - name: (byte)(globalBatterySaverEnabled?1:0)
+      type: int32
+    - name: LocationMode
+      type: int32
+    - name: SoundTriggerMode
+      type: int32
+    - name: BrightnessFactor
+      type: float32

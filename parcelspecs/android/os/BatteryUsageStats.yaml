@@ -1,0 +1,39 @@
+package: android.os
+type: BatteryUsageStats
+fields:
+    - name: StatsStartTimestampMs
+      type: int64
+    - name: StatsEndTimestampMs
+      type: int64
+    - name: StatsDurationMs
+      type: int64
+    - name: BatteryCapacityMah
+      type: float64
+    - name: DischargePercentage
+      type: int32
+    - name: DischargedPowerLowerBound
+      type: float64
+    - name: DischargedPowerUpperBound
+      type: float64
+    - name: DischargeDurationMs
+      type: int64
+    - name: BatteryTimeRemainingMs
+      type: int64
+    - name: ChargeTimeRemainingMs
+      type: int64
+    - name: CustomPowerComponentNames
+      type: opaque
+    - name: IncludesProcessStateData
+      type: bool
+    - name: IncludesScreenStateData
+      type: bool
+    - name: IncludesPowerStateData
+      type: bool
+    - name: Dest
+      type: opaque
+    - name: "True"
+      type: bool
+      condition: mBatteryStatsHistory!=null
+    - name: Dest
+      type: opaque
+      condition: mBatteryStatsHistory!=null

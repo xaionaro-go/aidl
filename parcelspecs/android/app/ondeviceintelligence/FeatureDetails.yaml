@@ -1,0 +1,7 @@
+package: android.app.ondeviceintelligence
+type: FeatureDetails
+fields:
+    - name: FeatureStatus
+      type: int32
+    - name: FeatureDetailParams
+      type: opaque

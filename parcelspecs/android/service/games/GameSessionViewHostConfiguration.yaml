@@ -1,0 +1,9 @@
+package: android.service.games
+type: GameSessionViewHostConfiguration
+fields:
+    - name: DisplayId
+      type: int32
+    - name: WidthPx
+      type: int32
+    - name: HeightPx
+      type: int32

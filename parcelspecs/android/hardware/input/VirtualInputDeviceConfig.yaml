@@ -1,0 +1,11 @@
+package: android.hardware.input
+type: VirtualInputDeviceConfig
+fields:
+    - name: VendorId
+      type: int32
+    - name: ProductId
+      type: int32
+    - name: AssociatedDisplayId
+      type: int32
+    - name: InputDeviceName
+      type: string8

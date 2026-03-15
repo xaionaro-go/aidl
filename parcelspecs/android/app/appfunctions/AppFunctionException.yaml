@@ -1,0 +1,9 @@
+package: android.app.appfunctions
+type: AppFunctionException
+fields:
+    - name: ErrorCode
+      type: int32
+    - name: ErrorMessage
+      type: string8
+    - name: Extras
+      type: opaque

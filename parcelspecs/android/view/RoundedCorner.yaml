@@ -1,0 +1,11 @@
+package: android.view
+type: RoundedCorner
+fields:
+    - name: Position
+      type: int32
+    - name: Radius
+      type: int32
+    - name: Center.x
+      type: int32
+    - name: Center.y
+      type: int32

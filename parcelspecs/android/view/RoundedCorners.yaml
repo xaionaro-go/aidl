@@ -1,0 +1,6 @@
+package: android.view
+type: RoundedCorners
+fields:
+    - name: "0"
+      type: int32
+      condition: equals(NO_ROUNDED_CORNERS)

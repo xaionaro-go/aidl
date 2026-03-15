@@ -1,0 +1,23 @@
+package: android.telecom
+type: ConnectionRequest
+fields:
+    - name: AccountHandle
+      type: opaque
+    - name: Address
+      type: opaque
+    - name: Extras
+      type: opaque
+    - name: VideoState
+      type: int32
+    - name: TelecomCallId
+      type: string16
+    - name: ShouldShowIncomingCallUi?1:0
+      type: int32
+    - name: RttPipeFromInCall
+      type: opaque
+    - name: RttPipeToInCall
+      type: opaque
+    - name: Participants
+      type: opaque
+    - name: IsAdhocConference?1:0
+      type: int32

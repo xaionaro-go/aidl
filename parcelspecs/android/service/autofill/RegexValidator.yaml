@@ -1,0 +1,7 @@
+package: android.service.autofill
+type: RegexValidator
+fields:
+    - name: Id
+      type: opaque
+    - name: Regex
+      type: opaque

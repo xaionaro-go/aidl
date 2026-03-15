@@ -1,0 +1,14 @@
+package: src.android.net.wifi.nl80211
+type: SingleScanSettings
+fields:
+    - name: ScanType
+      type: int32
+    - name: Enable6GhzRnr
+      type: bool
+    - name: ChannelSettings
+      type: opaque
+    - name: HiddenNetworks
+      type: opaque
+    - name: Newbyte[0]
+      type: opaque
+      condition: vendorIes==null

@@ -1,0 +1,7 @@
+package: android.telephony.ims.feature
+type: CapabilityChangeRequest
+fields:
+    - name: CapabilitiesToEnable.size()
+      type: int32
+    - name: CapabilitiesToDisable.size()
+      type: int32

@@ -1,0 +1,9 @@
+package: android.view.inputmethod
+type: RemoveSpaceGesture
+fields:
+    - name: StartPoint
+      type: opaque
+    - name: EndPoint
+      type: opaque
+    - name: FallbackText
+      type: string8

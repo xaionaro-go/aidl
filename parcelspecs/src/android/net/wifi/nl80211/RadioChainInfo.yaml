@@ -1,0 +1,7 @@
+package: src.android.net.wifi.nl80211
+type: RadioChainInfo
+fields:
+    - name: ChainId
+      type: int32
+    - name: Level
+      type: int32

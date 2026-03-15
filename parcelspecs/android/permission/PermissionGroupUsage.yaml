@@ -1,0 +1,24 @@
+package: android.permission
+type: PermissionGroupUsage
+fields:
+    - name: Flg
+      type: int32
+    - name: PackageName
+      type: string16
+    - name: Uid
+      type: int32
+    - name: LastAccessTimeMillis
+      type: int64
+    - name: PermissionGroupName
+      type: string16
+    - name: AttributionTag
+      type: opaque
+      condition: mAttributionTag!=null
+    - name: AttributionLabel
+      type: opaque
+      condition: mAttributionLabel!=null
+    - name: ProxyLabel
+      type: opaque
+      condition: mProxyLabel!=null
+    - name: PersistentDeviceId
+      type: string16

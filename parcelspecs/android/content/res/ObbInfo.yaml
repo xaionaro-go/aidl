@@ -1,0 +1,13 @@
+package: android.content.res
+type: ObbInfo
+fields:
+    - name: Filename
+      type: string16
+    - name: PackageName
+      type: string16
+    - name: Version
+      type: int32
+    - name: Flags
+      type: int32
+    - name: Salt
+      type: opaque

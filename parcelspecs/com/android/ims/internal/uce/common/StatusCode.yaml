@@ -1,0 +1,5 @@
+package: com.android.ims.internal.uce.common
+type: StatusCode
+fields:
+    - name: StatusCode
+      type: int32

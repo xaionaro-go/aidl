@@ -1,0 +1,11 @@
+package: android.location
+type: GnssMeasurementRequest
+fields:
+    - name: FullTracking
+      type: bool
+    - name: CorrelationVectorOutputsEnabled
+      type: bool
+    - name: IntervalMillis
+      type: int32
+    - name: WorkSource
+      type: opaque

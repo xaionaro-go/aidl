@@ -1,0 +1,9 @@
+package: android.os
+type: PowerMonitor
+fields:
+    - name: Index
+      type: int32
+    - name: Type
+      type: int32
+    - name: Name
+      type: string8

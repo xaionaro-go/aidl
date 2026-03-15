@@ -1,0 +1,17 @@
+package: android.telephony.ims
+type: RcsContactUceCapability
+fields:
+    - name: ContactUri
+      type: opaque
+    - name: CapabilityMechanism
+      type: int32
+    - name: SourceType
+      type: int32
+    - name: RequestResult
+      type: int32
+    - name: EntityUri
+      type: opaque
+    - name: NewArrayList<>(mFeatureTags)
+      type: opaque
+    - name: PresenceTuples
+      type: opaque

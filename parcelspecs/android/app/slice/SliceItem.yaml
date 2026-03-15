@@ -1,0 +1,9 @@
+package: android.app.slice
+type: SliceItem
+fields:
+    - name: Hints
+      type: opaque
+    - name: Format
+      type: string16
+    - name: SubType
+      type: string16

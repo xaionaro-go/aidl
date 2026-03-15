@@ -1,0 +1,7 @@
+package: android.telephony.ims
+type: RtpHeaderExtension
+fields:
+    - name: LocalIdentifier
+      type: int32
+    - name: ExtensionData
+      type: opaque

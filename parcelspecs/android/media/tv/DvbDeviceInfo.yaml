@@ -1,0 +1,7 @@
+package: android.media.tv
+type: DvbDeviceInfo
+fields:
+    - name: AdapterId
+      type: int32
+    - name: DeviceId
+      type: int32

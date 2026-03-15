@@ -1,0 +1,18 @@
+package: android.view
+type: ContentRecordingSession
+fields:
+    - name: Flg
+      type: int32
+    - name: TaskId
+      type: int32
+    - name: VirtualDisplayId
+      type: int32
+    - name: ContentToRecord
+      type: int32
+    - name: DisplayToRecord
+      type: int32
+    - name: TokenToRecord
+      type: opaque
+      condition: mTokenToRecord!=null
+    - name: TargetUid
+      type: int32

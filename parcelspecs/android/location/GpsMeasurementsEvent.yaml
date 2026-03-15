@@ -1,0 +1,9 @@
+package: android.location
+type: GpsMeasurementsEvent
+fields:
+    - name: Clock
+      type: opaque
+    - name: MeasurementsArray.length
+      type: int32
+    - name: MeasurementsArray
+      type: opaque

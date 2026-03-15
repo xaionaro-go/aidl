@@ -1,0 +1,7 @@
+package: android.media.tv.interactive
+type: AppLinkInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: UriString
+      type: string16

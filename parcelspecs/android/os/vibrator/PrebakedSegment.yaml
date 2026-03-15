@@ -1,0 +1,11 @@
+package: android.os.vibrator
+type: PrebakedSegment
+fields:
+    - name: PARCEL_TOKEN_PREBAKED
+      type: int32
+    - name: EffectId
+      type: int32
+    - name: (byte)(mFallback?1:0)
+      type: int32
+    - name: EffectStrength
+      type: int32

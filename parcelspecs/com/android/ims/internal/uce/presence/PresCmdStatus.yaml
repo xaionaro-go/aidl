@@ -1,0 +1,11 @@
+package: com.android.ims.internal.uce.presence
+type: PresCmdStatus
+fields:
+    - name: UserData
+      type: int32
+    - name: RequestId
+      type: int32
+    - name: CmdId
+      type: opaque
+    - name: Status
+      type: opaque

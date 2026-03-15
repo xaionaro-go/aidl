@@ -1,0 +1,5 @@
+package: android.content.pm
+type: ProviderInfoList
+fields:
+    - name: List
+      type: opaque

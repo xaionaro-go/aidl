@@ -1,0 +1,7 @@
+package: android.app.assist
+type: ActivityId
+fields:
+    - name: TaskId
+      type: int32
+    - name: ActivityId
+      type: opaque

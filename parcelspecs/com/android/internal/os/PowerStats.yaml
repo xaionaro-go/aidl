@@ -1,0 +1,18 @@
+package: com.android.internal.os
+type: PowerStats
+fields:
+    - name: "0"
+      type: int32
+    - name: Descriptor.powerComponentId
+      type: int32
+    - name: DurationMs
+      type: int64
+    - name: Parcel
+      type: opaque
+    - name: StateStats.size()
+      type: int32
+      condition: descriptor.stateStatsArrayLength!=0
+    - name: UidStats.size()
+      type: int32
+    - name: EndPos-startPos
+      type: int32

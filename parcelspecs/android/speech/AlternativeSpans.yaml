@@ -1,0 +1,5 @@
+package: android.speech
+type: AlternativeSpans
+fields:
+    - name: Spans
+      type: opaque

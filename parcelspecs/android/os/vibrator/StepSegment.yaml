@@ -1,0 +1,11 @@
+package: android.os.vibrator
+type: StepSegment
+fields:
+    - name: PARCEL_TOKEN_STEP
+      type: int32
+    - name: Amplitude
+      type: float32
+    - name: FrequencyHz
+      type: float32
+    - name: Duration
+      type: int32

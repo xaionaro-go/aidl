@@ -1,0 +1,11 @@
+package: android.telephony
+type: CellSignalStrengthTdscdma
+fields:
+    - name: Rssi
+      type: int32
+    - name: BitErrorRate
+      type: int32
+    - name: Rscp
+      type: int32
+    - name: Level
+      type: int32

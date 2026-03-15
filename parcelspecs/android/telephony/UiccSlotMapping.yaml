@@ -1,0 +1,9 @@
+package: android.telephony
+type: UiccSlotMapping
+fields:
+    - name: PortIndex
+      type: int32
+    - name: PhysicalSlotIndex
+      type: int32
+    - name: LogicalSlotIndex
+      type: int32

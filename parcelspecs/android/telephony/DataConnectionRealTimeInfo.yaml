@@ -1,0 +1,7 @@
+package: android.telephony
+type: DataConnectionRealTimeInfo
+fields:
+    - name: Time
+      type: int64
+    - name: DcPowerState
+      type: int32

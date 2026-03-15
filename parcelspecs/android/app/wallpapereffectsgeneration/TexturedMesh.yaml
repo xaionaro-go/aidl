@@ -1,0 +1,9 @@
+package: android.app.wallpapereffectsgeneration
+type: TexturedMesh
+fields:
+    - name: IndicesLayoutType
+      type: int32
+    - name: VerticesLayoutType
+      type: int32
+    - name: Bitmap
+      type: opaque

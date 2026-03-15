@@ -1,0 +1,7 @@
+package: android.app.admin
+type: PackagePolicyKey
+fields:
+    - name: GetIdentifier()
+      type: string16
+    - name: PackageName
+      type: string16

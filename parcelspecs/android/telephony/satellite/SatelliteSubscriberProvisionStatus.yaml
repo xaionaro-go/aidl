@@ -1,0 +1,7 @@
+package: android.telephony.satellite
+type: SatelliteSubscriberProvisionStatus
+fields:
+    - name: SubscriberInfo
+      type: opaque
+    - name: Provisioned
+      type: bool

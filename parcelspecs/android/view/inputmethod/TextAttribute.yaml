@@ -1,0 +1,7 @@
+package: android.view.inputmethod
+type: TextAttribute
+fields:
+    - name: TextConversionSuggestions
+      type: opaque
+    - name: Extras
+      type: opaque

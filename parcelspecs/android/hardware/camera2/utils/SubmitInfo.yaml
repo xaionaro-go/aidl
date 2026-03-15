@@ -1,0 +1,7 @@
+package: android.hardware.camera2.utils
+type: SubmitInfo
+fields:
+    - name: RequestId
+      type: int32
+    - name: LastFrameNumber
+      type: int64

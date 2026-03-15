@@ -1,0 +1,23 @@
+package: android.telephony
+type: PreciseDataConnectionState
+fields:
+    - name: TransportType
+      type: int32
+    - name: Id
+      type: int32
+    - name: NetId
+      type: int32
+    - name: State
+      type: int32
+    - name: NetworkType
+      type: int32
+    - name: LinkProperties
+      type: opaque
+    - name: FailCause
+      type: int32
+    - name: ApnSetting
+      type: opaque
+    - name: DefaultQos
+      type: opaque
+    - name: NetworkValidationStatus
+      type: int32

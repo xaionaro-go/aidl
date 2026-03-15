@@ -1,0 +1,21 @@
+package: android.hardware.display
+type: BrightnessConfiguration
+fields:
+    - name: Lux
+      type: opaque
+    - name: Nits
+      type: opaque
+    - name: CorrectionsByPackageName.size()
+      type: int32
+    - name: CorrectionsByCategory.size()
+      type: int32
+    - name: Description
+      type: string16
+    - name: ShouldCollectColorSamples
+      type: bool
+    - name: ShortTermModelTimeout
+      type: int64
+    - name: ShortTermModelLowerLuxMultiplier
+      type: float32
+    - name: ShortTermModelUpperLuxMultiplier
+      type: float32

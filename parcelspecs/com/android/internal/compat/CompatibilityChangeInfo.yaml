@@ -1,0 +1,17 @@
+package: com.android.internal.compat
+type: CompatibilityChangeInfo
+fields:
+    - name: ChangeId
+      type: int64
+    - name: Name
+      type: string16
+    - name: EnableSinceTargetSdk
+      type: int32
+    - name: Disabled
+      type: bool
+    - name: LoggingOnly
+      type: bool
+    - name: Description
+      type: string16
+    - name: Overridable
+      type: bool

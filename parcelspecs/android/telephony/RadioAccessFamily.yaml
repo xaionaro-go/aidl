@@ -1,0 +1,7 @@
+package: android.telephony
+type: RadioAccessFamily
+fields:
+    - name: PhoneId
+      type: int32
+    - name: RadioAccessFamily
+      type: int32

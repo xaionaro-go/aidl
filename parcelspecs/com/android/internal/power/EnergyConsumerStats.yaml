@@ -1,0 +1,10 @@
+package: com.android.internal.power
+type: EnergyConsumerStats
+fields:
+    - name: AccumulatedChargeMicroCoulomb.length
+      type: int32
+    - name: AccumulatedChargeMicroCoulomb
+      type: opaque
+    - name: "True"
+      type: bool
+      condition: mAccumulatedMultiStateChargeMicroCoulomb!=null

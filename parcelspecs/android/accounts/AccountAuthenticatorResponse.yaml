@@ -1,0 +1,5 @@
+package: android.accounts
+type: AccountAuthenticatorResponse
+fields:
+    - name: AccountAuthenticatorResponse.asBinder()
+      type: opaque

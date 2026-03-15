@@ -1,0 +1,33 @@
+package: android.view
+type: KeyEvent
+fields:
+    - name: PARCEL_TOKEN_KEY_EVENT
+      type: int32
+    - name: Id
+      type: int32
+    - name: DeviceId
+      type: int32
+    - name: Source
+      type: int32
+    - name: DisplayId
+      type: int32
+    - name: Hmac
+      type: opaque
+    - name: Action
+      type: int32
+    - name: KeyCode
+      type: int32
+    - name: RepeatCount
+      type: int32
+    - name: MetaState
+      type: int32
+    - name: ScanCode
+      type: int32
+    - name: Flags
+      type: int32
+    - name: DownTime
+      type: int64
+    - name: EventTime
+      type: int64
+    - name: Characters
+      type: string16

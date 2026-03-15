@@ -1,0 +1,5 @@
+package: com.android.ims.internal.uce.presence
+type: PresPublishTriggerType
+fields:
+    - name: PublishTriggerType
+      type: int32

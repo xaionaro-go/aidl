@@ -1,0 +1,15 @@
+package: android.service.notification
+type: ConversationChannelWrapper
+fields:
+    - name: NotificationChannel
+      type: opaque
+    - name: GroupLabel
+      type: opaque
+    - name: ParentChannelLabel
+      type: opaque
+    - name: ShortcutInfo
+      type: opaque
+    - name: Pkg
+      type: opaque
+    - name: Uid
+      type: int32

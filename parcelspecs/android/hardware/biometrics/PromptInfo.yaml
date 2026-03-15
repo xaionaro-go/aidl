@@ -1,0 +1,55 @@
+package: android.hardware.biometrics
+type: PromptInfo
+fields:
+    - name: LogoRes
+      type: int32
+    - name: LogoBitmap
+      type: opaque
+    - name: LogoDescription
+      type: string16
+    - name: Title
+      type: opaque
+    - name: UseDefaultTitle
+      type: bool
+    - name: Subtitle
+      type: opaque
+    - name: UseDefaultSubtitle
+      type: bool
+    - name: Description
+      type: opaque
+    - name: ContentView
+      type: opaque
+    - name: DeviceCredentialTitle
+      type: opaque
+    - name: DeviceCredentialSubtitle
+      type: opaque
+    - name: DeviceCredentialDescription
+      type: opaque
+    - name: NegativeButtonText
+      type: opaque
+    - name: ConfirmationRequested
+      type: bool
+    - name: DeviceCredentialAllowed
+      type: bool
+    - name: Authenticators
+      type: int32
+    - name: DisallowBiometricsIfPolicyExists
+      type: bool
+    - name: ReceiveSystemEvents
+      type: bool
+    - name: AllowedSensorIds
+      type: opaque
+    - name: AllowBackgroundAuthentication
+      type: bool
+    - name: IgnoreEnrollmentState
+      type: bool
+    - name: IsForLegacyFingerprintManager
+      type: bool
+    - name: ShowEmergencyCallButton
+      type: bool
+    - name: UseParentProfileForDeviceCredential
+      type: bool
+    - name: RealCallerForConfirmDeviceCredentialActivity
+      type: opaque
+    - name: ClassNameIfItIsConfirmDeviceCredentialActivity
+      type: string16

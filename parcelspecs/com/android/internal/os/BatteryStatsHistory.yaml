@@ -1,0 +1,6 @@
+package: com.android.internal.os
+type: BatteryStatsHistory
+fields:
+    - name: Out
+      type: opaque
+      condition: mHistoryDir!=null

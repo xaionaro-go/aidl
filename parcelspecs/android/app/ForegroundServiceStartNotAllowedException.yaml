@@ -1,0 +1,5 @@
+package: android.app
+type: ForegroundServiceStartNotAllowedException
+fields:
+    - name: GetMessage()
+      type: string16

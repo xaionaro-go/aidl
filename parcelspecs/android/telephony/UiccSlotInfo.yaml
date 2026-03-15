@@ -1,0 +1,21 @@
+package: android.telephony
+type: UiccSlotInfo
+fields:
+    - name: IsActive
+      type: bool
+    - name: IsEuicc
+      type: bool
+    - name: CardId
+      type: string8
+    - name: CardStateInfo
+      type: int32
+    - name: LogicalSlotIdx
+      type: int32
+    - name: IsExtendedApduSupported
+      type: bool
+    - name: IsRemovable
+      type: bool
+    - name: PortList
+      type: opaque
+    - name: LogicalSlotAccessRestricted
+      type: bool

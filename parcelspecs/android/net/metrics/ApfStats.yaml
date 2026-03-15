@@ -1,0 +1,23 @@
+package: android.net.metrics
+type: ApfStats
+fields:
+    - name: DurationMs
+      type: int64
+    - name: ReceivedRas
+      type: int32
+    - name: MatchingRas
+      type: int32
+    - name: DroppedRas
+      type: int32
+    - name: ZeroLifetimeRas
+      type: int32
+    - name: ParseErrors
+      type: int32
+    - name: ProgramUpdates
+      type: int32
+    - name: ProgramUpdatesAll
+      type: int32
+    - name: ProgramUpdatesAllowingMulticast
+      type: int32
+    - name: MaxProgramSize
+      type: int32

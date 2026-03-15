@@ -1,0 +1,7 @@
+package: com.android.internal.app.procstats
+type: UidState
+fields:
+    - name: Out
+      type: opaque
+    - name: GetTotalRunningDuration(now)
+      type: int64

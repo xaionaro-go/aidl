@@ -1,0 +1,17 @@
+package: android.media.quality
+type: AmbientBacklightMetadata
+fields:
+    - name: PackageName
+      type: string16
+    - name: CompressAlgorithm
+      type: int32
+    - name: Source
+      type: int32
+    - name: ColorFormat
+      type: int32
+    - name: HorizontalZonesNumber
+      type: int32
+    - name: VerticalZonesNumber
+      type: int32
+    - name: ZonesColors
+      type: opaque

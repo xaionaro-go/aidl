@@ -1,0 +1,15 @@
+package: android.net.metrics
+type: RaEvent
+fields:
+    - name: RouterLifetime
+      type: int64
+    - name: PrefixValidLifetime
+      type: int64
+    - name: PrefixPreferredLifetime
+      type: int64
+    - name: RouteInfoLifetime
+      type: int64
+    - name: RdnssLifetime
+      type: int64
+    - name: DnsslLifetime
+      type: int64

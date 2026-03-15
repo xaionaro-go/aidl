@@ -1,0 +1,7 @@
+package: android.content.integrity
+type: CompoundFormula
+fields:
+    - name: Connector
+      type: int32
+    - name: Formulas.size()
+      type: int32

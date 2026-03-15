@@ -1,0 +1,58 @@
+package: android.content
+type: SyncStatusInfo
+fields:
+    - name: VERSION
+      type: int32
+    - name: AuthorityId
+      type: int32
+    - name: TotalStats.totalElapsedTime
+      type: int64
+    - name: TotalStats.numSyncs
+      type: int32
+    - name: TotalStats.numSourcePoll
+      type: int32
+    - name: TotalStats.numSourceOther
+      type: int32
+    - name: TotalStats.numSourceLocal
+      type: int32
+    - name: TotalStats.numSourceUser
+      type: int32
+    - name: LastSuccessTime
+      type: int64
+    - name: LastSuccessSource
+      type: int32
+    - name: LastFailureTime
+      type: int64
+    - name: LastFailureSource
+      type: int32
+    - name: LastFailureMesg
+      type: string16
+    - name: InitialFailureTime
+      type: int64
+    - name: Pending?1:0
+      type: int32
+    - name: Initialize?1:0
+      type: int32
+    - name: PeriodicSyncTimes.size()
+      type: int32
+      condition: periodicSyncTimes!=null
+    - name: LastEventTimes.size()
+      type: int32
+    - name: TotalStats.numSourcePeriodic
+      type: int32
+    - name: TotalStats.numSourceFeed
+      type: int32
+    - name: TotalStats.numFailures
+      type: int32
+    - name: TotalStats.numCancels
+      type: int32
+    - name: LastTodayResetTime
+      type: int64
+    - name: Parcel
+      type: opaque
+    - name: Parcel
+      type: opaque
+    - name: PerSourceLastSuccessTimes
+      type: opaque
+    - name: PerSourceLastFailureTimes
+      type: opaque

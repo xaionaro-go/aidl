@@ -1,0 +1,5 @@
+package: android.view.translation
+type: UiTranslationSpec
+fields:
+    - name: Flg
+      type: int32

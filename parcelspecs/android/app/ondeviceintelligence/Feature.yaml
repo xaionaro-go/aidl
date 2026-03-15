@@ -1,0 +1,19 @@
+package: android.app.ondeviceintelligence
+type: Feature
+fields:
+    - name: Flg
+      type: int32
+    - name: Id
+      type: int32
+    - name: Name
+      type: string16
+      condition: mName!=null
+    - name: ModelName
+      type: string16
+      condition: mModelName!=null
+    - name: Type
+      type: int32
+    - name: Variant
+      type: int32
+    - name: FeatureParams
+      type: opaque

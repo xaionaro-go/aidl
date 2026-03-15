@@ -1,0 +1,17 @@
+package: android.service.chooser
+type: ChooserTarget
+fields:
+    - name: Title
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: mIcon!=null
+    - name: Dest
+      type: opaque
+      condition: mIcon!=null
+    - name: Score
+      type: float32
+    - name: ComponentName
+      type: opaque
+    - name: IntentExtras
+      type: opaque

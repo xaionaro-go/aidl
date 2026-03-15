@@ -1,0 +1,15 @@
+package: android.telephony
+type: SignalThresholdInfo
+fields:
+    - name: Ran
+      type: int32
+    - name: SignalMeasurementType
+      type: int32
+    - name: HysteresisMs
+      type: int32
+    - name: HysteresisDb
+      type: int32
+    - name: Thresholds
+      type: opaque
+    - name: IsEnabled
+      type: bool

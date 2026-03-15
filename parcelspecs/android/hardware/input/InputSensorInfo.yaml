@@ -1,0 +1,35 @@
+package: android.hardware.input
+type: InputSensorInfo
+fields:
+    - name: Name
+      type: string16
+    - name: Vendor
+      type: string16
+    - name: Version
+      type: int32
+    - name: Handle
+      type: int32
+    - name: Type
+      type: int32
+    - name: MaxRange
+      type: float32
+    - name: Resolution
+      type: float32
+    - name: Power
+      type: float32
+    - name: MinDelay
+      type: int32
+    - name: FifoReservedEventCount
+      type: int32
+    - name: FifoMaxEventCount
+      type: int32
+    - name: StringType
+      type: string16
+    - name: RequiredPermission
+      type: string16
+    - name: MaxDelay
+      type: int32
+    - name: Flags
+      type: int32
+    - name: Id
+      type: int32

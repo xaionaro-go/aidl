@@ -1,0 +1,13 @@
+package: android.telephony.data
+type: NetworkSliceInfo
+fields:
+    - name: SliceServiceType
+      type: int32
+    - name: SliceDifferentiator
+      type: int32
+    - name: MappedHplmnSliceServiceType
+      type: int32
+    - name: MappedHplmnSliceDifferentiator
+      type: int32
+    - name: Status
+      type: int32

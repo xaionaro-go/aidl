@@ -1,0 +1,7 @@
+package: android.appwidget
+type: PendingHostUpdate
+fields:
+    - name: AppWidgetId
+      type: int32
+    - name: Type
+      type: int32

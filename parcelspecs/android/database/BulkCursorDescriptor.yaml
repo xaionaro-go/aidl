@@ -1,0 +1,17 @@
+package: android.database
+type: BulkCursorDescriptor
+fields:
+    - name: Cursor.asBinder()
+      type: opaque
+    - name: ColumnNames
+      type: opaque
+    - name: WantsAllOnMoveCalls?1:0
+      type: int32
+    - name: Count
+      type: int32
+    - name: "1"
+      type: int32
+      condition: window!=null
+    - name: Out
+      type: opaque
+      condition: window!=null

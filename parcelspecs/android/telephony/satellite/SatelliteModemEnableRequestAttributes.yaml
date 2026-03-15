@@ -1,0 +1,11 @@
+package: android.telephony.satellite
+type: SatelliteModemEnableRequestAttributes
+fields:
+    - name: IsEnabled
+      type: bool
+    - name: IsDemoMode
+      type: bool
+    - name: IsEmergencyMode
+      type: bool
+    - name: Dest
+      type: opaque

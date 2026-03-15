@@ -1,0 +1,5 @@
+package: android.os
+type: RemoteCallback
+fields:
+    - name: Callback.asBinder()
+      type: opaque

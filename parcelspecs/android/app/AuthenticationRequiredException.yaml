@@ -1,0 +1,7 @@
+package: android.app
+type: AuthenticationRequiredException
+fields:
+    - name: GetMessage()
+      type: string16
+    - name: Dest
+      type: opaque

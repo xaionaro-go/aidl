@@ -1,0 +1,5 @@
+package: android.hardware.input
+type: VirtualDpadConfig
+fields:
+    - name: Dest
+      type: opaque

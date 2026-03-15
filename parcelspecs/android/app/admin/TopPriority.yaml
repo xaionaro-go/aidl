@@ -1,0 +1,5 @@
+package: android.app.admin
+type: TopPriority
+fields:
+    - name: HighestToLowestPriorityAuthorities.size()
+      type: int32

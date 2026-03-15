@@ -1,0 +1,5 @@
+package: android.view
+type: WindowId
+fields:
+    - name: Token.asBinder()
+      type: opaque

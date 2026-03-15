@@ -1,0 +1,13 @@
+package: android.view
+type: VerifiedInputEvent
+fields:
+    - name: Type
+      type: int32
+    - name: DeviceId
+      type: int32
+    - name: EventTimeNanos
+      type: int64
+    - name: Source
+      type: int32
+    - name: DisplayId
+      type: int32

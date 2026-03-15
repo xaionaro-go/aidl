@@ -1,0 +1,5 @@
+package: android.view
+type: MotionEvent
+fields:
+    - name: PARCEL_TOKEN_MOTION_EVENT
+      type: int32

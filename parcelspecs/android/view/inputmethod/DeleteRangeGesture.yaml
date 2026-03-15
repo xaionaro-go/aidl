@@ -1,0 +1,11 @@
+package: android.view.inputmethod
+type: DeleteRangeGesture
+fields:
+    - name: FallbackText
+      type: string8
+    - name: Granularity
+      type: int32
+    - name: StartArea
+      type: opaque
+    - name: EndArea
+      type: opaque

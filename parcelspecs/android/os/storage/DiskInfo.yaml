@@ -1,0 +1,15 @@
+package: android.os.storage
+type: DiskInfo
+fields:
+    - name: Id
+      type: string16
+    - name: This.flags
+      type: int32
+    - name: Size
+      type: int64
+    - name: Label
+      type: string16
+    - name: VolumeCount
+      type: int32
+    - name: SysPath
+      type: string16

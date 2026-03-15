@@ -1,0 +1,7 @@
+package: android.view
+type: PrivacyIndicatorBounds
+fields:
+    - name: StaticBounds
+      type: opaque
+    - name: Rotation
+      type: int32

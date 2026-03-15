@@ -1,0 +1,11 @@
+package: android.view.inputmethod
+type: CompletionInfo
+fields:
+    - name: Id
+      type: int64
+    - name: Position
+      type: int32
+    - name: Text
+      type: opaque
+    - name: Label
+      type: opaque

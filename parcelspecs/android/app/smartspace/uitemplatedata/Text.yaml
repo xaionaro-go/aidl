@@ -1,0 +1,9 @@
+package: android.app.smartspace.uitemplatedata
+type: Text
+fields:
+    - name: Text
+      type: opaque
+    - name: TruncateAtType.name()
+      type: string16
+    - name: MaxLines
+      type: int32

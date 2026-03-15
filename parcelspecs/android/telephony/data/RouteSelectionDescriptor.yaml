@@ -1,0 +1,13 @@
+package: android.telephony.data
+type: RouteSelectionDescriptor
+fields:
+    - name: Precedence
+      type: int32
+    - name: SessionType
+      type: int32
+    - name: SscMode
+      type: int32
+    - name: SliceInfo
+      type: opaque
+    - name: Dnn
+      type: opaque

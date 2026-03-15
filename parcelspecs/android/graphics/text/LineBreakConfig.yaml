@@ -1,0 +1,9 @@
+package: android.graphics.text
+type: LineBreakConfig
+fields:
+    - name: LineBreakStyle
+      type: int32
+    - name: LineBreakWordStyle
+      type: int32
+    - name: Hyphenation
+      type: int32

@@ -1,0 +1,10 @@
+package: android.hardware.input
+type: KeyboardLayoutSelectionResult
+fields:
+    - name: Flg
+      type: int32
+    - name: LayoutDescriptor
+      type: string16
+      condition: mLayoutDescriptor!=null
+    - name: SelectionCriteria
+      type: int32

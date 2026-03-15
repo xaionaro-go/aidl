@@ -1,0 +1,10 @@
+package: android.companion
+type: DevicePresenceEvent
+fields:
+    - name: AssociationId
+      type: int32
+    - name: Event
+      type: int32
+    - name: PARCEL_UUID_NULL
+      type: int32
+      condition: mUuid==null

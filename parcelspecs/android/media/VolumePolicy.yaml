@@ -1,0 +1,11 @@
+package: android.media
+type: VolumePolicy
+fields:
+    - name: VolumeDownToEnterSilent?1:0
+      type: int32
+    - name: VolumeUpToExitSilent?1:0
+      type: int32
+    - name: DoNotDisturbWhenSilent?1:0
+      type: int32
+    - name: VibrateToSilentDebounce
+      type: int32

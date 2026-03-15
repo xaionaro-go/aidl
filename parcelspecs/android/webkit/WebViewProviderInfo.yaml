@@ -1,0 +1,13 @@
+package: android.webkit
+type: WebViewProviderInfo
+fields:
+    - name: PackageName
+      type: string16
+    - name: Description
+      type: string16
+    - name: AvailableByDefault?1:0
+      type: int32
+    - name: IsFallback?1:0
+      type: int32
+    - name: Signatures
+      type: opaque

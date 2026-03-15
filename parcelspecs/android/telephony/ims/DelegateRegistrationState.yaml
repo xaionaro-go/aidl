@@ -1,0 +1,7 @@
+package: android.telephony.ims
+type: DelegateRegistrationState
+fields:
+    - name: RegisteredTags
+      type: opaque
+    - name: RegisteringTags
+      type: opaque

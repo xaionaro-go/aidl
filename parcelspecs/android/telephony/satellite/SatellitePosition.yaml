@@ -1,0 +1,7 @@
+package: android.telephony.satellite
+type: SatellitePosition
+fields:
+    - name: LongitudeDegree
+      type: float64
+    - name: AltitudeKm
+      type: float64

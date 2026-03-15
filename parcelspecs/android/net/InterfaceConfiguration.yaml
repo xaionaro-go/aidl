@@ -1,0 +1,13 @@
+package: android.net
+type: InterfaceConfiguration
+fields:
+    - name: HwAddr
+      type: string16
+    - name: (byte)1
+      type: int32
+      condition: mAddr!=null
+    - name: Addr
+      type: opaque
+      condition: mAddr!=null
+    - name: Flags.size()
+      type: int32

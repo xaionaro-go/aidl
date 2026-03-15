@@ -1,0 +1,9 @@
+package: android.companion.virtual.sensor
+type: VirtualSensorEvent
+fields:
+    - name: Values.length
+      type: int32
+    - name: Values
+      type: opaque
+    - name: TimestampNanos
+      type: int64

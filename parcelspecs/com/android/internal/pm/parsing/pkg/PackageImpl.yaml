@@ -1,0 +1,201 @@
+package: com.android.internal.pm.parsing.pkg
+type: PackageImpl
+fields:
+    - name: This.versionCode
+      type: int32
+    - name: This.versionCodeMajor
+      type: int32
+    - name: This.baseRevisionCode
+      type: int32
+    - name: This.compileSdkVersion
+      type: int32
+    - name: This.compileSdkVersionCodeName
+      type: string16
+    - name: This.mBaseApkPath
+      type: string16
+    - name: This.restrictedAccountType
+      type: string16
+    - name: This.requiredAccountType
+      type: string16
+    - name: This.mEmergencyInstaller
+      type: string16
+    - name: This.overlayTargetOverlayableName
+      type: string16
+    - name: This.overlayCategory
+      type: string16
+    - name: This.overlayPriority
+      type: int32
+    - name: This.sdkLibVersionMajor
+      type: int32
+    - name: This.staticSharedLibVersion
+      type: int64
+    - name: This.usesStaticLibrariesVersions
+      type: opaque
+    - name: "-1"
+      type: int32
+      condition: this.usesStaticLibrariesCertDigests==null
+    - name: This.usesSdkLibrariesVersionsMajor
+      type: opaque
+    - name: "-1"
+      type: int32
+      condition: this.usesSdkLibrariesCertDigests==null
+    - name: This.usesSdkLibrariesOptional
+      type: opaque
+    - name: This.sharedUserLabel
+      type: int32
+    - name: This.configPreferences
+      type: opaque
+    - name: This.reqFeatures
+      type: opaque
+    - name: This.featureGroups
+      type: opaque
+    - name: This.restrictUpdateHash
+      type: opaque
+    - name: This.originalPackages
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: This.processes
+      type: opaque
+    - name: This.metaData
+      type: opaque
+    - name: This.signingDetails
+      type: opaque
+    - name: This.mPath
+      type: string16
+    - name: This.queriesIntents
+      type: opaque
+    - name: This.appComponentFactory
+      type: string16
+    - name: This.backupAgentName
+      type: string16
+    - name: This.banner
+      type: int32
+    - name: This.category
+      type: int32
+    - name: This.classLoaderName
+      type: string16
+    - name: This.className
+      type: string16
+    - name: This.compatibleWidthLimitDp
+      type: int32
+    - name: This.descriptionRes
+      type: int32
+    - name: This.fullBackupContent
+      type: int32
+    - name: This.dataExtractionRules
+      type: int32
+    - name: This.iconRes
+      type: int32
+    - name: This.installLocation
+      type: int32
+    - name: This.labelRes
+      type: int32
+    - name: This.largestWidthLimitDp
+      type: int32
+    - name: This.logo
+      type: int32
+    - name: This.manageSpaceActivityName
+      type: string16
+    - name: This.maxAspectRatio
+      type: float32
+    - name: This.minAspectRatio
+      type: float32
+    - name: This.minSdkVersion
+      type: int32
+    - name: This.maxSdkVersion
+      type: int32
+    - name: This.networkSecurityConfigRes
+      type: int32
+    - name: This.nonLocalizedLabel
+      type: opaque
+    - name: This.permission
+      type: string16
+    - name: This.processName
+      type: string16
+    - name: This.requiresSmallestWidthDp
+      type: int32
+    - name: This.roundIconRes
+      type: int32
+    - name: This.targetSandboxVersion
+      type: int32
+    - name: This.targetSdkVersion
+      type: int32
+    - name: This.taskAffinity
+      type: string16
+    - name: This.theme
+      type: int32
+    - name: This.uiOptions
+      type: int32
+    - name: This.zygotePreloadName
+      type: string16
+    - name: This.splitClassLoaderNames
+      type: opaque
+    - name: This.splitCodePaths
+      type: opaque
+    - name: This.splitDependencies
+      type: opaque
+    - name: This.splitFlags
+      type: opaque
+    - name: This.splitNames
+      type: opaque
+    - name: This.splitRevisionCodes
+      type: opaque
+    - name: This.autoRevokePermissions
+      type: int32
+    - name: This.gwpAsanMode
+      type: int32
+    - name: This.minExtensionVersions
+      type: opaque
+    - name: This.mProperties
+      type: opaque
+    - name: This.memtagMode
+      type: int32
+    - name: This.nativeHeapZeroInitialized
+      type: int32
+    - name: This.mLocaleConfigRes
+      type: int32
+    - name: This.nativeLibraryDir
+      type: string16
+    - name: This.nativeLibraryRootDir
+      type: string16
+    - name: This.nativeLibraryRootRequiresIsa
+      type: bool
+    - name: This.secondaryNativeLibraryDir
+      type: string16
+    - name: This.uid
+      type: int32
+    - name: This.mBooleans
+      type: int64
+    - name: This.mBooleans2
+      type: int64
+    - name: This.mAllowCrossUidActivitySwitchFromBelow
+      type: bool
+    - name: This.mIntentMatchingFlags
+      type: int32
+    - name: This.mAlternateLauncherIconResIds
+      type: opaque
+    - name: This.mAlternateLauncherLabelResIds
+      type: opaque
+    - name: This.mPageSizeAppCompatFlags
+      type: int32

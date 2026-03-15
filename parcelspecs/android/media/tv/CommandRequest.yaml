@@ -1,0 +1,13 @@
+package: android.media.tv
+type: CommandRequest
+fields:
+    - name: Dest
+      type: opaque
+    - name: Namespace
+      type: string16
+    - name: Name
+      type: string16
+    - name: Arguments
+      type: string16
+    - name: ArgumentType
+      type: string16

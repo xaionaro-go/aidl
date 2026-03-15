@@ -1,0 +1,7 @@
+package: android.window
+type: TaskFragmentTransaction
+fields:
+    - name: TransactionToken
+      type: opaque
+    - name: Changes
+      type: opaque

@@ -1,0 +1,9 @@
+package: android.telephony.ims
+type: MediaThreshold
+fields:
+    - name: RtpPacketLossRate
+      type: opaque
+    - name: RtpJitter
+      type: opaque
+    - name: RtpInactivityTimeMillis
+      type: opaque

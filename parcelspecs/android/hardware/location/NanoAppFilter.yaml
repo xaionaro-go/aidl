@@ -1,0 +1,11 @@
+package: android.hardware.location
+type: NanoAppFilter
+fields:
+    - name: AppId
+      type: int64
+    - name: AppVersion
+      type: int32
+    - name: VersionRestrictionMask
+      type: int32
+    - name: AppIdVendorMask
+      type: int64

@@ -1,0 +1,13 @@
+package: android.telephony
+type: PhoneCapability
+fields:
+    - name: MaxActiveVoiceSubscriptions
+      type: int32
+    - name: MaxActiveDataSubscriptions
+      type: int32
+    - name: NetworkValidationBeforeSwitchSupported
+      type: bool
+    - name: LogicalModemList
+      type: opaque
+    - name: DeviceNrCapabilities
+      type: opaque

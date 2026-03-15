@@ -1,0 +1,47 @@
+package: android.telecom
+type: ParcelableConnection
+fields:
+    - name: PhoneAccount
+      type: opaque
+    - name: State
+      type: int32
+    - name: ConnectionCapabilities
+      type: int32
+    - name: Address
+      type: opaque
+    - name: AddressPresentation
+      type: int32
+    - name: CallerDisplayName
+      type: string16
+    - name: CallerDisplayNamePresentation
+      type: int32
+    - name: VideoProvider!=null?mVideoProvider.asBinder():null
+      type: opaque
+    - name: VideoState
+      type: int32
+    - name: (byte)(mRingbackRequested?1:0)
+      type: int32
+    - name: (byte)(mIsVoipAudioMode?1:0)
+      type: int32
+    - name: ConnectTimeMillis
+      type: int64
+    - name: StatusHints
+      type: opaque
+    - name: DisconnectCause
+      type: opaque
+    - name: ConferenceableConnectionIds
+      type: opaque
+    - name: Extras
+      type: opaque
+    - name: ConnectionProperties
+      type: int32
+    - name: SupportedAudioRoutes
+      type: int32
+    - name: ParentCallId
+      type: string16
+    - name: ConnectElapsedTimeMillis
+      type: int64
+    - name: CallDirection
+      type: int32
+    - name: CallerNumberVerificationStatus
+      type: int32

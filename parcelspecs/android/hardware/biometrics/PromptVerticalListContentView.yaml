@@ -1,0 +1,7 @@
+package: android.hardware.biometrics
+type: PromptVerticalListContentView
+fields:
+    - name: ContentList
+      type: opaque
+    - name: Description
+      type: string16

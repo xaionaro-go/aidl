@@ -1,0 +1,14 @@
+package: android.hardware.biometrics.events
+type: AuthenticationErrorInfo
+fields:
+    - name: Flg
+      type: int32
+    - name: BiometricSourceType
+      type: opaque
+    - name: RequestReason
+      type: int32
+    - name: ErrString
+      type: string16
+      condition: mErrString!=null
+    - name: ErrCode
+      type: int32

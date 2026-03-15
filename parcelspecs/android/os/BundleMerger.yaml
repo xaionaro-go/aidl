@@ -1,0 +1,7 @@
+package: android.os
+type: BundleMerger
+fields:
+    - name: DefaultStrategy
+      type: int32
+    - name: "N"
+      type: int32

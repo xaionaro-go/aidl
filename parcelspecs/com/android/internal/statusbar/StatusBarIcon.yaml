@@ -1,0 +1,21 @@
+package: com.android.internal.statusbar
+type: StatusBarIcon
+fields:
+    - name: This.icon
+      type: opaque
+    - name: This.pkg
+      type: string16
+    - name: This.user
+      type: opaque
+    - name: This.iconLevel
+      type: int32
+    - name: This.visible?1:0
+      type: int32
+    - name: This.number
+      type: int32
+    - name: This.contentDescription
+      type: opaque
+    - name: This.type.name()
+      type: string16
+    - name: This.shape.name()
+      type: string16

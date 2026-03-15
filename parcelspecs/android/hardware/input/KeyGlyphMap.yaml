@@ -1,0 +1,17 @@
+package: android.hardware.input
+type: KeyGlyphMap
+fields:
+    - name: ComponentName
+      type: opaque
+    - name: KeyGlyphs
+      type: opaque
+    - name: ModifierGlyphs
+      type: opaque
+    - name: FunctionRowKeys.length
+      type: int32
+    - name: FunctionRowKeys
+      type: opaque
+    - name: HardwareShortcuts.size()
+      type: int32
+    - name: HardwareShortcuts
+      type: opaque

@@ -1,0 +1,7 @@
+package: android.telecom
+type: TelecomAnalytics
+fields:
+    - name: SessionTimings
+      type: opaque
+    - name: CallAnalytics
+      type: opaque

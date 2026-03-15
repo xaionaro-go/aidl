@@ -1,0 +1,13 @@
+package: com.android.ims.internal.uce.presence
+type: PresResInstanceInfo
+fields:
+    - name: Id
+      type: string16
+    - name: Reason
+      type: string16
+    - name: ResInstanceState
+      type: int32
+    - name: PresentityUri
+      type: string16
+    - name: TupleInfoArray
+      type: opaque

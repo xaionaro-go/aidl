@@ -1,0 +1,11 @@
+package: android.printservice.recommendation
+type: RecommendationInfo
+fields:
+    - name: PackageName
+      type: opaque
+    - name: Name
+      type: opaque
+    - name: NumDiscoveredPrinters
+      type: int32
+    - name: (byte)(mRecommendsMultiVendorService?1:0)
+      type: int32

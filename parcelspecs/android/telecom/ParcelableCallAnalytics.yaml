@@ -1,0 +1,23 @@
+package: android.telecom
+type: ParcelableCallAnalytics
+fields:
+    - name: StartTimeMillis
+      type: int64
+    - name: CallDurationMillis
+      type: int64
+    - name: CallType
+      type: int32
+    - name: CallTechnologies
+      type: int32
+    - name: CallTerminationCode
+      type: int32
+    - name: ConnectionService
+      type: string16
+    - name: AnalyticsEvents
+      type: opaque
+    - name: EventTimings
+      type: opaque
+    - name: VideoEvents
+      type: opaque
+    - name: CallSource
+      type: int32

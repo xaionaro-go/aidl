@@ -1,0 +1,5 @@
+package: android.app
+type: InvalidForegroundServiceTypeException
+fields:
+    - name: GetMessage()
+      type: string16

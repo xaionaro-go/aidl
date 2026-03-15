@@ -1,0 +1,9 @@
+package: android.content.pm.verify.domain
+type: DomainVerificationUserState
+fields:
+    - name: Flg
+      type: int32
+    - name: PackageName
+      type: string16
+    - name: User
+      type: opaque

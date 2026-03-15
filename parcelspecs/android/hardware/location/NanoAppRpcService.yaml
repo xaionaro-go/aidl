@@ -1,0 +1,7 @@
+package: android.hardware.location
+type: NanoAppRpcService
+fields:
+    - name: ServiceId
+      type: int64
+    - name: ServiceVersion
+      type: int32

@@ -1,0 +1,9 @@
+package: android.telephony
+type: LinkCapacityEstimate
+fields:
+    - name: DownlinkCapacityKbps
+      type: int32
+    - name: UplinkCapacityKbps
+      type: int32
+    - name: Type
+      type: int32

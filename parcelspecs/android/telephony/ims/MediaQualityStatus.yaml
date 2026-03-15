@@ -1,0 +1,15 @@
+package: android.telephony.ims
+type: MediaQualityStatus
+fields:
+    - name: ImsCallSessionId
+      type: string16
+    - name: MediaSessionType
+      type: int32
+    - name: TransportType
+      type: int32
+    - name: RtpPacketLossRate
+      type: int32
+    - name: RtpJitterMillis
+      type: int32
+    - name: RtpInactivityTimeMillis
+      type: int64

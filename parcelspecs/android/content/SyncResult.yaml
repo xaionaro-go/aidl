@@ -1,0 +1,21 @@
+package: android.content
+type: SyncResult
+fields:
+    - name: SyncAlreadyInProgress?1:0
+      type: int32
+    - name: TooManyDeletions?1:0
+      type: int32
+    - name: TooManyRetries?1:0
+      type: int32
+    - name: DatabaseError?1:0
+      type: int32
+    - name: FullSyncRequested?1:0
+      type: int32
+    - name: PartialSyncUnavailable?1:0
+      type: int32
+    - name: MoreRecordsToGet?1:0
+      type: int32
+    - name: DelayUntil
+      type: int64
+    - name: Parcel
+      type: opaque

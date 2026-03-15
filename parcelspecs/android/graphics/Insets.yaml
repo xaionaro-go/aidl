@@ -1,0 +1,11 @@
+package: android.graphics
+type: Insets
+fields:
+    - name: Left
+      type: int32
+    - name: Top
+      type: int32
+    - name: Right
+      type: int32
+    - name: Bottom
+      type: int32

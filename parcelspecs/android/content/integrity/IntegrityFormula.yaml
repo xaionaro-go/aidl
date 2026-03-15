@@ -1,0 +1,7 @@
+package: android.content.integrity
+type: IntegrityFormula
+fields:
+    - name: Formula.getTag()
+      type: int32
+    - name: Dest
+      type: opaque

@@ -1,0 +1,10 @@
+package: android.graphics.drawable
+type: Icon
+fields:
+    - name: Type
+      type: int32
+    - name: "0"
+      type: int32
+      condition: mTintList==null
+    - name: BlendMode.toValue(mBlendMode)
+      type: int32

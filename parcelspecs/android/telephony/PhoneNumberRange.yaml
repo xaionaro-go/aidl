@@ -1,0 +1,11 @@
+package: android.telephony
+type: PhoneNumberRange
+fields:
+    - name: CountryCode
+      type: string16
+    - name: Prefix
+      type: string16
+    - name: LowerBound
+      type: string16
+    - name: UpperBound
+      type: string16

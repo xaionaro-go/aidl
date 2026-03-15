@@ -1,0 +1,33 @@
+package: android.media.metrics
+type: MediaItemInfo
+fields:
+    - name: SourceType
+      type: int32
+    - name: DataTypes
+      type: int64
+    - name: DurationMillis
+      type: int64
+    - name: ClipDurationMillis
+      type: int64
+    - name: ContainerMimeType
+      type: string16
+    - name: SampleMimeTypes
+      type: opaque
+    - name: CodecNames
+      type: opaque
+    - name: AudioSampleRateHz
+      type: int32
+    - name: AudioChannelCount
+      type: int32
+    - name: AudioSampleCount
+      type: int64
+    - name: VideoSize.getWidth()
+      type: int32
+    - name: VideoSize.getHeight()
+      type: int32
+    - name: VideoDataSpace
+      type: int32
+    - name: VideoFrameRate
+      type: float32
+    - name: VideoSampleCount
+      type: int64

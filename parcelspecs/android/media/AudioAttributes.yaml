@@ -1,0 +1,19 @@
+package: android.media
+type: AudioAttributes
+fields:
+    - name: Usage
+      type: int32
+    - name: ContentType
+      type: int32
+    - name: Source
+      type: int32
+    - name: Flags
+      type: int32
+    - name: Flags&ALL_PARCEL_FLAGS
+      type: int32
+    - name: TagsArray
+      type: opaque
+      condition: (flags&FLATTEN_TAGS)==0
+    - name: ATTR_PARCEL_IS_NULL_BUNDLE
+      type: int32
+      condition: mBundle==null

@@ -1,0 +1,5 @@
+package: com.android.ims.internal.uce.presence
+type: PresSubscriptionState
+fields:
+    - name: PresSubscriptionState
+      type: int32

@@ -1,0 +1,41 @@
+package: android.view.contentcapture
+type: ContentCaptureEvent
+fields:
+    - name: SessionId
+      type: int32
+    - name: Type
+      type: int32
+    - name: EventTime
+      type: int64
+    - name: Id
+      type: opaque
+    - name: Ids
+      type: opaque
+    - name: Parcel
+      type: opaque
+    - name: Text
+      type: opaque
+    - name: ParentSessionId
+      type: int32
+      condition: mType==TYPE_SESSION_STARTED||mType==TYPE_SESSION_FINISHED
+    - name: ClientContext
+      type: opaque
+      condition: mType==TYPE_SESSION_STARTED||mType==TYPE_CONTEXT_UPDATED
+    - name: Insets
+      type: opaque
+      condition: mType==TYPE_VIEW_INSETS_CHANGED
+    - name: Bounds
+      type: opaque
+      condition: mType==TYPE_WINDOW_BOUNDS_CHANGED
+    - name: ComposingStart
+      type: int32
+      condition: mType==TYPE_VIEW_TEXT_CHANGED
+    - name: ComposingEnd
+      type: int32
+      condition: mType==TYPE_VIEW_TEXT_CHANGED
+    - name: SelectionStartIndex
+      type: int32
+      condition: mType==TYPE_VIEW_TEXT_CHANGED
+    - name: SelectionEndIndex
+      type: int32
+      condition: mType==TYPE_VIEW_TEXT_CHANGED

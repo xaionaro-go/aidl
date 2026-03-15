@@ -1,0 +1,11 @@
+package: android.telephony
+type: CallForwardingInfo
+fields:
+    - name: Number
+      type: string16
+    - name: Enabled
+      type: bool
+    - name: Reason
+      type: int32
+    - name: TimeSeconds
+      type: int32

@@ -1,0 +1,11 @@
+package: android.app.prediction
+type: AppPredictionContext
+fields:
+    - name: UiSurface
+      type: string16
+    - name: PredictedTargetCount
+      type: int32
+    - name: PackageName
+      type: string16
+    - name: Extras
+      type: opaque

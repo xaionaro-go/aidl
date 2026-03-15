@@ -1,0 +1,9 @@
+package: android.app.time
+type: TimeCapabilities
+fields:
+    - name: UserHandle
+      type: opaque
+    - name: ConfigureAutoDetectionEnabledCapability
+      type: int32
+    - name: SetManualTimeCapability
+      type: int32

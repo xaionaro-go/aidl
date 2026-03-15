@@ -1,0 +1,5 @@
+package: android.content.pm.verify.domain
+type: DomainVerificationInfo
+fields:
+    - name: PackageName
+      type: string16

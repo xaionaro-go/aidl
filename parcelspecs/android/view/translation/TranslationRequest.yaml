@@ -1,0 +1,9 @@
+package: android.view.translation
+type: TranslationRequest
+fields:
+    - name: Flags
+      type: int32
+    - name: TranslationRequestValues
+      type: opaque
+    - name: ViewTranslationRequests
+      type: opaque

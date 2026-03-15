@@ -1,0 +1,13 @@
+package: android.media
+type: AudioFormat
+fields:
+    - name: PropertySetMask
+      type: int32
+    - name: Encoding
+      type: int32
+    - name: SampleRate
+      type: int32
+    - name: ChannelMask
+      type: int32
+    - name: ChannelIndexMask
+      type: int32

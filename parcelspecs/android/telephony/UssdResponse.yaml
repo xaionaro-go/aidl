@@ -1,0 +1,7 @@
+package: android.telephony
+type: UssdResponse
+fields:
+    - name: UssdRequest
+      type: string16
+    - name: ReturnMessage
+      type: opaque

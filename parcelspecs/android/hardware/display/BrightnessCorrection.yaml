@@ -1,0 +1,5 @@
+package: android.hardware.display
+type: BrightnessCorrection
+fields:
+    - name: Dest
+      type: opaque

@@ -1,0 +1,17 @@
+package: android.view
+type: WindowRelayoutResult
+fields:
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: SyncSeqId
+      type: int32
+    - name: ActivityWindowInfo
+      type: opaque

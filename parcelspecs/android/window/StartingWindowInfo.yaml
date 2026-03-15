@@ -1,0 +1,31 @@
+package: android.window
+type: StartingWindowInfo
+fields:
+    - name: TaskInfo
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: TargetActivityInfo
+      type: opaque
+    - name: StartingWindowTypeParameter
+      type: int32
+    - name: TopOpaqueWindowInsetsState
+      type: opaque
+    - name: TopOpaqueWindowLayoutParams
+      type: opaque
+    - name: MainWindowLayoutParams
+      type: opaque
+    - name: SplashScreenThemeResId
+      type: int32
+    - name: IsKeyguardOccluded
+      type: bool
+    - name: TaskSnapshot
+      type: opaque
+    - name: RequestedVisibleTypes
+      type: int32
+    - name: AppToken
+      type: opaque
+    - name: WindowlessStartingSurfaceCallback
+      type: opaque
+    - name: RootSurface
+      type: opaque

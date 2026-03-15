@@ -1,0 +1,28 @@
+package: com.android.internal.app.procstats
+type: ProcessState
+fields:
+    - name: MultiPackage?1:0
+      type: int32
+    - name: Out
+      type: opaque
+    - name: Out
+      type: opaque
+    - name: GetTotalRunningDuration(now)
+      type: int64
+    - name: "0"
+      type: int32
+    - name: NumExcessiveCpu
+      type: int32
+    - name: NumCachedKill
+      type: int32
+    - name: MinCachedKillPss
+      type: int64
+      condition: mNumCachedKill>0
+    - name: AvgCachedKillPss
+      type: int64
+      condition: mNumCachedKill>0
+    - name: MaxCachedKillPss
+      type: int64
+      condition: mNumCachedKill>0
+    - name: NumOfSources
+      type: int32

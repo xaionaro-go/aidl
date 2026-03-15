@@ -1,0 +1,5 @@
+package: android.service.controls.actions
+type: ControlActionWrapper
+fields:
+    - name: ControlAction.getDataBundle()
+      type: opaque

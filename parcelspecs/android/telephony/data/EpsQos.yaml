@@ -1,0 +1,7 @@
+package: android.telephony.data
+type: EpsQos
+fields:
+    - name: Qos.QOS_TYPE_EPS
+      type: opaque
+    - name: QosClassId
+      type: int32

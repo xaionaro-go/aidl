@@ -1,0 +1,15 @@
+package: android.app.wallpapereffectsgeneration
+type: CinematicEffectResponse
+fields:
+    - name: StatusCode
+      type: int32
+    - name: TaskId
+      type: string16
+    - name: ImageContentType
+      type: int32
+    - name: TexturedMeshes
+      type: opaque
+    - name: StartKeyFrame
+      type: opaque
+    - name: EndKeyFrame
+      type: opaque

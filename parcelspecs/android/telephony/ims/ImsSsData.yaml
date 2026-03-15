@@ -1,0 +1,19 @@
+package: android.telephony.ims
+type: ImsSsData
+fields:
+    - name: GetServiceType()
+      type: int32
+    - name: GetRequestType()
+      type: int32
+    - name: GetTeleserviceType()
+      type: int32
+    - name: GetServiceClass()
+      type: int32
+    - name: GetResult()
+      type: int32
+    - name: SsInfo
+      type: opaque
+    - name: CfInfo
+      type: opaque
+    - name: ImsSsInfo
+      type: opaque

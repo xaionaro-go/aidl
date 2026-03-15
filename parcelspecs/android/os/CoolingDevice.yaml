@@ -1,0 +1,9 @@
+package: android.os
+type: CoolingDevice
+fields:
+    - name: Value
+      type: int64
+    - name: Type
+      type: int32
+    - name: Name
+      type: string16

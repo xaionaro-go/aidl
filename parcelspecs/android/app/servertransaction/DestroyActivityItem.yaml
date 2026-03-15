@@ -1,0 +1,7 @@
+package: android.app.servertransaction
+type: DestroyActivityItem
+fields:
+    - name: Dest
+      type: opaque
+    - name: Finished
+      type: bool

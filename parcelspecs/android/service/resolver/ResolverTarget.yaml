@@ -1,0 +1,13 @@
+package: android.service.resolver
+type: ResolverTarget
+fields:
+    - name: RecencyScore
+      type: float32
+    - name: TimeSpentScore
+      type: float32
+    - name: LaunchScore
+      type: float32
+    - name: ChooserScore
+      type: float32
+    - name: SelectProbability
+      type: float32

@@ -1,0 +1,7 @@
+package: android.media.quality
+type: AmbientBacklightEvent
+fields:
+    - name: EventType
+      type: int32
+    - name: Metadata
+      type: opaque

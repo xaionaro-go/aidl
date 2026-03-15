@@ -1,0 +1,17 @@
+package: android.view.inputmethod
+type: InputContentInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: ContentUriOwnerUserId
+      type: int32
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: mUriToken!=null
+    - name: UriToken.asBinder()
+      type: opaque
+      condition: mUriToken!=null

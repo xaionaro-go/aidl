@@ -1,0 +1,55 @@
+package: android.service.autofill
+type: FillResponse
+fields:
+    - name: Datasets
+      type: opaque
+    - name: SaveInfo
+      type: opaque
+    - name: ClientState
+      type: opaque
+    - name: AuthenticationIds
+      type: opaque
+    - name: Authentication
+      type: opaque
+    - name: Presentation
+      type: opaque
+    - name: InlinePresentation
+      type: opaque
+    - name: InlineTooltipPresentation
+      type: opaque
+    - name: DialogPresentation
+      type: opaque
+    - name: DialogHeader
+      type: opaque
+    - name: DialogPendingIntent
+      type: opaque
+    - name: FillDialogTriggerIds
+      type: opaque
+    - name: Header
+      type: opaque
+    - name: Footer
+      type: opaque
+    - name: UserData
+      type: opaque
+    - name: IgnoredIds
+      type: opaque
+    - name: DisableDuration
+      type: int64
+    - name: FieldClassificationIds
+      type: opaque
+    - name: DetectedFieldTypes
+      type: opaque
+    - name: IconResourceId
+      type: int32
+    - name: ServiceDisplayNameResourceId
+      type: int32
+    - name: ShowFillDialogIcon
+      type: bool
+    - name: ShowSaveDialogIcon
+      type: bool
+    - name: Flags
+      type: int32
+    - name: CancelIds
+      type: opaque
+    - name: RequestId
+      type: int32

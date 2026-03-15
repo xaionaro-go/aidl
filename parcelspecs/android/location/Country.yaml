@@ -1,0 +1,9 @@
+package: android.location
+type: Country
+fields:
+    - name: CountryIso
+      type: string16
+    - name: Source
+      type: int32
+    - name: Timestamp
+      type: int64

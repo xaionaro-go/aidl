@@ -1,0 +1,13 @@
+package: android.telephony.satellite
+type: SatelliteSubscriberInfo
+fields:
+    - name: SubscriberId
+      type: string16
+    - name: CarrierId
+      type: int32
+    - name: NiddApn
+      type: string16
+    - name: SubId
+      type: int32
+    - name: SubscriberIdType
+      type: int32

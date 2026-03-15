@@ -1,0 +1,9 @@
+package: android.service.autofill
+type: FillContext
+fields:
+    - name: RequestId
+      type: int32
+    - name: Structure
+      type: opaque
+    - name: FocusedId
+      type: opaque

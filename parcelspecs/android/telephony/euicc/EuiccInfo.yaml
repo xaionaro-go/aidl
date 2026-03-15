@@ -1,0 +1,5 @@
+package: android.telephony.euicc
+type: EuiccInfo
+fields:
+    - name: OsVersion
+      type: string16

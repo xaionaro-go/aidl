@@ -1,0 +1,11 @@
+package: android.app.admin
+type: DeviceAdminInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: UsesPolicies
+      type: int32
+    - name: SupportsTransferOwnership
+      type: bool
+    - name: HeadlessDeviceOwnerMode
+      type: int32

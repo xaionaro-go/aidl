@@ -1,0 +1,17 @@
+package: android.app.servertransaction
+type: ActivityRelaunchItem
+fields:
+    - name: Dest
+      type: opaque
+    - name: PendingResults
+      type: opaque
+    - name: PendingNewIntents
+      type: opaque
+    - name: Config
+      type: opaque
+    - name: ActivityWindowInfo
+      type: opaque
+    - name: ConfigChanges
+      type: int32
+    - name: PreserveWindow
+      type: bool

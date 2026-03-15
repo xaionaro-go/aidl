@@ -1,0 +1,9 @@
+package: com.android.ims.internal.uce.presence
+type: PresResInfo
+fields:
+    - name: ResUri
+      type: string16
+    - name: DisplayName
+      type: string16
+    - name: InstanceInfo
+      type: opaque

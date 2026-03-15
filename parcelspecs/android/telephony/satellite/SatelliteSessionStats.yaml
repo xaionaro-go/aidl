@@ -1,0 +1,22 @@
+package: android.telephony.satellite
+type: SatelliteSessionStats
+fields:
+    - name: CountOfSuccessfulUserMessages
+      type: int32
+    - name: CountOfUnsuccessfulUserMessages
+      type: int32
+    - name: CountOfTimedOutUserMessagesWaitingForConnection
+      type: int32
+    - name: CountOfTimedOutUserMessagesWaitingForAck
+      type: int32
+    - name: CountOfUserMessagesInQueueToBeSent
+      type: int32
+    - name: LatencyOfSuccessfulUserMessages
+      type: int64
+    - name: MaxLatency
+      type: int64
+    - name: LastMessageLatency
+      type: int64
+    - name: DatagramStats.size()
+      type: int32
+      condition: datagramStats!=null&&!datagramStats.isEmpty()

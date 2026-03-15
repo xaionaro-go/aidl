@@ -1,0 +1,47 @@
+package: com.android.internal.net
+type: VpnConfig
+fields:
+    - name: User
+      type: string16
+    - name: Interfaze
+      type: string16
+    - name: Session
+      type: string16
+    - name: Mtu
+      type: int32
+    - name: Addresses
+      type: opaque
+    - name: Routes
+      type: opaque
+    - name: DnsServers
+      type: opaque
+    - name: SearchDomains
+      type: opaque
+    - name: AllowedApplications
+      type: opaque
+    - name: DisallowedApplications
+      type: opaque
+    - name: ConfigureIntent
+      type: opaque
+    - name: StartTime
+      type: int64
+    - name: Legacy?1:0
+      type: int32
+    - name: Blocking?1:0
+      type: int32
+    - name: AllowBypass?1:0
+      type: int32
+    - name: AllowIPv4?1:0
+      type: int32
+    - name: AllowIPv6?1:0
+      type: int32
+    - name: IsMetered?1:0
+      type: int32
+    - name: RequiresInternetValidation?1:0
+      type: int32
+    - name: ExcludeLocalRoutes?1:0
+      type: int32
+    - name: UnderlyingNetworks
+      type: opaque
+    - name: ProxyInfo
+      type: opaque

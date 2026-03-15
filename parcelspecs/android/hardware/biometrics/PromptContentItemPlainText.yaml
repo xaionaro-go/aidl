@@ -1,0 +1,5 @@
+package: android.hardware.biometrics
+type: PromptContentItemPlainText
+fields:
+    - name: Text
+      type: string16

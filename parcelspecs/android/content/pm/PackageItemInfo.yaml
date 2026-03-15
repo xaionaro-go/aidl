@@ -1,0 +1,23 @@
+package: android.content.pm
+type: PackageItemInfo
+fields:
+    - name: Name
+      type: string8
+    - name: PackageName
+      type: string8
+    - name: LabelRes
+      type: int32
+    - name: NonLocalizedLabel
+      type: opaque
+    - name: Icon
+      type: int32
+    - name: Logo
+      type: int32
+    - name: MetaData
+      type: opaque
+    - name: Banner
+      type: int32
+    - name: ShowUserIcon
+      type: int32
+    - name: IsArchived
+      type: bool

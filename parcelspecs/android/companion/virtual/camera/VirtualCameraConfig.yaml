@@ -1,0 +1,13 @@
+package: android.companion.virtual.camera
+type: VirtualCameraConfig
+fields:
+    - name: Name
+      type: string8
+    - name: Callback
+      type: opaque
+    - name: StreamConfigurations.toArray(newVirtualCameraStreamConfig[0])
+      type: opaque
+    - name: SensorOrientation
+      type: int32
+    - name: LensFacing
+      type: int32

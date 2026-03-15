@@ -1,0 +1,11 @@
+package: android.app.smartspace.uitemplatedata
+type: SubCardTemplateData
+fields:
+    - name: Out
+      type: opaque
+    - name: SubCardIcon
+      type: opaque
+    - name: SubCardText
+      type: opaque
+    - name: SubCardAction
+      type: opaque

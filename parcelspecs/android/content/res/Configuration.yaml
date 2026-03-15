@@ -1,0 +1,58 @@
+package: android.content.res
+type: Configuration
+fields:
+    - name: FontScale
+      type: float32
+    - name: Mcc
+      type: int32
+    - name: Mnc
+      type: int32
+    - name: LocaleList
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: userSetLocale
+    - name: Touchscreen
+      type: int32
+    - name: Keyboard
+      type: int32
+    - name: KeyboardHidden
+      type: int32
+    - name: HardKeyboardHidden
+      type: int32
+    - name: Navigation
+      type: int32
+    - name: NavigationHidden
+      type: int32
+    - name: Orientation
+      type: int32
+    - name: ScreenLayout
+      type: int32
+    - name: ColorMode
+      type: int32
+    - name: UiMode
+      type: int32
+    - name: ScreenWidthDp
+      type: int32
+    - name: ScreenHeightDp
+      type: int32
+    - name: SmallestScreenWidthDp
+      type: int32
+    - name: DensityDpi
+      type: int32
+    - name: CompatScreenWidthDp
+      type: int32
+    - name: CompatScreenHeightDp
+      type: int32
+    - name: CompatSmallestScreenWidthDp
+      type: int32
+    - name: Dest
+      type: opaque
+    - name: AssetsSeq
+      type: int32
+    - name: Seq
+      type: int32
+    - name: FontWeightAdjustment
+      type: int32
+    - name: GrammaticalGender
+      type: int32

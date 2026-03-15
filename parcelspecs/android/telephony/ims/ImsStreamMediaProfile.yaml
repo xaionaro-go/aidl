@@ -1,0 +1,17 @@
+package: android.telephony.ims
+type: ImsStreamMediaProfile
+fields:
+    - name: AudioQuality
+      type: int32
+    - name: AudioDirection
+      type: int32
+    - name: AudioCodecAttributes
+      type: opaque
+    - name: VideoQuality
+      type: int32
+    - name: VideoDirection
+      type: int32
+    - name: RttMode
+      type: int32
+    - name: IsReceivingRttAudio
+      type: bool

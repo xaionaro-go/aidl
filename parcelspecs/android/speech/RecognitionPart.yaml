@@ -1,0 +1,14 @@
+package: android.speech
+type: RecognitionPart
+fields:
+    - name: Flg
+      type: int32
+    - name: RawText
+      type: string16
+    - name: FormattedText
+      type: string16
+      condition: mFormattedText!=null
+    - name: TimestampMillis
+      type: int64
+    - name: ConfidenceLevel
+      type: int32

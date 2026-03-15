@@ -1,0 +1,19 @@
+package: android.security.keystore.recovery
+type: KeyChainSnapshot
+fields:
+    - name: SnapshotVersion
+      type: int32
+    - name: KeyChainProtectionParams
+      type: opaque
+    - name: EncryptedRecoveryKeyBlob
+      type: opaque
+    - name: EntryRecoveryData
+      type: opaque
+    - name: MaxAttempts
+      type: int32
+    - name: CounterId
+      type: int64
+    - name: ServerParams
+      type: opaque
+    - name: CertPath
+      type: opaque

@@ -1,0 +1,5 @@
+package: android.service.quickaccesswallet
+type: WalletServiceEvent
+fields:
+    - name: EventType
+      type: int32

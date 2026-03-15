@@ -1,0 +1,13 @@
+package: android.location
+type: GnssAlmanac
+fields:
+    - name: IssueDateMillis
+      type: int64
+    - name: Iod
+      type: int32
+    - name: WeekNumber
+      type: int32
+    - name: ToaSeconds
+      type: int32
+    - name: GnssSatelliteAlmanacs
+      type: opaque

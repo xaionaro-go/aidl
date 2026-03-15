@@ -1,0 +1,5 @@
+package: com.android.internal.pm.pkg.component
+type: ParsedUsesPermissionImpl
+fields:
+    - name: UsesPermissionFlags
+      type: int32

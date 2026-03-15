@@ -1,0 +1,7 @@
+package: android.telephony
+type: ThermalMitigationRequest
+fields:
+    - name: ThermalMitigationAction
+      type: int32
+    - name: DataThrottlingRequest
+      type: opaque

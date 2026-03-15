@@ -1,0 +1,17 @@
+package: android.app
+type: ResultInfo
+fields:
+    - name: ResultWho
+      type: string16
+    - name: RequestCode
+      type: int32
+    - name: ResultCode
+      type: int32
+    - name: "1"
+      type: int32
+      condition: mData!=null
+    - name: Out
+      type: opaque
+      condition: mData!=null
+    - name: CallerToken
+      type: opaque

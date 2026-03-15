@@ -1,0 +1,17 @@
+package: android.window
+type: ClientWindowFrames
+fields:
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: AttachedFrame
+      type: opaque
+    - name: IsParentFrameClippedByDisplayCutout
+      type: bool
+    - name: CompatScale
+      type: float32
+    - name: Seq
+      type: int32

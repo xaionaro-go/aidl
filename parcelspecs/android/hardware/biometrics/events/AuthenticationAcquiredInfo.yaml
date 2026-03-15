@@ -1,0 +1,9 @@
+package: android.hardware.biometrics.events
+type: AuthenticationAcquiredInfo
+fields:
+    - name: BiometricSourceType
+      type: opaque
+    - name: RequestReason
+      type: int32
+    - name: AcquiredInfo
+      type: int32

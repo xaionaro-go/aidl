@@ -1,0 +1,5 @@
+package: com.android.internal.compat
+type: CompatibilityOverridesToRemoveConfig
+fields:
+    - name: ChangeIds.size()
+      type: int32

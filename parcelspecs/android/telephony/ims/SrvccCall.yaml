@@ -1,0 +1,9 @@
+package: android.telephony.ims
+type: SrvccCall
+fields:
+    - name: CallId
+      type: string16
+    - name: CallState
+      type: int32
+    - name: ImsCallProfile
+      type: opaque

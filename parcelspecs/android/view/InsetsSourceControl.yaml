@@ -1,0 +1,19 @@
+package: android.view
+type: InsetsSourceControl
+fields:
+    - name: Id
+      type: int32
+    - name: Type
+      type: int32
+    - name: Leash
+      type: opaque
+    - name: InitiallyVisible
+      type: bool
+    - name: SurfacePosition
+      type: opaque
+    - name: InsetsHint
+      type: opaque
+    - name: SkipAnimationOnce
+      type: bool
+    - name: ImeStatsToken
+      type: opaque

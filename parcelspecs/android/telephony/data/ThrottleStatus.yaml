@@ -1,0 +1,15 @@
+package: android.telephony.data
+type: ThrottleStatus
+fields:
+    - name: SlotIndex
+      type: int32
+    - name: TransportType
+      type: int32
+    - name: ApnType
+      type: int32
+    - name: ThrottleExpiryTimeMillis
+      type: int64
+    - name: RetryType
+      type: int32
+    - name: ThrottleType
+      type: int32

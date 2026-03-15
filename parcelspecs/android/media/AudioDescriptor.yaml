@@ -1,0 +1,9 @@
+package: android.media
+type: AudioDescriptor
+fields:
+    - name: Standard
+      type: int32
+    - name: EncapsulationType
+      type: int32
+    - name: Descriptor
+      type: opaque

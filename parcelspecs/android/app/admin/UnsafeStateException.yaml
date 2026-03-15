@@ -1,0 +1,7 @@
+package: android.app.admin
+type: UnsafeStateException
+fields:
+    - name: Operation
+      type: int32
+    - name: Reason
+      type: int32

@@ -1,0 +1,9 @@
+package: android.hardware.input
+type: InputDeviceIdentifier
+fields:
+    - name: Descriptor
+      type: string16
+    - name: VendorId
+      type: int32
+    - name: ProductId
+      type: int32

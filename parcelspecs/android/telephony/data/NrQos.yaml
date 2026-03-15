@@ -1,0 +1,11 @@
+package: android.telephony.data
+type: NrQos
+fields:
+    - name: Qos.QOS_TYPE_NR
+      type: opaque
+    - name: QosFlowId
+      type: int32
+    - name: FiveQi
+      type: int32
+    - name: AveragingWindowMs
+      type: int32

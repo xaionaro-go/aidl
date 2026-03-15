@@ -1,0 +1,7 @@
+package: android.app.wallpapereffectsgeneration
+type: CinematicEffectRequest
+fields:
+    - name: TaskId
+      type: string16
+    - name: Out
+      type: opaque

@@ -1,0 +1,9 @@
+package: android.telephony
+type: CallAttributes
+fields:
+    - name: PreciseCallState
+      type: opaque
+    - name: NetworkType
+      type: int32
+    - name: CallQuality
+      type: opaque

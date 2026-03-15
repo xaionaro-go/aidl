@@ -1,0 +1,7 @@
+package: android.telephony.satellite
+type: EarfcnRange
+fields:
+    - name: StartEarfcn
+      type: int32
+    - name: EndEarfcn
+      type: int32

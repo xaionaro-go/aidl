@@ -1,0 +1,35 @@
+package: android.companion.virtual
+type: VirtualDeviceParams
+fields:
+    - name: LockState
+      type: int32
+    - name: UsersWithMatchingAccounts
+      type: opaque
+    - name: DefaultNavigationPolicy
+      type: int32
+    - name: CrossTaskNavigationExemptions
+      type: opaque
+    - name: DefaultActivityPolicy
+      type: int32
+    - name: ActivityPolicyExemptions
+      type: opaque
+    - name: Name
+      type: string8
+    - name: DevicePolicies
+      type: opaque
+    - name: VirtualSensorConfigs
+      type: opaque
+    - name: VirtualSensorCallback!=null?mVirtualSensorCallback.asBinder():null
+      type: opaque
+    - name: AudioPlaybackSessionId
+      type: int32
+    - name: AudioRecordingSessionId
+      type: int32
+    - name: HomeComponent
+      type: opaque
+    - name: InputMethodComponent
+      type: opaque
+    - name: DimDuration
+      type: int64
+    - name: ScreenOffTimeout
+      type: int64

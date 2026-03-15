@@ -1,0 +1,49 @@
+package: android.app.people
+type: PeopleSpaceTile
+fields:
+    - name: Id
+      type: string16
+    - name: UserName
+      type: opaque
+    - name: UserIcon
+      type: opaque
+    - name: ContactUri
+      type: opaque
+    - name: UserHandle
+      type: opaque
+    - name: PackageName
+      type: string16
+    - name: BirthdayText
+      type: string16
+    - name: LastInteractionTimestamp
+      type: int64
+    - name: IsImportantConversation
+      type: bool
+    - name: NotificationKey
+      type: string16
+    - name: NotificationContent
+      type: opaque
+    - name: NotificationSender
+      type: opaque
+    - name: NotificationCategory
+      type: string16
+    - name: NotificationDataUri
+      type: opaque
+    - name: MessagesCount
+      type: int32
+    - name: Intent
+      type: opaque
+    - name: NotificationTimestamp
+      type: int64
+    - name: Statuses
+      type: opaque
+    - name: CanBypassDnd
+      type: bool
+    - name: IsPackageSuspended
+      type: bool
+    - name: IsUserQuieted
+      type: bool
+    - name: NotificationPolicyState
+      type: int32
+    - name: ContactAffinity
+      type: float32

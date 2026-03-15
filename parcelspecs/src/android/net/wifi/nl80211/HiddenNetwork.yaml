@@ -1,0 +1,5 @@
+package: src.android.net.wifi.nl80211
+type: HiddenNetwork
+fields:
+    - name: Ssid
+      type: opaque

@@ -1,0 +1,9 @@
+package: android.telephony.satellite
+type: AntennaDirection
+fields:
+    - name: X
+      type: float32
+    - name: "Y"
+      type: float32
+    - name: Z
+      type: float32

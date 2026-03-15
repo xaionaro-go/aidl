@@ -1,0 +1,17 @@
+package: android.service.quickaccesswallet
+type: WalletCard
+fields:
+    - name: CardId
+      type: string16
+    - name: CardType
+      type: int32
+    - name: Dest
+      type: opaque
+    - name: ContentDescription
+      type: opaque
+    - name: PendingIntent
+      type: opaque
+    - name: CardLabel
+      type: opaque
+    - name: CardLocations
+      type: opaque

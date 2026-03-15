@@ -1,0 +1,19 @@
+package: android.telephony
+type: CellSignalStrengthLte
+fields:
+    - name: Rssi
+      type: int32
+    - name: Rsrp
+      type: int32
+    - name: Rsrq
+      type: int32
+    - name: Rssnr
+      type: int32
+    - name: CqiTableIndex
+      type: int32
+    - name: Cqi
+      type: int32
+    - name: TimingAdvance
+      type: int32
+    - name: Level
+      type: int32

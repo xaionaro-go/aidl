@@ -1,0 +1,5 @@
+package: android.net
+type: StringNetworkSpecifier
+fields:
+    - name: Specifier
+      type: string16

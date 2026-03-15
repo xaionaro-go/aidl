@@ -1,0 +1,22 @@
+package: android.telephony
+type: CarrierRestrictionRules
+fields:
+    - name: AllowedCarriers
+      type: opaque
+    - name: ExcludedCarriers
+      type: opaque
+    - name: CarrierRestrictionDefault
+      type: int32
+    - name: MultiSimPolicy
+      type: int32
+    - name: CarrierRestrictionStatus
+      type: int32
+    - name: AllowedCarrierInfo
+      type: opaque
+      condition: Flags.carrierRestrictionRulesEnhancement()
+    - name: ExcludedCarrierInfo
+      type: opaque
+      condition: Flags.carrierRestrictionRulesEnhancement()
+    - name: UseCarrierLockInfo
+      type: bool
+      condition: Flags.carrierRestrictionRulesEnhancement()

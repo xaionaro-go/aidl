@@ -1,0 +1,5 @@
+package: android.location
+type: GnssRequest
+fields:
+    - name: FullTracking
+      type: bool

@@ -1,0 +1,23 @@
+package: android.location
+type: KeplerianOrbitModel
+fields:
+    - name: RootA
+      type: float64
+    - name: Eccentricity
+      type: float64
+    - name: I0
+      type: float64
+    - name: IDot
+      type: float64
+    - name: Omega
+      type: float64
+    - name: Omega0
+      type: float64
+    - name: OmegaDot
+      type: float64
+    - name: M0
+      type: float64
+    - name: DeltaN
+      type: float64
+    - name: SecondOrderHarmonicPerturbation
+      type: opaque

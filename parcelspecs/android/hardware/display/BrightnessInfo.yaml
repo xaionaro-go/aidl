@@ -1,0 +1,19 @@
+package: android.hardware.display
+type: BrightnessInfo
+fields:
+    - name: Brightness
+      type: float32
+    - name: AdjustedBrightness
+      type: float32
+    - name: BrightnessMinimum
+      type: float32
+    - name: BrightnessMaximum
+      type: float32
+    - name: HighBrightnessMode
+      type: int32
+    - name: HighBrightnessTransitionPoint
+      type: float32
+    - name: BrightnessMaxReason
+      type: int32
+    - name: IsBrightnessOverrideByWindow
+      type: bool

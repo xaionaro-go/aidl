@@ -1,0 +1,7 @@
+package: android.hardware.hdmi
+type: HdmiHotplugEvent
+fields:
+    - name: Port
+      type: int32
+    - name: (byte)(mConnected?1:0)
+      type: int32

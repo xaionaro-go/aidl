@@ -1,0 +1,8 @@
+package: com.android.internal.telephony
+type: CellNetworkScanResult
+fields:
+    - name: Status
+      type: int32
+    - name: Operators.size()
+      type: int32
+      condition: mOperators!=null&&mOperators.size()>0

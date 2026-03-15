@@ -1,0 +1,7 @@
+package: android.service.autofill
+type: DateTransformation
+fields:
+    - name: FieldId
+      type: opaque
+    - name: DateFormat
+      type: opaque

@@ -1,0 +1,7 @@
+package: com.android.internal.view
+type: AppearanceRegion
+fields:
+    - name: Appearance
+      type: int32
+    - name: Bounds
+      type: opaque

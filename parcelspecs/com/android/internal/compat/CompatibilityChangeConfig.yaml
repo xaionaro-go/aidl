@@ -1,0 +1,7 @@
+package: com.android.internal.compat
+type: CompatibilityChangeConfig
+fields:
+    - name: Enabled
+      type: opaque
+    - name: Disabled
+      type: opaque

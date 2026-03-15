@@ -1,0 +1,11 @@
+package: android.telephony.euicc
+type: EuiccNotification
+fields:
+    - name: Seq
+      type: int32
+    - name: TargetAddr
+      type: string16
+    - name: Event
+      type: int32
+    - name: Data
+      type: opaque

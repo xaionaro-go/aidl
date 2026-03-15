@@ -1,0 +1,5 @@
+package: android.content.pm
+type: Signature
+fields:
+    - name: Signature
+      type: opaque

@@ -1,0 +1,7 @@
+package: android.app.slice
+type: SliceSpec
+fields:
+    - name: Type
+      type: string16
+    - name: Revision
+      type: int32

@@ -1,0 +1,37 @@
+package: android.service.autofill
+type: Dataset
+fields:
+    - name: Presentation
+      type: opaque
+    - name: DialogPresentation
+      type: opaque
+    - name: InlinePresentation
+      type: opaque
+    - name: InlineTooltipPresentation
+      type: opaque
+    - name: FieldIds
+      type: opaque
+    - name: FieldValues
+      type: opaque
+    - name: FieldPresentations
+      type: opaque
+    - name: FieldDialogPresentations
+      type: opaque
+    - name: FieldInlinePresentations
+      type: opaque
+    - name: FieldInlineTooltipPresentations
+      type: opaque
+    - name: FieldFilters
+      type: opaque
+    - name: AutofillDatatypes
+      type: opaque
+    - name: FieldContent
+      type: opaque
+    - name: Authentication
+      type: opaque
+    - name: Id
+      type: string16
+    - name: EligibleReason
+      type: int32
+    - name: CredentialFillInIntent
+      type: opaque

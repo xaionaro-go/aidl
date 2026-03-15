@@ -1,0 +1,7 @@
+package: android.app.admin
+type: SystemUpdateInfo
+fields:
+    - name: GetReceivedTime()
+      type: int64
+    - name: GetSecurityPatchState()
+      type: int32

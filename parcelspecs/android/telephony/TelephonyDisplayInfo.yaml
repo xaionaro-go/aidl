@@ -1,0 +1,13 @@
+package: android.telephony
+type: TelephonyDisplayInfo
+fields:
+    - name: NetworkType
+      type: int32
+    - name: OverrideNetworkType
+      type: int32
+    - name: IsRoaming
+      type: bool
+    - name: IsNtn
+      type: bool
+    - name: IsSatelliteConstrainedData
+      type: bool

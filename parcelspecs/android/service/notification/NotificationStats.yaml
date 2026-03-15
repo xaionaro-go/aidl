@@ -1,0 +1,22 @@
+package: android.service.notification
+type: NotificationStats
+fields:
+    - name: (byte)(mSeen?1:0)
+      type: int32
+    - name: (byte)(mExpanded?1:0)
+      type: int32
+    - name: (byte)(mDirectReplied?1:0)
+      type: int32
+    - name: (byte)(mSmartReplied?1:0)
+      type: int32
+      condition: Flags.lifetimeExtensionRefactor()
+    - name: (byte)(mSnoozed?1:0)
+      type: int32
+    - name: (byte)(mViewedSettings?1:0)
+      type: int32
+    - name: (byte)(mInteracted?1:0)
+      type: int32
+    - name: DismissalSurface
+      type: int32
+    - name: DismissalSentiment
+      type: int32

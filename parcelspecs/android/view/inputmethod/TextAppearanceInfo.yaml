@@ -1,0 +1,47 @@
+package: android.view.inputmethod
+type: TextAppearanceInfo
+fields:
+    - name: TextSize
+      type: float32
+    - name: Dest
+      type: opaque
+    - name: AllCaps
+      type: bool
+    - name: SystemFontFamilyName
+      type: string8
+    - name: TextFontWeight
+      type: int32
+    - name: TextStyle
+      type: int32
+    - name: ShadowDx
+      type: float32
+    - name: ShadowDy
+      type: float32
+    - name: ShadowRadius
+      type: float32
+    - name: ShadowColor
+      type: int32
+    - name: ElegantTextHeight
+      type: bool
+    - name: FallbackLineSpacing
+      type: bool
+    - name: LetterSpacing
+      type: float32
+    - name: FontFeatureSettings
+      type: string8
+    - name: FontVariationSettings
+      type: string8
+    - name: LineBreakStyle
+      type: int32
+    - name: LineBreakWordStyle
+      type: int32
+    - name: TextScaleX
+      type: float32
+    - name: HighlightTextColor
+      type: int32
+    - name: TextColor
+      type: int32
+    - name: HintTextColor
+      type: int32
+    - name: LinkTextColor
+      type: int32

@@ -1,0 +1,11 @@
+package: android.telephony
+type: CellInfo
+fields:
+    - name: Type
+      type: int32
+    - name: Registered?1:0
+      type: int32
+    - name: TimeStamp
+      type: int64
+    - name: CellConnectionStatus
+      type: int32

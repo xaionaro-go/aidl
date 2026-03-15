@@ -1,0 +1,5 @@
+package: android.app.servertransaction
+type: ActivityTransactionItem
+fields:
+    - name: ActivityToken
+      type: opaque

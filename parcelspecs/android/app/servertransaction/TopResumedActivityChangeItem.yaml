@@ -1,0 +1,7 @@
+package: android.app.servertransaction
+type: TopResumedActivityChangeItem
+fields:
+    - name: Dest
+      type: opaque
+    - name: OnTop
+      type: bool

@@ -1,0 +1,5 @@
+package: android.service.autofill
+type: VisibilitySetterAction
+fields:
+    - name: Visibilities
+      type: opaque

@@ -1,0 +1,19 @@
+package: android.view
+type: DisplayShape
+fields:
+    - name: DisplayShapeSpec
+      type: string8
+    - name: DisplayWidth
+      type: int32
+    - name: DisplayHeight
+      type: int32
+    - name: PhysicalPixelDisplaySizeRatio
+      type: float32
+    - name: Rotation
+      type: int32
+    - name: OffsetX
+      type: int32
+    - name: OffsetY
+      type: int32
+    - name: Scale
+      type: float32

@@ -1,0 +1,15 @@
+package: android.telephony
+type: CellSignalStrengthCdma
+fields:
+    - name: CdmaDbm
+      type: int32
+    - name: CdmaEcio
+      type: int32
+    - name: EvdoDbm
+      type: int32
+    - name: EvdoEcio
+      type: int32
+    - name: EvdoSnr
+      type: int32
+    - name: Level
+      type: int32

@@ -1,0 +1,11 @@
+package: android.media
+type: BluetoothProfileConnectionInfo
+fields:
+    - name: Profile
+      type: int32
+    - name: SupprNoisy
+      type: bool
+    - name: Volume
+      type: int32
+    - name: IsLeOutput
+      type: bool

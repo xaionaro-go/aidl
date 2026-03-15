@@ -1,0 +1,5 @@
+package: android.security.keymaster
+type: KeymasterArguments
+fields:
+    - name: Arguments
+      type: opaque

@@ -1,0 +1,15 @@
+package: com.android.ims
+type: ImsFeatureContainer
+fields:
+    - name: ImsFeature
+      type: opaque
+    - name: ImsConfig
+      type: opaque
+    - name: ImsRegistration
+      type: opaque
+    - name: SipTransport
+      type: opaque
+    - name: State
+      type: int32
+    - name: Capabilities
+      type: int64

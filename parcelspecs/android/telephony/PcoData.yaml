@@ -1,0 +1,11 @@
+package: android.telephony
+type: PcoData
+fields:
+    - name: Cid
+      type: int32
+    - name: BearerProto
+      type: string16
+    - name: PcoId
+      type: int32
+    - name: Contents
+      type: opaque

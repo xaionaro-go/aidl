@@ -1,0 +1,7 @@
+package: android.media
+type: NearbyDevice
+fields:
+    - name: MediaRoute2Id
+      type: string8
+    - name: RangeZone
+      type: int32

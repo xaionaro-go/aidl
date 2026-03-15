@@ -1,0 +1,11 @@
+package: android.app
+type: GameState
+fields:
+    - name: IsLoading
+      type: bool
+    - name: Mode
+      type: int32
+    - name: Label
+      type: int32
+    - name: Quality
+      type: int32

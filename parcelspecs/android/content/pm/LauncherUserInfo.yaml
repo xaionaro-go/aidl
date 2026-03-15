@@ -1,0 +1,9 @@
+package: android.content.pm
+type: LauncherUserInfo
+fields:
+    - name: UserType
+      type: opaque
+    - name: UserSerialNumber
+      type: int32
+    - name: UserConfig
+      type: opaque

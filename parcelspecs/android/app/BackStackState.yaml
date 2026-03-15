@@ -1,0 +1,27 @@
+package: android.app
+type: BackStackState
+fields:
+    - name: Ops
+      type: opaque
+    - name: Transition
+      type: int32
+    - name: TransitionStyle
+      type: int32
+    - name: Name
+      type: string16
+    - name: Index
+      type: int32
+    - name: BreadCrumbTitleRes
+      type: int32
+    - name: BreadCrumbTitleText
+      type: opaque
+    - name: BreadCrumbShortTitleRes
+      type: int32
+    - name: BreadCrumbShortTitleText
+      type: opaque
+    - name: SharedElementSourceNames
+      type: opaque
+    - name: SharedElementTargetNames
+      type: opaque
+    - name: ReorderingAllowed?1:0
+      type: int32

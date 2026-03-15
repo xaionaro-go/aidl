@@ -1,0 +1,19 @@
+package: android.location
+type: BeidouAssistance
+fields:
+    - name: Almanac
+      type: opaque
+    - name: IonosphericModel
+      type: opaque
+    - name: UtcModel
+      type: opaque
+    - name: LeapSecondsModel
+      type: opaque
+    - name: TimeModels
+      type: opaque
+    - name: SatelliteEphemeris
+      type: opaque
+    - name: RealTimeIntegrityModels
+      type: opaque
+    - name: SatelliteCorrections
+      type: opaque

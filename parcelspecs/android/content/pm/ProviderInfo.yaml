@@ -1,0 +1,27 @@
+package: android.content.pm
+type: ProviderInfo
+fields:
+    - name: Out
+      type: opaque
+    - name: Authority
+      type: string8
+    - name: ReadPermission
+      type: string8
+    - name: WritePermission
+      type: string8
+    - name: GrantUriPermissions?1:0
+      type: int32
+    - name: ForceUriPermissions?1:0
+      type: int32
+    - name: UriPermissionPatterns
+      type: opaque
+    - name: PathPermissions
+      type: opaque
+    - name: Multiprocess?1:0
+      type: int32
+    - name: InitOrder
+      type: int32
+    - name: Flags
+      type: int32
+    - name: IsSyncable?1:0
+      type: int32

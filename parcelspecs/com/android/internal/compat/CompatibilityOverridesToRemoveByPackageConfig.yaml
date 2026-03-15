@@ -1,0 +1,5 @@
+package: com.android.internal.compat
+type: CompatibilityOverridesToRemoveByPackageConfig
+fields:
+    - name: PackageNameToOverridesToRemove.size()
+      type: int32

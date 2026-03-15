@@ -1,0 +1,9 @@
+package: android.telephony.ims
+type: ImsReasonInfo
+fields:
+    - name: Code
+      type: int32
+    - name: ExtraCode
+      type: int32
+    - name: ExtraMessage
+      type: string16

@@ -1,0 +1,6 @@
+package: android.os
+type: ShellCallback
+fields:
+    - name: "Null"
+      type: opaque
+      condition: callback==null

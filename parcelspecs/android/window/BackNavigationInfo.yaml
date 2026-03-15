@@ -1,0 +1,23 @@
+package: android.window
+type: BackNavigationInfo
+fields:
+    - name: Type
+      type: int32
+    - name: OnBackNavigationDone
+      type: opaque
+    - name: OnBackInvokedCallback
+      type: opaque
+    - name: PrepareRemoteAnimation
+      type: bool
+    - name: AnimationCallback
+      type: bool
+    - name: CustomAnimationInfo
+      type: opaque
+    - name: LetterboxColor
+      type: int32
+    - name: TouchableRegion
+      type: opaque
+    - name: AppProgressGenerationAllowed
+      type: bool
+    - name: FocusedTaskId
+      type: int32

@@ -1,0 +1,9 @@
+package: android.app.pinner
+type: PinnedFileStat
+fields:
+    - name: Filename
+      type: string8
+    - name: BytesPinned
+      type: int64
+    - name: GroupName
+      type: string8

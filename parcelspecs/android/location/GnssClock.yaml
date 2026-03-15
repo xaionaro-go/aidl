@@ -1,0 +1,33 @@
+package: android.location
+type: GnssClock
+fields:
+    - name: Flags
+      type: int32
+    - name: LeapSecond
+      type: int32
+    - name: TimeNanos
+      type: int64
+    - name: TimeUncertaintyNanos
+      type: float64
+    - name: FullBiasNanos
+      type: int64
+    - name: BiasNanos
+      type: float64
+    - name: BiasUncertaintyNanos
+      type: float64
+    - name: DriftNanosPerSecond
+      type: float64
+    - name: DriftUncertaintyNanosPerSecond
+      type: float64
+    - name: HardwareClockDiscontinuityCount
+      type: int32
+    - name: ElapsedRealtimeNanos
+      type: int64
+    - name: ElapsedRealtimeUncertaintyNanos
+      type: float64
+    - name: ReferenceConstellationTypeForIsb
+      type: int32
+    - name: ReferenceCarrierFrequencyHzForIsb
+      type: float64
+    - name: ReferenceCodeTypeForIsb
+      type: string16

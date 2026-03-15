@@ -1,0 +1,7 @@
+package: android.service.settings.preferences
+type: MetadataResult
+fields:
+    - name: ResultCode
+      type: int32
+    - name: MetadataList
+      type: opaque

@@ -1,0 +1,5 @@
+package: android.net.metrics
+type: DhcpErrorEvent
+fields:
+    - name: ErrorCode
+      type: int32

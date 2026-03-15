@@ -1,0 +1,7 @@
+package: android.os
+type: BatteryProperty
+fields:
+    - name: ValueLong
+      type: int64
+    - name: ValueString
+      type: string8

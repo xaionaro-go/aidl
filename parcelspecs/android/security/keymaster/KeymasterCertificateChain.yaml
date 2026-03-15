@@ -1,0 +1,6 @@
+package: android.security.keymaster
+type: KeymasterCertificateChain
+fields:
+    - name: "0"
+      type: int32
+      condition: mCertificates==null

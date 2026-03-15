@@ -1,0 +1,17 @@
+package: android.telephony
+type: CellIdentityNr
+fields:
+    - name: Dest
+      type: opaque
+    - name: Pci
+      type: int32
+    - name: Tac
+      type: int32
+    - name: NrArfcn
+      type: int32
+    - name: Bands
+      type: opaque
+    - name: Nci
+      type: int64
+    - name: AdditionalPlmns
+      type: opaque

@@ -1,0 +1,7 @@
+package: android.hardware.location
+type: ActivityChangedEvent
+fields:
+    - name: ActivityRecognitionEventArray.length
+      type: int32
+    - name: ActivityRecognitionEventArray
+      type: opaque

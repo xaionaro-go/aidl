@@ -1,0 +1,9 @@
+package: android.app.smartspace
+type: SmartspaceTargetEvent
+fields:
+    - name: SmartspaceTarget
+      type: opaque
+    - name: SmartspaceActionId
+      type: string16
+    - name: EventType
+      type: int32

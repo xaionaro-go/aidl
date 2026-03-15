@@ -1,0 +1,9 @@
+package: com.android.internal.telephony
+type: NetworkScanResult
+fields:
+    - name: ScanStatus
+      type: int32
+    - name: ScanError
+      type: int32
+    - name: NetworkInfos
+      type: opaque

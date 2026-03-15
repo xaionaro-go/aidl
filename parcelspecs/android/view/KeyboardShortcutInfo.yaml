@@ -1,0 +1,13 @@
+package: android.view
+type: KeyboardShortcutInfo
+fields:
+    - name: Label
+      type: opaque
+    - name: Icon
+      type: opaque
+    - name: BaseCharacter
+      type: int32
+    - name: Keycode
+      type: int32
+    - name: Modifiers
+      type: int32

@@ -1,0 +1,16 @@
+package: android.service.notification
+type: ZenPolicy
+fields:
+    - name: PriorityCategories
+      type: opaque
+    - name: VisualEffects
+      type: opaque
+    - name: PriorityMessages
+      type: int32
+    - name: PriorityCalls
+      type: int32
+    - name: ConversationSenders
+      type: int32
+    - name: AllowChannels
+      type: int32
+      condition: Flags.modesApi()

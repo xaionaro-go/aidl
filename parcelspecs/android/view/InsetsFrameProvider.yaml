@@ -1,0 +1,19 @@
+package: android.view
+type: InsetsFrameProvider
+fields:
+    - name: Id
+      type: int32
+    - name: Source
+      type: int32
+    - name: Flags
+      type: int32
+    - name: InsetsSize
+      type: opaque
+    - name: InsetsSizeOverrides
+      type: opaque
+    - name: ArbitraryRectangle
+      type: opaque
+    - name: MinimalInsetsSizeInDisplayCutoutSafe
+      type: opaque
+    - name: BoundingRects
+      type: opaque

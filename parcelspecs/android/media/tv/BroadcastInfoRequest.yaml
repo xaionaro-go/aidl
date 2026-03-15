@@ -1,0 +1,9 @@
+package: android.media.tv
+type: BroadcastInfoRequest
+fields:
+    - name: Type
+      type: int32
+    - name: RequestId
+      type: int32
+    - name: Option
+      type: int32

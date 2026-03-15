@@ -1,0 +1,16 @@
+package: android.content.pm
+type: ApkChecksum
+fields:
+    - name: Flg
+      type: int32
+    - name: SplitName
+      type: string16
+      condition: mSplitName!=null
+    - name: Checksum
+      type: opaque
+    - name: InstallerPackageName
+      type: string16
+      condition: mInstallerPackageName!=null
+    - name: InstallerCertificate
+      type: opaque
+      condition: mInstallerCertificate!=null

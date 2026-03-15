@@ -1,0 +1,5 @@
+package: android.telephony.satellite
+type: SatelliteDatagram
+fields:
+    - name: Data
+      type: opaque

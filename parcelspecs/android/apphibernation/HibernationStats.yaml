@@ -1,0 +1,5 @@
+package: android.apphibernation
+type: HibernationStats
+fields:
+    - name: DiskBytesSaved
+      type: int64

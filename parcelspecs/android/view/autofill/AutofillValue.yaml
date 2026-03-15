@@ -1,0 +1,5 @@
+package: android.view.autofill
+type: AutofillValue
+fields:
+    - name: Type
+      type: int32

@@ -1,0 +1,17 @@
+package: android.telephony.ims
+type: ImsExternalCallState
+fields:
+    - name: CallId
+      type: int32
+    - name: Address
+      type: opaque
+    - name: LocalAddress
+      type: opaque
+    - name: IsPullable?1:0
+      type: int32
+    - name: CallState
+      type: int32
+    - name: CallType
+      type: int32
+    - name: IsHeld?1:0
+      type: int32

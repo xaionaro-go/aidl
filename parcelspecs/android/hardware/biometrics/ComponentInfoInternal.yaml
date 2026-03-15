@@ -1,0 +1,13 @@
+package: android.hardware.biometrics
+type: ComponentInfoInternal
+fields:
+    - name: ComponentId
+      type: string16
+    - name: HardwareVersion
+      type: string16
+    - name: FirmwareVersion
+      type: string16
+    - name: SerialNumber
+      type: string16
+    - name: SoftwareVersion
+      type: string16

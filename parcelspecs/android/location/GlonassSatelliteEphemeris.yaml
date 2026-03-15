@@ -1,0 +1,15 @@
+package: android.location
+type: GlonassSatelliteEphemeris
+fields:
+    - name: SlotNumber
+      type: int32
+    - name: HealthState
+      type: int32
+    - name: FrameTimeSeconds
+      type: float64
+    - name: AgeInDays
+      type: int32
+    - name: SatelliteClockModel
+      type: opaque
+    - name: SatelliteOrbitModel
+      type: opaque

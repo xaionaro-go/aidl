@@ -1,0 +1,13 @@
+package: android.hardware.contexthub
+type: HubMessage
+fields:
+    - name: MessageType
+      type: int32
+    - name: MessageBody.length
+      type: int32
+    - name: MessageBody
+      type: opaque
+    - name: DeliveryParams.isResponseRequired()?1:0
+      type: int32
+    - name: MessageSequenceNumber
+      type: int32

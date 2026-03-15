@@ -1,0 +1,13 @@
+package: android.text
+type: FontConfig
+fields:
+    - name: Families
+      type: opaque
+    - name: Aliases
+      type: opaque
+    - name: NamedFamilyLists
+      type: opaque
+    - name: LastModifiedTimeMillis
+      type: int64
+    - name: ConfigVersion
+      type: int32

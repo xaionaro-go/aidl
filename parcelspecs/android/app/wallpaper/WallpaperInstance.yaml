@@ -1,0 +1,9 @@
+package: android.app.wallpaper
+type: WallpaperInstance
+fields:
+    - name: Info
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: IdOverride
+      type: string8

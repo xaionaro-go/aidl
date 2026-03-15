@@ -1,0 +1,25 @@
+package: android.app.servertransaction
+type: WindowStateResizeItem
+fields:
+    - name: Dest
+      type: opaque
+    - name: Frames
+      type: opaque
+    - name: ReportDraw
+      type: bool
+    - name: Configuration
+      type: opaque
+    - name: InsetsState
+      type: opaque
+    - name: ForceLayout
+      type: bool
+    - name: AlwaysConsumeSystemBars
+      type: bool
+    - name: DisplayId
+      type: int32
+    - name: SyncSeqId
+      type: int32
+    - name: DragResizing
+      type: bool
+    - name: ActivityWindowInfo
+      type: opaque

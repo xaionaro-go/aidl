@@ -1,0 +1,11 @@
+package: android.location
+type: GnssReflectingPlane
+fields:
+    - name: LatitudeDegrees
+      type: float64
+    - name: LongitudeDegrees
+      type: float64
+    - name: AltitudeMeters
+      type: float64
+    - name: AzimuthDegrees
+      type: float64

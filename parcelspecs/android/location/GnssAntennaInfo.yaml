@@ -1,0 +1,11 @@
+package: android.location
+type: GnssAntennaInfo
+fields:
+    - name: CarrierFrequencyMHz
+      type: float64
+    - name: PhaseCenterOffset
+      type: opaque
+    - name: PhaseCenterVariationCorrections
+      type: opaque
+    - name: SignalGainCorrections
+      type: opaque

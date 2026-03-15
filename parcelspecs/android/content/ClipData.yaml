@@ -1,0 +1,13 @@
+package: android.content
+type: ClipData
+fields:
+    - name: Dest
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: mIcon!=null
+    - name: Dest
+      type: opaque
+      condition: mIcon!=null
+    - name: "N"
+      type: int32

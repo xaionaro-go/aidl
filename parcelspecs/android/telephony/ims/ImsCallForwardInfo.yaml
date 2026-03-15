@@ -1,0 +1,15 @@
+package: android.telephony.ims
+type: ImsCallForwardInfo
+fields:
+    - name: Condition
+      type: int32
+    - name: Status
+      type: int32
+    - name: ToA
+      type: int32
+    - name: Number
+      type: string16
+    - name: TimeSeconds
+      type: int32
+    - name: ServiceClass
+      type: int32

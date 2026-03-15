@@ -1,0 +1,23 @@
+package: android.media.midi
+type: MidiDeviceInfo
+fields:
+    - name: Type
+      type: int32
+    - name: Id
+      type: int32
+    - name: InputPortCount
+      type: int32
+    - name: OutputPortCount
+      type: int32
+    - name: InputPortNames
+      type: opaque
+    - name: OutputPortNames
+      type: opaque
+    - name: IsPrivate?1:0
+      type: int32
+    - name: DefaultProtocol
+      type: int32
+    - name: GetBasicProperties(newString[]{PROPERTY_NAME,PROPERTY_MANUFACTURER,PROPERTY_PRODUCT,PROPERTY_VERSION,PROPERTY_SERIAL_NUMBER,PROPERTY_ALSA_CARD,PROPERTY_ALSA_DEVICE})
+      type: opaque
+    - name: Properties
+      type: opaque

@@ -1,0 +1,19 @@
+package: android.content.pm
+type: PermissionInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: ProtectionLevel
+      type: int32
+    - name: Flags
+      type: int32
+    - name: Group
+      type: string8
+    - name: BackgroundPermission
+      type: string8
+    - name: DescriptionRes
+      type: int32
+    - name: RequestRes
+      type: int32
+    - name: NonLocalizedDescription
+      type: opaque

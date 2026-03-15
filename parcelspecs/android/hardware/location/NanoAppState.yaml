@@ -1,0 +1,13 @@
+package: android.hardware.location
+type: NanoAppState
+fields:
+    - name: NanoAppId
+      type: int64
+    - name: NanoAppVersion
+      type: int32
+    - name: IsEnabled?1:0
+      type: int32
+    - name: NanoAppPermissions
+      type: opaque
+    - name: NanoAppRpcServiceList.toArray(newNanoAppRpcService[0])
+      type: opaque

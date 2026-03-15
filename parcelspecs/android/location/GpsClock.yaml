@@ -1,0 +1,23 @@
+package: android.location
+type: GpsClock
+fields:
+    - name: Flags
+      type: int32
+    - name: LeapSecond
+      type: int32
+    - name: Type
+      type: int32
+    - name: TimeInNs
+      type: int64
+    - name: TimeUncertaintyInNs
+      type: float64
+    - name: FullBiasInNs
+      type: int64
+    - name: BiasInNs
+      type: float64
+    - name: BiasUncertaintyInNs
+      type: float64
+    - name: DriftInNsPerSec
+      type: float64
+    - name: DriftUncertaintyInNsPerSec
+      type: float64

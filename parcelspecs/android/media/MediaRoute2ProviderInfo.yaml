@@ -1,0 +1,7 @@
+package: android.media
+type: MediaRoute2ProviderInfo
+fields:
+    - name: UniqueId
+      type: string16
+    - name: Routes
+      type: opaque

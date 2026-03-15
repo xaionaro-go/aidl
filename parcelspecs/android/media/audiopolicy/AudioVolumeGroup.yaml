@@ -1,0 +1,11 @@
+package: android.media.audiopolicy
+type: AudioVolumeGroup
+fields:
+    - name: Name
+      type: string16
+    - name: Id
+      type: int32
+    - name: AudioAttributes.length
+      type: int32
+    - name: LegacyStreamTypes.length
+      type: int32

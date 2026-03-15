@@ -1,0 +1,13 @@
+package: android.media.tv
+type: TvStreamConfig
+fields:
+    - name: StreamId
+      type: int32
+    - name: Type
+      type: int32
+    - name: MaxWidth
+      type: int32
+    - name: MaxHeight
+      type: int32
+    - name: Generation
+      type: int32

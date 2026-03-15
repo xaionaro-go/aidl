@@ -1,0 +1,11 @@
+package: android.app.servertransaction
+type: ResumeActivityItem
+fields:
+    - name: Dest
+      type: opaque
+    - name: ProcState
+      type: int32
+    - name: IsForward
+      type: bool
+    - name: ShouldSendCompatFakeFocus
+      type: bool

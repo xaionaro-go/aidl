@@ -1,0 +1,19 @@
+package: android.window
+type: PictureInPictureSurfaceTransaction
+fields:
+    - name: Alpha
+      type: float32
+    - name: Position
+      type: opaque
+    - name: Float9
+      type: opaque
+    - name: Rotation
+      type: float32
+    - name: CornerRadius
+      type: float32
+    - name: ShadowRadius
+      type: float32
+    - name: WindowCrop
+      type: opaque
+    - name: ShouldDisableCanAffectSystemUiFlags
+      type: bool

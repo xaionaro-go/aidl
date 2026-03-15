@@ -1,0 +1,7 @@
+package: android.telephony.ims
+type: SipDelegateImsConfiguration
+fields:
+    - name: Version
+      type: int64
+    - name: Bundle
+      type: opaque

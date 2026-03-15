@@ -1,0 +1,7 @@
+package: com.android.ims.internal.uce.presence
+type: PresCapInfo
+fields:
+    - name: ContactUri
+      type: string16
+    - name: CapInfo
+      type: opaque

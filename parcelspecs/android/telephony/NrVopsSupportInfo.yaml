@@ -1,0 +1,11 @@
+package: android.telephony
+type: NrVopsSupportInfo
+fields:
+    - name: Out
+      type: opaque
+    - name: VopsSupport
+      type: int32
+    - name: EmcSupport
+      type: int32
+    - name: EmfSupport
+      type: int32

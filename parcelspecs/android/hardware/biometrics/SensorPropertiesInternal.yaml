@@ -1,0 +1,15 @@
+package: android.hardware.biometrics
+type: SensorPropertiesInternal
+fields:
+    - name: SensorId
+      type: int32
+    - name: SensorStrength
+      type: int32
+    - name: MaxEnrollmentsPerUser
+      type: int32
+    - name: ComponentInfo
+      type: opaque
+    - name: ResetLockoutRequiresHardwareAuthToken
+      type: bool
+    - name: ResetLockoutRequiresChallenge
+      type: bool

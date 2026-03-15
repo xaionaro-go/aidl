@@ -1,0 +1,17 @@
+package: android.app
+type: ApplicationErrorReport
+fields:
+    - name: Type
+      type: int32
+    - name: PackageName
+      type: string16
+    - name: InstallerPackageName
+      type: string16
+    - name: ProcessName
+      type: string16
+    - name: Time
+      type: int64
+    - name: SystemApp?1:0
+      type: int32
+    - name: CrashInfo!=null?1:0
+      type: int32

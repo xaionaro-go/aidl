@@ -1,0 +1,5 @@
+package: android.app.contextualsearch
+type: CallbackToken
+fields:
+    - name: Token
+      type: opaque

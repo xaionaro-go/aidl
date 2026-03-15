@@ -1,0 +1,21 @@
+package: android.telephony
+type: CellIdentityLte
+fields:
+    - name: Dest
+      type: opaque
+    - name: Ci
+      type: int32
+    - name: Pci
+      type: int32
+    - name: Tac
+      type: int32
+    - name: Earfcn
+      type: int32
+    - name: Bands
+      type: opaque
+    - name: Bandwidth
+      type: int32
+    - name: AdditionalPlmns
+      type: opaque
+    - name: CsgInfo
+      type: opaque

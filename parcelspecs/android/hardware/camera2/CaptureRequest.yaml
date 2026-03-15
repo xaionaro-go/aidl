@@ -1,0 +1,17 @@
+package: android.hardware.camera2
+type: CaptureRequest
+fields:
+    - name: PhysicalCameraCount
+      type: int32
+    - name: LogicalCameraId
+      type: string16
+    - name: Dest
+      type: opaque
+    - name: IsReprocess?1:0
+      type: int32
+    - name: "1"
+      type: int32
+      condition: mUserTag!=null && userTagStr!=null&&userTagStr.startsWith(SET_TAG_STRING_PREFIX)
+    - name: UserTagStr.substring(SET_TAG_STRING_PREFIX.length())
+      type: string16
+      condition: mUserTag!=null && userTagStr!=null&&userTagStr.startsWith(SET_TAG_STRING_PREFIX)

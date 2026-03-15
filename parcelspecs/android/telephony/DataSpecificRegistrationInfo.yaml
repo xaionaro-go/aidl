@@ -1,0 +1,17 @@
+package: android.telephony
+type: DataSpecificRegistrationInfo
+fields:
+    - name: MaxDataCalls
+      type: int32
+    - name: IsDcNrRestricted
+      type: bool
+    - name: IsNrAvailable
+      type: bool
+    - name: IsEnDcAvailable
+      type: bool
+    - name: VopsSupportInfo
+      type: opaque
+    - name: LteAttachResultType
+      type: int32
+    - name: LteAttachExtraInfo
+      type: int32

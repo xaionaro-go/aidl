@@ -1,0 +1,41 @@
+package: android.os
+type: BatterySaverPolicyConfig
+fields:
+    - name: AdjustBrightnessFactor
+      type: float32
+    - name: AdvertiseIsEnabled
+      type: bool
+    - name: DeferFullBackup
+      type: bool
+    - name: DeferKeyValueBackup
+      type: bool
+    - name: Size
+      type: int32
+    - name: DisableAnimation
+      type: bool
+    - name: DisableAod
+      type: bool
+    - name: DisableLaunchBoost
+      type: bool
+    - name: DisableOptionalSensors
+      type: bool
+    - name: DisableVibration
+      type: bool
+    - name: EnableAdjustBrightness
+      type: bool
+    - name: EnableDataSaver
+      type: bool
+    - name: EnableFirewall
+      type: bool
+    - name: EnableNightMode
+      type: bool
+    - name: EnableQuickDoze
+      type: bool
+    - name: ForceAllAppsStandby
+      type: bool
+    - name: ForceBackgroundCheck
+      type: bool
+    - name: LocationMode
+      type: int32
+    - name: SoundTriggerMode
+      type: int32

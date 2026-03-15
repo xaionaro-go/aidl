@@ -1,0 +1,5 @@
+package: android.security.keymaster
+type: KeymasterArgument
+fields:
+    - name: Tag
+      type: int32

@@ -1,0 +1,5 @@
+package: android.content.pm
+type: SigningInfo
+fields:
+    - name: Dest
+      type: opaque

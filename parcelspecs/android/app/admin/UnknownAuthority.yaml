@@ -1,0 +1,5 @@
+package: android.app.admin
+type: UnknownAuthority
+fields:
+    - name: Name
+      type: string8

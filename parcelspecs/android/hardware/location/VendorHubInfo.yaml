@@ -1,0 +1,9 @@
+package: android.hardware.location
+type: VendorHubInfo
+fields:
+    - name: Name
+      type: string16
+    - name: Version
+      type: int32
+    - name: Out
+      type: opaque

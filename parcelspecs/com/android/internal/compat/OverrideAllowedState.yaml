@@ -1,0 +1,9 @@
+package: com.android.internal.compat
+type: OverrideAllowedState
+fields:
+    - name: State
+      type: int32
+    - name: AppTargetSdk
+      type: int32
+    - name: ChangeIdTargetSdk
+      type: int32

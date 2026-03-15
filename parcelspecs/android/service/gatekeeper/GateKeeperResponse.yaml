@@ -1,0 +1,8 @@
+package: android.service.gatekeeper
+type: GateKeeperResponse
+fields:
+    - name: ResponseCode
+      type: int32
+    - name: Timeout
+      type: int32
+      condition: mResponseCode==RESPONSE_RETRY

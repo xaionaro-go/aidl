@@ -1,0 +1,23 @@
+package: android.view
+type: InsetsSource
+fields:
+    - name: Id
+      type: int32
+    - name: Type
+      type: int32
+    - name: Dest
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: mVisibleFrame!=null
+    - name: Dest
+      type: opaque
+      condition: mVisibleFrame!=null
+    - name: Visible
+      type: bool
+    - name: Flags
+      type: int32
+    - name: SideHint
+      type: int32
+    - name: BoundingRects
+      type: opaque

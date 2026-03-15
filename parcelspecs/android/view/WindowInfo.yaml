@@ -1,0 +1,41 @@
+package: android.view
+type: WindowInfo
+fields:
+    - name: DisplayId
+      type: int32
+    - name: TaskId
+      type: int32
+    - name: Type
+      type: int32
+    - name: Layer
+      type: int32
+    - name: Token
+      type: opaque
+    - name: ParentToken
+      type: opaque
+    - name: ActivityToken
+      type: opaque
+    - name: Focused?1:0
+      type: int32
+    - name: Parcel
+      type: opaque
+    - name: Title
+      type: opaque
+    - name: AccessibilityIdOfAnchor
+      type: int64
+    - name: InPictureInPicture?1:0
+      type: int32
+    - name: HasFlagWatchOutsideTouch?1:0
+      type: int32
+    - name: TransformMatrix
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: childTokens!=null&&!childTokens.isEmpty()
+    - name: ChildTokens
+      type: opaque
+      condition: childTokens!=null&&!childTokens.isEmpty()
+    - name: Parcel
+      type: opaque
+    - name: Locales
+      type: opaque

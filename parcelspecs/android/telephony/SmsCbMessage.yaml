@@ -1,0 +1,37 @@
+package: android.telephony
+type: SmsCbMessage
+fields:
+    - name: MessageFormat
+      type: int32
+    - name: GeographicalScope
+      type: int32
+    - name: SerialNumber
+      type: int32
+    - name: Dest
+      type: opaque
+    - name: ServiceCategory
+      type: int32
+    - name: Language
+      type: string16
+    - name: DataCodingScheme
+      type: int32
+    - name: Body
+      type: string16
+    - name: Priority
+      type: int32
+    - name: '''E'''
+      type: int32
+      condition: mEtwsWarningInfo!=null
+    - name: Dest
+      type: opaque
+      condition: mEtwsWarningInfo!=null
+    - name: ReceivedTimeMillis
+      type: int64
+    - name: Geometries!=null?CbGeoUtils.encodeGeometriesToString(mGeometries):null
+      type: string16
+    - name: MaximumWaitTimeSec
+      type: int32
+    - name: SlotIndex
+      type: int32
+    - name: SubId
+      type: int32

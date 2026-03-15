@@ -1,0 +1,11 @@
+package: android.window
+type: OnBackInvokedCallbackInfo
+fields:
+    - name: Callback
+      type: opaque
+    - name: Priority
+      type: int32
+    - name: IsAnimationCallback
+      type: bool
+    - name: OverrideBehavior
+      type: int32

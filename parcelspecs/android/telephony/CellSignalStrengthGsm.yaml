@@ -1,0 +1,11 @@
+package: android.telephony
+type: CellSignalStrengthGsm
+fields:
+    - name: Rssi
+      type: int32
+    - name: BitErrorRate
+      type: int32
+    - name: TimingAdvance
+      type: int32
+    - name: Level
+      type: int32

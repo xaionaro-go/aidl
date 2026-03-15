@@ -1,0 +1,7 @@
+package: android.app.admin
+type: UserRestrictionPolicyKey
+fields:
+    - name: GetIdentifier()
+      type: string16
+    - name: Restriction
+      type: string16

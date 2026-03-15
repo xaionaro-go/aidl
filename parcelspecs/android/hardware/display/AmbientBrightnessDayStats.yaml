@@ -1,0 +1,9 @@
+package: android.hardware.display
+type: AmbientBrightnessDayStats
+fields:
+    - name: LocalDate.toString()
+      type: string16
+    - name: BucketBoundaries
+      type: opaque
+    - name: Stats
+      type: opaque

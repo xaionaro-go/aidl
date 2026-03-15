@@ -1,0 +1,31 @@
+package: android.os.storage
+type: VolumeInfo
+fields:
+    - name: Id
+      type: string8
+    - name: Type
+      type: int32
+    - name: "1"
+      type: int32
+      condition: disk!=null
+    - name: Parcel
+      type: opaque
+      condition: disk!=null
+    - name: PartGuid
+      type: string8
+    - name: MountFlags
+      type: int32
+    - name: MountUserId
+      type: int32
+    - name: State
+      type: int32
+    - name: FsType
+      type: string8
+    - name: FsUuid
+      type: string8
+    - name: FsLabel
+      type: string8
+    - name: Path
+      type: string8
+    - name: InternalPath
+      type: string8

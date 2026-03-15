@@ -1,0 +1,9 @@
+package: android.content
+type: UriPermission
+fields:
+    - name: Uri
+      type: opaque
+    - name: ModeFlags
+      type: int32
+    - name: PersistedTime
+      type: int64

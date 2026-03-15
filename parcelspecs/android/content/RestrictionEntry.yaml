@@ -1,0 +1,21 @@
+package: android.content
+type: RestrictionEntry
+fields:
+    - name: Type
+      type: int32
+    - name: Key
+      type: string16
+    - name: Title
+      type: string16
+    - name: Description
+      type: string16
+    - name: ChoiceEntries
+      type: opaque
+    - name: ChoiceValues
+      type: opaque
+    - name: CurrentValue
+      type: string16
+    - name: CurrentValues
+      type: opaque
+    - name: Restrictions
+      type: opaque

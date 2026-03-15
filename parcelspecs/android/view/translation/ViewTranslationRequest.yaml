@@ -1,0 +1,7 @@
+package: android.view.translation
+type: ViewTranslationRequest
+fields:
+    - name: AutofillId
+      type: opaque
+    - name: TranslationRequestValues
+      type: opaque

@@ -1,0 +1,11 @@
+package: android.companion
+type: BluetoothDeviceFilter
+fields:
+    - name: PatternToString(getNamePattern())
+      type: string16
+    - name: Address
+      type: string16
+    - name: ServiceUuids
+      type: opaque
+    - name: ServiceUuidMasks
+      type: opaque

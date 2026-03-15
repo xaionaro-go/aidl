@@ -1,0 +1,11 @@
+package: android.telephony
+type: VisualVoicemailSmsFilterSettings
+fields:
+    - name: ClientPrefix
+      type: string16
+    - name: OriginatingNumbers
+      type: opaque
+    - name: DestinationPort
+      type: int32
+    - name: PackageName
+      type: string16

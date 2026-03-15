@@ -1,0 +1,9 @@
+package: android.telecom
+type: CallEndpoint
+fields:
+    - name: Name
+      type: opaque
+    - name: Type
+      type: int32
+    - name: Destination
+      type: opaque

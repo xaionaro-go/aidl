@@ -1,0 +1,9 @@
+package: android.service.ambientcontext
+type: AmbientContextDetectionServiceStatus
+fields:
+    - name: Flg
+      type: int32
+    - name: StatusCode
+      type: int32
+    - name: PackageName
+      type: string16

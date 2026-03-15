@@ -1,0 +1,7 @@
+package: android.content.pm
+type: Attribution
+fields:
+    - name: Tag
+      type: string16
+    - name: Label
+      type: int32

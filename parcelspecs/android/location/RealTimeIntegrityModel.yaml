@@ -1,0 +1,17 @@
+package: android.location
+type: RealTimeIntegrityModel
+fields:
+    - name: Svid
+      type: int32
+    - name: Usable
+      type: bool
+    - name: PublishDateSeconds
+      type: int64
+    - name: StartDateSeconds
+      type: int64
+    - name: EndDateSeconds
+      type: int64
+    - name: AdvisoryType
+      type: string8
+    - name: AdvisoryNumber
+      type: string8

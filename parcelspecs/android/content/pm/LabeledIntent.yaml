@@ -1,0 +1,13 @@
+package: android.content.pm
+type: LabeledIntent
+fields:
+    - name: Dest
+      type: opaque
+    - name: SourcePackage
+      type: string16
+    - name: LabelRes
+      type: int32
+    - name: NonLocalizedLabel
+      type: opaque
+    - name: Icon
+      type: int32

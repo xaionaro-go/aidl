@@ -1,0 +1,42 @@
+package: android.media.metrics
+type: TrackChangeEvent
+fields:
+    - name: Flg
+      type: int32
+    - name: State
+      type: int32
+    - name: Reason
+      type: int32
+    - name: ContainerMimeType
+      type: string16
+      condition: mContainerMimeType!=null
+    - name: SampleMimeType
+      type: string16
+      condition: mSampleMimeType!=null
+    - name: CodecName
+      type: string16
+      condition: mCodecName!=null
+    - name: Bitrate
+      type: int32
+    - name: TimeSinceCreatedMillis
+      type: int64
+    - name: Type
+      type: int32
+    - name: Language
+      type: string16
+      condition: mLanguage!=null
+    - name: LanguageRegion
+      type: string16
+      condition: mLanguageRegion!=null
+    - name: ChannelCount
+      type: int32
+    - name: AudioSampleRate
+      type: int32
+    - name: Width
+      type: int32
+    - name: Height
+      type: int32
+    - name: VideoFrameRate
+      type: float32
+    - name: MetricsBundle
+      type: opaque

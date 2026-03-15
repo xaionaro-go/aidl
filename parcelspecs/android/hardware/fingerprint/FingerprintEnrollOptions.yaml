@@ -1,0 +1,5 @@
+package: android.hardware.fingerprint
+type: FingerprintEnrollOptions
+fields:
+    - name: EnrollReason
+      type: int32

@@ -1,0 +1,7 @@
+package: android.app.admin
+type: PackagePolicy
+fields:
+    - name: PolicyType
+      type: int32
+    - name: PackageNames
+      type: opaque

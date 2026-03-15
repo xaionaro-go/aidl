@@ -1,0 +1,19 @@
+package: android.hardware.contexthub
+type: HubEndpointInfo
+fields:
+    - name: Id.getHub()
+      type: int64
+    - name: Id.getEndpoint()
+      type: int64
+    - name: Type
+      type: int32
+    - name: Name
+      type: string16
+    - name: Version
+      type: int32
+    - name: Tag
+      type: string16
+    - name: RequiredPermissions
+      type: opaque
+    - name: HubServiceInfos
+      type: opaque

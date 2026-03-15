@@ -1,0 +1,5 @@
+package: android.hardware.camera2.utils
+type: LongParcelable
+fields:
+    - name: Number
+      type: int64

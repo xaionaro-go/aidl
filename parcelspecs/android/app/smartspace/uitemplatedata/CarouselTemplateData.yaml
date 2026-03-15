@@ -1,0 +1,9 @@
+package: android.app.smartspace.uitemplatedata
+type: CarouselTemplateData
+fields:
+    - name: Out
+      type: opaque
+    - name: CarouselItems
+      type: opaque
+    - name: CarouselAction
+      type: opaque

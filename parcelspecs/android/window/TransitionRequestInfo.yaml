@@ -1,0 +1,23 @@
+package: android.window
+type: TransitionRequestInfo
+fields:
+    - name: Flg
+      type: int32
+    - name: Type
+      type: int32
+    - name: TriggerTask
+      type: opaque
+      condition: mTriggerTask!=null
+    - name: PipChange
+      type: opaque
+      condition: mPipChange!=null
+    - name: RemoteTransition
+      type: opaque
+      condition: mRemoteTransition!=null
+    - name: DisplayChange
+      type: opaque
+      condition: mDisplayChange!=null
+    - name: Flags
+      type: int32
+    - name: DebugId
+      type: int32

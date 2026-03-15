@@ -1,0 +1,26 @@
+package: android.content.pm
+type: PackageInfoLite
+fields:
+    - name: PackageName
+      type: string16
+    - name: SplitNames
+      type: opaque
+    - name: VersionCode
+      type: int32
+    - name: VersionCodeMajor
+      type: int32
+    - name: BaseRevisionCode
+      type: int32
+    - name: SplitRevisionCodes
+      type: opaque
+    - name: RecommendedInstallLocation
+      type: int32
+    - name: InstallLocation
+      type: int32
+    - name: MultiArch?1:0
+      type: int32
+    - name: Debuggable?1:0
+      type: int32
+    - name: "0"
+      type: int32
+      condition: verifiers==null||verifiers.length==0

@@ -1,0 +1,19 @@
+package: android.hardware.input
+type: VirtualTouchEvent
+fields:
+    - name: PointerId
+      type: int32
+    - name: ToolType
+      type: int32
+    - name: Action
+      type: int32
+    - name: X
+      type: float32
+    - name: "Y"
+      type: float32
+    - name: Pressure
+      type: float32
+    - name: MajorAxisSize
+      type: float32
+    - name: EventTimeNanos
+      type: int64

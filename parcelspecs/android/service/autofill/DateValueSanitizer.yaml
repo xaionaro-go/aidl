@@ -1,0 +1,5 @@
+package: android.service.autofill
+type: DateValueSanitizer
+fields:
+    - name: DateFormat
+      type: opaque

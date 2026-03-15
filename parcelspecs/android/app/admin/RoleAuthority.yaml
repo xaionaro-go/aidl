@@ -1,0 +1,5 @@
+package: android.app.admin
+type: RoleAuthority
+fields:
+    - name: Roles.size()
+      type: int32

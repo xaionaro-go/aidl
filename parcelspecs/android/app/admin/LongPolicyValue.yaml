@@ -1,0 +1,5 @@
+package: android.app.admin
+type: LongPolicyValue
+fields:
+    - name: GetValue()
+      type: int64

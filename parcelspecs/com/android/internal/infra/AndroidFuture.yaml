@@ -1,0 +1,11 @@
+package: com.android.internal.infra
+type: AndroidFuture
+fields:
+    - name: Done
+      type: bool
+    - name: "False"
+      type: bool
+      condition: done
+    - name: Result
+      type: opaque
+      condition: done

@@ -1,0 +1,47 @@
+package: android.content.pm
+type: ResolveInfo
+fields:
+    - name: "1"
+      type: int32
+      condition: activityInfo!=null
+    - name: Dest
+      type: opaque
+      condition: activityInfo!=null
+    - name: "1"
+      type: int32
+      condition: filter!=null
+    - name: Dest
+      type: opaque
+      condition: filter!=null
+    - name: Priority
+      type: int32
+    - name: PreferredOrder
+      type: int32
+    - name: Match
+      type: int32
+    - name: SpecificIndex
+      type: int32
+    - name: LabelRes
+      type: int32
+    - name: NonLocalizedLabel
+      type: opaque
+    - name: Icon
+      type: int32
+    - name: ResolvePackageName
+      type: string8
+    - name: TargetUserId
+      type: int32
+    - name: System?1:0
+      type: int32
+    - name: NoResourceId?1:0
+      type: int32
+    - name: IconResourceId
+      type: int32
+    - name: HandleAllWebDataURI?1:0
+      type: int32
+    - name: AutoResolutionAllowed?1:0
+      type: int32
+    - name: IsInstantAppAvailable?1:0
+      type: int32
+    - name: UserHandle!=null?userHandle.getIdentifier():UserHandle.USER_CURRENT
+      type: int32

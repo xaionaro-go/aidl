@@ -1,0 +1,9 @@
+package: android.widget.inline
+type: InlinePresentationSpec
+fields:
+    - name: MinSize
+      type: opaque
+    - name: MaxSize
+      type: opaque
+    - name: Style
+      type: opaque

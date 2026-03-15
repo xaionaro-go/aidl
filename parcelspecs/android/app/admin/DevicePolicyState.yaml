@@ -1,0 +1,5 @@
+package: android.app.admin
+type: DevicePolicyState
+fields:
+    - name: Policies.size()
+      type: int32

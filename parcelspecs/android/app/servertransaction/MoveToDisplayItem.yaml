@@ -1,0 +1,11 @@
+package: android.app.servertransaction
+type: MoveToDisplayItem
+fields:
+    - name: Dest
+      type: opaque
+    - name: TargetDisplayId
+      type: int32
+    - name: Configuration
+      type: opaque
+    - name: ActivityWindowInfo
+      type: opaque

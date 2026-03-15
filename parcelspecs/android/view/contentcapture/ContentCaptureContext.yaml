@@ -1,0 +1,25 @@
+package: android.view.contentcapture
+type: ContentCaptureContext
+fields:
+    - name: HasClientContext?1:0
+      type: int32
+    - name: Id
+      type: opaque
+      condition: mHasClientContext
+    - name: Extras
+      type: opaque
+      condition: mHasClientContext
+    - name: ComponentName
+      type: opaque
+    - name: DisplayId
+      type: int32
+      condition: fromServer()
+    - name: WindowToken
+      type: opaque
+      condition: fromServer()
+    - name: Flags
+      type: int32
+      condition: fromServer()
+    - name: Parcel
+      type: opaque
+      condition: fromServer()

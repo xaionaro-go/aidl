@@ -1,0 +1,5 @@
+package: android.security
+type: AppUriAuthenticationPolicy
+fields:
+    - name: AppToUris
+      type: opaque

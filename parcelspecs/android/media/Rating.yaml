@@ -1,0 +1,7 @@
+package: android.media
+type: Rating
+fields:
+    - name: RatingStyle
+      type: int32
+    - name: RatingValue
+      type: float32

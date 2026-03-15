@@ -1,0 +1,9 @@
+package: android.app
+type: WallpaperColors
+fields:
+    - name: Count
+      type: int32
+    - name: Count
+      type: int32
+    - name: ColorHints
+      type: int32

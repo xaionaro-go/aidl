@@ -1,0 +1,5 @@
+package: android.app.prediction
+type: AppTargetId
+fields:
+    - name: Id
+      type: string16

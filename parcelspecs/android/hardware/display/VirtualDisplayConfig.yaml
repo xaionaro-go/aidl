@@ -1,0 +1,37 @@
+package: android.hardware.display
+type: VirtualDisplayConfig
+fields:
+    - name: Name
+      type: string8
+    - name: Width
+      type: int32
+    - name: Height
+      type: int32
+    - name: DensityDpi
+      type: int32
+    - name: Flags
+      type: int32
+    - name: Surface
+      type: opaque
+    - name: UniqueId
+      type: string8
+    - name: DisplayIdToMirror
+      type: int32
+    - name: WindowManagerMirroringEnabled
+      type: bool
+    - name: DisplayCategories
+      type: opaque
+    - name: RequestedRefreshRate
+      type: float32
+    - name: IsHomeSupported
+      type: bool
+    - name: DisplayCutout
+      type: opaque
+    - name: IgnoreActivitySizeRestrictions
+      type: bool
+    - name: DefaultBrightness
+      type: float32
+    - name: DimBrightness
+      type: float32
+    - name: BrightnessListener!=null?mBrightnessListener.asBinder():null
+      type: opaque

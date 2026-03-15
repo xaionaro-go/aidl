@@ -1,0 +1,9 @@
+package: android.view
+type: AppTransitionAnimationSpec
+fields:
+    - name: TaskId
+      type: int32
+    - name: Rect
+      type: opaque
+    - name: Buffer
+      type: opaque

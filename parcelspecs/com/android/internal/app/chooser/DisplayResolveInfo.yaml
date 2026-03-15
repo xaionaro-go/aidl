@@ -1,0 +1,17 @@
+package: com.android.internal.app.chooser
+type: DisplayResolveInfo
+fields:
+    - name: DisplayLabel
+      type: opaque
+    - name: ExtendedInfo
+      type: opaque
+    - name: ResolvedIntent
+      type: opaque
+    - name: SourceIntents
+      type: opaque
+    - name: IsSuspended
+      type: bool
+    - name: Pinned
+      type: bool
+    - name: ResolveInfo
+      type: opaque

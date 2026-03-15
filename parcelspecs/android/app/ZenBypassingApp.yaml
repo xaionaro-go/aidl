@@ -1,0 +1,7 @@
+package: android.app
+type: ZenBypassingApp
+fields:
+    - name: Pkg
+      type: string16
+    - name: AllChannelsBypass
+      type: bool

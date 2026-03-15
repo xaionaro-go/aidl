@@ -1,0 +1,7 @@
+package: com.android.ims.internal.uce.common
+type: UceLong
+fields:
+    - name: UceLong
+      type: int64
+    - name: ClientId
+      type: int32

@@ -1,0 +1,5 @@
+package: src.android.net.wifi.nl80211
+type: NativeWifiClient
+fields:
+    - name: MacAddress.toByteArray()
+      type: opaque

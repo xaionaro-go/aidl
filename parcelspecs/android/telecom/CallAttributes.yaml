@@ -1,0 +1,15 @@
+package: android.telecom
+type: CallAttributes
+fields:
+    - name: PhoneAccountHandle
+      type: opaque
+    - name: DisplayName
+      type: opaque
+    - name: Address
+      type: opaque
+    - name: Direction
+      type: int32
+    - name: CallType
+      type: int32
+    - name: CallCapabilities
+      type: int32

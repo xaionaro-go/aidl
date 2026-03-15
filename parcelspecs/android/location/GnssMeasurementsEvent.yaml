@@ -1,0 +1,13 @@
+package: android.location
+type: GnssMeasurementsEvent
+fields:
+    - name: Flag
+      type: int32
+    - name: Clock
+      type: opaque
+    - name: Measurements
+      type: opaque
+    - name: GnssAgcs
+      type: opaque
+    - name: IsFullTracking
+      type: bool

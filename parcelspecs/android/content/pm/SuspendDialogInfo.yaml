@@ -1,0 +1,19 @@
+package: android.content.pm
+type: SuspendDialogInfo
+fields:
+    - name: IconResId
+      type: int32
+    - name: TitleResId
+      type: int32
+    - name: Title
+      type: string16
+    - name: DialogMessageResId
+      type: int32
+    - name: DialogMessage
+      type: string16
+    - name: NeutralButtonTextResId
+      type: int32
+    - name: NeutralButtonText
+      type: string16
+    - name: NeutralButtonAction
+      type: int32

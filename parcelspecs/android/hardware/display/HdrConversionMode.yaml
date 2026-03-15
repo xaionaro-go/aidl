@@ -1,0 +1,7 @@
+package: android.hardware.display
+type: HdrConversionMode
+fields:
+    - name: ConversionMode
+      type: int32
+    - name: PreferredHdrOutputType
+      type: int32

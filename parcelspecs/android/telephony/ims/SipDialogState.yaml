@@ -1,0 +1,5 @@
+package: android.telephony.ims
+type: SipDialogState
+fields:
+    - name: State
+      type: int32

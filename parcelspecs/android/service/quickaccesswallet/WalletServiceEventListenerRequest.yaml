@@ -1,0 +1,5 @@
+package: android.service.quickaccesswallet
+type: WalletServiceEventListenerRequest
+fields:
+    - name: ListenerId
+      type: string16

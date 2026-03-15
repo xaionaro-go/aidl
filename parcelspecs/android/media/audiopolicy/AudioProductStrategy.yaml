@@ -1,0 +1,9 @@
+package: android.media.audiopolicy
+type: AudioProductStrategy
+fields:
+    - name: Name
+      type: string16
+    - name: Id
+      type: int32
+    - name: AudioAttributesGroups.length
+      type: int32

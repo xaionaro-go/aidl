@@ -1,0 +1,15 @@
+package: android.telephony.cdma
+type: CdmaSmsCbProgramData
+fields:
+    - name: Operation
+      type: int32
+    - name: Category
+      type: int32
+    - name: Language
+      type: int32
+    - name: MaxMessages
+      type: int32
+    - name: AlertOption
+      type: int32
+    - name: CategoryName
+      type: string16

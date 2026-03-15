@@ -1,0 +1,9 @@
+package: android.telecom
+type: PhoneAccountHandle
+fields:
+    - name: Out
+      type: opaque
+    - name: Id
+      type: string16
+    - name: Out
+      type: opaque

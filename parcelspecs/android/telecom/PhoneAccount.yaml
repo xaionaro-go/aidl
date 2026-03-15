@@ -1,0 +1,36 @@
+package: android.telecom
+type: PhoneAccount
+fields:
+    - name: "0"
+      type: int32
+      condition: mAccountHandle==null
+    - name: "0"
+      type: int32
+      condition: mAddress==null
+    - name: "0"
+      type: int32
+      condition: mSubscriptionAddress==null
+    - name: Capabilities
+      type: int32
+    - name: HighlightColor
+      type: int32
+    - name: Label
+      type: opaque
+    - name: ShortDescription
+      type: opaque
+    - name: SupportedUriSchemes
+      type: opaque
+    - name: "0"
+      type: int32
+      condition: mIcon==null
+    - name: (byte)(mIsEnabled?1:0)
+      type: int32
+    - name: Extras
+      type: opaque
+    - name: GroupId
+      type: string16
+    - name: SupportedAudioRoutes
+      type: int32
+    - name: "False"
+      type: bool
+      condition: mSimultaneousCallingRestriction==null

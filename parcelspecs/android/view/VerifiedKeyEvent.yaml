@@ -1,0 +1,19 @@
+package: android.view
+type: VerifiedKeyEvent
+fields:
+    - name: Dest
+      type: opaque
+    - name: Action
+      type: int32
+    - name: DownTimeNanos
+      type: int64
+    - name: Flags
+      type: int32
+    - name: KeyCode
+      type: int32
+    - name: ScanCode
+      type: int32
+    - name: MetaState
+      type: int32
+    - name: RepeatCount
+      type: int32

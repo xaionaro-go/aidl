@@ -1,0 +1,11 @@
+package: android.view.inputmethod
+type: SurroundingText
+fields:
+    - name: Text
+      type: opaque
+    - name: SelectionStart
+      type: int32
+    - name: SelectionEnd
+      type: int32
+    - name: Offset
+      type: int32

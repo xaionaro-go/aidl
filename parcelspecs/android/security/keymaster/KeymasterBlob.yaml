@@ -1,0 +1,5 @@
+package: android.security.keymaster
+type: KeymasterBlob
+fields:
+    - name: Blob
+      type: opaque

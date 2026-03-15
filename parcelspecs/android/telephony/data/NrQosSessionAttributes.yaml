@@ -1,0 +1,19 @@
+package: android.telephony.data
+type: NrQosSessionAttributes
+fields:
+    - name: M5Qi
+      type: int32
+    - name: Qfi
+      type: int32
+    - name: MaxDownlinkBitRate
+      type: int64
+    - name: MaxUplinkBitRate
+      type: int64
+    - name: GuaranteedDownlinkBitRate
+      type: int64
+    - name: GuaranteedUplinkBitRate
+      type: int64
+    - name: AveragingWindow
+      type: int64
+    - name: Size
+      type: int32

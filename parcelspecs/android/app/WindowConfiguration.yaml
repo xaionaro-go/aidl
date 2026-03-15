@@ -1,0 +1,19 @@
+package: android.app
+type: WindowConfiguration
+fields:
+    - name: Dest
+      type: opaque
+    - name: AppBounds
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: WindowingMode
+      type: int32
+    - name: ActivityType
+      type: int32
+    - name: AlwaysOnTop
+      type: int32
+    - name: Rotation
+      type: int32
+    - name: DisplayRotation
+      type: int32

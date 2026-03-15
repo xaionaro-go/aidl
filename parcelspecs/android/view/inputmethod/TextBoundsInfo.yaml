@@ -1,0 +1,13 @@
+package: android.view.inputmethod
+type: TextBoundsInfo
+fields:
+    - name: Start
+      type: int32
+    - name: End
+      type: int32
+    - name: MatrixValues
+      type: opaque
+    - name: CharacterBounds
+      type: opaque
+    - name: EncodedFlags
+      type: opaque

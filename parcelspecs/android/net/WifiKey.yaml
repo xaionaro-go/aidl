@@ -1,0 +1,7 @@
+package: android.net
+type: WifiKey
+fields:
+    - name: Ssid
+      type: string16
+    - name: Bssid
+      type: string16

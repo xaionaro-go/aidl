@@ -1,0 +1,7 @@
+package: android.app
+type: PictureInPictureUiState
+fields:
+    - name: IsStashed
+      type: bool
+    - name: IsTransitioningToPip
+      type: bool

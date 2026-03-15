@@ -1,0 +1,29 @@
+package: android.view
+type: DragEvent
+fields:
+    - name: Action
+      type: int32
+    - name: X
+      type: float32
+    - name: "Y"
+      type: float32
+    - name: OffsetX
+      type: float32
+    - name: OffsetY
+      type: float32
+    - name: Flags
+      type: int32
+    - name: DragResult?1:0
+      type: int32
+    - name: "0"
+      type: int32
+      condition: mClipData==null
+    - name: "0"
+      type: int32
+      condition: mClipDescription==null
+    - name: "0"
+      type: int32
+      condition: mDragSurface==null
+    - name: "0"
+      type: int32
+      condition: mDragAndDropPermissions==null

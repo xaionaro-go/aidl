@@ -1,0 +1,9 @@
+package: android.media.tv
+type: AdResponse
+fields:
+    - name: Id
+      type: int32
+    - name: ResponseType
+      type: int32
+    - name: ElapsedTime
+      type: int64

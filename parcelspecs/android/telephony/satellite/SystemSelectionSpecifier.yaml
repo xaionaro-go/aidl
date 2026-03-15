@@ -1,0 +1,16 @@
+package: android.telephony.satellite
+type: SystemSelectionSpecifier
+fields:
+    - name: MccMnc
+      type: string8
+    - name: Bands.size()
+      type: int32
+      condition: mBands!=null&&mBands.size()>0
+    - name: Earfcns.size()
+      type: int32
+      condition: mEarfcns!=null&&mEarfcns.size()>0
+    - name: SatelliteInfos
+      type: opaque
+    - name: TagIds.size()
+      type: int32
+      condition: mTagIds!=null

@@ -1,0 +1,7 @@
+package: android.telecom
+type: VideoProfile
+fields:
+    - name: VideoState
+      type: int32
+    - name: Quality
+      type: int32

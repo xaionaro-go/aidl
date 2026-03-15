@@ -1,0 +1,7 @@
+package: android.media.tv
+type: TsRequest
+fields:
+    - name: Dest
+      type: opaque
+    - name: TsPid
+      type: int32

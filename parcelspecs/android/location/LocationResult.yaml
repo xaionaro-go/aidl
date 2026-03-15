@@ -1,0 +1,5 @@
+package: android.location
+type: LocationResult
+fields:
+    - name: Locations
+      type: opaque

@@ -1,0 +1,9 @@
+package: android.app.servertransaction
+type: NewIntentItem
+fields:
+    - name: Dest
+      type: opaque
+    - name: Resume
+      type: bool
+    - name: Intents
+      type: opaque

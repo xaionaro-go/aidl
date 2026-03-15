@@ -1,0 +1,13 @@
+package: android.telecom
+type: StreamingCall
+fields:
+    - name: ComponentName
+      type: opaque
+    - name: DisplayName
+      type: opaque
+    - name: Address
+      type: opaque
+    - name: Extras
+      type: opaque
+    - name: State
+      type: int32

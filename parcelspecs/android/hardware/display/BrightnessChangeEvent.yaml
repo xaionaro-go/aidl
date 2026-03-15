@@ -1,0 +1,41 @@
+package: android.hardware.display
+type: BrightnessChangeEvent
+fields:
+    - name: Brightness
+      type: float32
+    - name: TimeStamp
+      type: int64
+    - name: PackageName
+      type: string16
+    - name: UserId
+      type: int32
+    - name: UniqueDisplayId
+      type: string16
+    - name: LuxValues
+      type: opaque
+    - name: LuxTimestamps
+      type: opaque
+    - name: BatteryLevel
+      type: float32
+    - name: PowerBrightnessFactor
+      type: float32
+    - name: NightMode
+      type: bool
+    - name: ColorTemperature
+      type: int32
+    - name: ReduceBrightColors
+      type: bool
+    - name: ReduceBrightColorsStrength
+      type: int32
+    - name: ReduceBrightColorsOffset
+      type: float32
+    - name: LastBrightness
+      type: float32
+    - name: IsDefaultBrightnessConfig
+      type: bool
+    - name: IsUserSetBrightness
+      type: bool
+    - name: ColorValueBuckets
+      type: opaque
+    - name: ColorSampleDuration
+      type: int64

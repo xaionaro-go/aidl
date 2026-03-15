@@ -1,0 +1,7 @@
+package: android.security.keymaster
+type: KeyCharacteristics
+fields:
+    - name: Out
+      type: opaque
+    - name: Out
+      type: opaque

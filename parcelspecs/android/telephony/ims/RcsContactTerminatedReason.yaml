@@ -1,0 +1,7 @@
+package: android.telephony.ims
+type: RcsContactTerminatedReason
+fields:
+    - name: ContactUri
+      type: opaque
+    - name: Reason
+      type: string16

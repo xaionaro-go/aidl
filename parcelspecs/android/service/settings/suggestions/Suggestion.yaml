@@ -1,0 +1,15 @@
+package: android.service.settings.suggestions
+type: Suggestion
+fields:
+    - name: Id
+      type: string16
+    - name: Title
+      type: opaque
+    - name: Summary
+      type: opaque
+    - name: Icon
+      type: opaque
+    - name: Flags
+      type: int32
+    - name: PendingIntent
+      type: opaque

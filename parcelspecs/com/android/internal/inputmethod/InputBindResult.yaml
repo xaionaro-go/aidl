@@ -1,0 +1,22 @@
+package: com.android.internal.inputmethod
+type: InputBindResult
+fields:
+    - name: Result
+      type: int32
+    - name: Method
+      type: opaque
+    - name: "-1"
+      type: int32
+      condition: accessibilitySessions==null
+    - name: "1"
+      type: int32
+      condition: channel!=null
+    - name: Dest
+      type: opaque
+      condition: channel!=null
+    - name: Id
+      type: string16
+    - name: Sequence
+      type: int32
+    - name: IsInputMethodSuppressingSpellChecker
+      type: bool

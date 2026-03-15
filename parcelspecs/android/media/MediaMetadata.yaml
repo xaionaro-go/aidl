@@ -1,0 +1,7 @@
+package: android.media
+type: MediaMetadata
+fields:
+    - name: Bundle
+      type: opaque
+    - name: BitmapDimensionLimit
+      type: int32

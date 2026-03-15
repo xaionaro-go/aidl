@@ -1,0 +1,15 @@
+package: android.security.keymaster
+type: OperationResult
+fields:
+    - name: ResultCode
+      type: int32
+    - name: Token
+      type: opaque
+    - name: OperationHandle
+      type: int64
+    - name: InputConsumed
+      type: int32
+    - name: Output
+      type: opaque
+    - name: Out
+      type: opaque

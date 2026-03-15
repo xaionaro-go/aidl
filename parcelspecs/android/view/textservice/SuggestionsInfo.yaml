@@ -1,0 +1,13 @@
+package: android.view.textservice
+type: SuggestionsInfo
+fields:
+    - name: SuggestionsAttributes
+      type: int32
+    - name: Suggestions
+      type: opaque
+    - name: Cookie
+      type: int32
+    - name: Sequence
+      type: int32
+    - name: SuggestionsAvailable?1:0
+      type: int32

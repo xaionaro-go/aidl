@@ -1,0 +1,15 @@
+package: android.os.vibrator
+type: BasicPwleSegment
+fields:
+    - name: PARCEL_TOKEN_PWLE
+      type: int32
+    - name: StartIntensity
+      type: float32
+    - name: EndIntensity
+      type: float32
+    - name: StartSharpness
+      type: float32
+    - name: EndSharpness
+      type: float32
+    - name: Duration
+      type: int64

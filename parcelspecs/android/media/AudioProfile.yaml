@@ -1,0 +1,13 @@
+package: android.media
+type: AudioProfile
+fields:
+    - name: Format
+      type: int32
+    - name: SamplingRates
+      type: opaque
+    - name: ChannelMasks
+      type: opaque
+    - name: ChannelIndexMasks
+      type: opaque
+    - name: EncapsulationType
+      type: int32

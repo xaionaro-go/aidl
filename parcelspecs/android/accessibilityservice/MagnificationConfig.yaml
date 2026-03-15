@@ -1,0 +1,13 @@
+package: android.accessibilityservice
+type: MagnificationConfig
+fields:
+    - name: Mode
+      type: int32
+    - name: Activated
+      type: bool
+    - name: Scale
+      type: float32
+    - name: CenterX
+      type: float32
+    - name: CenterY
+      type: float32

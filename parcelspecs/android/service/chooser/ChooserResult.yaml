@@ -1,0 +1,9 @@
+package: android.service.chooser
+type: ChooserResult
+fields:
+    - name: Type
+      type: int32
+    - name: SelectedComponent
+      type: opaque
+    - name: IsShortcut
+      type: bool

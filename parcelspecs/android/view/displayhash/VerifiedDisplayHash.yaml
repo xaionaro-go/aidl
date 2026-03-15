@@ -1,0 +1,11 @@
+package: android.view.displayhash
+type: VerifiedDisplayHash
+fields:
+    - name: TimeMillis
+      type: int64
+    - name: BoundsInWindow
+      type: opaque
+    - name: HashAlgorithm
+      type: string16
+    - name: ImageHash
+      type: opaque

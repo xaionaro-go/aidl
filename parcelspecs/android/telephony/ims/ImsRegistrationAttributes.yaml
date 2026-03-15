@@ -1,0 +1,13 @@
+package: android.telephony.ims
+type: ImsRegistrationAttributes
+fields:
+    - name: RegistrationTech
+      type: int32
+    - name: TransportType
+      type: int32
+    - name: ImsAttributeFlags
+      type: int32
+    - name: FeatureTags
+      type: opaque
+    - name: SipDetails
+      type: opaque

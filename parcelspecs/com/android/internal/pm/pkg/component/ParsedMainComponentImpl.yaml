@@ -1,0 +1,19 @@
+package: com.android.internal.pm.pkg.component
+type: ParsedMainComponentImpl
+fields:
+    - name: Dest
+      type: opaque
+    - name: This.directBootAware
+      type: bool
+    - name: This.enabled
+      type: bool
+    - name: This.exported
+      type: bool
+    - name: This.order
+      type: int32
+    - name: This.splitName
+      type: string16
+    - name: This.attributionTags
+      type: opaque
+    - name: This.mIntentMatchingFlags
+      type: int32

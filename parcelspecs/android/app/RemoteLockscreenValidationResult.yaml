@@ -1,0 +1,7 @@
+package: android.app
+type: RemoteLockscreenValidationResult
+fields:
+    - name: ResultCode
+      type: int32
+    - name: TimeoutMillis
+      type: int64

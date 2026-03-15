@@ -1,0 +1,19 @@
+package: android.service.carrier
+type: CarrierIdentifier
+fields:
+    - name: Mcc
+      type: string16
+    - name: Mnc
+      type: string16
+    - name: Spn
+      type: string16
+    - name: Imsi
+      type: string16
+    - name: Gid1
+      type: string16
+    - name: Gid2
+      type: string16
+    - name: CarrierId
+      type: int32
+    - name: SpecificCarrierId
+      type: int32

@@ -1,0 +1,17 @@
+package: android.service.autofill
+type: UserData
+fields:
+    - name: Id
+      type: string16
+    - name: CategoryIds
+      type: opaque
+    - name: Values
+      type: opaque
+    - name: DefaultAlgorithm
+      type: string16
+    - name: DefaultArgs
+      type: opaque
+    - name: CategoryAlgorithms
+      type: opaque
+    - name: CategoryArgs
+      type: opaque

@@ -1,0 +1,9 @@
+package: android.media.midi
+type: MidiDeviceStatus
+fields:
+    - name: DeviceInfo
+      type: opaque
+    - name: InputPortOpen
+      type: opaque
+    - name: OutputPortOpenCount
+      type: opaque

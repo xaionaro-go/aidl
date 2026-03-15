@@ -1,0 +1,13 @@
+package: android.location
+type: FusedBatchOptions
+fields:
+    - name: MaxPowerAllocationInMW
+      type: float64
+    - name: PeriodInNS
+      type: int64
+    - name: SourcesToUse
+      type: int32
+    - name: Flags
+      type: int32
+    - name: SmallestDisplacementMeters
+      type: float32

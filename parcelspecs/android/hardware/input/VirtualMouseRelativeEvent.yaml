@@ -1,0 +1,9 @@
+package: android.hardware.input
+type: VirtualMouseRelativeEvent
+fields:
+    - name: RelativeX
+      type: float32
+    - name: RelativeY
+      type: float32
+    - name: EventTimeNanos
+      type: int64

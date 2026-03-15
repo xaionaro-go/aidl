@@ -1,0 +1,13 @@
+package: android.media.tv
+type: SignalingDataInfo
+fields:
+    - name: Table
+      type: string16
+    - name: SignalingDataType
+      type: string16
+    - name: Version
+      type: int32
+    - name: Group
+      type: int32
+    - name: Encoding
+      type: string16

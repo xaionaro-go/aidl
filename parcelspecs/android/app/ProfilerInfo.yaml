@@ -1,0 +1,25 @@
+package: android.app
+type: ProfilerInfo
+fields:
+    - name: ProfileFile
+      type: string16
+    - name: "1"
+      type: int32
+      condition: profileFd!=null
+    - name: Out
+      type: opaque
+      condition: profileFd!=null
+    - name: SamplingInterval
+      type: int32
+    - name: AutoStopProfiler?1:0
+      type: int32
+    - name: StreamingOutput?1:0
+      type: int32
+    - name: Agent
+      type: string16
+    - name: AttachAgentDuringBind
+      type: bool
+    - name: ClockType
+      type: int32
+    - name: ProfilerOutputVersion
+      type: int32

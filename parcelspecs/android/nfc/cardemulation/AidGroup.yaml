@@ -1,0 +1,10 @@
+package: android.nfc.cardemulation
+type: AidGroup
+fields:
+    - name: Category
+      type: string8
+    - name: Aids.size()
+      type: int32
+    - name: Aids
+      type: opaque
+      condition: mAids.size()>0

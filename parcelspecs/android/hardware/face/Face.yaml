@@ -1,0 +1,9 @@
+package: android.hardware.face
+type: Face
+fields:
+    - name: GetName().toString()
+      type: string16
+    - name: GetBiometricId()
+      type: int32
+    - name: GetDeviceId()
+      type: int64

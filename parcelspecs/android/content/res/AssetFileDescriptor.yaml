@@ -1,0 +1,15 @@
+package: android.content.res
+type: AssetFileDescriptor
+fields:
+    - name: Out
+      type: opaque
+    - name: StartOffset
+      type: int64
+    - name: Length
+      type: int64
+    - name: "1"
+      type: int32
+      condition: mExtras!=null
+    - name: Extras
+      type: opaque
+      condition: mExtras!=null

@@ -1,0 +1,15 @@
+package: android.net
+type: ScoredNetwork
+fields:
+    - name: Out
+      type: opaque
+    - name: (byte)1
+      type: int32
+      condition: rssiCurve!=null
+    - name: Out
+      type: opaque
+      condition: rssiCurve!=null
+    - name: (byte)(meteredHint?1:0)
+      type: int32
+    - name: Attributes
+      type: opaque

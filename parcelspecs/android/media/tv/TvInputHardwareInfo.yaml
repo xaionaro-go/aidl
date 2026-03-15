@@ -1,0 +1,16 @@
+package: android.media.tv
+type: TvInputHardwareInfo
+fields:
+    - name: DeviceId
+      type: int32
+    - name: Type
+      type: int32
+    - name: AudioType
+      type: int32
+    - name: AudioAddress
+      type: string16
+    - name: HdmiPortId
+      type: int32
+      condition: mType==TV_INPUT_TYPE_HDMI
+    - name: CableConnectionStatus
+      type: int32

@@ -1,0 +1,9 @@
+package: android.telephony
+type: RadioAccessSpecifier
+fields:
+    - name: RadioAccessNetwork
+      type: int32
+    - name: Bands
+      type: opaque
+    - name: Channels
+      type: opaque

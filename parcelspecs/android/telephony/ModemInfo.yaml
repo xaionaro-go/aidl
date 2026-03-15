@@ -1,0 +1,11 @@
+package: android.telephony
+type: ModemInfo
+fields:
+    - name: ModemId
+      type: int32
+    - name: Rat
+      type: int32
+    - name: IsVoiceSupported
+      type: bool
+    - name: IsDataSupported
+      type: bool

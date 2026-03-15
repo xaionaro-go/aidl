@@ -1,0 +1,13 @@
+package: android.security.attestationverification
+type: VerificationToken
+fields:
+    - name: AttestationProfile
+      type: opaque
+    - name: LocalBindingType
+      type: int32
+    - name: Requirements
+      type: opaque
+    - name: VerificationResult
+      type: int32
+    - name: Hmac
+      type: opaque

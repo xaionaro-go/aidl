@@ -1,0 +1,31 @@
+package: android.app
+type: NotificationChannelGroup
+fields:
+    - name: (byte)1
+      type: int32
+      condition: mId!=null
+    - name: Id
+      type: string16
+      condition: mId!=null
+    - name: (byte)1
+      type: int32
+      condition: mName!=null
+    - name: Name.toString()
+      type: string16
+      condition: mName!=null
+    - name: (byte)1
+      type: int32
+      condition: mDescription!=null
+    - name: Description
+      type: string16
+      condition: mDescription!=null
+    - name: (byte)1
+      type: int32
+      condition: mChannels!=null
+    - name: NewParceledListSlice<>(mChannels)
+      type: opaque
+      condition: mChannels!=null
+    - name: Blocked
+      type: bool
+    - name: UserLockedFields
+      type: int32

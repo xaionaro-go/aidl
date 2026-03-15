@@ -1,0 +1,11 @@
+package: android.view.inputmethod
+type: ExtractedTextRequest
+fields:
+    - name: Token
+      type: int32
+    - name: This.flags
+      type: int32
+    - name: HintMaxLines
+      type: int32
+    - name: HintMaxChars
+      type: int32

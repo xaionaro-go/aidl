@@ -1,0 +1,59 @@
+package: com.android.internal.pm.pkg.component
+type: ParsedActivityImpl
+fields:
+    - name: Dest
+      type: opaque
+    - name: This.theme
+      type: int32
+    - name: This.uiOptions
+      type: int32
+    - name: This.targetActivity
+      type: string16
+    - name: This.parentActivityName
+      type: string16
+    - name: This.taskAffinity
+      type: string16
+    - name: This.privateFlags
+      type: int32
+    - name: This.launchMode
+      type: int32
+    - name: This.documentLaunchMode
+      type: int32
+    - name: This.maxRecents
+      type: int32
+    - name: This.configChanges
+      type: int32
+    - name: This.softInputMode
+      type: int32
+    - name: This.persistableMode
+      type: int32
+    - name: This.lockTaskLaunchMode
+      type: int32
+    - name: This.screenOrientation
+      type: int32
+    - name: This.resizeMode
+      type: int32
+    - name: This.maxAspectRatio
+      type: opaque
+    - name: This.minAspectRatio
+      type: opaque
+    - name: This.supportsSizeChanges
+      type: bool
+    - name: This.requestedVrComponent
+      type: string16
+    - name: This.rotationAnimation
+      type: int32
+    - name: This.colorMode
+      type: int32
+    - name: This.getMetaData()
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: windowLayout!=null
+    - name: Dest
+      type: opaque
+      condition: windowLayout!=null
+    - name: This.mRequiredDisplayCategory
+      type: string8
+    - name: This.mRequireContentUriPermissionFromCaller
+      type: int32

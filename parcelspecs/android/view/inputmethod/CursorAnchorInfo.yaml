@@ -1,0 +1,33 @@
+package: android.view.inputmethod
+type: CursorAnchorInfo
+fields:
+    - name: HashCode
+      type: int32
+    - name: SelectionStart
+      type: int32
+    - name: SelectionEnd
+      type: int32
+    - name: ComposingTextStart
+      type: int32
+    - name: ComposingText
+      type: opaque
+    - name: InsertionMarkerFlags
+      type: int32
+    - name: InsertionMarkerHorizontal
+      type: float32
+    - name: InsertionMarkerTop
+      type: float32
+    - name: InsertionMarkerBaseline
+      type: float32
+    - name: InsertionMarkerBottom
+      type: float32
+    - name: CharacterBoundsArray
+      type: opaque
+    - name: EditorBoundsInfo
+      type: opaque
+    - name: MatrixValues
+      type: opaque
+    - name: VisibleLineBounds
+      type: opaque
+    - name: TextAppearanceInfo
+      type: opaque

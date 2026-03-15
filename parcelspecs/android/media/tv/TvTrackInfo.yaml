@@ -1,0 +1,37 @@
+package: android.media.tv
+type: TvTrackInfo
+fields:
+    - name: Type
+      type: int32
+    - name: Id
+      type: string16
+    - name: Language
+      type: string16
+    - name: Description!=null?mDescription.toString():null
+      type: string16
+    - name: Encoding
+      type: string16
+    - name: Encrypted?1:0
+      type: int32
+    - name: AudioChannelCount
+      type: int32
+    - name: AudioSampleRate
+      type: int32
+    - name: AudioDescription?1:0
+      type: int32
+    - name: HardOfHearing?1:0
+      type: int32
+    - name: SpokenSubtitle?1:0
+      type: int32
+    - name: VideoWidth
+      type: int32
+    - name: VideoHeight
+      type: int32
+    - name: VideoFrameRate
+      type: float32
+    - name: VideoPixelAspectRatio
+      type: float32
+    - name: VideoActiveFormatDescription
+      type: int32
+    - name: Extra
+      type: opaque

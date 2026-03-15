@@ -1,0 +1,7 @@
+package: android.app.contentsuggestions
+type: ClassificationsRequest
+fields:
+    - name: Selections
+      type: opaque
+    - name: Extras
+      type: opaque

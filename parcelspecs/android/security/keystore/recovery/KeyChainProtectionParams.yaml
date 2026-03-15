@@ -1,0 +1,11 @@
+package: android.security.keystore.recovery
+type: KeyChainProtectionParams
+fields:
+    - name: UserSecretType
+      type: int32
+    - name: LockScreenUiFormat
+      type: int32
+    - name: KeyDerivationParams
+      type: opaque
+    - name: Secret
+      type: opaque

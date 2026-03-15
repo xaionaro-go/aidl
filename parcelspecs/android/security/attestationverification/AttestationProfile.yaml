@@ -1,0 +1,13 @@
+package: android.security.attestationverification
+type: AttestationProfile
+fields:
+    - name: Flg
+      type: int32
+    - name: AttestationProfileId
+      type: int32
+    - name: PackageName
+      type: string16
+      condition: mPackageName!=null
+    - name: ProfileName
+      type: string16
+      condition: mProfileName!=null

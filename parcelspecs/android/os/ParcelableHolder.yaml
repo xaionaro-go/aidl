@@ -1,0 +1,17 @@
+package: android.os
+type: ParcelableHolder
+fields:
+    - name: This.mStability
+      type: int32
+    - name: Parcel.dataSize()
+      type: int32
+      condition: mParcel!=null
+    - name: "0"
+      type: int32
+      condition: mParcelable==null
+    - name: "0"
+      type: int32
+    - name: Parcelable
+      type: opaque
+    - name: DataSize
+      type: int32

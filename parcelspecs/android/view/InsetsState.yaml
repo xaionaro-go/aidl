@@ -1,0 +1,19 @@
+package: android.view
+type: InsetsState
+fields:
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: RoundedCorners
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: PrivacyIndicatorBounds
+      type: opaque
+    - name: DisplayShape
+      type: opaque
+    - name: Seq
+      type: int32
+    - name: Size
+      type: int32

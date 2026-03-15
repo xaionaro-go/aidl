@@ -1,0 +1,5 @@
+package: android.content.pm
+type: KeySet
+fields:
+    - name: Token
+      type: opaque

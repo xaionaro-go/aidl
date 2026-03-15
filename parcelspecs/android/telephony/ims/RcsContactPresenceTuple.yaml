@@ -1,0 +1,17 @@
+package: android.telephony.ims
+type: RcsContactPresenceTuple
+fields:
+    - name: ContactUri
+      type: opaque
+    - name: ConvertInstantToStringFormat(mTimestamp)
+      type: string16
+    - name: Status
+      type: string16
+    - name: ServiceId
+      type: string16
+    - name: ServiceVersion
+      type: string16
+    - name: ServiceDescription
+      type: string16
+    - name: ServiceCapabilities
+      type: opaque

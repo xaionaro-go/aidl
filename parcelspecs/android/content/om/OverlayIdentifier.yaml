@@ -1,0 +1,11 @@
+package: android.content.om
+type: OverlayIdentifier
+fields:
+    - name: Flg
+      type: int32
+    - name: PackageName
+      type: string16
+      condition: mPackageName!=null
+    - name: OverlayName
+      type: string16
+      condition: mOverlayName!=null

@@ -1,0 +1,21 @@
+package: android.telephony
+type: UiccCardInfo
+fields:
+    - name: IsEuicc
+      type: bool
+    - name: CardId
+      type: int32
+    - name: Eid
+      type: string8
+    - name: IccId
+      type: string8
+    - name: PhysicalSlotIndex
+      type: int32
+    - name: IsRemovable
+      type: bool
+    - name: IsMultipleEnabledProfilesSupported
+      type: bool
+    - name: PortList
+      type: opaque
+    - name: IccIdAccessRestricted
+      type: bool

@@ -1,0 +1,9 @@
+package: android.telecom
+type: ParcelableRttCall
+fields:
+    - name: RttMode
+      type: int32
+    - name: TransmitStream
+      type: opaque
+    - name: ReceiveStream
+      type: opaque

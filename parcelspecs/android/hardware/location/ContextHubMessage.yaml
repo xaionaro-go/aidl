@@ -1,0 +1,11 @@
+package: android.hardware.location
+type: ContextHubMessage
+fields:
+    - name: Type
+      type: int32
+    - name: Version
+      type: int32
+    - name: Data.length
+      type: int32
+    - name: Data
+      type: opaque

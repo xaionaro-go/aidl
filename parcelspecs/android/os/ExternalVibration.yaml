@@ -1,0 +1,11 @@
+package: android.os
+type: ExternalVibration
+fields:
+    - name: Uid
+      type: int32
+    - name: Pkg
+      type: string16
+    - name: Controller.asBinder()
+      type: opaque
+    - name: Token
+      type: opaque

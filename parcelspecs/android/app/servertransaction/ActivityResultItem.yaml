@@ -1,0 +1,7 @@
+package: android.app.servertransaction
+type: ActivityResultItem
+fields:
+    - name: Dest
+      type: opaque
+    - name: ResultInfoList
+      type: opaque

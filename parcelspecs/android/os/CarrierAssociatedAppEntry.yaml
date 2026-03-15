@@ -1,0 +1,7 @@
+package: android.os
+type: CarrierAssociatedAppEntry
+fields:
+    - name: PackageName
+      type: string16
+    - name: AddedInSdk
+      type: int32

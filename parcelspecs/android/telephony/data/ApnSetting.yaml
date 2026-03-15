@@ -1,0 +1,71 @@
+package: android.telephony.data
+type: ApnSetting
+fields:
+    - name: Id
+      type: int32
+    - name: OperatorNumeric
+      type: string16
+    - name: EntryName
+      type: string16
+    - name: ApnName
+      type: string16
+    - name: ProxyAddress
+      type: string16
+    - name: ProxyPort
+      type: int32
+    - name: Mmsc
+      type: opaque
+    - name: MmsProxyAddress
+      type: string16
+    - name: MmsProxyPort
+      type: int32
+    - name: User
+      type: string16
+    - name: Password
+      type: string16
+    - name: AuthType
+      type: int32
+    - name: ApnTypeBitmask
+      type: int32
+    - name: Protocol
+      type: int32
+    - name: RoamingProtocol
+      type: int32
+    - name: CarrierEnabled
+      type: bool
+    - name: NetworkTypeBitmask
+      type: int32
+    - name: LingeringNetworkTypeBitmask
+      type: int64
+    - name: ProfileId
+      type: int32
+    - name: Persistent
+      type: bool
+    - name: MaxConns
+      type: int32
+    - name: WaitTime
+      type: int32
+    - name: MaxConnsTime
+      type: int32
+    - name: MtuV4
+      type: int32
+    - name: MtuV6
+      type: int32
+    - name: MvnoType
+      type: int32
+    - name: MvnoMatchData
+      type: string16
+    - name: ApnSetId
+      type: int32
+    - name: CarrierId
+      type: int32
+    - name: Skip464Xlat
+      type: int32
+    - name: AlwaysOn
+      type: bool
+    - name: InfrastructureBitmask
+      type: int32
+    - name: EsimBootstrapProvisioning
+      type: bool
+    - name: EditedStatus
+      type: int32

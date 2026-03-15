@@ -1,0 +1,13 @@
+package: android.os.vibrator
+type: PrimitiveSegment
+fields:
+    - name: PARCEL_TOKEN_PRIMITIVE
+      type: int32
+    - name: PrimitiveId
+      type: int32
+    - name: Scale
+      type: float32
+    - name: Delay
+      type: int32
+    - name: DelayType
+      type: int32

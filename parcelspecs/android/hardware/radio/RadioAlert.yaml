@@ -1,0 +1,9 @@
+package: android.hardware.radio
+type: RadioAlert
+fields:
+    - name: Status
+      type: int32
+    - name: MessageType
+      type: int32
+    - name: InfoList
+      type: opaque

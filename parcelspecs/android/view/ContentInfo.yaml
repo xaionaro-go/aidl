@@ -1,0 +1,19 @@
+package: android.view
+type: ContentInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: Source
+      type: int32
+    - name: Flags
+      type: int32
+    - name: Dest
+      type: opaque
+    - name: Extras
+      type: opaque
+    - name: "0"
+      type: int32
+      condition: mInputContentInfo==null
+    - name: "0"
+      type: int32
+      condition: mDragAndDropPermissions==null

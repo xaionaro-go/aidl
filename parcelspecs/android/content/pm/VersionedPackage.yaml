@@ -1,0 +1,7 @@
+package: android.content.pm
+type: VersionedPackage
+fields:
+    - name: PackageName
+      type: string8
+    - name: VersionCode
+      type: int64

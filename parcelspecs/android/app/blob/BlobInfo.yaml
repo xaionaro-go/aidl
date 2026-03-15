@@ -1,0 +1,13 @@
+package: android.app.blob
+type: BlobInfo
+fields:
+    - name: Id
+      type: int64
+    - name: ExpiryTimeMs
+      type: int64
+    - name: Label
+      type: opaque
+    - name: SizeBytes
+      type: int64
+    - name: LeaseInfos
+      type: opaque

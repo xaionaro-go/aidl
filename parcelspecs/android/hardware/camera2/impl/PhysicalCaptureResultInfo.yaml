@@ -1,0 +1,7 @@
+package: android.hardware.camera2.impl
+type: PhysicalCaptureResultInfo
+fields:
+    - name: CameraId
+      type: string16
+    - name: Dest
+      type: opaque

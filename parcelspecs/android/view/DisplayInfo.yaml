@@ -1,0 +1,115 @@
+package: android.view
+type: DisplayInfo
+fields:
+    - name: LayerStack
+      type: int32
+    - name: This.flags
+      type: int32
+    - name: Type
+      type: int32
+    - name: DisplayId
+      type: int32
+    - name: DisplayGroupId
+      type: int32
+    - name: Address
+      type: opaque
+    - name: DeviceProductInfo
+      type: opaque
+    - name: Name
+      type: string8
+    - name: AppWidth
+      type: int32
+    - name: AppHeight
+      type: int32
+    - name: SmallestNominalAppWidth
+      type: int32
+    - name: SmallestNominalAppHeight
+      type: int32
+    - name: LargestNominalAppWidth
+      type: int32
+    - name: LargestNominalAppHeight
+      type: int32
+    - name: LogicalWidth
+      type: int32
+    - name: LogicalHeight
+      type: int32
+    - name: DisplayCutout
+      type: opaque
+    - name: Rotation
+      type: int32
+    - name: ModeId
+      type: int32
+    - name: RenderFrameRate
+      type: float32
+    - name: HasArrSupport
+      type: bool
+    - name: FrameRateCategoryRate
+      type: opaque
+    - name: SupportedRefreshRates.length
+      type: int32
+    - name: DefaultModeId
+      type: int32
+    - name: UserPreferredModeId
+      type: int32
+    - name: SupportedModes.length
+      type: int32
+    - name: AppsSupportedModes.length
+      type: int32
+    - name: ColorMode
+      type: int32
+    - name: SupportedColorModes.length
+      type: int32
+    - name: HdrCapabilities
+      type: opaque
+    - name: IsForceSdr
+      type: bool
+    - name: MinimalPostProcessingSupported
+      type: bool
+    - name: LogicalDensityDpi
+      type: int32
+    - name: PhysicalXDpi
+      type: float32
+    - name: PhysicalYDpi
+      type: float32
+    - name: AppVsyncOffsetNanos
+      type: int64
+    - name: PresentationDeadlineNanos
+      type: int64
+    - name: State
+      type: int32
+    - name: CommittedState
+      type: int32
+    - name: OwnerUid
+      type: int32
+    - name: OwnerPackageName
+      type: string8
+    - name: UniqueId
+      type: string8
+    - name: RemoveMode
+      type: int32
+    - name: RefreshRateOverride
+      type: float32
+    - name: BrightnessMinimum
+      type: float32
+    - name: BrightnessMaximum
+      type: float32
+    - name: BrightnessDefault
+      type: float32
+    - name: BrightnessDim
+      type: float32
+    - name: RoundedCorners
+      type: opaque
+    - name: UserDisabledHdrTypes.length
+      type: int32
+    - name: InstallOrientation
+      type: int32
+    - name: DisplayShape
+      type: opaque
+    - name: LayoutLimitedRefreshRate
+      type: opaque
+    - name: HdrSdrRatio
+      type: float32
+    - name: ThermalRefreshRateThrottling
+      type: opaque
+    - name: ThermalBrightnessThrottlingDataId
+      type: string8

@@ -1,0 +1,15 @@
+package: android.app.usage
+type: ExternalStorageStats
+fields:
+    - name: TotalBytes
+      type: int64
+    - name: AudioBytes
+      type: int64
+    - name: VideoBytes
+      type: int64
+    - name: ImageBytes
+      type: int64
+    - name: AppBytes
+      type: int64
+    - name: ObbBytes
+      type: int64

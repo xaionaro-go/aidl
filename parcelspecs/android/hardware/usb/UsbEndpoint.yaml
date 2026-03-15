@@ -1,0 +1,11 @@
+package: android.hardware.usb
+type: UsbEndpoint
+fields:
+    - name: Address
+      type: int32
+    - name: Attributes
+      type: int32
+    - name: MaxPacketSize
+      type: int32
+    - name: Interval
+      type: int32

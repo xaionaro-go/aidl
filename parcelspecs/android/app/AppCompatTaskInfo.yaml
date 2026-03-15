@@ -1,0 +1,21 @@
+package: android.app
+type: AppCompatTaskInfo
+fields:
+    - name: TopActivityFlags
+      type: int32
+    - name: TopActivityLetterboxVerticalPosition
+      type: int32
+    - name: TopActivityLetterboxHorizontalPosition
+      type: int32
+    - name: TopActivityLetterboxWidth
+      type: int32
+    - name: TopActivityLetterboxHeight
+      type: int32
+    - name: TopActivityLetterboxAppWidth
+      type: int32
+    - name: TopActivityLetterboxAppHeight
+      type: int32
+    - name: TopActivityLetterboxBounds
+      type: opaque
+    - name: CameraCompatTaskInfo
+      type: opaque

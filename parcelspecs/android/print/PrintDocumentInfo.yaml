@@ -1,0 +1,11 @@
+package: android.print
+type: PrintDocumentInfo
+fields:
+    - name: Name
+      type: string16
+    - name: PageCount
+      type: int32
+    - name: ContentType
+      type: int32
+    - name: DataSize
+      type: int64

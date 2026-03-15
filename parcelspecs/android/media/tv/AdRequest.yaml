@@ -1,0 +1,23 @@
+package: android.media.tv
+type: AdRequest
+fields:
+    - name: Id
+      type: int32
+    - name: RequestType
+      type: int32
+    - name: "1"
+      type: int32
+      condition: mFileDescriptor!=null
+    - name: Dest
+      type: opaque
+      condition: mFileDescriptor!=null
+    - name: StartTime
+      type: int64
+    - name: StopTime
+      type: int64
+    - name: EchoInterval
+      type: int64
+    - name: MediaFileType
+      type: string16
+    - name: Metadata
+      type: opaque

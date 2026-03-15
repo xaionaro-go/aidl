@@ -1,0 +1,6 @@
+package: android.net
+type: Uri
+fields:
+    - name: NULL_TYPE_ID
+      type: int32
+      condition: uri==null

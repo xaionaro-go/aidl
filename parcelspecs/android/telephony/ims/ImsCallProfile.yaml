@@ -1,0 +1,27 @@
+package: android.telephony.ims
+type: ImsCallProfile
+fields:
+    - name: ServiceType
+      type: int32
+    - name: CallType
+      type: int32
+    - name: FilteredExtras
+      type: opaque
+    - name: MediaProfile
+      type: opaque
+    - name: EmergencyServiceCategories
+      type: int32
+    - name: EmergencyUrns
+      type: opaque
+    - name: EmergencyCallRouting
+      type: int32
+    - name: EmergencyCallTesting
+      type: bool
+    - name: HasKnownUserIntentEmergency
+      type: bool
+    - name: RestrictCause
+      type: int32
+    - name: CallerNumberVerificationStatus
+      type: int32
+    - name: AcceptedRtpHeaderExtensionTypes.toArray()
+      type: opaque

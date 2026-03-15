@@ -1,0 +1,11 @@
+package: android.service.autofill
+type: ImageTransformation
+fields:
+    - name: Id
+      type: opaque
+    - name: Patterns
+      type: opaque
+    - name: ResIds
+      type: opaque
+    - name: ContentDescriptions
+      type: opaque

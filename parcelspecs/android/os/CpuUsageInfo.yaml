@@ -1,0 +1,7 @@
+package: android.os
+type: CpuUsageInfo
+fields:
+    - name: Active
+      type: int64
+    - name: Total
+      type: int64

@@ -1,0 +1,19 @@
+package: android.view.inputmethod
+type: ExtractedText
+fields:
+    - name: Text
+      type: opaque
+    - name: StartOffset
+      type: int32
+    - name: PartialStartOffset
+      type: int32
+    - name: PartialEndOffset
+      type: int32
+    - name: SelectionStart
+      type: int32
+    - name: SelectionEnd
+      type: int32
+    - name: This.flags
+      type: int32
+    - name: Hint
+      type: opaque

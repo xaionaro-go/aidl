@@ -1,0 +1,21 @@
+package: android.service.notification
+type: SnoozeCriterion
+fields:
+    - name: (byte)1
+      type: int32
+      condition: mId!=null
+    - name: Id
+      type: string16
+      condition: mId!=null
+    - name: (byte)1
+      type: int32
+      condition: mExplanation!=null
+    - name: Explanation
+      type: opaque
+      condition: mExplanation!=null
+    - name: (byte)1
+      type: int32
+      condition: mConfirmation!=null
+    - name: Confirmation
+      type: opaque
+      condition: mConfirmation!=null

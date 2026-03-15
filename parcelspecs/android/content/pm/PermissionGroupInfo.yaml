@@ -1,0 +1,21 @@
+package: android.content.pm
+type: PermissionGroupInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: DescriptionRes
+      type: int32
+    - name: RequestRes
+      type: int32
+    - name: RequestDetailResourceId
+      type: int32
+    - name: BackgroundRequestResourceId
+      type: int32
+    - name: BackgroundRequestDetailResourceId
+      type: int32
+    - name: NonLocalizedDescription
+      type: opaque
+    - name: Flags
+      type: int32
+    - name: Priority
+      type: int32

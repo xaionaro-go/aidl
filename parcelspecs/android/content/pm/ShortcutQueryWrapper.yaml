@@ -1,0 +1,21 @@
+package: android.content.pm
+type: ShortcutQueryWrapper
+fields:
+    - name: Flg
+      type: int32
+    - name: ChangedSince
+      type: int64
+    - name: Package
+      type: string16
+      condition: mPackage!=null
+    - name: ShortcutIds
+      type: opaque
+      condition: mShortcutIds!=null
+    - name: LocusIds
+      type: opaque
+      condition: mLocusIds!=null
+    - name: Activity
+      type: opaque
+      condition: mActivity!=null
+    - name: QueryFlags
+      type: int32

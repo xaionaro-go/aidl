@@ -1,0 +1,7 @@
+package: android.app.contentsuggestions
+type: ContentSelection
+fields:
+    - name: SelectionId
+      type: string16
+    - name: Extras
+      type: opaque

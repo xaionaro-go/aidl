@@ -1,0 +1,21 @@
+package: android.content
+type: SyncStats
+fields:
+    - name: NumAuthExceptions
+      type: int64
+    - name: NumIoExceptions
+      type: int64
+    - name: NumParseExceptions
+      type: int64
+    - name: NumConflictDetectedExceptions
+      type: int64
+    - name: NumInserts
+      type: int64
+    - name: NumUpdates
+      type: int64
+    - name: NumDeletes
+      type: int64
+    - name: NumEntries
+      type: int64
+    - name: NumSkippedEntries
+      type: int64

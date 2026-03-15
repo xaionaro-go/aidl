@@ -1,0 +1,21 @@
+package: android.app.admin
+type: FullyManagedDeviceProvisioningParams
+fields:
+    - name: DeviceAdminComponentName
+      type: opaque
+    - name: OwnerName
+      type: string16
+    - name: LeaveAllSystemAppsEnabled
+      type: bool
+    - name: TimeZone
+      type: string16
+    - name: LocalTime
+      type: int64
+    - name: Locale==null?null:mLocale.toLanguageTag()
+      type: string16
+    - name: DeviceOwnerCanGrantSensorsPermissions
+      type: bool
+    - name: AdminExtras
+      type: opaque
+    - name: DemoDevice
+      type: bool

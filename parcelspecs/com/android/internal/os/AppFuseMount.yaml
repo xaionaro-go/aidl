@@ -1,0 +1,7 @@
+package: com.android.internal.os
+type: AppFuseMount
+fields:
+    - name: This.mountPointId
+      type: int32
+    - name: Fd
+      type: opaque

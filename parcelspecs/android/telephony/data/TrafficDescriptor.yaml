@@ -1,0 +1,7 @@
+package: android.telephony.data
+type: TrafficDescriptor
+fields:
+    - name: Dnn
+      type: string16
+    - name: OsAppId!=null?mOsAppId.getBytes():null
+      type: opaque

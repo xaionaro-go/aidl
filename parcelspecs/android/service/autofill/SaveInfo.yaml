@@ -1,0 +1,27 @@
+package: android.service.autofill
+type: SaveInfo
+fields:
+    - name: Type
+      type: int32
+    - name: RequiredIds
+      type: opaque
+    - name: OptionalIds
+      type: opaque
+    - name: NegativeButtonStyle
+      type: int32
+    - name: NegativeActionListener
+      type: opaque
+    - name: PositiveButtonStyle
+      type: int32
+    - name: Description
+      type: opaque
+    - name: CustomDescription
+      type: opaque
+    - name: Validator
+      type: opaque
+    - name: SanitizerKeys
+      type: opaque
+    - name: TriggerId
+      type: opaque
+    - name: Flags
+      type: int32

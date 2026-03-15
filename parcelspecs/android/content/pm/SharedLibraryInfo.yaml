@@ -1,0 +1,31 @@
+package: android.content.pm
+type: SharedLibraryInfo
+fields:
+    - name: Path
+      type: string8
+    - name: PackageName
+      type: string8
+    - name: "1"
+      type: int32
+      condition: mCodePaths!=null
+    - name: CodePaths.toArray(newString[mCodePaths.size()])
+      type: opaque
+      condition: mCodePaths!=null
+    - name: Name
+      type: string8
+    - name: Version
+      type: int64
+    - name: Type
+      type: int32
+    - name: DeclaringPackage
+      type: opaque
+    - name: DependentPackages
+      type: opaque
+    - name: Dependencies
+      type: opaque
+    - name: IsNative
+      type: bool
+    - name: OptionalDependentPackages
+      type: opaque
+    - name: CertDigests
+      type: opaque

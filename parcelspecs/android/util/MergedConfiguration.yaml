@@ -1,0 +1,9 @@
+package: android.util
+type: MergedConfiguration
+fields:
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque

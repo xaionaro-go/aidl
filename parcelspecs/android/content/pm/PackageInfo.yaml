@@ -1,0 +1,101 @@
+package: android.content.pm
+type: PackageInfo
+fields:
+    - name: PackageName
+      type: string8
+    - name: SplitNames
+      type: opaque
+    - name: VersionCode
+      type: int32
+    - name: VersionCodeMajor
+      type: int32
+    - name: VersionName
+      type: string8
+    - name: BaseRevisionCode
+      type: int32
+    - name: SplitRevisionCodes
+      type: opaque
+    - name: SharedUserId
+      type: string8
+    - name: SharedUserLabel
+      type: int32
+    - name: "1"
+      type: int32
+      condition: applicationInfo!=null
+    - name: Dest
+      type: opaque
+      condition: applicationInfo!=null
+    - name: FirstInstallTime
+      type: int64
+    - name: LastUpdateTime
+      type: int64
+    - name: Gids
+      type: opaque
+    - name: Activities
+      type: opaque
+    - name: Receivers
+      type: opaque
+    - name: Services
+      type: opaque
+    - name: Providers
+      type: opaque
+    - name: Instrumentation
+      type: opaque
+    - name: Permissions
+      type: opaque
+    - name: RequestedPermissions
+      type: opaque
+    - name: RequestedPermissionsFlags
+      type: opaque
+    - name: Signatures
+      type: opaque
+    - name: ConfigPreferences
+      type: opaque
+    - name: ReqFeatures
+      type: opaque
+    - name: FeatureGroups
+      type: opaque
+    - name: Attributions
+      type: opaque
+    - name: InstallLocation
+      type: int32
+    - name: IsStub?1:0
+      type: int32
+    - name: CoreApp?1:0
+      type: int32
+    - name: RequiredForAllUsers?1:0
+      type: int32
+    - name: RestrictedAccountType
+      type: string8
+    - name: RequiredAccountType
+      type: string8
+    - name: OverlayTarget
+      type: string8
+    - name: OverlayCategory
+      type: string8
+    - name: OverlayPriority
+      type: int32
+    - name: OverlayIsStatic
+      type: bool
+    - name: CompileSdkVersion
+      type: int32
+    - name: CompileSdkVersionCodename
+      type: string8
+    - name: "1"
+      type: int32
+      condition: signingInfo!=null
+    - name: Dest
+      type: opaque
+      condition: signingInfo!=null
+    - name: IsApex
+      type: bool
+    - name: IsActiveApex
+      type: bool
+    - name: ArchiveTimeMillis
+      type: int64
+    - name: "1"
+      type: int32
+      condition: mApexPackageName!=null
+    - name: ApexPackageName
+      type: string8
+      condition: mApexPackageName!=null

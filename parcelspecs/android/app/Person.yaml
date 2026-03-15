@@ -1,0 +1,19 @@
+package: android.app
+type: Person
+fields:
+    - name: Name
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: mIcon!=null
+    - name: Dest
+      type: opaque
+      condition: mIcon!=null
+    - name: Uri
+      type: string16
+    - name: Key
+      type: string16
+    - name: IsImportant
+      type: bool
+    - name: IsBot
+      type: bool

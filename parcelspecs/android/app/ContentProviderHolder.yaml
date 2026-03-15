@@ -1,0 +1,14 @@
+package: android.app
+type: ContentProviderHolder
+fields:
+    - name: Dest
+      type: opaque
+    - name: Provider.asBinder()
+      type: opaque
+      condition: provider!=null
+    - name: Connection
+      type: opaque
+    - name: NoReleaseNeeded?1:0
+      type: int32
+    - name: Local?1:0
+      type: int32

@@ -1,0 +1,31 @@
+package: android.service.settings.preferences
+type: SettingsPreferenceMetadata
+fields:
+    - name: Key
+      type: string8
+    - name: ScreenKey
+      type: string8
+    - name: Title
+      type: string8
+    - name: Summary
+      type: string8
+    - name: Breadcrumbs
+      type: opaque
+    - name: ReadPermissions
+      type: opaque
+    - name: WritePermissions
+      type: opaque
+    - name: Enabled
+      type: bool
+    - name: Available
+      type: bool
+    - name: Writable
+      type: bool
+    - name: Restricted
+      type: bool
+    - name: Sensitivity
+      type: int32
+    - name: LaunchIntent
+      type: opaque
+    - name: Extras
+      type: opaque

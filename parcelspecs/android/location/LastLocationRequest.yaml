@@ -1,0 +1,9 @@
+package: android.location
+type: LastLocationRequest
+fields:
+    - name: HiddenFromAppOps
+      type: bool
+    - name: AdasGnssBypass
+      type: bool
+    - name: LocationSettingsIgnored
+      type: bool

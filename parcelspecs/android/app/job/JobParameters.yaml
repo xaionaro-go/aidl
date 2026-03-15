@@ -1,0 +1,44 @@
+package: android.app.job
+type: JobParameters
+fields:
+    - name: JobId
+      type: int32
+    - name: JobNamespace
+      type: string16
+    - name: Extras
+      type: opaque
+    - name: TransientExtras
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: clipData!=null
+    - name: Dest
+      type: opaque
+      condition: clipData!=null
+    - name: ClipGrantFlags
+      type: int32
+      condition: clipData!=null
+    - name: Callback
+      type: opaque
+    - name: OverrideDeadlineExpired?1:0
+      type: int32
+    - name: IsExpedited
+      type: bool
+    - name: IsUserInitiated
+      type: bool
+    - name: TriggeredContentUris
+      type: opaque
+    - name: TriggeredContentAuthorities
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: mNetwork!=null
+    - name: Dest
+      type: opaque
+      condition: mNetwork!=null
+    - name: StopReason
+      type: int32
+    - name: InternalStopReason
+      type: int32
+    - name: DebugStopReason
+      type: string16

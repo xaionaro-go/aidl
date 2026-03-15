@@ -1,0 +1,29 @@
+package: android.view.textclassifier
+type: TextClassifierEvent
+fields:
+    - name: GetParcelToken()
+      type: int32
+    - name: EventCategory
+      type: int32
+    - name: EventType
+      type: int32
+    - name: EntityTypes
+      type: opaque
+    - name: EventContext
+      type: opaque
+    - name: ResultId
+      type: string16
+    - name: EventIndex
+      type: int32
+    - name: Scores.length
+      type: int32
+    - name: Scores
+      type: opaque
+    - name: ModelName
+      type: string16
+    - name: ActionIndices
+      type: opaque
+    - name: Locale==null?null:mLocale.toLanguageTag()
+      type: string16
+    - name: Extras
+      type: opaque

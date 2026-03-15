@@ -1,0 +1,13 @@
+package: android.telephony.ims
+type: ImsSsInfo
+fields:
+    - name: Status
+      type: int32
+    - name: IcbNum
+      type: string16
+    - name: ProvisionStatus
+      type: int32
+    - name: ClirInterrogationStatus
+      type: int32
+    - name: ClirOutgoingState
+      type: int32

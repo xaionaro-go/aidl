@@ -1,0 +1,13 @@
+package: android.media
+type: RouteDiscoveryPreference
+fields:
+    - name: PreferredFeatures
+      type: opaque
+    - name: PackageOrder
+      type: opaque
+    - name: AllowedPackages
+      type: opaque
+    - name: ShouldPerformActiveScan
+      type: bool
+    - name: Extras
+      type: opaque

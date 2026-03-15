@@ -1,0 +1,25 @@
+package: android.content.om
+type: OverlayInfo
+fields:
+    - name: PackageName
+      type: string16
+    - name: OverlayName
+      type: string16
+    - name: TargetPackageName
+      type: string16
+    - name: TargetOverlayableName
+      type: string16
+    - name: Category
+      type: string16
+    - name: BaseCodePath
+      type: string16
+    - name: State
+      type: int32
+    - name: UserId
+      type: int32
+    - name: Priority
+      type: int32
+    - name: IsMutable
+      type: bool
+    - name: IsFabricated
+      type: bool

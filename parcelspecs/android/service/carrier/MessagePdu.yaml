@@ -1,0 +1,6 @@
+package: android.service.carrier
+type: MessagePdu
+fields:
+    - name: NULL_LENGTH
+      type: int32
+      condition: mPduList==null

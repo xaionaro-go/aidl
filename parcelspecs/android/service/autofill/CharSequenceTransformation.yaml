@@ -1,0 +1,9 @@
+package: android.service.autofill
+type: CharSequenceTransformation
+fields:
+    - name: Ids
+      type: opaque
+    - name: Regexs
+      type: opaque
+    - name: Substs
+      type: opaque

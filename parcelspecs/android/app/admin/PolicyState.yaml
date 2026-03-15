@@ -1,0 +1,9 @@
+package: android.app.admin
+type: PolicyState
+fields:
+    - name: PoliciesSetByAdmins.size()
+      type: int32
+    - name: CurrentResolvedPolicy
+      type: opaque
+    - name: ResolutionMechanism
+      type: opaque

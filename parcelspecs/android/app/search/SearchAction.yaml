@@ -1,0 +1,21 @@
+package: android.app.search
+type: SearchAction
+fields:
+    - name: Id
+      type: string16
+    - name: Title
+      type: opaque
+    - name: Icon
+      type: opaque
+    - name: Subtitle
+      type: opaque
+    - name: ContentDescription
+      type: opaque
+    - name: PendingIntent
+      type: opaque
+    - name: Intent
+      type: opaque
+    - name: UserHandle
+      type: opaque
+    - name: Extras
+      type: opaque

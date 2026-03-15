@@ -1,0 +1,7 @@
+package: android.security.keymaster
+type: ExportResult
+fields:
+    - name: ResultCode
+      type: int32
+    - name: ExportData
+      type: opaque

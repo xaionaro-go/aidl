@@ -1,0 +1,13 @@
+package: android.view.textservice
+type: SpellCheckerSubtype
+fields:
+    - name: SubtypeNameResId
+      type: int32
+    - name: SubtypeLocale
+      type: string16
+    - name: SubtypeLanguageTag
+      type: string16
+    - name: SubtypeExtraValue
+      type: string16
+    - name: SubtypeId
+      type: int32

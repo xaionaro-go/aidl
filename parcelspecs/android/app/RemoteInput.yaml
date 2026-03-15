@@ -1,0 +1,17 @@
+package: android.app
+type: RemoteInput
+fields:
+    - name: ResultKey
+      type: string16
+    - name: Label
+      type: opaque
+    - name: Choices
+      type: opaque
+    - name: Flags
+      type: int32
+    - name: EditChoicesBeforeSending
+      type: int32
+    - name: Extras
+      type: opaque
+    - name: AllowedDataTypes
+      type: opaque

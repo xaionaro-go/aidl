@@ -1,0 +1,17 @@
+package: android.app.admin
+type: DnsEvent
+fields:
+    - name: PARCEL_TOKEN_DNS_EVENT
+      type: int32
+    - name: Hostname
+      type: string16
+    - name: IpAddresses
+      type: opaque
+    - name: IpAddressesCount
+      type: int32
+    - name: PackageName
+      type: string16
+    - name: Timestamp
+      type: int64
+    - name: Id
+      type: int64

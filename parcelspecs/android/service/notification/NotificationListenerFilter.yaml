@@ -1,0 +1,7 @@
+package: android.service.notification
+type: NotificationListenerFilter
+fields:
+    - name: AllowedNotificationTypes
+      type: int32
+    - name: DisallowedPackages
+      type: opaque

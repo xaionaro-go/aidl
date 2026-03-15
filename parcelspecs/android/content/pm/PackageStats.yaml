@@ -1,0 +1,35 @@
+package: android.content.pm
+type: PackageStats
+fields:
+    - name: PackageName
+      type: string16
+    - name: UserHandle
+      type: int32
+    - name: CodeSize
+      type: int64
+    - name: DataSize
+      type: int64
+    - name: CacheSize
+      type: int64
+    - name: ApkSize
+      type: int64
+    - name: LibSize
+      type: int64
+    - name: DmSize
+      type: int64
+    - name: DexoptSize
+      type: int64
+    - name: CurProfSize
+      type: int64
+    - name: RefProfSize
+      type: int64
+    - name: ExternalCodeSize
+      type: int64
+    - name: ExternalDataSize
+      type: int64
+    - name: ExternalCacheSize
+      type: int64
+    - name: ExternalMediaSize
+      type: int64
+    - name: ExternalObbSize
+      type: int64

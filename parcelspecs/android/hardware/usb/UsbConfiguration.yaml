@@ -1,0 +1,13 @@
+package: android.hardware.usb
+type: UsbConfiguration
+fields:
+    - name: Id
+      type: int32
+    - name: Name
+      type: string16
+    - name: Attributes
+      type: int32
+    - name: MaxPower
+      type: int32
+    - name: Interfaces
+      type: opaque

@@ -1,0 +1,13 @@
+package: android.content.pm
+type: SigningDetails
+fields:
+    - name: IsUnknown
+      type: bool
+    - name: Signatures
+      type: opaque
+    - name: SignatureSchemeVersion
+      type: int32
+    - name: PublicKeys
+      type: opaque
+    - name: PastSigningCertificates
+      type: opaque

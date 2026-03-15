@@ -1,0 +1,11 @@
+package: android.app.search
+type: SearchTargetEvent
+fields:
+    - name: TargetIds
+      type: opaque
+    - name: Location
+      type: string16
+    - name: Action
+      type: int32
+    - name: Flags
+      type: int32

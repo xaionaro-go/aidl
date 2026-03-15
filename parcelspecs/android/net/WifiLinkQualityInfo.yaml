@@ -1,0 +1,15 @@
+package: android.net
+type: WifiLinkQualityInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: Type
+      type: int32
+    - name: Rssi
+      type: int32
+    - name: TxGood
+      type: int64
+    - name: TxBad
+      type: int64
+    - name: Bssid
+      type: string16

@@ -1,0 +1,7 @@
+package: android.graphics
+type: PointF
+fields:
+    - name: x
+      type: float32
+    - name: "y"
+      type: float32

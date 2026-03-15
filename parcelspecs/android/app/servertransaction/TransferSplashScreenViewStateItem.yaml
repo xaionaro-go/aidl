@@ -1,0 +1,9 @@
+package: android.app.servertransaction
+type: TransferSplashScreenViewStateItem
+fields:
+    - name: Dest
+      type: opaque
+    - name: SplashScreenViewParcelable
+      type: opaque
+    - name: StartingWindowLeash
+      type: opaque

@@ -1,0 +1,54 @@
+package: android.appwidget
+type: AppWidgetProviderInfo
+fields:
+    - name: This.provider
+      type: opaque
+    - name: This.minWidth
+      type: int32
+    - name: This.minHeight
+      type: int32
+    - name: This.minResizeWidth
+      type: int32
+    - name: This.minResizeHeight
+      type: int32
+    - name: This.maxResizeWidth
+      type: int32
+    - name: This.maxResizeHeight
+      type: int32
+    - name: This.targetCellWidth
+      type: int32
+    - name: This.targetCellHeight
+      type: int32
+    - name: This.updatePeriodMillis
+      type: int32
+    - name: This.initialLayout
+      type: int32
+    - name: This.initialKeyguardLayout
+      type: int32
+    - name: This.configure
+      type: opaque
+    - name: This.label
+      type: string16
+    - name: This.icon
+      type: int32
+    - name: This.previewImage
+      type: int32
+    - name: This.previewLayout
+      type: int32
+    - name: This.autoAdvanceViewId
+      type: int32
+    - name: This.resizeMode
+      type: int32
+    - name: This.widgetCategory
+      type: int32
+    - name: This.providerInfo
+      type: opaque
+    - name: This.widgetFeatures
+      type: int32
+    - name: This.descriptionRes
+      type: int32
+    - name: This.isExtendedFromAppWidgetProvider
+      type: bool
+    - name: This.generatedPreviewCategories
+      type: int32
+      condition: generatedPreviews()

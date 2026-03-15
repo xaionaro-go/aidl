@@ -1,0 +1,9 @@
+package: android.telephony
+type: CellInfoGsm
+fields:
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque

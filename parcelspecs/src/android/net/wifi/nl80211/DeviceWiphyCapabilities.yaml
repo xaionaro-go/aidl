@@ -1,0 +1,23 @@
+package: src.android.net.wifi.nl80211
+type: DeviceWiphyCapabilities
+fields:
+    - name: M80211nSupported
+      type: bool
+    - name: M80211acSupported
+      type: bool
+    - name: M80211axSupported
+      type: bool
+    - name: M80211beSupported
+      type: bool
+    - name: ChannelWidth160MhzSupported
+      type: bool
+    - name: ChannelWidth80p80MhzSupported
+      type: bool
+    - name: ChannelWidth320MhzSupported
+      type: bool
+    - name: MaxNumberTxSpatialStreams
+      type: int32
+    - name: MaxNumberRxSpatialStreams
+      type: int32
+    - name: MaxNumberAkms
+      type: int32

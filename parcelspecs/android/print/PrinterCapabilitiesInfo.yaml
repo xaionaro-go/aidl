@@ -1,0 +1,7 @@
+package: android.print
+type: PrinterCapabilitiesInfo
+fields:
+    - name: ColorModes
+      type: int32
+    - name: DuplexModes
+      type: int32

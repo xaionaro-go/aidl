@@ -1,0 +1,17 @@
+package: android.media.quality
+type: AmbientBacklightSettings
+fields:
+    - name: Source
+      type: int32
+    - name: MaxFps
+      type: int32
+    - name: ColorFormat
+      type: int32
+    - name: HorizontalZonesNumber
+      type: int32
+    - name: VerticalZonesNumber
+      type: int32
+    - name: IsLetterboxOmitted
+      type: bool
+    - name: Threshold
+      type: int32

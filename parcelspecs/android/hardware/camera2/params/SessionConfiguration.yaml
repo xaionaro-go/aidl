@@ -1,0 +1,25 @@
+package: android.hardware.camera2.params
+type: SessionConfiguration
+fields:
+    - name: SessionType
+      type: int32
+    - name: InputConfig.getWidth()
+      type: int32
+      condition: mInputConfig!=null
+    - name: InputConfig.getHeight()
+      type: int32
+      condition: mInputConfig!=null
+    - name: InputConfig.getFormat()
+      type: int32
+      condition: mInputConfig!=null
+    - name: InputConfig.isMultiResolution()
+      type: bool
+      condition: mInputConfig!=null
+    - name: OutputConfigurations
+      type: opaque
+    - name: "True"
+      type: bool
+      condition: mSessionParameters!=null
+    - name: Dest
+      type: opaque
+      condition: mSessionParameters!=null

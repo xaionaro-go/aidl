@@ -1,0 +1,9 @@
+package: android.media.metrics
+type: NetworkEvent
+fields:
+    - name: NetworkType
+      type: int32
+    - name: TimeSinceCreatedMillis
+      type: int64
+    - name: MetricsBundle
+      type: opaque

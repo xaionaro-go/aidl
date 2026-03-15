@@ -1,0 +1,15 @@
+package: android.hardware.usb
+type: UsbAccessory
+fields:
+    - name: Manufacturer
+      type: string16
+    - name: Model
+      type: string16
+    - name: Description
+      type: string16
+    - name: Version
+      type: string16
+    - name: Uri
+      type: string16
+    - name: SerialNumberReader.asBinder()
+      type: opaque

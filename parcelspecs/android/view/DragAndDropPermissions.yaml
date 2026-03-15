@@ -1,0 +1,5 @@
+package: android.view
+type: DragAndDropPermissions
+fields:
+    - name: DragAndDropPermissions
+      type: opaque

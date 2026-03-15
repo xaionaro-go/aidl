@@ -1,0 +1,15 @@
+package: android.telephony
+type: CellIdentityGsm
+fields:
+    - name: Dest
+      type: opaque
+    - name: Lac
+      type: int32
+    - name: Cid
+      type: int32
+    - name: Arfcn
+      type: int32
+    - name: Bsic
+      type: int32
+    - name: AdditionalPlmns
+      type: opaque

@@ -1,0 +1,9 @@
+package: android.telecom
+type: AudioState
+fields:
+    - name: (byte)(isMuted?1:0)
+      type: int32
+    - name: Route
+      type: int32
+    - name: SupportedRouteMask
+      type: int32

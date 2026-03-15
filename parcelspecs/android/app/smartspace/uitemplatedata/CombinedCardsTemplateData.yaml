@@ -1,0 +1,7 @@
+package: android.app.smartspace.uitemplatedata
+type: CombinedCardsTemplateData
+fields:
+    - name: Out
+      type: opaque
+    - name: CombinedCardDataList
+      type: opaque

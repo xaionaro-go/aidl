@@ -1,0 +1,21 @@
+package: com.android.internal.util
+type: ScreenshotRequest
+fields:
+    - name: Type
+      type: int32
+    - name: Source
+      type: int32
+    - name: TopComponent
+      type: opaque
+    - name: TaskId
+      type: int32
+    - name: UserId
+      type: int32
+    - name: HardwareBitmapBundler.hardwareBitmapToBundle(mBitmap)
+      type: opaque
+    - name: BoundsInScreen
+      type: opaque
+    - name: Insets
+      type: opaque
+    - name: DisplayId
+      type: int32

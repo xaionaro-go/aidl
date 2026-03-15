@@ -1,0 +1,25 @@
+package: android.location
+type: SatellitePvt
+fields:
+    - name: Flags
+      type: int32
+    - name: PositionEcef
+      type: opaque
+    - name: VelocityEcef
+      type: opaque
+    - name: ClockInfo
+      type: opaque
+    - name: IonoDelayMeters
+      type: float64
+    - name: TropoDelayMeters
+      type: float64
+    - name: TimeOfClockSeconds
+      type: int64
+    - name: TimeOfEphemerisSeconds
+      type: int64
+    - name: IssueOfDataClock
+      type: int32
+    - name: IssueOfDataEphemeris
+      type: int32
+    - name: EphemerisSource
+      type: int32

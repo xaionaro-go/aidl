@@ -1,0 +1,11 @@
+package: android.app.search
+type: SearchContext
+fields:
+    - name: ResultTypes
+      type: int32
+    - name: TimeoutMillis
+      type: int32
+    - name: PackageName
+      type: string16
+    - name: Extras
+      type: opaque

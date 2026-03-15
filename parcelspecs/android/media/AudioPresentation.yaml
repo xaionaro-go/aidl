@@ -1,0 +1,19 @@
+package: android.media
+type: AudioPresentation
+fields:
+    - name: GetPresentationId()
+      type: int32
+    - name: GetProgramId()
+      type: int32
+    - name: GetULocale()
+      type: opaque
+    - name: GetMasteringIndication()
+      type: int32
+    - name: HasAudioDescription()
+      type: bool
+    - name: HasSpokenSubtitles()
+      type: bool
+    - name: HasDialogueEnhancement()
+      type: bool
+    - name: Labels
+      type: opaque

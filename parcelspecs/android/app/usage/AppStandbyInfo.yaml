@@ -1,0 +1,7 @@
+package: android.app.usage
+type: AppStandbyInfo
+fields:
+    - name: PackageName
+      type: string16
+    - name: StandbyBucket
+      type: int32

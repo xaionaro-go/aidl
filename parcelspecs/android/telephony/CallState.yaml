@@ -1,0 +1,17 @@
+package: android.telephony
+type: CallState
+fields:
+    - name: PreciseCallState
+      type: int32
+    - name: NetworkType
+      type: int32
+    - name: CallQuality
+      type: opaque
+    - name: CallClassification
+      type: int32
+    - name: ImsCallId
+      type: string16
+    - name: ImsCallServiceType
+      type: int32
+    - name: ImsCallType
+      type: int32

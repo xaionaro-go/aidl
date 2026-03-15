@@ -1,0 +1,19 @@
+package: android.media
+type: MediaDescription
+fields:
+    - name: MediaId
+      type: string16
+    - name: Title
+      type: opaque
+    - name: Subtitle
+      type: opaque
+    - name: Description
+      type: opaque
+    - name: Icon
+      type: opaque
+    - name: IconUri
+      type: opaque
+    - name: Extras
+      type: opaque
+    - name: MediaUri
+      type: opaque

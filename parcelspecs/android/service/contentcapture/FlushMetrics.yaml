@@ -1,0 +1,13 @@
+package: android.service.contentcapture
+type: FlushMetrics
+fields:
+    - name: SessionStarted
+      type: int32
+    - name: SessionFinished
+      type: int32
+    - name: ViewAppearedCount
+      type: int32
+    - name: ViewDisappearedCount
+      type: int32
+    - name: ViewTextChangedCount
+      type: int32

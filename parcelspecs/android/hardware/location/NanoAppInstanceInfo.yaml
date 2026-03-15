@@ -1,0 +1,29 @@
+package: android.hardware.location
+type: NanoAppInstanceInfo
+fields:
+    - name: Publisher
+      type: string16
+    - name: Name
+      type: string16
+    - name: Handle
+      type: int32
+    - name: AppId
+      type: int64
+    - name: AppVersion
+      type: int32
+    - name: ContexthubId
+      type: int32
+    - name: NeededReadMemBytes
+      type: int32
+    - name: NeededWriteMemBytes
+      type: int32
+    - name: NeededExecMemBytes
+      type: int32
+    - name: NeededSensors.length
+      type: int32
+    - name: NeededSensors
+      type: opaque
+    - name: OutputEvents.length
+      type: int32
+    - name: OutputEvents
+      type: opaque

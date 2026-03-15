@@ -1,0 +1,17 @@
+package: src.android.net.wifi.sharedconnectivity.app
+type: NetworkProviderInfo
+fields:
+    - name: DeviceType
+      type: int32
+    - name: DeviceName
+      type: string16
+    - name: ModelName
+      type: string16
+    - name: BatteryPercentage
+      type: int32
+    - name: IsBatteryCharging
+      type: bool
+    - name: ConnectionStrength
+      type: int32
+    - name: Extras
+      type: opaque

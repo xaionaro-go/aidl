@@ -1,0 +1,17 @@
+package: src.android.net.wifi.sharedconnectivity.app
+type: KnownNetwork
+fields:
+    - name: NetworkSource
+      type: int32
+    - name: Ssid
+      type: string16
+    - name: SecurityTypes
+      type: opaque
+    - name: "True"
+      type: bool
+      condition: mNetworkProviderInfo!=null
+    - name: Dest
+      type: opaque
+      condition: mNetworkProviderInfo!=null
+    - name: Extras
+      type: opaque

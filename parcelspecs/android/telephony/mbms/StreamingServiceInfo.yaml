@@ -1,0 +1,5 @@
+package: android.telephony.mbms
+type: StreamingServiceInfo
+fields:
+    - name: Dest
+      type: opaque

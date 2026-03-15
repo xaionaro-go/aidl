@@ -1,0 +1,11 @@
+package: android.speech
+type: RecognitionSupport
+fields:
+    - name: InstalledOnDeviceLanguages
+      type: opaque
+    - name: PendingOnDeviceLanguages
+      type: opaque
+    - name: SupportedOnDeviceLanguages
+      type: opaque
+    - name: OnlineLanguages
+      type: opaque

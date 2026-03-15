@@ -1,0 +1,7 @@
+package: android.media.quality
+type: ActiveProcessingPicture
+fields:
+    - name: Id
+      type: int32
+    - name: ProfileId
+      type: string16

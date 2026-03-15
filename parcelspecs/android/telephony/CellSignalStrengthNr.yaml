@@ -1,0 +1,23 @@
+package: android.telephony
+type: CellSignalStrengthNr
+fields:
+    - name: CsiRsrp
+      type: int32
+    - name: CsiRsrq
+      type: int32
+    - name: CsiSinr
+      type: int32
+    - name: CsiCqiTableIndex
+      type: int32
+    - name: CsiCqiReport
+      type: opaque
+    - name: SsRsrp
+      type: int32
+    - name: SsRsrq
+      type: int32
+    - name: SsSinr
+      type: int32
+    - name: Level
+      type: int32
+    - name: TimingAdvance
+      type: int32

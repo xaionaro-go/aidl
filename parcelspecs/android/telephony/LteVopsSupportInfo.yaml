@@ -1,0 +1,9 @@
+package: android.telephony
+type: LteVopsSupportInfo
+fields:
+    - name: Out
+      type: opaque
+    - name: VopsSupport
+      type: int32
+    - name: EmcBearerSupport
+      type: int32

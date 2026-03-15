@@ -1,0 +1,17 @@
+package: android.app.prediction
+type: AppTarget
+fields:
+    - name: Id
+      type: opaque
+    - name: ShortcutInfo
+      type: opaque
+    - name: PackageName
+      type: string16
+      condition: mShortcutInfo==null
+    - name: User.getIdentifier()
+      type: int32
+      condition: mShortcutInfo==null
+    - name: ClassName
+      type: string16
+    - name: Rank
+      type: int32

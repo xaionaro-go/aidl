@@ -1,0 +1,7 @@
+package: android.hardware.input
+type: HostUsiVersion
+fields:
+    - name: MajorVersion
+      type: int32
+    - name: MinorVersion
+      type: int32

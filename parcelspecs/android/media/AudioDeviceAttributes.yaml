@@ -1,0 +1,17 @@
+package: android.media
+type: AudioDeviceAttributes
+fields:
+    - name: Role
+      type: int32
+    - name: Type
+      type: int32
+    - name: Address
+      type: string16
+    - name: Name
+      type: string16
+    - name: NativeType
+      type: int32
+    - name: AudioProfiles.toArray(newAudioProfile[mAudioProfiles.size()])
+      type: opaque
+    - name: AudioDescriptors.toArray(newAudioDescriptor[mAudioDescriptors.size()])
+      type: opaque

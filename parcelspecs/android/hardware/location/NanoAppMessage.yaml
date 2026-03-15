@@ -1,0 +1,17 @@
+package: android.hardware.location
+type: NanoAppMessage
+fields:
+    - name: NanoAppId
+      type: int64
+    - name: IsBroadcasted?1:0
+      type: int32
+    - name: MessageType
+      type: int32
+    - name: MessageBody.length
+      type: int32
+    - name: MessageBody
+      type: opaque
+    - name: IsReliable?1:0
+      type: int32
+    - name: MessageSequenceNumber
+      type: int32

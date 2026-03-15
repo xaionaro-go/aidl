@@ -1,0 +1,9 @@
+package: android.media.tv.ad
+type: TvAdServiceInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: Id
+      type: string16
+    - name: Types
+      type: opaque

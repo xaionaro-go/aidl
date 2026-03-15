@@ -1,0 +1,7 @@
+package: android.view.inputmethod
+type: JoinOrSplitGesture
+fields:
+    - name: Point
+      type: opaque
+    - name: FallbackText
+      type: string8

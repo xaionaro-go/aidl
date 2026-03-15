@@ -1,0 +1,9 @@
+package: android.hardware.devicestate
+type: DeviceStateInfo
+fields:
+    - name: SupportedStates.size()
+      type: int32
+    - name: BaseState.getConfiguration()
+      type: opaque
+    - name: CurrentState.getConfiguration()
+      type: opaque

@@ -1,0 +1,17 @@
+package: android.window
+type: SizeConfigurationBuckets
+fields:
+    - name: Flg
+      type: int32
+    - name: Horizontal
+      type: opaque
+      condition: mHorizontal!=null
+    - name: Vertical
+      type: opaque
+      condition: mVertical!=null
+    - name: Smallest
+      type: opaque
+      condition: mSmallest!=null
+    - name: ScreenLayoutSize
+      type: opaque
+      condition: mScreenLayoutSize!=null

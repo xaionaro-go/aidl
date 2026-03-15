@@ -1,0 +1,7 @@
+package: android.service.games
+type: CreateGameSessionResult
+fields:
+    - name: GameSession.asBinder()
+      type: opaque
+    - name: SurfacePackage
+      type: opaque

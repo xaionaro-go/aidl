@@ -1,0 +1,5 @@
+package: android.security.keystore.recovery
+type: RecoveryCertPath
+fields:
+    - name: EncodedCertPath
+      type: opaque

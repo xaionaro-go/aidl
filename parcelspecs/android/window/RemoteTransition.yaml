@@ -1,0 +1,13 @@
+package: android.window
+type: RemoteTransition
+fields:
+    - name: Flg
+      type: int32
+    - name: RemoteTransition
+      type: opaque
+    - name: AppThread
+      type: opaque
+      condition: mAppThread!=null
+    - name: DebugName
+      type: string16
+      condition: mDebugName!=null

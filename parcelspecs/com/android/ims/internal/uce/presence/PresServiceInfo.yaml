@@ -1,0 +1,11 @@
+package: com.android.ims.internal.uce.presence
+type: PresServiceInfo
+fields:
+    - name: ServiceID
+      type: string16
+    - name: ServiceDesc
+      type: string16
+    - name: ServiceVer
+      type: string16
+    - name: MediaCap
+      type: int32

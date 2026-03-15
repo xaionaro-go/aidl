@@ -1,0 +1,5 @@
+package: android.content.pm.dependencyinstaller
+type: DependencyInstallerCallback
+fields:
+    - name: Binder
+      type: opaque

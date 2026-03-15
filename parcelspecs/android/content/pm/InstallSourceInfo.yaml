@@ -1,0 +1,15 @@
+package: android.content.pm
+type: InstallSourceInfo
+fields:
+    - name: InitiatingPackageName
+      type: string16
+    - name: InitiatingPackageSigningInfo
+      type: opaque
+    - name: OriginatingPackageName
+      type: string16
+    - name: InstallingPackageName
+      type: string16
+    - name: UpdateOwnerPackageName
+      type: string8
+    - name: PackageSource
+      type: int32

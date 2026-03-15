@@ -1,0 +1,30 @@
+package: android.service.voice
+type: HotwordDetectedResult
+fields:
+    - name: Flg
+      type: int32
+    - name: SpeakerId
+      type: int32
+    - name: ConfidenceLevel
+      type: int32
+    - name: MediaSyncEvent
+      type: opaque
+      condition: mMediaSyncEvent!=null
+    - name: HotwordOffsetMillis
+      type: int32
+    - name: HotwordDurationMillis
+      type: int32
+    - name: AudioChannel
+      type: int32
+    - name: Score
+      type: int32
+    - name: PersonalizedScore
+      type: int32
+    - name: HotwordPhraseId
+      type: int32
+    - name: AudioStreams
+      type: opaque
+    - name: Extras
+      type: opaque
+    - name: BackgroundAudioPower
+      type: int32

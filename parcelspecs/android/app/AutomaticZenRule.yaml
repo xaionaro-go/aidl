@@ -1,0 +1,42 @@
+package: android.app
+type: AutomaticZenRule
+fields:
+    - name: Enabled?ENABLED:DISABLED
+      type: int32
+    - name: "1"
+      type: int32
+      condition: name!=null
+    - name: Name
+      type: string16
+      condition: name!=null
+    - name: InterruptionFilter
+      type: int32
+    - name: ConditionId
+      type: opaque
+    - name: Owner
+      type: opaque
+    - name: ConfigurationActivity
+      type: opaque
+    - name: CreationTime
+      type: int64
+    - name: ZenPolicy
+      type: opaque
+    - name: Modified?ENABLED:DISABLED
+      type: int32
+    - name: Pkg
+      type: string16
+    - name: DeviceEffects
+      type: opaque
+      condition: Flags.modesApi()
+    - name: AllowManualInvocation
+      type: bool
+      condition: Flags.modesApi()
+    - name: IconResId
+      type: int32
+      condition: Flags.modesApi()
+    - name: TriggerDescription
+      type: string16
+      condition: Flags.modesApi()
+    - name: Type
+      type: int32
+      condition: Flags.modesApi()

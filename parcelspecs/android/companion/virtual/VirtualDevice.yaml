@@ -1,0 +1,13 @@
+package: android.companion.virtual
+type: VirtualDevice
+fields:
+    - name: VirtualDevice.asBinder()
+      type: opaque
+    - name: Id
+      type: int32
+    - name: PersistentId
+      type: string8
+    - name: Name
+      type: string8
+    - name: DisplayName
+      type: opaque

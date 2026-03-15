@@ -1,0 +1,11 @@
+package: android.content.pm
+type: FeatureInfo
+fields:
+    - name: Name
+      type: string8
+    - name: Version
+      type: int32
+    - name: ReqGlEsVersion
+      type: int32
+    - name: Flags
+      type: int32

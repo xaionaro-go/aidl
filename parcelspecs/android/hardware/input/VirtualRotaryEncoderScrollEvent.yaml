@@ -1,0 +1,7 @@
+package: android.hardware.input
+type: VirtualRotaryEncoderScrollEvent
+fields:
+    - name: ScrollAmount
+      type: float32
+    - name: EventTimeNanos
+      type: int64

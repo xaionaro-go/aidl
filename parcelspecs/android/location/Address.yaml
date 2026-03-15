@@ -1,0 +1,48 @@
+package: android.location
+type: Address
+fields:
+    - name: Locale.getLanguage()
+      type: string16
+    - name: Locale.getCountry()
+      type: string16
+    - name: "0"
+      type: int32
+      condition: mAddressLines==null
+    - name: FeatureName
+      type: string16
+    - name: AdminArea
+      type: string16
+    - name: SubAdminArea
+      type: string16
+    - name: Locality
+      type: string16
+    - name: SubLocality
+      type: string16
+    - name: Thoroughfare
+      type: string16
+    - name: SubThoroughfare
+      type: string16
+    - name: Premises
+      type: string16
+    - name: PostalCode
+      type: string16
+    - name: CountryCode
+      type: string16
+    - name: CountryName
+      type: string16
+    - name: HasLatitude?1:0
+      type: int32
+    - name: Latitude
+      type: float64
+      condition: mHasLatitude
+    - name: HasLongitude?1:0
+      type: int32
+    - name: Longitude
+      type: float64
+      condition: mHasLongitude
+    - name: Phone
+      type: string16
+    - name: Url
+      type: string16
+    - name: Extras
+      type: opaque

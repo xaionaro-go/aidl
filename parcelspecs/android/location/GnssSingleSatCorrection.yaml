@@ -1,0 +1,25 @@
+package: android.location
+type: GnssSingleSatCorrection
+fields:
+    - name: SingleSatCorrectionFlags
+      type: int32
+    - name: ConstellationType
+      type: int32
+    - name: SatId
+      type: int32
+    - name: CarrierFrequencyHz
+      type: float32
+    - name: ProbSatIsLos
+      type: float32
+      condition: hasValidSatelliteLineOfSight()
+    - name: CombinedExcessPathLengthMeters
+      type: float32
+      condition: hasExcessPathLength()
+    - name: CombinedExcessPathLengthUncertaintyMeters
+      type: float32
+      condition: hasExcessPathLengthUncertainty()
+    - name: CombinedAttenuationDb
+      type: float32
+      condition: hasCombinedAttenuation()
+    - name: GnssExcessPathInfoList
+      type: opaque

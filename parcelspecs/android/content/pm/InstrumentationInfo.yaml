@@ -1,0 +1,39 @@
+package: android.content.pm
+type: InstrumentationInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: TargetPackage
+      type: string8
+    - name: TargetProcesses
+      type: string8
+    - name: SourceDir
+      type: string8
+    - name: PublicSourceDir
+      type: string8
+    - name: SplitNames
+      type: opaque
+    - name: SplitSourceDirs
+      type: opaque
+    - name: SplitPublicSourceDirs
+      type: opaque
+    - name: (SparseArray)splitDependencies
+      type: opaque
+    - name: DataDir
+      type: string8
+    - name: DeviceProtectedDataDir
+      type: string8
+    - name: CredentialProtectedDataDir
+      type: string8
+    - name: PrimaryCpuAbi
+      type: string8
+    - name: SecondaryCpuAbi
+      type: string8
+    - name: NativeLibraryDir
+      type: string8
+    - name: SecondaryNativeLibraryDir
+      type: string8
+    - name: (handleProfiling==false)?0:1
+      type: int32
+    - name: (functionalTest==false)?0:1
+      type: int32

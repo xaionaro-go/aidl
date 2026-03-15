@@ -1,0 +1,7 @@
+package: android.os.health
+type: TimerStat
+fields:
+    - name: Count
+      type: int32
+    - name: Time
+      type: int64

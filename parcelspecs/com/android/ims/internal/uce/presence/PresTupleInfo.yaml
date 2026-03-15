@@ -1,0 +1,11 @@
+package: com.android.ims.internal.uce.presence
+type: PresTupleInfo
+fields:
+    - name: FeatureTag
+      type: string16
+    - name: ContactUri
+      type: string16
+    - name: Timestamp
+      type: string16
+    - name: Version
+      type: string16

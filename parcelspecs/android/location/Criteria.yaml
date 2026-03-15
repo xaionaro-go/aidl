@@ -1,0 +1,21 @@
+package: android.location
+type: Criteria
+fields:
+    - name: HorizontalAccuracy
+      type: int32
+    - name: VerticalAccuracy
+      type: int32
+    - name: SpeedAccuracy
+      type: int32
+    - name: BearingAccuracy
+      type: int32
+    - name: PowerRequirement
+      type: int32
+    - name: AltitudeRequired?1:0
+      type: int32
+    - name: BearingRequired?1:0
+      type: int32
+    - name: SpeedRequired?1:0
+      type: int32
+    - name: CostAllowed?1:0
+      type: int32

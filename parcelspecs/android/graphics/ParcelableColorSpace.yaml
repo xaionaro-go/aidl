@@ -1,0 +1,35 @@
+package: android.graphics
+type: ParcelableColorSpace
+fields:
+    - name: Id
+      type: int32
+    - name: Rgb.getName()
+      type: string16
+      condition: id==ColorSpace.MIN_ID
+    - name: Rgb.getPrimaries()
+      type: opaque
+      condition: id==ColorSpace.MIN_ID
+    - name: Rgb.getWhitePoint()
+      type: opaque
+      condition: id==ColorSpace.MIN_ID
+    - name: TransferParameters.a
+      type: float64
+      condition: id==ColorSpace.MIN_ID
+    - name: TransferParameters.b
+      type: float64
+      condition: id==ColorSpace.MIN_ID
+    - name: TransferParameters.c
+      type: float64
+      condition: id==ColorSpace.MIN_ID
+    - name: TransferParameters.d
+      type: float64
+      condition: id==ColorSpace.MIN_ID
+    - name: TransferParameters.e
+      type: float64
+      condition: id==ColorSpace.MIN_ID
+    - name: TransferParameters.f
+      type: float64
+      condition: id==ColorSpace.MIN_ID
+    - name: TransferParameters.g
+      type: float64
+      condition: id==ColorSpace.MIN_ID

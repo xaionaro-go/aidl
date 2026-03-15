@@ -1,0 +1,8 @@
+package: android.view.translation
+type: TranslationRequestValue
+fields:
+    - name: Flg
+      type: int32
+    - name: Text
+      type: opaque
+      condition: mText!=null

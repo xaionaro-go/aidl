@@ -1,0 +1,11 @@
+package: android.telephony
+type: ActivityStatsTechSpecificInfo
+fields:
+    - name: Rat
+      type: int32
+    - name: FrequencyRange
+      type: int32
+    - name: TxTimeMs
+      type: opaque
+    - name: RxTimeMs
+      type: int32

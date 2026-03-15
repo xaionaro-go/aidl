@@ -1,0 +1,9 @@
+package: android.content.pm
+type: CapabilityParams
+fields:
+    - name: Name
+      type: string16
+    - name: PrimaryValue
+      type: string16
+    - name: Aliases
+      type: opaque

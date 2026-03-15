@@ -1,0 +1,5 @@
+package: com.android.ims.internal.uce.presence
+type: PresCmdId
+fields:
+    - name: CmdId
+      type: int32

@@ -1,0 +1,18 @@
+package: android.app
+type: RuntimeAppOpAccessMessage
+fields:
+    - name: Flg
+      type: int32
+    - name: Uid
+      type: int32
+    - name: OpCode
+      type: int32
+    - name: PackageName
+      type: string16
+    - name: AttributionTag
+      type: string16
+      condition: mAttributionTag!=null
+    - name: Message
+      type: string16
+    - name: SamplingStrategy
+      type: int32

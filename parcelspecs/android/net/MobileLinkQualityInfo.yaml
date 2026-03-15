@@ -1,0 +1,31 @@
+package: android.net
+type: MobileLinkQualityInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: MobileNetworkType
+      type: int32
+    - name: Rssi
+      type: int32
+    - name: GsmErrorRate
+      type: int32
+    - name: CdmaDbm
+      type: int32
+    - name: CdmaEcio
+      type: int32
+    - name: EvdoDbm
+      type: int32
+    - name: EvdoEcio
+      type: int32
+    - name: EvdoSnr
+      type: int32
+    - name: LteSignalStrength
+      type: int32
+    - name: LteRsrp
+      type: int32
+    - name: LteRsrq
+      type: int32
+    - name: LteRssnr
+      type: int32
+    - name: LteCqi
+      type: int32

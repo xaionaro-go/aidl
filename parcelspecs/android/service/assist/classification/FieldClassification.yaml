@@ -1,0 +1,5 @@
+package: android.service.assist.classification
+type: FieldClassification
+fields:
+    - name: AutofillId
+      type: opaque

@@ -1,0 +1,13 @@
+package: android.app.admin
+type: DevicePolicyDrawableResource
+fields:
+    - name: DrawableId
+      type: string16
+    - name: DrawableStyle
+      type: string16
+    - name: DrawableSource
+      type: string16
+    - name: ResourceIdInCallingPackage
+      type: int32
+    - name: Resource
+      type: opaque

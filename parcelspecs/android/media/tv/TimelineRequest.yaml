@@ -1,0 +1,9 @@
+package: android.media.tv
+type: TimelineRequest
+fields:
+    - name: Dest
+      type: opaque
+    - name: IntervalMillis
+      type: int32
+    - name: Selector
+      type: string16

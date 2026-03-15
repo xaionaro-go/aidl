@@ -1,0 +1,7 @@
+package: android.hardware.camera2.utils
+type: CameraIdAndSessionConfiguration
+fields:
+    - name: CameraId
+      type: string16
+    - name: Dest
+      type: opaque

@@ -1,0 +1,15 @@
+package: android.app.admin
+type: PreferentialNetworkServiceConfig
+fields:
+    - name: IsEnabled
+      type: bool
+    - name: AllowFallbackToDefaultConnection
+      type: bool
+    - name: ShouldBlockNonMatchingNetworks
+      type: bool
+    - name: NetworkId
+      type: int32
+    - name: IncludedUids
+      type: opaque
+    - name: ExcludedUids
+      type: opaque

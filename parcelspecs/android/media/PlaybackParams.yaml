@@ -1,0 +1,13 @@
+package: android.media
+type: PlaybackParams
+fields:
+    - name: Set
+      type: int32
+    - name: AudioFallbackMode
+      type: int32
+    - name: AudioStretchMode
+      type: int32
+    - name: Pitch
+      type: float32
+    - name: Speed
+      type: float32

@@ -1,0 +1,9 @@
+package: android.companion.virtual
+type: ActivityPolicyExemption
+fields:
+    - name: ComponentName
+      type: opaque
+    - name: PackageName
+      type: string8
+    - name: DisplayId
+      type: int32

@@ -1,0 +1,15 @@
+package: android.app.job
+type: UserVisibleJobSummary
+fields:
+    - name: CallingUid
+      type: int32
+    - name: CallingPackageName
+      type: string16
+    - name: SourceUserId
+      type: int32
+    - name: SourcePackageName
+      type: string16
+    - name: Namespace
+      type: string16
+    - name: JobId
+      type: int32

@@ -1,0 +1,7 @@
+package: android.window
+type: KeyguardState
+fields:
+    - name: KeyguardShowing
+      type: bool
+    - name: AodShowing
+      type: bool

@@ -1,0 +1,5 @@
+package: android.service.autofill
+type: NegationValidator
+fields:
+    - name: Validator
+      type: opaque

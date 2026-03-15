@@ -1,0 +1,15 @@
+package: android.telephony.ims
+type: AudioCodecAttributes
+fields:
+    - name: BitrateKbps
+      type: float32
+    - name: BitrateRangeKbps.getLower()
+      type: float32
+    - name: BitrateRangeKbps.getUpper()
+      type: float32
+    - name: BandwidthKhz
+      type: float32
+    - name: BandwidthRangeKhz.getLower()
+      type: float32
+    - name: BandwidthRangeKhz.getUpper()
+      type: float32

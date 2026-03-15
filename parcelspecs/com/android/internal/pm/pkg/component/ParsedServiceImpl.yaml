@@ -1,0 +1,7 @@
+package: com.android.internal.pm.pkg.component
+type: ParsedServiceImpl
+fields:
+    - name: Dest
+      type: opaque
+    - name: This.foregroundServiceType
+      type: int32

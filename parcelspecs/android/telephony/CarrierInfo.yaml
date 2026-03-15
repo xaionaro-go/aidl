@@ -1,0 +1,21 @@
+package: android.telephony
+type: CarrierInfo
+fields:
+    - name: Mcc
+      type: string8
+    - name: Mnc
+      type: string8
+    - name: Spn
+      type: string8
+    - name: Gid1
+      type: string8
+    - name: Gid2
+      type: string8
+    - name: ImsiPrefix
+      type: string8
+    - name: Iccid
+      type: string8
+    - name: Impi
+      type: string8
+    - name: Ehplmn
+      type: opaque

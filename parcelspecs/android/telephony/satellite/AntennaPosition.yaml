@@ -1,0 +1,7 @@
+package: android.telephony.satellite
+type: AntennaPosition
+fields:
+    - name: AntennaDirection
+      type: opaque
+    - name: SuggestedHoldPosition
+      type: int32

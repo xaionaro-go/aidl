@@ -1,0 +1,21 @@
+package: android.window
+type: TaskFragmentOperation
+fields:
+    - name: OpType
+      type: int32
+    - name: TaskFragmentCreationParams
+      type: opaque
+    - name: ActivityToken
+      type: opaque
+    - name: ActivityIntent
+      type: opaque
+    - name: Bundle
+      type: opaque
+    - name: SecondaryFragmentToken
+      type: opaque
+    - name: AnimationParams
+      type: opaque
+    - name: BooleanValue
+      type: bool
+    - name: SurfaceTransaction
+      type: opaque

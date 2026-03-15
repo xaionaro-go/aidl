@@ -1,0 +1,11 @@
+package: android.app.appfunctions
+type: ExecuteAppFunctionRequest
+fields:
+    - name: TargetPackageName
+      type: string8
+    - name: FunctionIdentifier
+      type: string8
+    - name: Dest
+      type: opaque
+    - name: Extras
+      type: opaque

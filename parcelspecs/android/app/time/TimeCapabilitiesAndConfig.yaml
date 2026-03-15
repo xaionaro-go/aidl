@@ -1,0 +1,7 @@
+package: android.app.time
+type: TimeCapabilitiesAndConfig
+fields:
+    - name: Capabilities
+      type: opaque
+    - name: Configuration
+      type: opaque

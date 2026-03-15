@@ -1,0 +1,9 @@
+package: android.telephony
+type: CellInfoWcdma
+fields:
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque

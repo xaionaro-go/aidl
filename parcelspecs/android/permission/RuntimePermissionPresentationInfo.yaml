@@ -1,0 +1,7 @@
+package: android.permission
+type: RuntimePermissionPresentationInfo
+fields:
+    - name: Label
+      type: opaque
+    - name: Flags
+      type: int32

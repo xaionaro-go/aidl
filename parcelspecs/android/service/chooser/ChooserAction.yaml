@@ -1,0 +1,9 @@
+package: android.service.chooser
+type: ChooserAction
+fields:
+    - name: Dest
+      type: opaque
+    - name: Label
+      type: opaque
+    - name: Dest
+      type: opaque

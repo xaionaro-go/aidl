@@ -1,0 +1,7 @@
+package: android.app.time
+type: TimeState
+fields:
+    - name: UnixEpochTime
+      type: opaque
+    - name: UserShouldConfirmTime
+      type: bool

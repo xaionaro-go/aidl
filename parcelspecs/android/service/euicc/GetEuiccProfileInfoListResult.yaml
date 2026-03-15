@@ -1,0 +1,9 @@
+package: android.service.euicc
+type: GetEuiccProfileInfoListResult
+fields:
+    - name: Result
+      type: int32
+    - name: Profiles
+      type: opaque
+    - name: IsRemovable
+      type: bool

@@ -1,0 +1,7 @@
+package: android.hardware.fingerprint
+type: FingerprintSensorConfigurations
+fields:
+    - name: (byte)(mResetLockoutRequiresHardwareAuthToken?1:0)
+      type: int32
+    - name: SensorPropsMap
+      type: opaque

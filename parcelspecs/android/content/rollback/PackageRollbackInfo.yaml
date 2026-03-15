@@ -1,0 +1,11 @@
+package: android.content.rollback
+type: PackageRollbackInfo
+fields:
+    - name: Out
+      type: opaque
+    - name: Out
+      type: opaque
+    - name: IsApex
+      type: bool
+    - name: IsApkInApex
+      type: bool

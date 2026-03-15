@@ -1,0 +1,5 @@
+package: android.telephony.satellite
+type: NtnSignalStrength
+fields:
+    - name: Level
+      type: int32

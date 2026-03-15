@@ -1,0 +1,13 @@
+package: android.os.storage
+type: CrateInfo
+fields:
+    - name: Label
+      type: opaque
+    - name: Expiration
+      type: int64
+    - name: Uid
+      type: int32
+    - name: PackageName
+      type: string16
+    - name: Id
+      type: string16

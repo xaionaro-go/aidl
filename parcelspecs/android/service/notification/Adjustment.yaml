@@ -1,0 +1,27 @@
+package: android.service.notification
+type: Adjustment
+fields:
+    - name: "1"
+      type: int32
+      condition: mPackage!=null
+    - name: Package
+      type: string16
+      condition: mPackage!=null
+    - name: "1"
+      type: int32
+      condition: mKey!=null
+    - name: Key
+      type: string16
+      condition: mKey!=null
+    - name: "1"
+      type: int32
+      condition: mExplanation!=null
+    - name: Explanation
+      type: opaque
+      condition: mExplanation!=null
+    - name: Signals
+      type: opaque
+    - name: User
+      type: int32
+    - name: Issuer
+      type: string16

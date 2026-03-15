@@ -1,0 +1,6 @@
+package: android.view.contentcapture
+type: ViewNode
+fields:
+    - name: "0"
+      type: int64
+      condition: node==null

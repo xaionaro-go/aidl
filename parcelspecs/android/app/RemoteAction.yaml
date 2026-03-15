@@ -1,0 +1,15 @@
+package: android.app
+type: RemoteAction
+fields:
+    - name: Out
+      type: opaque
+    - name: Title
+      type: opaque
+    - name: ContentDescription
+      type: opaque
+    - name: Out
+      type: opaque
+    - name: Enabled
+      type: bool
+    - name: ShouldShowIcon
+      type: bool

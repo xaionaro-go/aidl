@@ -1,0 +1,5 @@
+package: android.app.admin
+type: ManagedSubscriptionsPolicy
+fields:
+    - name: PolicyType
+      type: int32

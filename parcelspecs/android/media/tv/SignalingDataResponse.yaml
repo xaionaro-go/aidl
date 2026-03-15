@@ -1,0 +1,9 @@
+package: android.media.tv
+type: SignalingDataResponse
+fields:
+    - name: Dest
+      type: opaque
+    - name: SignalingDataTypes
+      type: opaque
+    - name: SignalingDataInfoList
+      type: opaque

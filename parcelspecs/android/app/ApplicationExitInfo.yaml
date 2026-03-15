@@ -1,0 +1,47 @@
+package: android.app
+type: ApplicationExitInfo
+fields:
+    - name: Pid
+      type: int32
+    - name: RealUid
+      type: int32
+    - name: PackageUid
+      type: int32
+    - name: DefiningUid
+      type: int32
+    - name: ProcessName
+      type: string16
+    - name: PackageName
+      type: string16
+    - name: ConnectionGroup
+      type: int32
+    - name: Reason
+      type: int32
+    - name: SubReason
+      type: int32
+    - name: Status
+      type: int32
+    - name: Importance
+      type: int32
+    - name: Pss
+      type: int64
+    - name: Rss
+      type: int64
+    - name: Timestamp
+      type: int64
+    - name: Description
+      type: string16
+    - name: State
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: mAppTraceRetriever!=null
+    - name: AppTraceRetriever.asBinder()
+      type: opaque
+      condition: mAppTraceRetriever!=null
+    - name: "1"
+      type: int32
+      condition: mNativeTombstoneRetriever!=null
+    - name: NativeTombstoneRetriever.asBinder()
+      type: opaque
+      condition: mNativeTombstoneRetriever!=null

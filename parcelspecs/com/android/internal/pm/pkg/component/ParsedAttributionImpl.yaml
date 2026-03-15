@@ -1,0 +1,9 @@
+package: com.android.internal.pm.pkg.component
+type: ParsedAttributionImpl
+fields:
+    - name: Tag
+      type: string16
+    - name: Label
+      type: int32
+    - name: InheritFrom
+      type: opaque

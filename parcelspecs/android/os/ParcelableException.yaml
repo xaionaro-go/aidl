@@ -1,0 +1,7 @@
+package: android.os
+type: ParcelableException
+fields:
+    - name: T.getClass().getName()
+      type: string16
+    - name: T.getMessage()
+      type: string16

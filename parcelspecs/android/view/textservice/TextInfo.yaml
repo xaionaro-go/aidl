@@ -1,0 +1,9 @@
+package: android.view.textservice
+type: TextInfo
+fields:
+    - name: CharSequence
+      type: opaque
+    - name: Cookie
+      type: int32
+    - name: SequenceNumber
+      type: int32

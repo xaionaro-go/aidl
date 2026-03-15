@@ -1,0 +1,11 @@
+package: android.telephony.euicc
+type: DownloadableSubscription
+fields:
+    - name: EncodedActivationCode
+      type: string16
+    - name: ConfirmationCode
+      type: string16
+    - name: CarrierName
+      type: string16
+    - name: AccessRules
+      type: opaque

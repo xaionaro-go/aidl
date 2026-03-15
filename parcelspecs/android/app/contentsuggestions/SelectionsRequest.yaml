@@ -1,0 +1,9 @@
+package: android.app.contentsuggestions
+type: SelectionsRequest
+fields:
+    - name: TaskId
+      type: int32
+    - name: InterestPoint
+      type: opaque
+    - name: Extras
+      type: opaque

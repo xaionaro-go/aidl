@@ -1,0 +1,7 @@
+package: android.telephony.satellite
+type: SatelliteSubscriptionInfo
+fields:
+    - name: IccId
+      type: string8
+    - name: NiddApn
+      type: string8

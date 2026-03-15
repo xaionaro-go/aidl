@@ -1,0 +1,11 @@
+package: android.app.smartspace.uitemplatedata
+type: SubImageTemplateData
+fields:
+    - name: Out
+      type: opaque
+    - name: SubImageTexts
+      type: opaque
+    - name: SubImages
+      type: opaque
+    - name: SubImageAction
+      type: opaque

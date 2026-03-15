@@ -1,0 +1,11 @@
+package: android.companion
+type: DeviceId
+fields:
+    - name: "1"
+      type: int32
+      condition: mCustomId!=null
+    - name: CustomId
+      type: string8
+      condition: mCustomId!=null
+    - name: MacAddress
+      type: opaque

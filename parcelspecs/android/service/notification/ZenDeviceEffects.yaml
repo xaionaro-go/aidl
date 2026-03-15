@@ -1,0 +1,25 @@
+package: android.service.notification
+type: ZenDeviceEffects
+fields:
+    - name: Grayscale
+      type: bool
+    - name: SuppressAmbientDisplay
+      type: bool
+    - name: DimWallpaper
+      type: bool
+    - name: NightMode
+      type: bool
+    - name: DisableAutoBrightness
+      type: bool
+    - name: DisableTapToWake
+      type: bool
+    - name: DisableTiltToWake
+      type: bool
+    - name: DisableTouch
+      type: bool
+    - name: MinimizeRadioUsage
+      type: bool
+    - name: MaximizeDoze
+      type: bool
+    - name: ExtraEffects.toArray(newString[0])
+      type: opaque

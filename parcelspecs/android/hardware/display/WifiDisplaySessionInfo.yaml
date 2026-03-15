@@ -1,0 +1,13 @@
+package: android.hardware.display
+type: WifiDisplaySessionInfo
+fields:
+    - name: Client?1:0
+      type: int32
+    - name: SessionId
+      type: int32
+    - name: GroupId
+      type: string16
+    - name: Passphrase
+      type: string16
+    - name: IP
+      type: string16

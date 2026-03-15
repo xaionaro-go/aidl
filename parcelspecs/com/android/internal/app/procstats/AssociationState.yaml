@@ -1,0 +1,13 @@
+package: com.android.internal.app.procstats
+type: AssociationState
+fields:
+    - name: TotalCount
+      type: int32
+    - name: TotalDuration
+      type: int64
+    - name: TotalActiveCount
+      type: int32
+    - name: TotalActiveDuration
+      type: int64
+    - name: NSRC
+      type: int32

@@ -1,0 +1,7 @@
+package: android.telephony.mbms
+type: FileInfo
+fields:
+    - name: Uri
+      type: opaque
+    - name: MimeType
+      type: string16

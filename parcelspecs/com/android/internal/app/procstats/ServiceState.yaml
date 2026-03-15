@@ -1,0 +1,15 @@
+package: com.android.internal.app.procstats
+type: ServiceState
+fields:
+    - name: Out
+      type: opaque
+    - name: RunCount
+      type: int32
+    - name: StartedCount
+      type: int32
+    - name: BoundCount
+      type: int32
+    - name: ExecCount
+      type: int32
+    - name: ForegroundCount
+      type: int32

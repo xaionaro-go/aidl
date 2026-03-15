@@ -1,0 +1,23 @@
+package: android.app.usage
+type: StorageStats
+fields:
+    - name: CodeBytes
+      type: int64
+    - name: DataBytes
+      type: int64
+    - name: CacheBytes
+      type: int64
+    - name: DexoptBytes
+      type: int64
+    - name: RefProfBytes
+      type: int64
+    - name: CurProfBytes
+      type: int64
+    - name: ApkBytes
+      type: int64
+    - name: LibBytes
+      type: int64
+    - name: DmBytes
+      type: int64
+    - name: ExternalCacheBytes
+      type: int64

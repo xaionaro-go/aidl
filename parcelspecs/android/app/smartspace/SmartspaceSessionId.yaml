@@ -1,0 +1,7 @@
+package: android.app.smartspace
+type: SmartspaceSessionId
+fields:
+    - name: Id
+      type: string16
+    - name: This.mUserHandle
+      type: opaque

@@ -1,0 +1,5 @@
+package: android.print
+type: PrintJobId
+fields:
+    - name: Value
+      type: string16

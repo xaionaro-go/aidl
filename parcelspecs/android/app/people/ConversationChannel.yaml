@@ -1,0 +1,19 @@
+package: android.app.people
+type: ConversationChannel
+fields:
+    - name: ShortcutInfo
+      type: opaque
+    - name: Uid
+      type: int32
+    - name: NotificationChannel
+      type: opaque
+    - name: NotificationChannelGroup
+      type: opaque
+    - name: LastEventTimestamp
+      type: int64
+    - name: HasActiveNotifications
+      type: bool
+    - name: HasBirthdayToday
+      type: bool
+    - name: Statuses
+      type: opaque

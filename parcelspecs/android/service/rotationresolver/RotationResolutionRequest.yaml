@@ -1,0 +1,13 @@
+package: android.service.rotationresolver
+type: RotationResolutionRequest
+fields:
+    - name: Flg
+      type: int32
+    - name: ForegroundPackageName
+      type: string16
+    - name: CurrentRotation
+      type: int32
+    - name: ProposedRotation
+      type: int32
+    - name: TimeoutMillis
+      type: int64

@@ -1,0 +1,21 @@
+package: android.location.provider
+type: ReverseGeocodeRequest
+fields:
+    - name: Latitude
+      type: float64
+    - name: Longitude
+      type: float64
+    - name: MaxResults
+      type: int32
+    - name: Locale.getLanguage()
+      type: string8
+    - name: Locale.getCountry()
+      type: string8
+    - name: Locale.getVariant()
+      type: string8
+    - name: CallingUid
+      type: int32
+    - name: CallingPackage
+      type: string8
+    - name: CallingAttributionTag
+      type: string8

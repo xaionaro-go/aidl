@@ -1,0 +1,5 @@
+package: android.content.pm
+type: Capability
+fields:
+    - name: Name
+      type: string16

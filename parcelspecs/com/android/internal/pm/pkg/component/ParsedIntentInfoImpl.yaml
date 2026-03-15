@@ -1,0 +1,14 @@
+package: com.android.internal.pm.pkg.component
+type: ParsedIntentInfoImpl
+fields:
+    - name: Flg
+      type: int32
+    - name: LabelRes
+      type: int32
+    - name: NonLocalizedLabel
+      type: opaque
+      condition: mNonLocalizedLabel!=null
+    - name: Icon
+      type: int32
+    - name: IntentFilter
+      type: opaque

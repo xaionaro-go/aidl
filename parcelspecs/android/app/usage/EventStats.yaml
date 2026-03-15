@@ -1,0 +1,15 @@
+package: android.app.usage
+type: EventStats
+fields:
+    - name: EventType
+      type: int32
+    - name: BeginTimeStamp
+      type: int64
+    - name: EndTimeStamp
+      type: int64
+    - name: LastEventTime
+      type: int64
+    - name: TotalTime
+      type: int64
+    - name: Count
+      type: int32

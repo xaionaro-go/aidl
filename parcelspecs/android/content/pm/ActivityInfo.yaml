@@ -1,0 +1,63 @@
+package: android.content.pm
+type: ActivityInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: Theme
+      type: int32
+    - name: LaunchMode
+      type: int32
+    - name: DocumentLaunchMode
+      type: int32
+    - name: Permission
+      type: string8
+    - name: TaskAffinity
+      type: string8
+    - name: TargetActivity
+      type: string8
+    - name: LaunchToken
+      type: string8
+    - name: Flags
+      type: int32
+    - name: PrivateFlags
+      type: int32
+    - name: ScreenOrientation
+      type: int32
+    - name: ConfigChanges
+      type: int32
+    - name: SoftInputMode
+      type: int32
+    - name: UiOptions
+      type: int32
+    - name: ParentActivityName
+      type: string8
+    - name: PersistableMode
+      type: int32
+    - name: MaxRecents
+      type: int32
+    - name: LockTaskLaunchMode
+      type: int32
+    - name: "1"
+      type: int32
+      condition: windowLayout!=null
+    - name: Dest
+      type: opaque
+      condition: windowLayout!=null
+    - name: ResizeMode
+      type: int32
+    - name: RequestedVrComponent
+      type: string8
+    - name: RotationAnimation
+      type: int32
+    - name: ColorMode
+      type: int32
+    - name: MaxAspectRatio
+      type: float32
+    - name: MinAspectRatio
+      type: float32
+    - name: SupportsSizeChanges
+      type: bool
+    - name: RequiredDisplayCategory
+      type: string8
+    - name: RequireContentUriPermissionFromCaller
+      type: int32

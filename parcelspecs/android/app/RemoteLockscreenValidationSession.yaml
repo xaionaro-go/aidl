@@ -1,0 +1,9 @@
+package: android.app
+type: RemoteLockscreenValidationSession
+fields:
+    - name: LockType
+      type: int32
+    - name: SourcePublicKey
+      type: opaque
+    - name: RemainingAttempts
+      type: int32

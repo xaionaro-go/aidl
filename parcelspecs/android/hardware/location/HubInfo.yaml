@@ -1,0 +1,13 @@
+package: android.hardware.location
+type: HubInfo
+fields:
+    - name: Id
+      type: int64
+    - name: Type
+      type: int32
+    - name: Out
+      type: opaque
+      condition: mType==TYPE_CONTEXT_HUB&&mContextHubInfo!=null
+    - name: Out
+      type: opaque
+      condition: mType==TYPE_VENDOR_HUB&&mVendorHubInfo!=null

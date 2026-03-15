@@ -1,0 +1,9 @@
+package: android.service.autofill
+type: InlinePresentation
+fields:
+    - name: Flg
+      type: int32
+    - name: Slice
+      type: opaque
+    - name: InlinePresentationSpec
+      type: opaque

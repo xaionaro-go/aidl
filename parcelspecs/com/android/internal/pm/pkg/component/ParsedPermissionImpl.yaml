@@ -1,0 +1,17 @@
+package: com.android.internal.pm.pkg.component
+type: ParsedPermissionImpl
+fields:
+    - name: Dest
+      type: opaque
+    - name: This.backgroundPermission
+      type: string16
+    - name: This.group
+      type: string16
+    - name: This.requestRes
+      type: int32
+    - name: This.protectionLevel
+      type: int32
+    - name: This.tree
+      type: bool
+    - name: (ParsedPermissionGroupImpl)this.parsedPermissionGroup
+      type: opaque

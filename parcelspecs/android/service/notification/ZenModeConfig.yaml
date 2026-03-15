@@ -1,0 +1,51 @@
+package: android.service.notification
+type: ZenModeConfig
+fields:
+    - name: AllowCalls?1:0
+      type: int32
+      condition: '!Flags.modesUi()'
+    - name: AllowRepeatCallers?1:0
+      type: int32
+      condition: '!Flags.modesUi()'
+    - name: AllowMessages?1:0
+      type: int32
+      condition: '!Flags.modesUi()'
+    - name: AllowReminders?1:0
+      type: int32
+      condition: '!Flags.modesUi()'
+    - name: AllowEvents?1:0
+      type: int32
+      condition: '!Flags.modesUi()'
+    - name: AllowCallsFrom
+      type: int32
+      condition: '!Flags.modesUi()'
+    - name: AllowMessagesFrom
+      type: int32
+      condition: '!Flags.modesUi()'
+    - name: User
+      type: int32
+    - name: ManualRule
+      type: opaque
+    - name: AllowAlarms?1:0
+      type: int32
+      condition: '!Flags.modesUi()'
+    - name: AllowMedia?1:0
+      type: int32
+      condition: '!Flags.modesUi()'
+    - name: AllowSystem?1:0
+      type: int32
+      condition: '!Flags.modesUi()'
+    - name: SuppressedVisualEffects
+      type: int32
+      condition: '!Flags.modesUi()'
+    - name: AreChannelsBypassingDnd?1:0
+      type: int32
+    - name: AllowConversations
+      type: bool
+      condition: '!Flags.modesUi()'
+    - name: AllowConversationsFrom
+      type: int32
+      condition: '!Flags.modesUi()'
+    - name: AllowPriorityChannels
+      type: bool
+      condition: '!Flags.modesUi() && Flags.modesApi()'

@@ -1,0 +1,13 @@
+package: android.view
+type: RemoteAnimationAdapter
+fields:
+    - name: Runner
+      type: opaque
+    - name: Duration
+      type: int64
+    - name: StatusBarTransitionDelay
+      type: int64
+    - name: ChangeNeedsSnapshot
+      type: bool
+    - name: CallingApplication
+      type: opaque

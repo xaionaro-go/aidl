@@ -1,0 +1,69 @@
+package: android.telephony
+type: SubscriptionInfo
+fields:
+    - name: Id
+      type: int32
+    - name: IccId
+      type: string16
+    - name: SimSlotIndex
+      type: int32
+    - name: DisplayName
+      type: opaque
+    - name: CarrierName
+      type: opaque
+    - name: DisplayNameSource
+      type: int32
+    - name: IconTint
+      type: int32
+    - name: Number
+      type: string16
+    - name: DataRoaming
+      type: int32
+    - name: Mcc
+      type: string16
+    - name: Mnc
+      type: string16
+    - name: CountryIso
+      type: string16
+    - name: IsEmbedded
+      type: bool
+    - name: NativeAccessRules
+      type: opaque
+    - name: CardString
+      type: string16
+    - name: CardId
+      type: int32
+    - name: PortIndex
+      type: int32
+    - name: IsOpportunistic
+      type: bool
+    - name: GroupUuid==null?null:mGroupUuid.toString()
+      type: string8
+    - name: IsGroupDisabled
+      type: bool
+    - name: CarrierId
+      type: int32
+    - name: ProfileClass
+      type: int32
+    - name: Type
+      type: int32
+    - name: Ehplmns
+      type: opaque
+    - name: Hplmns
+      type: opaque
+    - name: GroupOwner
+      type: string16
+    - name: CarrierConfigAccessRules
+      type: opaque
+    - name: AreUiccApplicationsEnabled
+      type: bool
+    - name: UsageSetting
+      type: int32
+    - name: IsOnlyNonTerrestrialNetwork
+      type: bool
+    - name: ServiceCapabilities
+      type: int32
+    - name: TransferStatus
+      type: int32
+    - name: IsSatelliteESOSSupported
+      type: bool

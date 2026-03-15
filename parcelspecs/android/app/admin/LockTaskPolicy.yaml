@@ -1,0 +1,7 @@
+package: android.app.admin
+type: LockTaskPolicy
+fields:
+    - name: Packages.size()
+      type: int32
+    - name: Flags
+      type: int32

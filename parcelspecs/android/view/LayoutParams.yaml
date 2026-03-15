@@ -1,0 +1,123 @@
+package: android.view
+type: LayoutParams
+fields:
+    - name: Width
+      type: int32
+    - name: Height
+      type: int32
+    - name: x
+      type: int32
+    - name: "y"
+      type: int32
+    - name: Type
+      type: int32
+    - name: Flags
+      type: int32
+    - name: PrivateFlags
+      type: int32
+    - name: SoftInputMode
+      type: int32
+    - name: LayoutInDisplayCutoutMode
+      type: int32
+    - name: Gravity
+      type: int32
+    - name: HorizontalMargin
+      type: float32
+    - name: VerticalMargin
+      type: float32
+    - name: Format
+      type: int32
+    - name: WindowAnimations
+      type: int32
+    - name: Alpha
+      type: float32
+    - name: DimAmount
+      type: float32
+    - name: ScreenBrightness
+      type: float32
+    - name: ButtonBrightness
+      type: float32
+    - name: RotationAnimation
+      type: int32
+    - name: Token
+      type: opaque
+    - name: WindowContextToken
+      type: opaque
+    - name: PackageName
+      type: string16
+    - name: Title
+      type: opaque
+    - name: ScreenOrientation
+      type: int32
+    - name: PreferredRefreshRate
+      type: float32
+    - name: PreferredDisplayModeId
+      type: int32
+    - name: PreferredMinDisplayRefreshRate
+      type: float32
+    - name: PreferredMaxDisplayRefreshRate
+      type: float32
+    - name: SystemUiVisibility
+      type: int32
+    - name: SubtreeSystemUiVisibility
+      type: int32
+    - name: HasSystemUiListeners
+      type: bool
+    - name: InputFeatures
+      type: int32
+    - name: UserActivityTimeout
+      type: int64
+    - name: SurfaceInsets.left
+      type: int32
+    - name: SurfaceInsets.top
+      type: int32
+    - name: SurfaceInsets.right
+      type: int32
+    - name: SurfaceInsets.bottom
+      type: int32
+    - name: HasManualSurfaceInsets
+      type: bool
+    - name: ReceiveInsetsIgnoringZOrder
+      type: bool
+    - name: PreservePreviousSurfaceInsets
+      type: bool
+    - name: AccessibilityIdOfAnchor
+      type: int64
+    - name: AccessibilityTitle
+      type: opaque
+    - name: ColorMode
+      type: int32
+    - name: HideTimeoutMilliseconds
+      type: int64
+    - name: InsetsFlags.appearance
+      type: int32
+    - name: InsetsFlags.behavior
+      type: int32
+    - name: FitInsetsTypes
+      type: int32
+    - name: FitInsetsSides
+      type: int32
+    - name: FitInsetsIgnoringVisibility
+      type: bool
+    - name: PreferMinimalPostProcessing
+      type: bool
+    - name: BlurBehindRadius
+      type: int32
+    - name: WallpaperTouchEventsEnabled
+      type: bool
+    - name: ProvidedInsets
+      type: opaque
+    - name: ForciblyShownTypes
+      type: int32
+    - name: ParamsForRotation
+      type: opaque
+    - name: DisplayFlags
+      type: int32
+    - name: DesiredHdrHeadroom
+      type: float32
+    - name: FrameRateBoostOnTouch
+      type: bool
+      condition: sToolkitSetFrameRateReadOnlyFlagValue
+    - name: IsFrameRatePowerSavingsBalanced
+      type: bool
+      condition: sToolkitSetFrameRateReadOnlyFlagValue

@@ -1,0 +1,13 @@
+package: android.telephony.ims
+type: RcsClientConfiguration
+fields:
+    - name: RcsVersion
+      type: string16
+    - name: RcsProfile
+      type: string16
+    - name: ClientVendor
+      type: string16
+    - name: ClientVersion
+      type: string16
+    - name: RcsEnabledByUser
+      type: bool

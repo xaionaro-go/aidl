@@ -1,0 +1,49 @@
+package: android.accessibilityservice
+type: AccessibilityServiceInfo
+fields:
+    - name: EventTypes
+      type: int32
+    - name: PackageNames
+      type: opaque
+    - name: FeedbackType
+      type: int32
+    - name: NotificationTimeout
+      type: int64
+    - name: NonInteractiveUiTimeout
+      type: int32
+    - name: InteractiveUiTimeout
+      type: int32
+    - name: Flags
+      type: int32
+    - name: Crashed?1:0
+      type: int32
+    - name: ComponentName
+      type: opaque
+    - name: ResolveInfo
+      type: opaque
+    - name: SettingsActivityName
+      type: string16
+    - name: Capabilities
+      type: int32
+    - name: SummaryResId
+      type: int32
+    - name: NonLocalizedSummary
+      type: string16
+    - name: DescriptionResId
+      type: int32
+    - name: AnimatedImageRes
+      type: int32
+    - name: HtmlDescriptionRes
+      type: int32
+    - name: NonLocalizedDescription
+      type: string16
+    - name: IsAccessibilityTool
+      type: bool
+    - name: TileServiceName
+      type: string16
+    - name: IntroResId
+      type: int32
+    - name: MotionEventSources
+      type: int32
+    - name: ObservedMotionEventSources
+      type: int32

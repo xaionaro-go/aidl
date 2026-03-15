@@ -1,0 +1,7 @@
+package: android.app.admin
+type: FactoryResetProtectionPolicy
+fields:
+    - name: AccountsCount
+      type: int32
+    - name: FactoryResetProtectionEnabled
+      type: bool

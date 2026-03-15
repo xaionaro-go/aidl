@@ -1,0 +1,155 @@
+package: android.content.pm
+type: ApplicationInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: TaskAffinity
+      type: string8
+    - name: Permission
+      type: string8
+    - name: ProcessName
+      type: string8
+    - name: ClassName
+      type: string8
+    - name: Theme
+      type: int32
+    - name: Flags
+      type: int32
+    - name: PrivateFlags
+      type: int32
+    - name: PrivateFlagsExt
+      type: int32
+    - name: RequiresSmallestWidthDp
+      type: int32
+    - name: CompatibleWidthLimitDp
+      type: int32
+    - name: LargestWidthLimitDp
+      type: int32
+    - name: "1"
+      type: int32
+      condition: storageUuid!=null
+    - name: StorageUuid.getMostSignificantBits()
+      type: int64
+      condition: storageUuid!=null
+    - name: StorageUuid.getLeastSignificantBits()
+      type: int64
+      condition: storageUuid!=null
+    - name: ScanSourceDir
+      type: string8
+    - name: ScanPublicSourceDir
+      type: string8
+    - name: SourceDir
+      type: string8
+    - name: PublicSourceDir
+      type: string8
+    - name: SplitNames
+      type: opaque
+    - name: SplitSourceDirs
+      type: opaque
+    - name: SplitPublicSourceDirs
+      type: opaque
+    - name: (SparseArray)splitDependencies
+      type: opaque
+    - name: NativeLibraryDir
+      type: string8
+    - name: SecondaryNativeLibraryDir
+      type: string8
+    - name: NativeLibraryRootDir
+      type: string8
+    - name: NativeLibraryRootRequiresIsa?1:0
+      type: int32
+    - name: PrimaryCpuAbi
+      type: string8
+    - name: SecondaryCpuAbi
+      type: string8
+    - name: ResourceDirs
+      type: opaque
+    - name: OverlayPaths
+      type: opaque
+    - name: SeInfo
+      type: string8
+    - name: SeInfoUser
+      type: string8
+    - name: SharedLibraryFiles
+      type: opaque
+    - name: SharedLibraryInfos
+      type: opaque
+    - name: OptionalSharedLibraryInfos
+      type: opaque
+    - name: DataDir
+      type: string8
+    - name: DeviceProtectedDataDir
+      type: string8
+    - name: CredentialProtectedDataDir
+      type: string8
+    - name: Uid
+      type: int32
+    - name: MinSdkVersion
+      type: int32
+    - name: TargetSdkVersion
+      type: int32
+    - name: LongVersionCode
+      type: int64
+    - name: Enabled?1:0
+      type: int32
+    - name: EnabledSetting
+      type: int32
+    - name: InstallLocation
+      type: int32
+    - name: ManageSpaceActivityName
+      type: string8
+    - name: BackupAgentName
+      type: string8
+    - name: DescriptionRes
+      type: int32
+    - name: UiOptions
+      type: int32
+    - name: FullBackupContent
+      type: int32
+    - name: DataExtractionRulesRes
+      type: int32
+    - name: CrossProfile
+      type: bool
+    - name: NetworkSecurityConfigRes
+      type: int32
+    - name: Category
+      type: int32
+    - name: TargetSandboxVersion
+      type: int32
+    - name: ClassLoaderName
+      type: string8
+    - name: SplitClassLoaderNames
+      type: opaque
+    - name: CompileSdkVersion
+      type: int32
+    - name: CompileSdkVersionCodename
+      type: string8
+    - name: AppComponentFactory
+      type: string8
+    - name: IconRes
+      type: int32
+    - name: RoundIconRes
+      type: int32
+    - name: HiddenApiPolicy
+      type: int32
+    - name: HiddenUntilInstalled?1:0
+      type: int32
+    - name: ZygotePreloadName
+      type: string8
+    - name: GwpAsanMode
+      type: int32
+    - name: MemtagMode
+      type: int32
+    - name: NativeHeapZeroInitialized
+      type: int32
+    - name: CreateTimestamp
+      type: int64
+    - name: "0"
+      type: int32
+      condition: mAppClassNamesByProcess==null
+    - name: LocaleConfigRes
+      type: int32
+    - name: AllowCrossUidActivitySwitchFromBelow?1:0
+      type: int32
+    - name: PageSizeAppCompatFlags
+      type: int32

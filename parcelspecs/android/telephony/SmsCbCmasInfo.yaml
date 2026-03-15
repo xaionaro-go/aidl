@@ -1,0 +1,15 @@
+package: android.telephony
+type: SmsCbCmasInfo
+fields:
+    - name: MessageClass
+      type: int32
+    - name: Category
+      type: int32
+    - name: ResponseType
+      type: int32
+    - name: Severity
+      type: int32
+    - name: Urgency
+      type: int32
+    - name: Certainty
+      type: int32

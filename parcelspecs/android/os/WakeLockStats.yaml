@@ -1,0 +1,7 @@
+package: android.os
+type: WakeLockStats
+fields:
+    - name: WakelockSize
+      type: int32
+    - name: AggregatedWakelockSize
+      type: int32

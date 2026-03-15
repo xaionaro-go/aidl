@@ -1,0 +1,17 @@
+package: android.app.smartspace.uitemplatedata
+type: BaseTemplateData
+fields:
+    - name: TemplateType
+      type: int32
+    - name: PrimaryItem
+      type: opaque
+    - name: SubtitleItem
+      type: opaque
+    - name: SubtitleSupplementalItem
+      type: opaque
+    - name: SupplementalLineItem
+      type: opaque
+    - name: SupplementalAlarmItem
+      type: opaque
+    - name: LayoutWeight
+      type: int32

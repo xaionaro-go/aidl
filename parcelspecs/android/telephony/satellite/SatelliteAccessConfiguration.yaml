@@ -1,0 +1,7 @@
+package: android.telephony.satellite
+type: SatelliteAccessConfiguration
+fields:
+    - name: SatelliteInfoList
+      type: opaque
+    - name: TagIdList
+      type: opaque

@@ -1,0 +1,13 @@
+package: android.app.servertransaction
+type: PauseActivityItem
+fields:
+    - name: Dest
+      type: opaque
+    - name: Finished
+      type: bool
+    - name: UserLeaving
+      type: bool
+    - name: DontReport
+      type: bool
+    - name: AutoEnteringPip
+      type: bool

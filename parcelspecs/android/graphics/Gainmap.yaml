@@ -1,0 +1,5 @@
+package: android.graphics
+type: Gainmap
+fields:
+    - name: GainmapContents
+      type: opaque

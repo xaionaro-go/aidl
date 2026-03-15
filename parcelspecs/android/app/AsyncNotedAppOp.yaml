@@ -1,0 +1,16 @@
+package: android.app
+type: AsyncNotedAppOp
+fields:
+    - name: Flg
+      type: int32
+    - name: OpCode
+      type: int32
+    - name: NotingUid
+      type: int32
+    - name: AttributionTag
+      type: string16
+      condition: mAttributionTag!=null
+    - name: Message
+      type: string16
+    - name: Time
+      type: int64

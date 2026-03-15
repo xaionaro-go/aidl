@@ -1,0 +1,19 @@
+package: android.media.audiopolicy
+type: AudioMix
+fields:
+    - name: RouteFlags
+      type: int32
+    - name: CallbackFlags
+      type: int32
+    - name: DeviceSystemType
+      type: int32
+    - name: DeviceAddress
+      type: string8
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Token
+      type: opaque
+    - name: VirtualDeviceId
+      type: int32

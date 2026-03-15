@@ -1,0 +1,5 @@
+package: android.service.quickaccesswallet
+type: SelectWalletCardRequest
+fields:
+    - name: CardId
+      type: string16

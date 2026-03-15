@@ -1,0 +1,9 @@
+package: android.app
+type: RemoteInputHistoryItem
+fields:
+    - name: Text
+      type: opaque
+    - name: MimeType
+      type: opaque
+    - name: Uri
+      type: opaque

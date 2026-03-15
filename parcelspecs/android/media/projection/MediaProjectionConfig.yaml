@@ -1,0 +1,7 @@
+package: android.media.projection
+type: MediaProjectionConfig
+fields:
+    - name: DisplayToCapture
+      type: int32
+    - name: RegionToCapture
+      type: int32

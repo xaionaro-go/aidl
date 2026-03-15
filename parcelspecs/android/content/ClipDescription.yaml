@@ -1,0 +1,17 @@
+package: android.content
+type: ClipDescription
+fields:
+    - name: Label
+      type: opaque
+    - name: MimeTypes
+      type: opaque
+    - name: Extras
+      type: opaque
+    - name: TimeStamp
+      type: int64
+    - name: IsStyledText
+      type: bool
+    - name: ClassificationStatus
+      type: int32
+    - name: ConfidencesToBundle()
+      type: opaque

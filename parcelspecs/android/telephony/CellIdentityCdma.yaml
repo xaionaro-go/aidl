@@ -1,0 +1,15 @@
+package: android.telephony
+type: CellIdentityCdma
+fields:
+    - name: Dest
+      type: opaque
+    - name: NetworkId
+      type: int32
+    - name: SystemId
+      type: int32
+    - name: BasestationId
+      type: int32
+    - name: Longitude
+      type: int32
+    - name: Latitude
+      type: int32

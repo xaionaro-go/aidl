@@ -1,0 +1,33 @@
+package: android.content.pm
+type: UserInfo
+fields:
+    - name: Id
+      type: int32
+    - name: Name
+      type: string8
+    - name: IconPath
+      type: string8
+    - name: Flags
+      type: int32
+    - name: UserType
+      type: string8
+    - name: SerialNumber
+      type: int32
+    - name: CreationTime
+      type: int64
+    - name: LastLoggedInTime
+      type: int64
+    - name: LastLoggedInFingerprint
+      type: string8
+    - name: Partial
+      type: bool
+    - name: PreCreated
+      type: bool
+    - name: ProfileGroupId
+      type: int32
+    - name: GuestToRemove
+      type: bool
+    - name: RestrictedProfileParentId
+      type: int32
+    - name: ProfileBadge
+      type: int32

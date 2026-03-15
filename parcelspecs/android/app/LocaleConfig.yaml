@@ -1,0 +1,7 @@
+package: android.app
+type: LocaleConfig
+fields:
+    - name: Status
+      type: int32
+    - name: Locales
+      type: opaque

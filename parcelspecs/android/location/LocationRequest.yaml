@@ -1,0 +1,31 @@
+package: android.location
+type: LocationRequest
+fields:
+    - name: Provider
+      type: string16
+    - name: IntervalMillis
+      type: int64
+    - name: Quality
+      type: int32
+    - name: ExpireAtRealtimeMillis
+      type: int64
+    - name: DurationMillis
+      type: int64
+    - name: MaxUpdates
+      type: int32
+    - name: MinUpdateIntervalMillis
+      type: int64
+    - name: MinUpdateDistanceMeters
+      type: float32
+    - name: MaxUpdateDelayMillis
+      type: int64
+    - name: HideFromAppOps
+      type: bool
+    - name: AdasGnssBypass
+      type: bool
+    - name: Bypass
+      type: bool
+    - name: LowPower
+      type: bool
+    - name: WorkSource
+      type: opaque

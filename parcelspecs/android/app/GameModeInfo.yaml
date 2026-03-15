@@ -1,0 +1,15 @@
+package: android.app
+type: GameModeInfo
+fields:
+    - name: ActiveGameMode
+      type: int32
+    - name: AvailableGameModes
+      type: opaque
+    - name: OverriddenGameModes
+      type: opaque
+    - name: IsDownscalingAllowed
+      type: bool
+    - name: IsFpsOverrideAllowed
+      type: bool
+    - name: ConfigMap
+      type: opaque

@@ -1,0 +1,8 @@
+package: android.service.autofill
+type: BatchUpdates
+fields:
+    - name: "Null"
+      type: opaque
+      condition: mTransformations==null
+    - name: Updates
+      type: opaque

@@ -1,0 +1,9 @@
+package: android.util
+type: RecurrenceRule
+fields:
+    - name: ConvertZonedDateTime(start)
+      type: string16
+    - name: ConvertZonedDateTime(end)
+      type: string16
+    - name: ConvertPeriod(period)
+      type: string16

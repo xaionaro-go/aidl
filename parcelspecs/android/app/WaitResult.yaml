@@ -1,0 +1,13 @@
+package: android.app
+type: WaitResult
+fields:
+    - name: Result
+      type: int32
+    - name: Timeout?1:0
+      type: int32
+    - name: Who
+      type: opaque
+    - name: TotalTime
+      type: int64
+    - name: LaunchState
+      type: int32

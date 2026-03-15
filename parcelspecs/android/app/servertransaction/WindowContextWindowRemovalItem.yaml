@@ -1,0 +1,5 @@
+package: android.app.servertransaction
+type: WindowContextWindowRemovalItem
+fields:
+    - name: ClientToken
+      type: opaque

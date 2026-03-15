@@ -1,0 +1,9 @@
+package: android.net.metrics
+type: ValidationProbeEvent
+fields:
+    - name: DurationMs
+      type: int64
+    - name: ProbeType
+      type: int32
+    - name: ReturnCode
+      type: int32

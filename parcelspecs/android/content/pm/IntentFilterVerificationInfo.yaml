@@ -1,0 +1,9 @@
+package: android.content.pm
+type: IntentFilterVerificationInfo
+fields:
+    - name: PackageName
+      type: string16
+    - name: Status
+      type: int32
+    - name: NewArrayList<>(mDomains)
+      type: opaque

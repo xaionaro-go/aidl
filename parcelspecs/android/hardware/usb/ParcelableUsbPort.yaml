@@ -1,0 +1,17 @@
+package: android.hardware.usb
+type: ParcelableUsbPort
+fields:
+    - name: Id
+      type: string16
+    - name: SupportedModes
+      type: int32
+    - name: SupportedContaminantProtectionModes
+      type: int32
+    - name: SupportsEnableContaminantPresenceProtection
+      type: bool
+    - name: SupportsEnableContaminantPresenceDetection
+      type: bool
+    - name: SupportsComplianceWarnings
+      type: bool
+    - name: SupportedAltModesMask
+      type: int32

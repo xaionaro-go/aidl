@@ -1,0 +1,17 @@
+package: android.telephony
+type: CellIdentityTdscdma
+fields:
+    - name: Dest
+      type: opaque
+    - name: Lac
+      type: int32
+    - name: Cid
+      type: int32
+    - name: Cpid
+      type: int32
+    - name: Uarfcn
+      type: int32
+    - name: AdditionalPlmns
+      type: opaque
+    - name: CsgInfo
+      type: opaque

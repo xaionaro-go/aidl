@@ -1,0 +1,5 @@
+package: android.service.autofill
+type: OptionalValidators
+fields:
+    - name: Validators
+      type: opaque

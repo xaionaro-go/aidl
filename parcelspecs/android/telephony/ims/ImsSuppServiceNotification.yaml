@@ -1,0 +1,15 @@
+package: android.telephony.ims
+type: ImsSuppServiceNotification
+fields:
+    - name: NotificationType
+      type: int32
+    - name: Code
+      type: int32
+    - name: Index
+      type: int32
+    - name: Type
+      type: int32
+    - name: Number
+      type: string16
+    - name: History
+      type: opaque

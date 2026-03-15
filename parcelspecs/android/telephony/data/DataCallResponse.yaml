@@ -1,0 +1,43 @@
+package: android.telephony.data
+type: DataCallResponse
+fields:
+    - name: Cause
+      type: int32
+    - name: SuggestedRetryTime
+      type: int64
+    - name: Id
+      type: int32
+    - name: LinkStatus
+      type: int32
+    - name: ProtocolType
+      type: int32
+    - name: InterfaceName
+      type: string16
+    - name: Addresses
+      type: opaque
+    - name: DnsAddresses
+      type: opaque
+    - name: GatewayAddresses
+      type: opaque
+    - name: PcscfAddresses
+      type: opaque
+    - name: Mtu
+      type: int32
+    - name: MtuV4
+      type: int32
+    - name: MtuV6
+      type: int32
+    - name: HandoverFailureMode
+      type: int32
+    - name: PduSessionId
+      type: int32
+    - name: DefaultQos
+      type: opaque
+    - name: QosBearerSessions
+      type: opaque
+    - name: SliceInfo
+      type: opaque
+    - name: TrafficDescriptors
+      type: opaque
+    - name: NetworkValidationStatus
+      type: int32

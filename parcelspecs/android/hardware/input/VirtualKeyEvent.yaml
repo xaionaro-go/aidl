@@ -1,0 +1,9 @@
+package: android.hardware.input
+type: VirtualKeyEvent
+fields:
+    - name: Action
+      type: int32
+    - name: KeyCode
+      type: int32
+    - name: EventTimeNanos
+      type: int64

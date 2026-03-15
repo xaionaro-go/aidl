@@ -1,0 +1,5 @@
+package: android.content
+type: LocusId
+fields:
+    - name: Id
+      type: string16

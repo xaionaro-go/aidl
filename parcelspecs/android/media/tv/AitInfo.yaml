@@ -1,0 +1,7 @@
+package: android.media.tv
+type: AitInfo
+fields:
+    - name: Type
+      type: int32
+    - name: Version
+      type: int32

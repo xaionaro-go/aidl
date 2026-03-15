@@ -1,0 +1,11 @@
+package: android.hardware.radio
+type: ProgramSelector
+fields:
+    - name: ProgramType
+      type: int32
+    - name: PrimaryId
+      type: opaque
+    - name: SecondaryIds
+      type: opaque
+    - name: VendorIds
+      type: opaque

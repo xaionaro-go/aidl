@@ -1,0 +1,5 @@
+package: android.content
+type: IntentSender
+fields:
+    - name: Target.asBinder()
+      type: opaque

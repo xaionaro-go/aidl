@@ -1,0 +1,7 @@
+package: android.app.usage
+type: AppLaunchEstimateInfo
+fields:
+    - name: PackageName
+      type: string16
+    - name: EstimatedLaunchTime
+      type: int64

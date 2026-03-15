@@ -1,0 +1,17 @@
+package: android.media.tv
+type: AdBuffer
+fields:
+    - name: Id
+      type: int32
+    - name: MimeType
+      type: string16
+    - name: Buffer
+      type: opaque
+    - name: Offset
+      type: int32
+    - name: Length
+      type: int32
+    - name: PresentationTimeUs
+      type: int64
+    - name: Flags
+      type: int32

@@ -1,0 +1,7 @@
+package: android.media
+type: AudioTimestamp
+fields:
+    - name: FramePosition
+      type: int64
+    - name: NanoTime
+      type: int64

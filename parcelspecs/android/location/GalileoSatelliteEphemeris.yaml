@@ -1,0 +1,13 @@
+package: android.location
+type: GalileoSatelliteEphemeris
+fields:
+    - name: SatelliteCodeNumber
+      type: int32
+    - name: SatelliteClockModels
+      type: opaque
+    - name: SatelliteOrbitModel
+      type: opaque
+    - name: SatelliteHealth
+      type: opaque
+    - name: SatelliteEphemerisTime
+      type: opaque

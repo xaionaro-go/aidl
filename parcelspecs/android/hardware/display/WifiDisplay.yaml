@@ -1,0 +1,15 @@
+package: android.hardware.display
+type: WifiDisplay
+fields:
+    - name: DeviceAddress
+      type: string16
+    - name: DeviceName
+      type: string16
+    - name: DeviceAlias
+      type: string16
+    - name: IsAvailable?1:0
+      type: int32
+    - name: CanConnect?1:0
+      type: int32
+    - name: IsRemembered?1:0
+      type: int32

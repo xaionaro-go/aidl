@@ -1,0 +1,13 @@
+package: android.content.pm
+type: ProcessInfo
+fields:
+    - name: Flg
+      type: int32
+    - name: Name
+      type: string16
+    - name: GwpAsanMode
+      type: int32
+    - name: MemtagMode
+      type: int32
+    - name: NativeHeapZeroInitialized
+      type: int32

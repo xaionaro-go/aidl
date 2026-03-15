@@ -1,0 +1,11 @@
+package: android.hardware.contexthub
+type: HubServiceInfo
+fields:
+    - name: ServiceDescriptor
+      type: string16
+    - name: Format
+      type: int32
+    - name: MajorVersion
+      type: int32
+    - name: MinorVersion
+      type: int32

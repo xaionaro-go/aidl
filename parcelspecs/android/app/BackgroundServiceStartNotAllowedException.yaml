@@ -1,0 +1,5 @@
+package: android.app
+type: BackgroundServiceStartNotAllowedException
+fields:
+    - name: GetMessage()
+      type: string16

@@ -1,0 +1,25 @@
+package: android.app
+type: FragmentState
+fields:
+    - name: ClassName
+      type: string16
+    - name: Index
+      type: int32
+    - name: FromLayout?1:0
+      type: int32
+    - name: FragmentId
+      type: int32
+    - name: ContainerId
+      type: int32
+    - name: Tag
+      type: string16
+    - name: RetainInstance?1:0
+      type: int32
+    - name: Detached?1:0
+      type: int32
+    - name: Arguments
+      type: opaque
+    - name: Hidden?1:0
+      type: int32
+    - name: SavedFragmentState
+      type: opaque

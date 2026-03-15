@@ -1,0 +1,15 @@
+package: android.media.tv
+type: TimelineResponse
+fields:
+    - name: Dest
+      type: opaque
+    - name: Selector
+      type: string16
+    - name: UnitsPerTick
+      type: int32
+    - name: UnitsPerSecond
+      type: int32
+    - name: WallClock
+      type: int64
+    - name: Ticks
+      type: int64

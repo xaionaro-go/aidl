@@ -1,0 +1,7 @@
+package: android.hardware.radio
+type: UniqueProgramIdentifier
+fields:
+    - name: PrimaryId
+      type: opaque
+    - name: CriticalSecondaryIds
+      type: opaque

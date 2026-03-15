@@ -1,0 +1,5 @@
+package: android.telephony
+type: VoLteServiceState
+fields:
+    - name: SrvccState
+      type: int32

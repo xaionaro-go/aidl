@@ -1,0 +1,25 @@
+package: android.media
+type: FadeManagerConfiguration
+fields:
+    - name: FadeState
+      type: int32
+    - name: FadeOutDurationMillis
+      type: int64
+    - name: FadeInDurationMillis
+      type: int64
+    - name: FadeInDelayForOffendersMillis
+      type: int64
+    - name: UsageToFadeWrapperMap
+      type: opaque
+    - name: AttrToFadeWrapperMap
+      type: opaque
+    - name: FadeableUsages.toArray()
+      type: opaque
+    - name: UnfadeableContentTypes.toArray()
+      type: opaque
+    - name: UnfadeablePlayerTypes.toArray()
+      type: opaque
+    - name: UnfadeableUids.toArray()
+      type: opaque
+    - name: UnfadeableAudioAttributes
+      type: opaque

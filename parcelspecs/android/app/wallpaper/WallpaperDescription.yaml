@@ -1,0 +1,21 @@
+package: android.app.wallpaper
+type: WallpaperDescription
+fields:
+    - name: Component
+      type: opaque
+    - name: Id
+      type: string8
+    - name: Dest
+      type: opaque
+    - name: Title
+      type: opaque
+    - name: Description.toArray(newCharSequence[0])
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: ContextDescription
+      type: opaque
+    - name: Content
+      type: opaque
+    - name: SampleSize
+      type: float32

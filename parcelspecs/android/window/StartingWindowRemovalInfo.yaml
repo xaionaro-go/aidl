@@ -1,0 +1,19 @@
+package: android.window
+type: StartingWindowRemovalInfo
+fields:
+    - name: TaskId
+      type: int32
+    - name: WindowAnimationLeash
+      type: opaque
+    - name: MainFrame
+      type: opaque
+    - name: PlayRevealAnimation
+      type: bool
+    - name: DeferRemoveMode
+      type: int32
+    - name: RoundedCornerRadius
+      type: float32
+    - name: WindowlessSurface
+      type: bool
+    - name: RemoveImmediately
+      type: bool

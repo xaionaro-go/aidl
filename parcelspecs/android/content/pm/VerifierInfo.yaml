@@ -1,0 +1,7 @@
+package: android.content.pm
+type: VerifierInfo
+fields:
+    - name: PackageName
+      type: string16
+    - name: PublicKey
+      type: opaque

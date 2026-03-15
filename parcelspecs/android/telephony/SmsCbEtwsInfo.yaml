@@ -1,0 +1,13 @@
+package: android.telephony
+type: SmsCbEtwsInfo
+fields:
+    - name: WarningType
+      type: int32
+    - name: IsEmergencyUserAlert?1:0
+      type: int32
+    - name: IsPopupAlert?1:0
+      type: int32
+    - name: IsPrimary?1:0
+      type: int32
+    - name: WarningSecurityInformation
+      type: opaque

@@ -1,0 +1,13 @@
+package: android.location
+type: GnssCapabilities
+fields:
+    - name: TopFlags
+      type: int32
+    - name: IsAdrCapabilityKnown
+      type: bool
+    - name: MeasurementCorrectionsFlags
+      type: int32
+    - name: PowerFlags
+      type: int32
+    - name: GnssSignalTypes
+      type: opaque

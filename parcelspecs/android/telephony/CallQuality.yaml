@@ -1,0 +1,45 @@
+package: android.telephony
+type: CallQuality
+fields:
+    - name: DownlinkCallQualityLevel
+      type: int32
+    - name: UplinkCallQualityLevel
+      type: int32
+    - name: CallDuration
+      type: int32
+    - name: NumRtpPacketsTransmitted
+      type: int32
+    - name: NumRtpPacketsReceived
+      type: int32
+    - name: NumRtpPacketsTransmittedLost
+      type: int32
+    - name: NumRtpPacketsNotReceived
+      type: int32
+    - name: AverageRelativeJitter
+      type: int32
+    - name: MaxRelativeJitter
+      type: int32
+    - name: AverageRoundTripTime
+      type: int32
+    - name: CodecType
+      type: int32
+    - name: RtpInactivityDetected
+      type: bool
+    - name: RxSilenceDetected
+      type: bool
+    - name: TxSilenceDetected
+      type: bool
+    - name: NumVoiceFrames
+      type: int32
+    - name: NumNoDataFrames
+      type: int32
+    - name: NumDroppedRtpPackets
+      type: int32
+    - name: MinPlayoutDelayMillis
+      type: int64
+    - name: MaxPlayoutDelayMillis
+      type: int64
+    - name: NumRtpSidPacketsReceived
+      type: int32
+    - name: NumRtpDuplicatePackets
+      type: int32

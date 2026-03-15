@@ -1,0 +1,27 @@
+package: android.content
+type: ContentProviderResult
+fields:
+    - name: "1"
+      type: int32
+      condition: uri!=null
+    - name: Dest
+      type: opaque
+      condition: uri!=null
+    - name: "1"
+      type: int32
+      condition: count!=null
+    - name: Count
+      type: int32
+      condition: count!=null
+    - name: "1"
+      type: int32
+      condition: extras!=null
+    - name: Extras
+      type: opaque
+      condition: extras!=null
+    - name: "1"
+      type: int32
+      condition: exception!=null
+    - name: Dest
+      type: opaque
+      condition: exception!=null

@@ -1,0 +1,29 @@
+package: android.window
+type: TaskFragmentInfo
+fields:
+    - name: FragmentToken
+      type: opaque
+    - name: Token
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: RunningActivityCount
+      type: int32
+    - name: IsVisible
+      type: bool
+    - name: Activities
+      type: opaque
+    - name: InRequestedTaskFragmentActivities
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: IsTaskClearedForReuse
+      type: bool
+    - name: IsTaskFragmentClearedForPip
+      type: bool
+    - name: IsClearedForReorderActivityToFront
+      type: bool
+    - name: Dest
+      type: opaque
+    - name: IsTopNonFishingChild
+      type: bool

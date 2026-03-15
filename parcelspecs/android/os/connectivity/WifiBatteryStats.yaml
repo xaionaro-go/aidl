@@ -1,0 +1,37 @@
+package: android.os.connectivity
+type: WifiBatteryStats
+fields:
+    - name: LoggingDurationMillis
+      type: int64
+    - name: KernelActiveTimeMillis
+      type: int64
+    - name: NumPacketsTx
+      type: int64
+    - name: NumBytesTx
+      type: int64
+    - name: NumPacketsRx
+      type: int64
+    - name: NumBytesRx
+      type: int64
+    - name: SleepTimeMillis
+      type: int64
+    - name: ScanTimeMillis
+      type: int64
+    - name: IdleTimeMillis
+      type: int64
+    - name: RxTimeMillis
+      type: int64
+    - name: TxTimeMillis
+      type: int64
+    - name: EnergyConsumedMaMillis
+      type: int64
+    - name: AppScanRequestCount
+      type: int64
+    - name: TimeInStateMillis
+      type: opaque
+    - name: TimeInRxSignalStrengthLevelMillis
+      type: opaque
+    - name: TimeInSupplicantStateMillis
+      type: opaque
+    - name: MonitoredRailChargeConsumedMaMillis
+      type: int64

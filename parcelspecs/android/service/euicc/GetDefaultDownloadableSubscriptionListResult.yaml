@@ -1,0 +1,7 @@
+package: android.service.euicc
+type: GetDefaultDownloadableSubscriptionListResult
+fields:
+    - name: Result
+      type: int32
+    - name: Subscriptions
+      type: opaque

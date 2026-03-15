@@ -1,0 +1,7 @@
+package: android.telephony.euicc
+type: EuiccRulesAuthTable
+fields:
+    - name: PolicyRules
+      type: opaque
+    - name: PolicyRuleFlags
+      type: opaque

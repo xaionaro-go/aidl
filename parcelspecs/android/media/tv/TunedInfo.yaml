@@ -1,0 +1,17 @@
+package: android.media.tv
+type: TunedInfo
+fields:
+    - name: InputId
+      type: string16
+    - name: UriString
+      type: string16
+    - name: IsRecordingSession?1:0
+      type: int32
+    - name: IsVisible?1:0
+      type: int32
+    - name: IsMainSession?1:0
+      type: int32
+    - name: AppType
+      type: int32
+    - name: AppTag
+      type: int32

@@ -1,0 +1,15 @@
+package: android.media.tv
+type: StreamEventResponse
+fields:
+    - name: Dest
+      type: opaque
+    - name: EventId
+      type: int32
+    - name: NptMillis
+      type: int64
+    - name: Data.length
+      type: int32
+      condition: mData!=null&&mData.length>0
+    - name: Data
+      type: opaque
+      condition: mData!=null&&mData.length>0

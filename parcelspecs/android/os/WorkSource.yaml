@@ -1,0 +1,12 @@
+package: android.os
+type: WorkSource
+fields:
+    - name: Num
+      type: int32
+    - name: Uids
+      type: opaque
+    - name: Names
+      type: opaque
+    - name: "-1"
+      type: int32
+      condition: mChains==null

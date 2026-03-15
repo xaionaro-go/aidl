@@ -1,0 +1,33 @@
+package: android.app
+type: ApplicationStartInfo
+fields:
+    - name: StartupState
+      type: int32
+    - name: Pid
+      type: int32
+    - name: RealUid
+      type: int32
+    - name: PackageUid
+      type: int32
+    - name: DefiningUid
+      type: int32
+    - name: PackageName
+      type: string16
+    - name: ProcessName
+      type: string16
+    - name: Reason
+      type: int32
+    - name: StartupTimestampsNs==null?0:mStartupTimestampsNs.size()
+      type: int32
+    - name: StartType
+      type: int32
+    - name: StartIntent
+      type: opaque
+    - name: LaunchMode
+      type: int32
+    - name: WasForceStopped
+      type: bool
+    - name: MonoticCreationTimeMs
+      type: int64
+    - name: StartComponent
+      type: int32

@@ -1,0 +1,22 @@
+package: android.service.autofill
+type: FillRequest
+fields:
+    - name: Flg
+      type: int32
+    - name: Id
+      type: int32
+    - name: FillContexts
+      type: opaque
+    - name: Hints
+      type: opaque
+    - name: ClientState
+      type: opaque
+      condition: mClientState!=null
+    - name: Flags
+      type: int32
+    - name: InlineSuggestionsRequest
+      type: opaque
+      condition: mInlineSuggestionsRequest!=null
+    - name: DelayedFillIntentSender
+      type: opaque
+      condition: mDelayedFillIntentSender!=null

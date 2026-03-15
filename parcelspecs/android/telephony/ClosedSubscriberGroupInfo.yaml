@@ -1,0 +1,9 @@
+package: android.telephony
+type: ClosedSubscriberGroupInfo
+fields:
+    - name: CsgIndicator
+      type: bool
+    - name: HomeNodebName
+      type: string16
+    - name: CsgIdentity
+      type: int32

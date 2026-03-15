@@ -1,0 +1,5 @@
+package: android.service.controls.templates
+type: ControlTemplateWrapper
+fields:
+    - name: ControlTemplate.getDataBundle()
+      type: opaque

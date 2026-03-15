@@ -1,0 +1,9 @@
+package: android.window
+type: BackAnimationAdapter
+fields:
+    - name: Runner
+      type: opaque
+    - name: SupportedAnimators.length
+      type: int32
+    - name: SupportedAnimators
+      type: opaque

@@ -1,0 +1,67 @@
+package: android.location
+type: GpsMeasurement
+fields:
+    - name: Flags
+      type: int32
+    - name: Prn
+      type: int32
+    - name: TimeOffsetInNs
+      type: float64
+    - name: State
+      type: int32
+    - name: ReceivedGpsTowInNs
+      type: int64
+    - name: ReceivedGpsTowUncertaintyInNs
+      type: int64
+    - name: Cn0InDbHz
+      type: float64
+    - name: PseudorangeRateInMetersPerSec
+      type: float64
+    - name: PseudorangeRateUncertaintyInMetersPerSec
+      type: float64
+    - name: AccumulatedDeltaRangeState
+      type: int32
+    - name: AccumulatedDeltaRangeInMeters
+      type: float64
+    - name: AccumulatedDeltaRangeUncertaintyInMeters
+      type: float64
+    - name: PseudorangeInMeters
+      type: float64
+    - name: PseudorangeUncertaintyInMeters
+      type: float64
+    - name: CodePhaseInChips
+      type: float64
+    - name: CodePhaseUncertaintyInChips
+      type: float64
+    - name: CarrierFrequencyInHz
+      type: float32
+    - name: CarrierCycles
+      type: int64
+    - name: CarrierPhase
+      type: float64
+    - name: CarrierPhaseUncertainty
+      type: float64
+    - name: LossOfLock
+      type: int32
+    - name: BitNumber
+      type: int32
+    - name: TimeFromLastBitInMs
+      type: int32
+    - name: DopplerShiftInHz
+      type: float64
+    - name: DopplerShiftUncertaintyInHz
+      type: float64
+    - name: MultipathIndicator
+      type: int32
+    - name: SnrInDb
+      type: float64
+    - name: ElevationInDeg
+      type: float64
+    - name: ElevationUncertaintyInDeg
+      type: float64
+    - name: AzimuthInDeg
+      type: float64
+    - name: AzimuthUncertaintyInDeg
+      type: float64
+    - name: UsedInFix?1:0
+      type: int32

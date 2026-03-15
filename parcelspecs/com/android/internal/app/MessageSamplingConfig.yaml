@@ -1,0 +1,9 @@
+package: com.android.internal.app
+type: MessageSamplingConfig
+fields:
+    - name: SampledOpCode
+      type: int32
+    - name: AcceptableLeftDistance
+      type: int32
+    - name: ExpirationTimeSinceBootMillis
+      type: int64

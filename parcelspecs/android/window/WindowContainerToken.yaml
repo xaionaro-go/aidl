@@ -1,0 +1,5 @@
+package: android.window
+type: WindowContainerToken
+fields:
+    - name: RealToken.asBinder()
+      type: opaque

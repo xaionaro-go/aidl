@@ -1,0 +1,11 @@
+package: android.hardware.display
+type: Time
+fields:
+    - name: Hour
+      type: int32
+    - name: Minute
+      type: int32
+    - name: Second
+      type: int32
+    - name: Nano
+      type: int32

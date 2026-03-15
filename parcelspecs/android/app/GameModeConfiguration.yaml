@@ -1,0 +1,7 @@
+package: android.app
+type: GameModeConfiguration
+fields:
+    - name: ScalingFactor
+      type: float32
+    - name: FpsOverride
+      type: int32

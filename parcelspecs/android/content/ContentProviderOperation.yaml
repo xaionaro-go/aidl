@@ -1,0 +1,49 @@
+package: android.content
+type: ContentProviderOperation
+fields:
+    - name: Type
+      type: int32
+    - name: Dest
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: mMethod!=null
+    - name: Method
+      type: string8
+      condition: mMethod!=null
+    - name: "1"
+      type: int32
+      condition: mArg!=null
+    - name: Arg
+      type: string8
+      condition: mArg!=null
+    - name: Values.size()
+      type: int32
+      condition: mValues!=null
+    - name: Values
+      type: opaque
+      condition: mValues!=null
+    - name: Extras.size()
+      type: int32
+      condition: mExtras!=null
+    - name: Extras
+      type: opaque
+      condition: mExtras!=null
+    - name: "1"
+      type: int32
+      condition: mSelection!=null
+    - name: Selection
+      type: string8
+      condition: mSelection!=null
+    - name: SelectionArgs
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: mExpectedCount!=null
+    - name: ExpectedCount
+      type: int32
+      condition: mExpectedCount!=null
+    - name: YieldAllowed?1:0
+      type: int32
+    - name: ExceptionAllowed?1:0
+      type: int32

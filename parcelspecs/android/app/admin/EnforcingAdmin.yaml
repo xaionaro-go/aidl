@@ -1,0 +1,11 @@
+package: android.app.admin
+type: EnforcingAdmin
+fields:
+    - name: PackageName
+      type: string16
+    - name: UserHandle.getIdentifier()
+      type: int32
+    - name: Authority
+      type: opaque
+    - name: ComponentName
+      type: opaque

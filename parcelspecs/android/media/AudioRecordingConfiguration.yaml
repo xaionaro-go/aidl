@@ -1,0 +1,27 @@
+package: android.media
+type: AudioRecordingConfiguration
+fields:
+    - name: ClientSessionId
+      type: int32
+    - name: ClientSource
+      type: int32
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: PatchHandle
+      type: int32
+    - name: ClientPackageName
+      type: string16
+    - name: ClientUid
+      type: int32
+    - name: ClientPortId
+      type: int32
+    - name: ClientSilenced
+      type: bool
+    - name: DeviceSource
+      type: int32
+    - name: ClientEffects.length
+      type: int32
+    - name: DeviceEffects.length
+      type: int32

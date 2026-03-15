@@ -1,0 +1,9 @@
+package: android.view
+type: MagnificationSpec
+fields:
+    - name: Scale
+      type: float32
+    - name: OffsetX
+      type: float32
+    - name: OffsetY
+      type: float32

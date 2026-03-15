@@ -1,0 +1,58 @@
+package: android.view.inputmethod
+type: EditorInfo
+fields:
+    - name: InputType
+      type: int32
+    - name: ImeOptions
+      type: int32
+    - name: PrivateImeOptions
+      type: string16
+    - name: InternalImeOptions
+      type: int32
+    - name: ActionLabel
+      type: opaque
+    - name: ActionId
+      type: int32
+    - name: InitialSelStart
+      type: int32
+    - name: InitialSelEnd
+      type: int32
+    - name: InitialCapsMode
+      type: int32
+    - name: InitialToolType
+      type: int32
+    - name: HintText
+      type: opaque
+    - name: Label
+      type: opaque
+    - name: PackageName
+      type: string16
+    - name: AutofillId
+      type: opaque
+    - name: FieldId
+      type: int32
+    - name: FieldName
+      type: string16
+    - name: Extras
+      type: opaque
+    - name: SupportedHandwritingGestureTypes
+      type: int32
+    - name: SupportedHandwritingGesturePreviewTypes
+      type: int32
+    - name: IsStylusHandwritingEnabled
+      type: bool
+      condition: Flags.editorinfoHandwritingEnabled()
+    - name: InitialSurroundingText!=null
+      type: bool
+    - name: Dest
+      type: opaque
+      condition: mInitialSurroundingText!=null
+    - name: Dest
+      type: opaque
+      condition: hintLocales!=null
+    - name: ContentMimeTypes
+      type: opaque
+    - name: TargetInputMethodUser
+      type: opaque
+    - name: WritingToolsEnabled
+      type: bool

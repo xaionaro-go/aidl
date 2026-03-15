@@ -1,0 +1,9 @@
+package: android.view
+type: InputMonitor
+fields:
+    - name: InputChannel
+      type: opaque
+    - name: Host
+      type: opaque
+    - name: Surface
+      type: opaque

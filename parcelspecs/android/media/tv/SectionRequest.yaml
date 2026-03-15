@@ -1,0 +1,11 @@
+package: android.media.tv
+type: SectionRequest
+fields:
+    - name: Dest
+      type: opaque
+    - name: TsPid
+      type: int32
+    - name: TableId
+      type: int32
+    - name: Version
+      type: int32

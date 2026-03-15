@@ -1,0 +1,7 @@
+package: android.app.servertransaction
+type: RefreshCallbackItem
+fields:
+    - name: Dest
+      type: opaque
+    - name: PostExecutionState
+      type: int32

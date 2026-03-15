@@ -1,0 +1,9 @@
+package: android.app.compat
+type: PackageOverride
+fields:
+    - name: MinVersionCode
+      type: int64
+    - name: MaxVersionCode
+      type: int64
+    - name: Enabled
+      type: bool

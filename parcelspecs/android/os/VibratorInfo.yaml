@@ -1,0 +1,33 @@
+package: android.os
+type: VibratorInfo
+fields:
+    - name: Id
+      type: int32
+    - name: Capabilities
+      type: int64
+    - name: SupportedEffects
+      type: opaque
+    - name: SupportedBraking
+      type: opaque
+    - name: SupportedPrimitives
+      type: opaque
+    - name: PrimitiveDelayMax
+      type: int32
+    - name: CompositionSizeMax
+      type: int32
+    - name: PwlePrimitiveDurationMax
+      type: int32
+    - name: PwleSizeMax
+      type: int32
+    - name: QFactor
+      type: float32
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: MaxEnvelopeEffectSize
+      type: int32
+    - name: MinEnvelopeEffectControlPointDurationMillis
+      type: int32
+    - name: MaxEnvelopeEffectControlPointDurationMillis
+      type: int32

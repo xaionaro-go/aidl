@@ -1,0 +1,41 @@
+package: android.media.tv
+type: TvInputInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: Id
+      type: string16
+    - name: Type
+      type: int32
+    - name: IsHardwareInput?(byte)1:0
+      type: int32
+    - name: Label
+      type: opaque
+    - name: IconUri
+      type: opaque
+    - name: LabelResId
+      type: int32
+    - name: Icon
+      type: opaque
+    - name: IconStandby
+      type: opaque
+    - name: IconDisconnected
+      type: opaque
+    - name: SetupActivity
+      type: string16
+    - name: CanRecord?(byte)1:0
+      type: int32
+    - name: CanPauseRecording?(byte)1:0
+      type: int32
+    - name: TunerCount
+      type: int32
+    - name: HdmiDeviceInfo
+      type: opaque
+    - name: IsConnectedToHdmiSwitch?(byte)1:0
+      type: int32
+    - name: HdmiConnectionRelativePosition
+      type: int32
+    - name: ParentId
+      type: string16
+    - name: Extras
+      type: opaque

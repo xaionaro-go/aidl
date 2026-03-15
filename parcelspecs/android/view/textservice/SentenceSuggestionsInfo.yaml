@@ -1,0 +1,11 @@
+package: android.view.textservice
+type: SentenceSuggestionsInfo
+fields:
+    - name: InfoSize
+      type: int32
+    - name: SuggestionsInfos
+      type: opaque
+    - name: Offsets
+      type: opaque
+    - name: Lengths
+      type: opaque

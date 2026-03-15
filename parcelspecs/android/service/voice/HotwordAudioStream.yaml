@@ -1,0 +1,16 @@
+package: android.service.voice
+type: HotwordAudioStream
+fields:
+    - name: Flg
+      type: int32
+    - name: AudioFormat
+      type: opaque
+    - name: AudioStreamParcelFileDescriptor
+      type: opaque
+    - name: Timestamp
+      type: opaque
+      condition: mTimestamp!=null
+    - name: Metadata
+      type: opaque
+    - name: InitialAudio
+      type: opaque

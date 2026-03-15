@@ -1,0 +1,9 @@
+package: android.content.pm
+type: PathPermission
+fields:
+    - name: Dest
+      type: opaque
+    - name: ReadPermission
+      type: string16
+    - name: WritePermission
+      type: string16

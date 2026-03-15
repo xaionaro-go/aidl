@@ -1,0 +1,5 @@
+package: android.security.intrusiondetection
+type: IntrusionDetectionEvent
+fields:
+    - name: Type
+      type: int32

@@ -1,0 +1,15 @@
+package: android.service.settings.preferences
+type: SettingsPreferenceValue
+fields:
+    - name: Type
+      type: int32
+    - name: BooleanValue
+      type: bool
+    - name: LongValue
+      type: int64
+    - name: DoubleValue
+      type: float64
+    - name: StringValue
+      type: string8
+    - name: IntValue
+      type: int32

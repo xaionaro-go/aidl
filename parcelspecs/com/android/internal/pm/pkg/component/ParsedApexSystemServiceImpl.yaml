@@ -1,0 +1,7 @@
+package: com.android.internal.pm.pkg.component
+type: ParsedApexSystemServiceImpl
+fields:
+    - name: Flg
+      type: int32
+    - name: InitOrder
+      type: int32

@@ -1,0 +1,23 @@
+package: android.media.metrics
+type: EditingEndedEvent
+fields:
+    - name: FinalState
+      type: int32
+    - name: FinalProgressPercent
+      type: float32
+    - name: ErrorCode
+      type: int32
+    - name: TimeSinceCreatedMillis
+      type: int64
+    - name: ExporterName
+      type: string16
+    - name: MuxerName
+      type: string16
+    - name: InputMediaItemInfos
+      type: opaque
+    - name: OutputMediaItemInfo
+      type: opaque
+    - name: OperationTypes
+      type: int64
+    - name: MetricsBundle
+      type: opaque

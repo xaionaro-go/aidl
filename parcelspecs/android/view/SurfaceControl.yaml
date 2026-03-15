@@ -1,0 +1,12 @@
+package: android.view
+type: SurfaceControl
+fields:
+    - name: Name
+      type: string8
+    - name: Width
+      type: int32
+    - name: Height
+      type: int32
+    - name: "0"
+      type: int32
+      condition: mNativeObject==0

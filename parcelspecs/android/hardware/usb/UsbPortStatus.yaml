@@ -1,0 +1,28 @@
+package: android.hardware.usb
+type: UsbPortStatus
+fields:
+    - name: CurrentMode
+      type: int32
+    - name: CurrentPowerRole
+      type: int32
+    - name: CurrentDataRole
+      type: int32
+    - name: SupportedRoleCombinations
+      type: int32
+    - name: ContaminantProtectionStatus
+      type: int32
+    - name: ContaminantDetectionStatus
+      type: int32
+    - name: UsbDataStatus
+      type: int32
+    - name: PowerTransferLimited
+      type: bool
+    - name: PowerBrickConnectionStatus
+      type: int32
+    - name: ComplianceWarnings
+      type: opaque
+    - name: PlugState
+      type: int32
+    - name: "False"
+      type: bool
+      condition: mDisplayPortAltModeInfo==null

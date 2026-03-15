@@ -1,0 +1,13 @@
+package: android.net
+type: ConnectivityMetricsEvent
+fields:
+    - name: Timestamp
+      type: int64
+    - name: Transports
+      type: int64
+    - name: NetId
+      type: int32
+    - name: Ifname
+      type: string16
+    - name: Data
+      type: opaque

@@ -1,0 +1,24 @@
+package: android.telephony
+type: TelephonyHistogram
+fields:
+    - name: Category
+      type: int32
+    - name: Id
+      type: int32
+    - name: MinTimeMs
+      type: int32
+    - name: MaxTimeMs
+      type: int32
+    - name: AverageTimeMs
+      type: int32
+    - name: SampleCount
+      type: int32
+    - name: ABSENT
+      type: int32
+      condition: mInitialTimings==null
+    - name: BucketCount
+      type: int32
+    - name: BucketEndPoints
+      type: opaque
+    - name: BucketCounters
+      type: opaque

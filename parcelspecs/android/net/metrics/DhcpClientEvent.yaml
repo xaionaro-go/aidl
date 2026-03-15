@@ -1,0 +1,7 @@
+package: android.net.metrics
+type: DhcpClientEvent
+fields:
+    - name: Msg
+      type: string16
+    - name: DurationMs
+      type: int32

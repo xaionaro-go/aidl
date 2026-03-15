@@ -1,0 +1,11 @@
+package: android.app.usage
+type: CacheQuotaHint
+fields:
+    - name: Uuid
+      type: string16
+    - name: Uid
+      type: int32
+    - name: Quota
+      type: int64
+    - name: UsageStats
+      type: opaque

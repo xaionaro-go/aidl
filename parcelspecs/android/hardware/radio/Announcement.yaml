@@ -1,0 +1,9 @@
+package: android.hardware.radio
+type: Announcement
+fields:
+    - name: Selector
+      type: opaque
+    - name: Type
+      type: int32
+    - name: Dest
+      type: opaque

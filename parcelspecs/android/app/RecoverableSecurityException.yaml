@@ -1,0 +1,9 @@
+package: android.app
+type: RecoverableSecurityException
+fields:
+    - name: GetMessage()
+      type: string16
+    - name: UserMessage
+      type: opaque
+    - name: Dest
+      type: opaque

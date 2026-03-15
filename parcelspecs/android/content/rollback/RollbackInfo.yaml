@@ -1,0 +1,15 @@
+package: android.content.rollback
+type: RollbackInfo
+fields:
+    - name: RollbackId
+      type: int32
+    - name: Packages
+      type: opaque
+    - name: IsStaged
+      type: bool
+    - name: CausePackages
+      type: opaque
+    - name: CommittedSessionId
+      type: int32
+    - name: RollbackImpactLevel
+      type: int32

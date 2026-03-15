@@ -1,0 +1,43 @@
+package: android.content.pm
+type: UserProperties
+fields:
+    - name: PropertiesPresent
+      type: int64
+    - name: ShowInLauncher
+      type: int32
+    - name: StartWithParent
+      type: bool
+    - name: ShowInSettings
+      type: int32
+    - name: ShowInQuietMode
+      type: int32
+    - name: ShowInSharingSurfaces
+      type: int32
+    - name: InheritDevicePolicy
+      type: int32
+    - name: UseParentsContacts
+      type: bool
+    - name: UpdateCrossProfileIntentFiltersOnOTA
+      type: bool
+    - name: CrossProfileIntentFilterAccessControl
+      type: int32
+    - name: CrossProfileIntentResolutionStrategy
+      type: int32
+    - name: MediaSharedWithParent
+      type: bool
+    - name: CredentialShareableWithParent
+      type: bool
+    - name: AuthAlwaysRequiredToDisableQuietMode
+      type: bool
+    - name: AllowStoppingUserWithDelayedLocking
+      type: bool
+    - name: DeleteAppWithParent
+      type: bool
+    - name: AlwaysVisible
+      type: bool
+    - name: CrossProfileContentSharingStrategy
+      type: int32
+    - name: ProfileApiVisibility
+      type: int32
+    - name: ItemsRestrictedOnHomeScreen
+      type: bool

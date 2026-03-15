@@ -1,0 +1,13 @@
+package: android.content
+type: PeriodicSync
+fields:
+    - name: Account
+      type: opaque
+    - name: Authority
+      type: string16
+    - name: Extras
+      type: opaque
+    - name: Period
+      type: int64
+    - name: FlexTime
+      type: int64

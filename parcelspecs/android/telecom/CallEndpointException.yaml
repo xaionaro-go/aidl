@@ -1,0 +1,7 @@
+package: android.telecom
+type: CallEndpointException
+fields:
+    - name: Message
+      type: string8
+    - name: Code
+      type: int32

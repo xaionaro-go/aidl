@@ -1,0 +1,17 @@
+package: android.telephony.emergency
+type: EmergencyNumber
+fields:
+    - name: Number
+      type: string16
+    - name: CountryIso
+      type: string16
+    - name: Mnc
+      type: string16
+    - name: EmergencyServiceCategoryBitmask
+      type: int32
+    - name: EmergencyUrns
+      type: opaque
+    - name: EmergencyNumberSourceBitmask
+      type: int32
+    - name: EmergencyCallRouting
+      type: int32

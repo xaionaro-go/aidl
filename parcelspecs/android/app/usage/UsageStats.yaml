@@ -1,0 +1,33 @@
+package: android.app.usage
+type: UsageStats
+fields:
+    - name: PackageName
+      type: string16
+    - name: BeginTimeStamp
+      type: int64
+    - name: EndTimeStamp
+      type: int64
+    - name: LastTimeUsed
+      type: int64
+    - name: LastTimeVisible
+      type: int64
+    - name: LastTimeComponentUsed
+      type: int64
+    - name: LastTimeForegroundServiceUsed
+      type: int64
+    - name: TotalTimeInForeground
+      type: int64
+    - name: TotalTimeVisible
+      type: int64
+    - name: TotalTimeForegroundServiceUsed
+      type: int64
+    - name: LaunchCount
+      type: int32
+    - name: AppLaunchCount
+      type: int32
+    - name: LastEvent
+      type: int32
+    - name: AllCounts
+      type: opaque
+    - name: EventMapToBundle(mForegroundServices)
+      type: opaque

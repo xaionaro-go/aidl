@@ -1,0 +1,13 @@
+package: android.app.timezonedetector
+type: TelephonyTimeZoneSuggestion
+fields:
+    - name: SlotIndex
+      type: int32
+    - name: ZoneId
+      type: string16
+    - name: MatchType
+      type: int32
+    - name: Quality
+      type: int32
+    - name: DebugInfo
+      type: opaque

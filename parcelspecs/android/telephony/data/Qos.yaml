@@ -1,0 +1,9 @@
+package: android.telephony.data
+type: Qos
+fields:
+    - name: Type
+      type: int32
+    - name: Downlink
+      type: opaque
+    - name: Uplink
+      type: opaque

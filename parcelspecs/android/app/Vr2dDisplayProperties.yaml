@@ -1,0 +1,13 @@
+package: android.app
+type: Vr2dDisplayProperties
+fields:
+    - name: Width
+      type: int32
+    - name: Height
+      type: int32
+    - name: Dpi
+      type: int32
+    - name: AddedFlags
+      type: int32
+    - name: RemovedFlags
+      type: int32

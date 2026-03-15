@@ -1,0 +1,11 @@
+package: android.view.translation
+type: TranslationContext
+fields:
+    - name: Flg
+      type: int32
+    - name: SourceSpec
+      type: opaque
+    - name: TargetSpec
+      type: opaque
+    - name: TranslationFlags
+      type: int32

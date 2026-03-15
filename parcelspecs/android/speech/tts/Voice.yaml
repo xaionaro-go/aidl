@@ -1,0 +1,15 @@
+package: android.speech.tts
+type: Voice
+fields:
+    - name: Name
+      type: string16
+    - name: Locale
+      type: opaque
+    - name: Quality
+      type: int32
+    - name: Latency
+      type: int32
+    - name: (byte)(mRequiresNetworkConnection?1:0)
+      type: int32
+    - name: NewArrayList<String>(mFeatures)
+      type: opaque

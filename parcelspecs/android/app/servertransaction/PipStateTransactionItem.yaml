@@ -1,0 +1,7 @@
+package: android.app.servertransaction
+type: PipStateTransactionItem
+fields:
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque

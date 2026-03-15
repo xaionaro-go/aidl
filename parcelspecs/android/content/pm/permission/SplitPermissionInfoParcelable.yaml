@@ -1,0 +1,9 @@
+package: android.content.pm.permission
+type: SplitPermissionInfoParcelable
+fields:
+    - name: SplitPermission
+      type: string16
+    - name: NewPermissions
+      type: opaque
+    - name: TargetSdk
+      type: int32

@@ -1,0 +1,5 @@
+package: android.app.time
+type: TelephonyTimeZoneAlgorithmStatus
+fields:
+    - name: AlgorithmStatus
+      type: int32

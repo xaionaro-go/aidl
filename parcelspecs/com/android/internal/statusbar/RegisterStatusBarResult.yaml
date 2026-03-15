@@ -1,0 +1,31 @@
+package: com.android.internal.statusbar
+type: RegisterStatusBarResult
+fields:
+    - name: Icons
+      type: opaque
+    - name: DisabledFlags1
+      type: int32
+    - name: Appearance
+      type: int32
+    - name: AppearanceRegions
+      type: opaque
+    - name: ImeWindowVis
+      type: int32
+    - name: ImeBackDisposition
+      type: int32
+    - name: ShowImeSwitcher
+      type: bool
+    - name: DisabledFlags2
+      type: int32
+    - name: NavbarColorManagedByIme
+      type: bool
+    - name: Behavior
+      type: int32
+    - name: RequestedVisibleTypes
+      type: int32
+    - name: PackageName
+      type: string16
+    - name: TransientBarTypes
+      type: int32
+    - name: LetterboxDetails
+      type: opaque

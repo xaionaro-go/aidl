@@ -1,0 +1,9 @@
+package: android.os
+type: VibrationAttributes
+fields:
+    - name: Usage
+      type: int32
+    - name: OriginalAudioUsage
+      type: int32
+    - name: Flags
+      type: int32

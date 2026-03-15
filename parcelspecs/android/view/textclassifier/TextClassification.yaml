@@ -1,0 +1,13 @@
+package: android.view.textclassifier
+type: TextClassification
+fields:
+    - name: Text
+      type: string16
+    - name: Actions
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Id
+      type: string16
+    - name: Extras
+      type: opaque

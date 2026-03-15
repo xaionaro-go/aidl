@@ -1,0 +1,32 @@
+package: android.companion
+type: AssociationRequest
+fields:
+    - name: Flg
+      type: int32
+    - name: DeviceFilters
+      type: opaque
+    - name: DeviceProfile
+      type: string16
+      condition: mDeviceProfile!=null
+    - name: DisplayName
+      type: opaque
+      condition: mDisplayName!=null
+    - name: AssociatedDevice
+      type: opaque
+      condition: mAssociatedDevice!=null
+    - name: PackageName
+      type: string16
+      condition: mPackageName!=null
+    - name: UserId
+      type: int32
+    - name: DeviceProfilePrivilegesDescription
+      type: string8
+      condition: mDeviceProfilePrivilegesDescription!=null
+    - name: CreationTime
+      type: int64
+    - name: "1"
+      type: int32
+      condition: mDeviceIcon!=null
+    - name: Dest
+      type: opaque
+      condition: mDeviceIcon!=null

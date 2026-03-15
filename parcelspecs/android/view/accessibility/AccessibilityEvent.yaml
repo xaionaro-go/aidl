@@ -1,0 +1,28 @@
+package: android.view.accessibility
+type: AccessibilityEvent
+fields:
+    - name: IsSealed()?1:0
+      type: int32
+    - name: EventType
+      type: int32
+    - name: MovementGranularity
+      type: int32
+    - name: Action
+      type: int32
+    - name: ContentChangeTypes
+      type: int32
+    - name: WindowChangeTypes
+      type: int32
+    - name: SpeechStateChangeTypes
+      type: int32
+    - name: PackageName
+      type: opaque
+    - name: EventTime
+      type: int64
+    - name: ConnectionId
+      type: int32
+    - name: RecordCount
+      type: int32
+    - name: OriginStackTrace.length
+      type: int32
+      condition: DEBUG_ORIGIN

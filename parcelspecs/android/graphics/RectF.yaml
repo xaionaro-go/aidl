@@ -1,0 +1,11 @@
+package: android.graphics
+type: RectF
+fields:
+    - name: Left
+      type: float32
+    - name: Top
+      type: float32
+    - name: Right
+      type: float32
+    - name: Bottom
+      type: float32

@@ -1,0 +1,5 @@
+package: android.telephony.ims
+type: ImsConferenceState
+fields:
+    - name: Participants.size()
+      type: int32

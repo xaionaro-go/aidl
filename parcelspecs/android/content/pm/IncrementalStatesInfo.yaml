@@ -1,0 +1,9 @@
+package: android.content.pm
+type: IncrementalStatesInfo
+fields:
+    - name: IsLoading
+      type: bool
+    - name: Progress
+      type: float32
+    - name: LoadingCompletedTime
+      type: int64

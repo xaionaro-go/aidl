@@ -1,0 +1,11 @@
+package: android.content.pm
+type: BaseParceledListSlice
+fields:
+    - name: "N"
+      type: int32
+    - name: "0"
+      type: int32
+      condition: N>0 && i<N
+    - name: Retriever
+      type: opaque
+      condition: N>0 && i<N

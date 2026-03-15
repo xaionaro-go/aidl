@@ -1,0 +1,13 @@
+package: android.media.musicrecognition
+type: RecognitionRequest
+fields:
+    - name: AudioFormat
+      type: opaque
+    - name: AudioAttributes
+      type: opaque
+    - name: CaptureSession
+      type: int32
+    - name: MaxAudioLengthSeconds
+      type: int32
+    - name: IgnoreBeginningFrames
+      type: int32

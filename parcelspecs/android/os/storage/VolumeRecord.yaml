@@ -1,0 +1,21 @@
+package: android.os.storage
+type: VolumeRecord
+fields:
+    - name: Type
+      type: int32
+    - name: FsUuid
+      type: string16
+    - name: PartGuid
+      type: string16
+    - name: Nickname
+      type: string16
+    - name: UserFlags
+      type: int32
+    - name: CreatedMillis
+      type: int64
+    - name: LastSeenMillis
+      type: int64
+    - name: LastTrimMillis
+      type: int64
+    - name: LastBenchMillis
+      type: int64

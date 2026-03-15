@@ -1,0 +1,17 @@
+package: android.hardware.hdmi
+type: HdmiPortInfo
+fields:
+    - name: Id
+      type: int32
+    - name: Type
+      type: int32
+    - name: Address
+      type: int32
+    - name: CecSupported?1:0
+      type: int32
+    - name: ArcSupported?1:0
+      type: int32
+    - name: MhlSupported?1:0
+      type: int32
+    - name: EarcSupported?1:0
+      type: int32

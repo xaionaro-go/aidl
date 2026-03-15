@@ -1,0 +1,5 @@
+package: android.service.autofill
+type: FieldClassification
+fields:
+    - name: Matches.size()
+      type: int32

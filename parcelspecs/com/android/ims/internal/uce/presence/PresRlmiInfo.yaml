@@ -1,0 +1,19 @@
+package: com.android.ims.internal.uce.presence
+type: PresRlmiInfo
+fields:
+    - name: Uri
+      type: string16
+    - name: Version
+      type: int32
+    - name: FullState?1:0
+      type: int32
+    - name: ListName
+      type: string16
+    - name: RequestId
+      type: int32
+    - name: PresSubscriptionState
+      type: opaque
+    - name: SubscriptionExpireTime
+      type: int32
+    - name: SubscriptionTerminatedReason
+      type: string16

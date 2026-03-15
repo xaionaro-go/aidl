@@ -1,0 +1,43 @@
+package: android.nfc.cardemulation
+type: ApduServiceInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: Description
+      type: string16
+    - name: OnHost?1:0
+      type: int32
+    - name: OffHostName
+      type: string16
+    - name: StaticOffHostName
+      type: string16
+    - name: StaticAidGroups.size()
+      type: int32
+    - name: NewArrayList<AidGroup>(mStaticAidGroups.values())
+      type: opaque
+      condition: mStaticAidGroups.size()>0
+    - name: DynamicAidGroups.size()
+      type: int32
+    - name: NewArrayList<AidGroup>(mDynamicAidGroups.values())
+      type: opaque
+      condition: mDynamicAidGroups.size()>0
+    - name: RequiresDeviceUnlock?1:0
+      type: int32
+    - name: RequiresDeviceScreenOn?1:0
+      type: int32
+    - name: BannerResourceId
+      type: int32
+    - name: Uid
+      type: int32
+    - name: SettingsActivityName
+      type: string16
+    - name: CategoryOtherServiceEnabled?1:0
+      type: int32
+    - name: AutoTransact.size()
+      type: int32
+    - name: AutoTransact
+      type: opaque
+    - name: AutoTransactPatterns.size()
+      type: int32
+    - name: AutoTransactPatterns
+      type: opaque

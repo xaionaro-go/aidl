@@ -1,0 +1,11 @@
+package: android.telephony
+type: CellInfoLte
+fields:
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque

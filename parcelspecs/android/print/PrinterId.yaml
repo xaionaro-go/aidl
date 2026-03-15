@@ -1,0 +1,7 @@
+package: android.print
+type: PrinterId
+fields:
+    - name: ServiceName
+      type: opaque
+    - name: LocalId
+      type: string16

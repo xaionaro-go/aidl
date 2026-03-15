@@ -1,0 +1,11 @@
+package: android.app.slice
+type: Slice
+fields:
+    - name: Hints
+      type: opaque
+    - name: Items.length
+      type: int32
+    - name: Dest
+      type: opaque
+    - name: Spec
+      type: opaque

@@ -1,0 +1,11 @@
+package: android.window
+type: TransitionFilter
+fields:
+    - name: TypeSet
+      type: opaque
+    - name: Flags
+      type: int32
+    - name: NotFlags
+      type: int32
+    - name: Requirements
+      type: opaque

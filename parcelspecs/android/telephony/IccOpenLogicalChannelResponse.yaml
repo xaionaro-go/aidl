@@ -1,0 +1,13 @@
+package: android.telephony
+type: IccOpenLogicalChannelResponse
+fields:
+    - name: Channel
+      type: int32
+    - name: Status
+      type: int32
+    - name: SelectResponse.length
+      type: int32
+      condition: mSelectResponse!=null&&mSelectResponse.length>0
+    - name: SelectResponse
+      type: opaque
+      condition: mSelectResponse!=null&&mSelectResponse.length>0

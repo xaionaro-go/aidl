@@ -1,0 +1,9 @@
+package: android.app.smartspace.uitemplatedata
+type: Icon
+fields:
+    - name: Icon
+      type: opaque
+    - name: ContentDescription
+      type: opaque
+    - name: ShouldTint
+      type: bool

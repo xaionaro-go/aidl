@@ -1,0 +1,35 @@
+package: android.telephony
+type: NetworkRegistrationInfo
+fields:
+    - name: Domain
+      type: int32
+    - name: TransportType
+      type: int32
+    - name: RegistrationState
+      type: int32
+    - name: NetworkRegistrationState
+      type: int32
+    - name: RoamingType
+      type: int32
+    - name: AccessNetworkTechnology
+      type: int32
+    - name: RejectCause
+      type: int32
+    - name: EmergencyOnly
+      type: bool
+    - name: AvailableServices
+      type: opaque
+    - name: CellIdentity
+      type: opaque
+    - name: VoiceSpecificInfo
+      type: opaque
+    - name: DataSpecificInfo
+      type: opaque
+    - name: NrState
+      type: int32
+    - name: Rplmn
+      type: string16
+    - name: IsUsingCarrierAggregation
+      type: bool
+    - name: IsNonTerrestrialNetwork
+      type: bool

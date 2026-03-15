@@ -1,0 +1,21 @@
+package: com.android.internal.pm.pkg.component
+type: ParsedProviderImpl
+fields:
+    - name: Dest
+      type: opaque
+    - name: This.authority
+      type: string16
+    - name: This.syncable
+      type: bool
+    - name: This.grantUriPermissions
+      type: bool
+    - name: This.forceUriPermissions
+      type: bool
+    - name: This.multiProcess
+      type: bool
+    - name: This.initOrder
+      type: int32
+    - name: This.uriPermissionPatterns
+      type: opaque
+    - name: This.pathPermissions
+      type: opaque

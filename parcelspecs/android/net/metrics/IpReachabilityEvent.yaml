@@ -1,0 +1,5 @@
+package: android.net.metrics
+type: IpReachabilityEvent
+fields:
+    - name: EventType
+      type: int32

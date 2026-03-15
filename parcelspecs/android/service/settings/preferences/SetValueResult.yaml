@@ -1,0 +1,5 @@
+package: android.service.settings.preferences
+type: SetValueResult
+fields:
+    - name: ResultCode
+      type: int32

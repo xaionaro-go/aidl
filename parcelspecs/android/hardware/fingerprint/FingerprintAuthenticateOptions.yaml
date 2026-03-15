@@ -1,0 +1,19 @@
+package: android.hardware.fingerprint
+type: FingerprintAuthenticateOptions
+fields:
+    - name: Flg
+      type: int32
+    - name: UserId
+      type: int32
+    - name: SensorId
+      type: int32
+    - name: DisplayState
+      type: int32
+    - name: OpPackageName
+      type: string16
+    - name: AttributionTag
+      type: string16
+      condition: mAttributionTag!=null
+    - name: VendorReason
+      type: opaque
+      condition: mVendorReason!=null

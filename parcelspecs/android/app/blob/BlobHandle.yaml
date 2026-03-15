@@ -1,0 +1,13 @@
+package: android.app.blob
+type: BlobHandle
+fields:
+    - name: Algorithm
+      type: string16
+    - name: Digest
+      type: opaque
+    - name: Label
+      type: opaque
+    - name: ExpiryTimeMillis
+      type: int64
+    - name: Tag
+      type: string16

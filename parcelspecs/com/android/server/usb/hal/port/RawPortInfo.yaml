@@ -1,0 +1,46 @@
+package: com.android.server.usb.hal.port
+type: RawPortInfo
+fields:
+    - name: PortId
+      type: string16
+    - name: SupportedModes
+      type: int32
+    - name: SupportedContaminantProtectionModes
+      type: int32
+    - name: CurrentMode
+      type: int32
+    - name: (byte)(canChangeMode?1:0)
+      type: int32
+    - name: CurrentPowerRole
+      type: int32
+    - name: (byte)(canChangePowerRole?1:0)
+      type: int32
+    - name: CurrentDataRole
+      type: int32
+    - name: (byte)(canChangeDataRole?1:0)
+      type: int32
+    - name: SupportsEnableContaminantPresenceProtection
+      type: bool
+    - name: ContaminantProtectionStatus
+      type: int32
+    - name: SupportsEnableContaminantPresenceDetection
+      type: bool
+    - name: ContaminantDetectionStatus
+      type: int32
+    - name: UsbDataStatus
+      type: int32
+    - name: PowerTransferLimited
+      type: bool
+    - name: PowerBrickConnectionStatus
+      type: int32
+    - name: SupportsComplianceWarnings
+      type: bool
+    - name: ComplianceWarnings
+      type: opaque
+    - name: PlugState
+      type: int32
+    - name: SupportedAltModes
+      type: int32
+    - name: Dest
+      type: opaque
+      condition: (supportedAltModes&UsbPort.FLAG_ALT_MODE_TYPE_DISPLAYPORT)!=0

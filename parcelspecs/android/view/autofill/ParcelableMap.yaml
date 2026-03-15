@@ -1,0 +1,5 @@
+package: android.view.autofill
+type: ParcelableMap
+fields:
+    - name: Size()
+      type: int32

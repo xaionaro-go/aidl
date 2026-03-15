@@ -1,0 +1,5 @@
+package: android.app.servertransaction
+type: ClientTransaction
+fields:
+    - name: TransactionItems
+      type: opaque

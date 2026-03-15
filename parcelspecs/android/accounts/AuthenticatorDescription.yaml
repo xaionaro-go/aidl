@@ -1,0 +1,17 @@
+package: android.accounts
+type: AuthenticatorDescription
+fields:
+    - name: Type
+      type: string16
+    - name: PackageName
+      type: string16
+    - name: LabelId
+      type: int32
+    - name: IconId
+      type: int32
+    - name: SmallIconId
+      type: int32
+    - name: AccountPreferencesId
+      type: int32
+    - name: (byte)(customTokens?1:0)
+      type: int32

@@ -1,0 +1,11 @@
+package: android.location
+type: UtcModel
+fields:
+    - name: A0
+      type: float64
+    - name: A1
+      type: float64
+    - name: TimeOfWeek
+      type: int32
+    - name: WeekNumber
+      type: int32

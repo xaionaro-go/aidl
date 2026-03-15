@@ -1,0 +1,9 @@
+package: android.telephony.data
+type: UrspRule
+fields:
+    - name: Precedence
+      type: int32
+    - name: TrafficDescriptors
+      type: opaque
+    - name: RouteSelectionDescriptor
+      type: opaque

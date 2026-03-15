@@ -1,0 +1,9 @@
+package: android.telephony.ims.feature
+type: ConnectionFailureInfo
+fields:
+    - name: Reason
+      type: int32
+    - name: CauseCode
+      type: int32
+    - name: WaitTimeMillis
+      type: int32

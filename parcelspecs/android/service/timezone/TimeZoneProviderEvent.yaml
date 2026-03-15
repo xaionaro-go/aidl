@@ -1,0 +1,13 @@
+package: android.service.timezone
+type: TimeZoneProviderEvent
+fields:
+    - name: Type
+      type: int32
+    - name: CreationElapsedMillis
+      type: int64
+    - name: Suggestion
+      type: opaque
+    - name: FailureCause
+      type: string8
+    - name: TimeZoneProviderStatus
+      type: opaque

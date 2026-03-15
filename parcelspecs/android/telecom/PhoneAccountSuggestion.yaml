@@ -1,0 +1,9 @@
+package: android.telecom
+type: PhoneAccountSuggestion
+fields:
+    - name: Handle
+      type: opaque
+    - name: Reason
+      type: int32
+    - name: (byte)(mShouldAutoSelect?1:0)
+      type: int32

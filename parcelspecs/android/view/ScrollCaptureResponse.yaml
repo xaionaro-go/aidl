@@ -1,0 +1,24 @@
+package: android.view
+type: ScrollCaptureResponse
+fields:
+    - name: Flg
+      type: int32
+    - name: Description
+      type: string16
+    - name: Connection
+      type: opaque
+      condition: mConnection!=null
+    - name: WindowBounds
+      type: opaque
+      condition: mWindowBounds!=null
+    - name: BoundsInWindow
+      type: opaque
+      condition: mBoundsInWindow!=null
+    - name: WindowTitle
+      type: string16
+      condition: mWindowTitle!=null
+    - name: PackageName
+      type: string16
+      condition: mPackageName!=null
+    - name: Messages
+      type: opaque

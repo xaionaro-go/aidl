@@ -1,0 +1,8 @@
+package: android.service.autofill
+type: FillEventHistory
+fields:
+    - name: ClientState
+      type: opaque
+    - name: "0"
+      type: int32
+      condition: mEvents==null

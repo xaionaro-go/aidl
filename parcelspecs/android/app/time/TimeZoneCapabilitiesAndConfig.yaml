@@ -1,0 +1,9 @@
+package: android.app.time
+type: TimeZoneCapabilitiesAndConfig
+fields:
+    - name: DetectorStatus
+      type: opaque
+    - name: Capabilities
+      type: opaque
+    - name: Configuration
+      type: opaque

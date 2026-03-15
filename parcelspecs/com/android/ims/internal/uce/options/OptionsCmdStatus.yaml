@@ -1,0 +1,11 @@
+package: com.android.ims.internal.uce.options
+type: OptionsCmdStatus
+fields:
+    - name: UserData
+      type: int32
+    - name: CmdId
+      type: opaque
+    - name: Status
+      type: opaque
+    - name: CapInfo
+      type: opaque

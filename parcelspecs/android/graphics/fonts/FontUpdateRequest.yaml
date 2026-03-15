@@ -1,0 +1,11 @@
+package: android.graphics.fonts
+type: FontUpdateRequest
+fields:
+    - name: Type
+      type: int32
+    - name: Fd
+      type: opaque
+    - name: Signature
+      type: opaque
+    - name: FontFamily
+      type: opaque

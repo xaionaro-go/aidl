@@ -1,0 +1,7 @@
+package: android.view.inputmethod
+type: Token
+fields:
+    - name: Binder
+      type: opaque
+    - name: Tag
+      type: string8

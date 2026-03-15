@@ -1,0 +1,37 @@
+package: android.service.notification
+type: StatusBarNotification
+fields:
+    - name: This.pkg
+      type: string16
+    - name: This.opPkg
+      type: string16
+    - name: This.id
+      type: int32
+    - name: "1"
+      type: int32
+      condition: this.tag!=null
+    - name: This.tag
+      type: string16
+      condition: this.tag!=null
+    - name: This.uid
+      type: int32
+    - name: This.initialPid
+      type: int32
+    - name: Out
+      type: opaque
+    - name: Out
+      type: opaque
+    - name: This.postTime
+      type: int64
+    - name: "1"
+      type: int32
+      condition: this.overrideGroupKey!=null
+    - name: This.overrideGroupKey
+      type: string16
+      condition: this.overrideGroupKey!=null
+    - name: "1"
+      type: int32
+      condition: this.mInstanceId!=null
+    - name: Out
+      type: opaque
+      condition: this.mInstanceId!=null

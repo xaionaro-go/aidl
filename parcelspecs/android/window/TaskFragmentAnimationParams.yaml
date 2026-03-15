@@ -1,0 +1,11 @@
+package: android.window
+type: TaskFragmentAnimationParams
+fields:
+    - name: AnimationBackgroundColor
+      type: int32
+    - name: OpenAnimationResId
+      type: int32
+    - name: ChangeAnimationResId
+      type: int32
+    - name: CloseAnimationResId
+      type: int32

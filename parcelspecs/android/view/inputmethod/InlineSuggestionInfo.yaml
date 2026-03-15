@@ -1,0 +1,17 @@
+package: android.view.inputmethod
+type: InlineSuggestionInfo
+fields:
+    - name: Flg
+      type: int32
+    - name: InlinePresentationSpec
+      type: opaque
+    - name: Source
+      type: string16
+    - name: AutofillHints
+      type: opaque
+      condition: mAutofillHints!=null
+    - name: Type
+      type: string16
+    - name: Tooltip
+      type: opaque
+      condition: mTooltip!=null

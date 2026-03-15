@@ -1,0 +1,7 @@
+package: android.media
+type: AudioRoutesInfo
+fields:
+    - name: BluetoothName
+      type: opaque
+    - name: MainType
+      type: int32

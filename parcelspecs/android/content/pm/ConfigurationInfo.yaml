@@ -1,0 +1,13 @@
+package: android.content.pm
+type: ConfigurationInfo
+fields:
+    - name: ReqTouchScreen
+      type: int32
+    - name: ReqKeyboardType
+      type: int32
+    - name: ReqNavigation
+      type: int32
+    - name: ReqInputFeatures
+      type: int32
+    - name: ReqGlEsVersion
+      type: int32

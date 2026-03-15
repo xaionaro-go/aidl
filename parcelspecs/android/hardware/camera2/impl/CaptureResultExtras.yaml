@@ -1,0 +1,34 @@
+package: android.hardware.camera2.impl
+type: CaptureResultExtras
+fields:
+    - name: RequestId
+      type: int32
+    - name: SubsequenceId
+      type: int32
+    - name: AfTriggerId
+      type: int32
+    - name: PrecaptureTriggerId
+      type: int32
+    - name: FrameNumber
+      type: int64
+    - name: PartialResultCount
+      type: int32
+    - name: ErrorStreamId
+      type: int32
+    - name: "True"
+      type: bool
+      condition: (errorPhysicalCameraId!=null)&&!errorPhysicalCameraId.isEmpty()
+    - name: ErrorPhysicalCameraId
+      type: string16
+      condition: (errorPhysicalCameraId!=null)&&!errorPhysicalCameraId.isEmpty()
+    - name: LastCompletedRegularFrameNumber
+      type: int64
+    - name: LastCompletedReprocessFrameNumber
+      type: int64
+    - name: LastCompletedZslFrameNumber
+      type: int64
+    - name: HasReadoutTimestamp
+      type: bool
+    - name: ReadoutTimestamp
+      type: int64
+      condition: hasReadoutTimestamp

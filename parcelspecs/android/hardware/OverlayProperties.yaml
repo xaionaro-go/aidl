@@ -1,0 +1,8 @@
+package: android.hardware
+type: OverlayProperties
+fields:
+    - name: "0"
+      type: int32
+      condition: mNativeObject==0
+    - name: "1"
+      type: int32

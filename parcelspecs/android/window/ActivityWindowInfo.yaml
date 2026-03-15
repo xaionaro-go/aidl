@@ -1,0 +1,9 @@
+package: android.window
+type: ActivityWindowInfo
+fields:
+    - name: IsEmbedded
+      type: bool
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque

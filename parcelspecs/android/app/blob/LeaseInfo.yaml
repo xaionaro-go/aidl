@@ -1,0 +1,11 @@
+package: android.app.blob
+type: LeaseInfo
+fields:
+    - name: PackageName
+      type: string16
+    - name: ExpiryTimeMillis
+      type: int64
+    - name: DescriptionResId
+      type: int32
+    - name: Description
+      type: opaque

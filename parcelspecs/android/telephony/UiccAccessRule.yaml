@@ -1,0 +1,9 @@
+package: android.telephony
+type: UiccAccessRule
+fields:
+    - name: CertificateHash
+      type: opaque
+    - name: PackageName
+      type: string16
+    - name: AccessType
+      type: int64

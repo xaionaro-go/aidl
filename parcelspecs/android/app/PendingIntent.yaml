@@ -1,0 +1,5 @@
+package: android.app
+type: PendingIntent
+fields:
+    - name: Target.asBinder()
+      type: opaque

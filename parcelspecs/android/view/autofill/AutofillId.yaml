@@ -1,0 +1,13 @@
+package: android.view.autofill
+type: AutofillId
+fields:
+    - name: ViewId
+      type: int32
+    - name: Flags
+      type: int32
+    - name: SessionId
+      type: int32
+      condition: hasSession()
+    - name: VirtualIntId
+      type: int32
+      condition: isVirtualInt()

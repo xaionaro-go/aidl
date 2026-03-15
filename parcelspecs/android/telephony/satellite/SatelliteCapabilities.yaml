@@ -1,0 +1,13 @@
+package: android.telephony.satellite
+type: SatelliteCapabilities
+fields:
+    - name: SupportedRadioTechnologies.size()
+      type: int32
+      condition: mSupportedRadioTechnologies!=null&&!mSupportedRadioTechnologies.isEmpty()
+    - name: IsPointingRequired
+      type: bool
+    - name: MaxBytesPerOutgoingDatagram
+      type: int32
+    - name: Size
+      type: int32
+      condition: mAntennaPositionMap!=null&&!mAntennaPositionMap.isEmpty()

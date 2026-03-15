@@ -1,0 +1,11 @@
+package: android.hardware.fingerprint
+type: Fingerprint
+fields:
+    - name: GetName().toString()
+      type: string16
+    - name: GetBiometricId()
+      type: int32
+    - name: GetDeviceId()
+      type: int64
+    - name: GroupId
+      type: int32

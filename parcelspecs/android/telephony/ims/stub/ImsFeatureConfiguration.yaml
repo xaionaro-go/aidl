@@ -1,0 +1,5 @@
+package: android.telephony.ims.stub
+type: ImsFeatureConfiguration
+fields:
+    - name: FeatureSlotPairs.length
+      type: int32

@@ -1,0 +1,7 @@
+package: android.app.servertransaction
+type: WindowContextInfoChangeItem
+fields:
+    - name: ClientToken
+      type: opaque
+    - name: Info
+      type: opaque

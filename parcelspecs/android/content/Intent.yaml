@@ -1,0 +1,53 @@
+package: android.content
+type: Intent
+fields:
+    - name: Action
+      type: string8
+    - name: Out
+      type: opaque
+    - name: Type
+      type: string8
+    - name: Identifier
+      type: string8
+    - name: Flags
+      type: int32
+    - name: ExtendedFlags
+      type: int32
+    - name: Package
+      type: string8
+    - name: Component
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: mSourceBounds!=null
+    - name: Out
+      type: opaque
+      condition: mSourceBounds!=null
+    - name: "N"
+      type: int32
+      condition: mCategories!=null
+    - name: "1"
+      type: int32
+      condition: mSelector!=null
+    - name: Out
+      type: opaque
+      condition: mSelector!=null
+    - name: "1"
+      type: int32
+      condition: mClipData!=null
+    - name: Out
+      type: opaque
+      condition: mClipData!=null
+    - name: ContentUserHint
+      type: int32
+    - name: Extras
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: mOriginalIntent!=null
+    - name: Out
+      type: opaque
+      condition: mOriginalIntent!=null
+    - name: "0"
+      type: int32
+      condition: preventIntentRedirect() && mCreatorTokenInfo==null

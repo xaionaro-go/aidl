@@ -1,0 +1,9 @@
+package: android.accounts
+type: Account
+fields:
+    - name: Name
+      type: string16
+    - name: Type
+      type: string16
+    - name: AccessId
+      type: string16

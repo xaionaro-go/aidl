@@ -1,0 +1,7 @@
+package: android.hardware
+type: CameraInfo
+fields:
+    - name: Info.facing
+      type: int32
+    - name: Info.orientation
+      type: int32

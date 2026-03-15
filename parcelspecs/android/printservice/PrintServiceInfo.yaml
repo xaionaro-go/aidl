@@ -1,0 +1,15 @@
+package: android.printservice
+type: PrintServiceInfo
+fields:
+    - name: Id
+      type: string16
+    - name: (byte)(mIsEnabled?1:0)
+      type: int32
+    - name: ResolveInfo
+      type: opaque
+    - name: SettingsActivityName
+      type: string16
+    - name: AddPrintersActivityName
+      type: string16
+    - name: AdvancedPrintOptionsActivityName
+      type: string16

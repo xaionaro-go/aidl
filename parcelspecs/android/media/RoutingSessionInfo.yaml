@@ -1,0 +1,37 @@
+package: android.media
+type: RoutingSessionInfo
+fields:
+    - name: Id
+      type: string16
+    - name: Name
+      type: opaque
+    - name: OwnerPackageName
+      type: string16
+    - name: ClientPackageName
+      type: string16
+    - name: ProviderId
+      type: string16
+    - name: SelectedRoutes
+      type: opaque
+    - name: SelectableRoutes
+      type: opaque
+    - name: DeselectableRoutes
+      type: opaque
+    - name: TransferableRoutes
+      type: opaque
+    - name: VolumeHandling
+      type: int32
+    - name: VolumeMax
+      type: int32
+    - name: Volume
+      type: int32
+    - name: ControlHints
+      type: opaque
+    - name: IsSystemSession
+      type: bool
+    - name: TransferReason
+      type: int32
+    - name: TransferInitiatorUserHandle
+      type: opaque
+    - name: TransferInitiatorPackageName
+      type: string16

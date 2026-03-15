@@ -1,0 +1,13 @@
+package: android.view
+type: PointerIcon
+fields:
+    - name: Type
+      type: int32
+    - name: Out
+      type: opaque
+    - name: HotSpotX
+      type: float32
+    - name: HotSpotY
+      type: float32
+    - name: DrawNativeDropShadow
+      type: bool

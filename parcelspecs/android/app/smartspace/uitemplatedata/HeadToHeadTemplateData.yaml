@@ -1,0 +1,17 @@
+package: android.app.smartspace.uitemplatedata
+type: HeadToHeadTemplateData
+fields:
+    - name: Out
+      type: opaque
+    - name: HeadToHeadTitle
+      type: opaque
+    - name: HeadToHeadFirstCompetitorIcon
+      type: opaque
+    - name: HeadToHeadSecondCompetitorIcon
+      type: opaque
+    - name: HeadToHeadFirstCompetitorText
+      type: opaque
+    - name: HeadToHeadSecondCompetitorText
+      type: opaque
+    - name: HeadToHeadAction
+      type: opaque

@@ -1,0 +1,54 @@
+package: android.app
+type: SearchableInfo
+fields:
+    - name: LabelId
+      type: int32
+    - name: Dest
+      type: opaque
+    - name: HintId
+      type: int32
+    - name: SearchMode
+      type: int32
+    - name: IconId
+      type: int32
+    - name: SearchButtonText
+      type: int32
+    - name: SearchInputType
+      type: int32
+    - name: SearchImeOptions
+      type: int32
+    - name: IncludeInGlobalSearch?1:0
+      type: int32
+    - name: QueryAfterZeroResults?1:0
+      type: int32
+    - name: AutoUrlDetect?1:0
+      type: int32
+    - name: SettingsDescriptionId
+      type: int32
+    - name: SuggestAuthority
+      type: string16
+    - name: SuggestPath
+      type: string16
+    - name: SuggestSelection
+      type: string16
+    - name: SuggestIntentAction
+      type: string16
+    - name: SuggestIntentData
+      type: string16
+    - name: SuggestThreshold
+      type: int32
+    - name: "0"
+      type: int32
+      condition: mActionKeys==null
+    - name: SuggestProviderPackage
+      type: string16
+    - name: VoiceSearchMode
+      type: int32
+    - name: VoiceLanguageModeId
+      type: int32
+    - name: VoicePromptTextId
+      type: int32
+    - name: VoiceLanguageId
+      type: int32
+    - name: VoiceMaxResults
+      type: int32

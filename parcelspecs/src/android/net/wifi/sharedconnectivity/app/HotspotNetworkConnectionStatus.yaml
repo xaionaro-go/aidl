@@ -1,0 +1,9 @@
+package: src.android.net.wifi.sharedconnectivity.app
+type: HotspotNetworkConnectionStatus
+fields:
+    - name: Status
+      type: int32
+    - name: Dest
+      type: opaque
+    - name: Extras
+      type: opaque

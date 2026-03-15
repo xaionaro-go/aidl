@@ -1,0 +1,11 @@
+package: android.location
+type: Geofence
+fields:
+    - name: Latitude
+      type: float64
+    - name: Longitude
+      type: float64
+    - name: Radius
+      type: float32
+    - name: ExpirationRealtimeMs
+      type: int64

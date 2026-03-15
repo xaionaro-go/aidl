@@ -1,0 +1,17 @@
+package: android.telephony
+type: SignalStrength
+fields:
+    - name: Cdma
+      type: opaque
+    - name: Gsm
+      type: opaque
+    - name: Wcdma
+      type: opaque
+    - name: Tdscdma
+      type: opaque
+    - name: Lte
+      type: opaque
+    - name: Nr
+      type: opaque
+    - name: TimestampMillis
+      type: int64

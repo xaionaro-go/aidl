@@ -1,0 +1,35 @@
+package: android.window
+type: TaskSnapshot
+fields:
+    - name: Id
+      type: int64
+    - name: TopActivityComponent
+      type: opaque
+    - name: Snapshot!=null&&!mSnapshot.isClosed()?mSnapshot:null
+      type: opaque
+    - name: ColorSpace.getId()
+      type: int32
+    - name: Orientation
+      type: int32
+    - name: Rotation
+      type: int32
+    - name: TaskSize
+      type: opaque
+    - name: ContentInsets
+      type: opaque
+    - name: LetterboxInsets
+      type: opaque
+    - name: IsLowResolution
+      type: bool
+    - name: IsRealSnapshot
+      type: bool
+    - name: WindowingMode
+      type: int32
+    - name: Appearance
+      type: int32
+    - name: IsTranslucent
+      type: bool
+    - name: HasImeSurface
+      type: bool
+    - name: UiMode
+      type: int32

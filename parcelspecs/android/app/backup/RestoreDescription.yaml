@@ -1,0 +1,7 @@
+package: android.app.backup
+type: RestoreDescription
+fields:
+    - name: PackageName
+      type: string16
+    - name: DataType
+      type: int32

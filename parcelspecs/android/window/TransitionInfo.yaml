@@ -1,0 +1,17 @@
+package: android.window
+type: TransitionInfo
+fields:
+    - name: Type
+      type: int32
+    - name: Flags
+      type: int32
+    - name: Changes
+      type: opaque
+    - name: Roots
+      type: opaque
+    - name: Options
+      type: opaque
+    - name: DebugId
+      type: int32
+    - name: Track
+      type: int32

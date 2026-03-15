@@ -1,0 +1,7 @@
+package: android.view.inputmethod
+type: ParcelableHandwritingGesture
+fields:
+    - name: Gesture.getGestureType()
+      type: int32
+    - name: Dest
+      type: opaque

@@ -1,0 +1,17 @@
+package: android.telephony
+type: NetworkScanRequest
+fields:
+    - name: ScanType
+      type: int32
+    - name: Specifiers
+      type: opaque
+    - name: SearchPeriodicity
+      type: int32
+    - name: MaxSearchTime
+      type: int32
+    - name: IncrementalResults
+      type: bool
+    - name: IncrementalResultsPeriodicity
+      type: int32
+    - name: MccMncs
+      type: opaque

@@ -1,0 +1,19 @@
+package: android.content
+type: SyncAdapterType
+fields:
+    - name: Authority
+      type: string16
+    - name: AccountType
+      type: string16
+    - name: UserVisible?1:0
+      type: int32
+    - name: SupportsUploading?1:0
+      type: int32
+    - name: IsAlwaysSyncable?1:0
+      type: int32
+    - name: AllowParallelSyncs?1:0
+      type: int32
+    - name: SettingsActivity
+      type: string16
+    - name: PackageName
+      type: string16

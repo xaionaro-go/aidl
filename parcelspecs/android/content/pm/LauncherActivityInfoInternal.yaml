@@ -1,0 +1,9 @@
+package: android.content.pm
+type: LauncherActivityInfoInternal
+fields:
+    - name: ActivityInfo
+      type: opaque
+    - name: IncrementalStatesInfo
+      type: opaque
+    - name: User
+      type: opaque

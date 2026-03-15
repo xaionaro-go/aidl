@@ -1,0 +1,9 @@
+package: android.media.projection
+type: MediaProjectionInfo
+fields:
+    - name: PackageName
+      type: string16
+    - name: UserHandle
+      type: opaque
+    - name: LaunchCookie
+      type: opaque

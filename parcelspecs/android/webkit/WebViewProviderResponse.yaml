@@ -1,0 +1,7 @@
+package: android.webkit
+type: WebViewProviderResponse
+fields:
+    - name: PackageInfo
+      type: opaque
+    - name: Status
+      type: int32

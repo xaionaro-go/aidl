@@ -1,0 +1,7 @@
+package: android.app.appfunctions
+type: ExecuteAppFunctionResponse
+fields:
+    - name: Dest
+      type: opaque
+    - name: Extras
+      type: opaque

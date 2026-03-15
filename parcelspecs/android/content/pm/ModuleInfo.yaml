@@ -1,0 +1,13 @@
+package: android.content.pm
+type: ModuleInfo
+fields:
+    - name: Name
+      type: opaque
+    - name: PackageName
+      type: string16
+    - name: Hidden
+      type: bool
+    - name: ApexModuleName
+      type: string16
+    - name: ApkInApexPackageNames
+      type: opaque

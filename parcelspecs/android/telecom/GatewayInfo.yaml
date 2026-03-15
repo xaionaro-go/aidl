@@ -1,0 +1,9 @@
+package: android.telecom
+type: GatewayInfo
+fields:
+    - name: GatewayProviderPackageName
+      type: string16
+    - name: Destination
+      type: opaque
+    - name: Destination
+      type: opaque

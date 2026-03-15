@@ -1,0 +1,65 @@
+package: android.telecom
+type: ParcelableCall
+fields:
+    - name: Id
+      type: string16
+    - name: State
+      type: int32
+    - name: DisconnectCause
+      type: opaque
+    - name: CannedSmsResponses
+      type: opaque
+    - name: Capabilities
+      type: int32
+    - name: Properties
+      type: int32
+    - name: ConnectTimeMillis
+      type: int64
+    - name: Destination
+      type: opaque
+    - name: HandlePresentation
+      type: int32
+    - name: CallerDisplayName
+      type: string16
+    - name: CallerDisplayNamePresentation
+      type: int32
+    - name: GatewayInfo
+      type: opaque
+    - name: AccountHandle
+      type: opaque
+    - name: (byte)(mIsVideoCallProviderChanged?1:0)
+      type: int32
+    - name: VideoCallProvider!=null?mVideoCallProvider.asBinder():null
+      type: opaque
+    - name: ParentCallId
+      type: string16
+    - name: ChildCallIds
+      type: opaque
+    - name: StatusHints
+      type: opaque
+    - name: VideoState
+      type: int32
+    - name: ConferenceableCallIds
+      type: opaque
+    - name: IntentExtras
+      type: opaque
+    - name: Extras
+      type: opaque
+    - name: SupportedAudioRoutes
+      type: int32
+    - name: (byte)(mIsRttCallChanged?1:0)
+      type: int32
+    - name: RttCall
+      type: opaque
+    - name: CreationTimeMillis
+      type: int64
+    - name: CallDirection
+      type: int32
+    - name: CallerNumberVerificationStatus
+      type: int32
+    - name: ContactDisplayName
+      type: string16
+    - name: ActiveChildCallId
+      type: string16
+    - name: ContactPhotoUri
+      type: opaque

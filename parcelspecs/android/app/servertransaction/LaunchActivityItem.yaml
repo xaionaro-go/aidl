@@ -1,0 +1,51 @@
+package: android.app.servertransaction
+type: LaunchActivityItem
+fields:
+    - name: ActivityToken
+      type: opaque
+    - name: Ident
+      type: int32
+    - name: CurConfig
+      type: opaque
+    - name: OverrideConfig
+      type: opaque
+    - name: DeviceId
+      type: int32
+    - name: Referrer
+      type: string16
+    - name: VoiceInteractor
+      type: opaque
+    - name: ProcState
+      type: int32
+    - name: State
+      type: opaque
+    - name: PersistentState
+      type: opaque
+    - name: PendingResults
+      type: opaque
+    - name: PendingNewIntents
+      type: opaque
+    - name: SceneTransitionInfo
+      type: opaque
+    - name: IsForward
+      type: bool
+    - name: ProfilerInfo
+      type: opaque
+    - name: AssistToken
+      type: opaque
+    - name: ActivityClientController
+      type: opaque
+    - name: ShareableActivityToken
+      type: opaque
+    - name: LaunchedFromBubble
+      type: bool
+    - name: TaskFragmentToken
+      type: opaque
+    - name: InitialCallerInfoAccessToken
+      type: opaque
+    - name: ActivityWindowInfo
+      type: opaque
+    - name: Intent
+      type: opaque
+    - name: Info
+      type: opaque

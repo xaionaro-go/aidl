@@ -1,0 +1,17 @@
+package: android.telephony.ims
+type: SipDetails
+fields:
+    - name: Method
+      type: int32
+    - name: Cseq
+      type: int32
+    - name: ResponseCode
+      type: int32
+    - name: ResponsePhrase
+      type: string16
+    - name: ReasonHeaderCause
+      type: int32
+    - name: ReasonHeaderText
+      type: string16
+    - name: CallId
+      type: string16

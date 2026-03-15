@@ -1,0 +1,19 @@
+package: android.hardware.input
+type: VirtualStylusMotionEvent
+fields:
+    - name: ToolType
+      type: int32
+    - name: Action
+      type: int32
+    - name: X
+      type: int32
+    - name: "Y"
+      type: int32
+    - name: Pressure
+      type: int32
+    - name: TiltX
+      type: int32
+    - name: TiltY
+      type: int32
+    - name: EventTimeNanos
+      type: int64

@@ -1,0 +1,13 @@
+package: android.telephony
+type: CellIdentity
+fields:
+    - name: Type
+      type: int32
+    - name: MccStr
+      type: string16
+    - name: MncStr
+      type: string16
+    - name: AlphaLong
+      type: string16
+    - name: AlphaShort
+      type: string16

@@ -1,0 +1,13 @@
+package: android.view.textclassifier
+type: ConversationAction
+fields:
+    - name: Type
+      type: string16
+    - name: Action
+      type: opaque
+    - name: TextReply
+      type: opaque
+    - name: Score
+      type: float32
+    - name: Extras
+      type: opaque

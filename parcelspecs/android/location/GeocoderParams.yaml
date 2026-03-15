@@ -1,0 +1,15 @@
+package: android.location
+type: GeocoderParams
+fields:
+    - name: Uid
+      type: int32
+    - name: PackageName
+      type: string8
+    - name: AttributionTag
+      type: string8
+    - name: Locale.getLanguage()
+      type: string8
+    - name: Locale.getCountry()
+      type: string8
+    - name: Locale.getVariant()
+      type: string8

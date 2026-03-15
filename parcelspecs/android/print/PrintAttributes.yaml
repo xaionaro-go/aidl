@@ -1,0 +1,25 @@
+package: android.print
+type: PrintAttributes
+fields:
+    - name: "1"
+      type: int32
+      condition: mMediaSize!=null
+    - name: Parcel
+      type: opaque
+      condition: mMediaSize!=null
+    - name: "1"
+      type: int32
+      condition: mResolution!=null
+    - name: Parcel
+      type: opaque
+      condition: mResolution!=null
+    - name: "1"
+      type: int32
+      condition: mMinMargins!=null
+    - name: Parcel
+      type: opaque
+      condition: mMinMargins!=null
+    - name: ColorMode
+      type: int32
+    - name: DuplexMode
+      type: int32

@@ -1,0 +1,13 @@
+package: android.net
+type: NetworkScorerAppData
+fields:
+    - name: PackageUid
+      type: int32
+    - name: RecommendationService
+      type: opaque
+    - name: RecommendationServiceLabel
+      type: string16
+    - name: EnableUseOpenWifiActivity
+      type: opaque
+    - name: NetworkAvailableNotificationChannelId
+      type: string16

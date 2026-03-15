@@ -1,0 +1,9 @@
+package: android.hardware.input
+type: VirtualKeyboardConfig
+fields:
+    - name: Dest
+      type: opaque
+    - name: LanguageTag
+      type: string8
+    - name: LayoutType
+      type: string8

@@ -1,0 +1,17 @@
+package: src.android.net.wifi.nl80211
+type: PnoSettings
+fields:
+    - name: IntervalMs
+      type: int64
+    - name: Min2gRssi
+      type: int32
+    - name: Min5gRssi
+      type: int32
+    - name: Min6gRssi
+      type: int32
+    - name: ScanIterations
+      type: int32
+    - name: ScanIntervalMultiplier
+      type: int32
+    - name: PnoNetworks
+      type: opaque

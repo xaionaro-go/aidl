@@ -1,0 +1,11 @@
+package: android.app.admin
+type: ParcelableResource
+fields:
+    - name: ResourceId
+      type: int32
+    - name: PackageName
+      type: string16
+    - name: ResourceName
+      type: string16
+    - name: ResourceType
+      type: int32

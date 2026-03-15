@@ -1,0 +1,13 @@
+package: android.location
+type: GnssAssistance
+fields:
+    - name: GpsAssistance
+      type: opaque
+    - name: GlonassAssistance
+      type: opaque
+    - name: GalileoAssistance
+      type: opaque
+    - name: BeidouAssistance
+      type: opaque
+    - name: QzssAssistance
+      type: opaque

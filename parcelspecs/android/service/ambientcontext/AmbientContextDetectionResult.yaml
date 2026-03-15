@@ -1,0 +1,9 @@
+package: android.service.ambientcontext
+type: AmbientContextDetectionResult
+fields:
+    - name: Flg
+      type: int32
+    - name: Events
+      type: opaque
+    - name: PackageName
+      type: string16

@@ -1,0 +1,5 @@
+package: android.hardware.face
+type: FaceAuthenticationFrame
+fields:
+    - name: Data
+      type: opaque

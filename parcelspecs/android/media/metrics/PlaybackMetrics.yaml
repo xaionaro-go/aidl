@@ -1,0 +1,43 @@
+package: android.media.metrics
+type: PlaybackMetrics
+fields:
+    - name: Flg
+      type: int64
+    - name: MediaDurationMillis
+      type: int64
+    - name: StreamSource
+      type: int32
+    - name: StreamType
+      type: int32
+    - name: PlaybackType
+      type: int32
+    - name: DrmType
+      type: int32
+    - name: ContentType
+      type: int32
+    - name: PlayerName
+      type: string16
+      condition: mPlayerName!=null
+    - name: PlayerVersion
+      type: string16
+      condition: mPlayerVersion!=null
+    - name: ExperimentIds
+      type: opaque
+    - name: VideoFramesPlayed
+      type: int32
+    - name: VideoFramesDropped
+      type: int32
+    - name: AudioUnderrunCount
+      type: int32
+    - name: NetworkBytesRead
+      type: int64
+    - name: LocalBytesRead
+      type: int64
+    - name: NetworkTransferDurationMillis
+      type: int64
+    - name: DrmSessionId.length
+      type: int32
+    - name: DrmSessionId
+      type: opaque
+    - name: MetricsBundle
+      type: opaque

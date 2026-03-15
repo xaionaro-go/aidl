@@ -1,0 +1,10 @@
+package: android.view.contentcapture
+type: DataRemovalRequest
+fields:
+    - name: PackageName
+      type: string16
+    - name: ForEverything
+      type: bool
+    - name: Size
+      type: int32
+      condition: '!mForEverything'

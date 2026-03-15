@@ -1,0 +1,5 @@
+package: android.window
+type: ImeOnBackInvokedDispatcher
+fields:
+    - name: ResultReceiver
+      type: opaque

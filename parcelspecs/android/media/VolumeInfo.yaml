@@ -1,0 +1,20 @@
+package: android.media
+type: VolumeInfo
+fields:
+    - name: UsesStreamType
+      type: bool
+    - name: StreamType
+      type: int32
+    - name: HasMuteCommand
+      type: bool
+    - name: IsMuted
+      type: bool
+    - name: VolIndex
+      type: int32
+    - name: MinVolIndex
+      type: int32
+    - name: MaxVolIndex
+      type: int32
+    - name: Dest
+      type: opaque
+      condition: '!mUsesStreamType'

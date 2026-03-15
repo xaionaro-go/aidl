@@ -1,0 +1,21 @@
+package: android.print
+type: PrinterInfo
+fields:
+    - name: Id
+      type: opaque
+    - name: Name
+      type: string16
+    - name: Status
+      type: int32
+    - name: Description
+      type: string16
+    - name: Capabilities
+      type: opaque
+    - name: IconResourceId
+      type: int32
+    - name: (byte)(mHasCustomPrinterIcon?1:0)
+      type: int32
+    - name: CustomPrinterIconGen
+      type: int32
+    - name: InfoIntent
+      type: opaque

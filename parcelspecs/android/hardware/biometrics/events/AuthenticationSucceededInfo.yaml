@@ -1,0 +1,11 @@
+package: android.hardware.biometrics.events
+type: AuthenticationSucceededInfo
+fields:
+    - name: Flg
+      type: int32
+    - name: BiometricSourceType
+      type: opaque
+    - name: RequestReason
+      type: int32
+    - name: UserId
+      type: int32

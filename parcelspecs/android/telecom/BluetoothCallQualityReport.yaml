@@ -1,0 +1,17 @@
+package: android.telecom
+type: BluetoothCallQualityReport
+fields:
+    - name: SentTimestampMillis
+      type: int64
+    - name: ChoppyVoice
+      type: bool
+    - name: RssiDbm
+      type: int32
+    - name: SnrDb
+      type: int32
+    - name: RetransmittedPacketsCount
+      type: int32
+    - name: PacketsNotReceivedCount
+      type: int32
+    - name: NegativeAcknowledgementCount
+      type: int32

@@ -1,0 +1,15 @@
+package: android.hardware.lights
+type: Light
+fields:
+    - name: Id
+      type: int32
+    - name: Name
+      type: string16
+    - name: Ordinal
+      type: int32
+    - name: Type
+      type: int32
+    - name: Capabilities
+      type: int32
+    - name: PreferredBrightnessLevels
+      type: opaque

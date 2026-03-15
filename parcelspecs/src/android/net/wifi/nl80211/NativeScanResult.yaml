@@ -1,0 +1,21 @@
+package: src.android.net.wifi.nl80211
+type: NativeScanResult
+fields:
+    - name: Ssid
+      type: opaque
+    - name: Bssid
+      type: opaque
+    - name: InfoElement
+      type: opaque
+    - name: Frequency
+      type: int32
+    - name: SignalMbm
+      type: int32
+    - name: Tsf
+      type: int64
+    - name: Capability
+      type: int32
+    - name: Associated?1:0
+      type: int32
+    - name: RadioChainInfos
+      type: opaque

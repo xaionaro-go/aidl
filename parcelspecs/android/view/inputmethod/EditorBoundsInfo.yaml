@@ -1,0 +1,9 @@
+package: android.view.inputmethod
+type: EditorBoundsInfo
+fields:
+    - name: HashCode
+      type: int32
+    - name: EditorBounds
+      type: opaque
+    - name: HandwritingBounds
+      type: opaque

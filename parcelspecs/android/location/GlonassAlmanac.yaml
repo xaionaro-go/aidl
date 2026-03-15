@@ -1,0 +1,7 @@
+package: android.location
+type: GlonassAlmanac
+fields:
+    - name: IssueDateMillis
+      type: int64
+    - name: SatelliteAlmanacs
+      type: opaque

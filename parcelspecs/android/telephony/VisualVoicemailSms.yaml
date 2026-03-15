@@ -1,0 +1,11 @@
+package: android.telephony
+type: VisualVoicemailSms
+fields:
+    - name: GetPhoneAccountHandle()
+      type: opaque
+    - name: GetPrefix()
+      type: string16
+    - name: GetFields()
+      type: opaque
+    - name: GetMessageBody()
+      type: string16

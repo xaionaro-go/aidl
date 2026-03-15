@@ -1,0 +1,23 @@
+package: android.media.session
+type: PlaybackState
+fields:
+    - name: State
+      type: int32
+    - name: Position
+      type: int64
+    - name: Speed
+      type: float32
+    - name: UpdateTime
+      type: int64
+    - name: BufferedPosition
+      type: int64
+    - name: Actions
+      type: int64
+    - name: CustomActions
+      type: opaque
+    - name: ActiveItemId
+      type: int64
+    - name: ErrorMessage
+      type: opaque
+    - name: Extras
+      type: opaque

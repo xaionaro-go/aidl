@@ -1,0 +1,47 @@
+package: android.media
+type: MediaRoute2Info
+fields:
+    - name: Id
+      type: string16
+    - name: Name
+      type: opaque
+    - name: Features
+      type: opaque
+    - name: Type
+      type: int32
+    - name: RoutingTypeFlags
+      type: int32
+    - name: IsSystem
+      type: bool
+    - name: IconUri
+      type: opaque
+    - name: Description
+      type: opaque
+    - name: ConnectionState
+      type: int32
+    - name: ClientPackageName
+      type: string16
+    - name: PackageName
+      type: string16
+    - name: VolumeHandling
+      type: int32
+    - name: VolumeMax
+      type: int32
+    - name: Volume
+      type: int32
+    - name: Address
+      type: string16
+    - name: DeduplicationIds.toArray(newString[mDeduplicationIds.size()])
+      type: opaque
+    - name: Extras
+      type: opaque
+    - name: ProviderId
+      type: string16
+    - name: IsVisibilityRestricted
+      type: bool
+    - name: AllowedPackages.toArray(newString[0])
+      type: opaque
+    - name: RequiredPermissions.size()
+      type: int32
+    - name: SuitabilityStatus
+      type: int32

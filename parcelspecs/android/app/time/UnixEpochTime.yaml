@@ -1,0 +1,7 @@
+package: android.app.time
+type: UnixEpochTime
+fields:
+    - name: ElapsedRealtimeMillis
+      type: int64
+    - name: UnixEpochTimeMillis
+      type: int64

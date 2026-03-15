@@ -1,0 +1,7 @@
+package: android.media
+type: MediaSyncEvent
+fields:
+    - name: Type
+      type: int32
+    - name: AudioSession
+      type: int32

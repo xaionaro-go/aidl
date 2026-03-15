@@ -1,0 +1,9 @@
+package: android.security.keystore.recovery
+type: KeyDerivationParams
+fields:
+    - name: Algorithm
+      type: int32
+    - name: Salt
+      type: opaque
+    - name: MemoryDifficulty
+      type: int32

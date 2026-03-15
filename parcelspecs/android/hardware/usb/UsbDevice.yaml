@@ -1,0 +1,35 @@
+package: android.hardware.usb
+type: UsbDevice
+fields:
+    - name: Name
+      type: string16
+    - name: VendorId
+      type: int32
+    - name: ProductId
+      type: int32
+    - name: Class
+      type: int32
+    - name: Subclass
+      type: int32
+    - name: Protocol
+      type: int32
+    - name: ManufacturerName
+      type: string16
+    - name: ProductName
+      type: string16
+    - name: Version
+      type: string16
+    - name: SerialNumberReader.asBinder()
+      type: opaque
+    - name: Configurations
+      type: opaque
+    - name: HasAudioPlayback?1:0
+      type: int32
+    - name: HasAudioCapture?1:0
+      type: int32
+    - name: HasMidi?1:0
+      type: int32
+    - name: HasVideoPlayback?1:0
+      type: int32
+    - name: HasVideoCapture?1:0
+      type: int32

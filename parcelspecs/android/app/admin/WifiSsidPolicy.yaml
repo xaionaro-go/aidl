@@ -1,0 +1,7 @@
+package: android.app.admin
+type: WifiSsidPolicy
+fields:
+    - name: PolicyType
+      type: int32
+    - name: Ssids
+      type: opaque

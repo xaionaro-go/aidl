@@ -1,0 +1,7 @@
+package: android.permission
+type: RuntimePermissionUsageInfo
+fields:
+    - name: Name
+      type: string16
+    - name: NumUsers
+      type: int32

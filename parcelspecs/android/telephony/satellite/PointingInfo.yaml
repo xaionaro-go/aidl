@@ -1,0 +1,7 @@
+package: android.telephony.satellite
+type: PointingInfo
+fields:
+    - name: SatelliteAzimuthDegrees
+      type: float32
+    - name: SatelliteElevationDegrees
+      type: float32

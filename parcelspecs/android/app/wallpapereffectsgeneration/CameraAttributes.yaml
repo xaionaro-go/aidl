@@ -1,0 +1,19 @@
+package: android.app.wallpapereffectsgeneration
+type: CameraAttributes
+fields:
+    - name: CameraOrbitYawDegrees
+      type: float32
+    - name: CameraOrbitPitchDegrees
+      type: float32
+    - name: DollyDistanceInWorldSpace
+      type: float32
+    - name: VerticalFovDegrees
+      type: float32
+    - name: FrustumNearInWorldSpace
+      type: float32
+    - name: FrustumFarInWorldSpace
+      type: float32
+    - name: AnchorPointInWorldSpace
+      type: opaque
+    - name: AnchorPointInOutputUvSpace
+      type: opaque

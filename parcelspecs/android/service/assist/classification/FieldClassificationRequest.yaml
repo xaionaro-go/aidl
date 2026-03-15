@@ -1,0 +1,5 @@
+package: android.service.assist.classification
+type: FieldClassificationRequest
+fields:
+    - name: AssistStructure
+      type: opaque

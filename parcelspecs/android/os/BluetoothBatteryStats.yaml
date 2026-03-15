@@ -1,0 +1,5 @@
+package: android.os
+type: BluetoothBatteryStats
+fields:
+    - name: Size
+      type: int32

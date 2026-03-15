@@ -1,0 +1,23 @@
+package: android.hardware.location
+type: GeofenceHardwareRequestParcelable
+fields:
+    - name: GetType()
+      type: int32
+    - name: GetLatitude()
+      type: float64
+    - name: GetLongitude()
+      type: float64
+    - name: GetRadius()
+      type: float64
+    - name: GetLastTransition()
+      type: int32
+    - name: GetMonitorTransitions()
+      type: int32
+    - name: GetUnknownTimer()
+      type: int32
+    - name: GetNotificationResponsiveness()
+      type: int32
+    - name: GetSourceTechnologies()
+      type: int32
+    - name: GetId()
+      type: int32

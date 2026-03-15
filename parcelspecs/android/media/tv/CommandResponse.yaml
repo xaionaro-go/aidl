@@ -1,0 +1,9 @@
+package: android.media.tv
+type: CommandResponse
+fields:
+    - name: Dest
+      type: opaque
+    - name: Response
+      type: string16
+    - name: ResponseType
+      type: string16

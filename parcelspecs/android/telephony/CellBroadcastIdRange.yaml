@@ -1,0 +1,11 @@
+package: android.telephony
+type: CellBroadcastIdRange
+fields:
+    - name: StartId
+      type: int32
+    - name: EndId
+      type: int32
+    - name: Type
+      type: int32
+    - name: IsEnabled
+      type: bool

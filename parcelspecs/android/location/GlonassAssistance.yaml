@@ -1,0 +1,13 @@
+package: android.location
+type: GlonassAssistance
+fields:
+    - name: Almanac
+      type: opaque
+    - name: UtcModel
+      type: opaque
+    - name: TimeModels
+      type: opaque
+    - name: SatelliteEphemeris
+      type: opaque
+    - name: SatelliteCorrections
+      type: opaque

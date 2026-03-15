@@ -1,0 +1,15 @@
+package: android.telephony
+type: ClientRequestStats
+fields:
+    - name: CallingPackage
+      type: string16
+    - name: CompletedRequestsWakelockTime
+      type: int64
+    - name: CompletedRequestsCount
+      type: int64
+    - name: PendingRequestsWakelockTime
+      type: int64
+    - name: PendingRequestsCount
+      type: int64
+    - name: GetRequestHistograms()
+      type: opaque

@@ -1,0 +1,9 @@
+package: android.view.inputmethod
+type: SparseRectFArray
+fields:
+    - name: Keys
+      type: opaque
+    - name: Coordinates
+      type: opaque
+    - name: FlagsArray
+      type: opaque

@@ -1,0 +1,9 @@
+package: android.media.tv
+type: StreamEventRequest
+fields:
+    - name: Dest
+      type: opaque
+    - name: UriString
+      type: string16
+    - name: EventName
+      type: string16

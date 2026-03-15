@@ -1,0 +1,11 @@
+package: android.permission
+type: AdminPermissionControlParams
+fields:
+    - name: GranteePackageName
+      type: string16
+    - name: Permission
+      type: string16
+    - name: GrantState
+      type: int32
+    - name: CanAdminGrantSensorsPermissions
+      type: bool

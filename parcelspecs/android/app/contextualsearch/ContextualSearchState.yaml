@@ -1,0 +1,9 @@
+package: android.app.contextualsearch
+type: ContextualSearchState
+fields:
+    - name: This.mStructure
+      type: opaque
+    - name: This.mContent
+      type: opaque
+    - name: This.mExtras
+      type: opaque

@@ -1,0 +1,5 @@
+package: android.app.servertransaction
+type: WindowStateTransactionItem
+fields:
+    - name: Window.asBinder()
+      type: opaque

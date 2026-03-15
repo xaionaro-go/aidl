@@ -1,0 +1,13 @@
+package: com.android.internal.statusbar
+type: NotificationVisibility
+fields:
+    - name: This.key
+      type: string16
+    - name: This.rank
+      type: int32
+    - name: This.count
+      type: int32
+    - name: This.visible?1:0
+      type: int32
+    - name: This.location.name()
+      type: string16

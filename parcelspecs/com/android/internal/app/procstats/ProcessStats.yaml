@@ -1,0 +1,67 @@
+package: com.android.internal.app.procstats
+type: ProcessStats
+fields:
+    - name: MAGIC
+      type: int32
+    - name: PARCEL_VERSION
+      type: int32
+    - name: STATE_COUNT
+      type: int32
+    - name: ADJ_COUNT
+      type: int32
+    - name: PSS_COUNT
+      type: int32
+    - name: SYS_MEM_USAGE_COUNT
+      type: int32
+    - name: SparseMappingTable.ARRAY_SIZE
+      type: int32
+    - name: NumAggregated
+      type: int32
+    - name: TimePeriodStartClock
+      type: int64
+    - name: TimePeriodStartRealtime
+      type: int64
+    - name: TimePeriodEndRealtime
+      type: int64
+    - name: TimePeriodStartUptime
+      type: int64
+    - name: TimePeriodEndUptime
+      type: int64
+    - name: InternalSinglePssCount
+      type: int64
+    - name: InternalSinglePssTime
+      type: int64
+    - name: InternalAllMemPssCount
+      type: int64
+    - name: InternalAllMemPssTime
+      type: int64
+    - name: InternalAllPollPssCount
+      type: int64
+    - name: InternalAllPollPssTime
+      type: int64
+    - name: ExternalPssCount
+      type: int64
+    - name: ExternalPssTime
+      type: int64
+    - name: ExternalSlowPssCount
+      type: int64
+    - name: ExternalSlowPssTime
+      type: int64
+    - name: Runtime
+      type: string16
+    - name: HasSwappedOutPss?1:0
+      type: int32
+    - name: Flags
+      type: int32
+    - name: Out
+      type: opaque
+    - name: Out
+      type: opaque
+    - name: NumOfUids
+      type: int32
+    - name: NPROC
+      type: int32
+    - name: NPKG
+      type: int32
+    - name: NPAGETYPES
+      type: int32

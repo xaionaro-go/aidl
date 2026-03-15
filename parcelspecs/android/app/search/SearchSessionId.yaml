@@ -1,0 +1,7 @@
+package: android.app.search
+type: SearchSessionId
+fields:
+    - name: Id
+      type: string16
+    - name: UserId
+      type: int32

@@ -1,0 +1,7 @@
+package: android.telephony.data
+type: NetworkSlicingConfig
+fields:
+    - name: UrspRules
+      type: opaque
+    - name: SliceInfo
+      type: opaque

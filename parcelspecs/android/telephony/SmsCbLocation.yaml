@@ -1,0 +1,9 @@
+package: android.telephony
+type: SmsCbLocation
+fields:
+    - name: Plmn
+      type: string16
+    - name: Lac
+      type: int32
+    - name: Cid
+      type: int32

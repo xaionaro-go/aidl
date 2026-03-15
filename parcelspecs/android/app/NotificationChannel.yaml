@@ -1,0 +1,85 @@
+package: android.app
+type: NotificationChannel
+fields:
+    - name: (byte)1
+      type: int32
+      condition: mId!=null
+    - name: Id
+      type: string16
+      condition: mId!=null
+    - name: (byte)1
+      type: int32
+      condition: mName!=null
+    - name: Name
+      type: string16
+      condition: mName!=null
+    - name: (byte)1
+      type: int32
+      condition: mDesc!=null
+    - name: Desc
+      type: string16
+      condition: mDesc!=null
+    - name: Importance
+      type: int32
+    - name: BypassDnd?(byte)1:(byte)0
+      type: int32
+    - name: LockscreenVisibility
+      type: int32
+    - name: (byte)1
+      type: int32
+      condition: mSound!=null
+    - name: Dest
+      type: opaque
+      condition: mSound!=null
+    - name: Lights?(byte)1:(byte)0
+      type: int32
+    - name: VibrationPattern
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: Flags.notificationChannelVibrationEffectApi() && mVibrationEffect!=null
+    - name: Dest
+      type: opaque
+      condition: Flags.notificationChannelVibrationEffectApi() && mVibrationEffect!=null
+    - name: UserLockedFields
+      type: int32
+    - name: UserVisibleTaskShown?(byte)1:(byte)0
+      type: int32
+    - name: VibrationEnabled?(byte)1:(byte)0
+      type: int32
+    - name: ShowBadge?(byte)1:(byte)0
+      type: int32
+    - name: Deleted?(byte)1:(byte)0
+      type: int32
+    - name: (byte)1
+      type: int32
+      condition: mGroup!=null
+    - name: Group
+      type: string16
+      condition: mGroup!=null
+    - name: "1"
+      type: int32
+      condition: mAudioAttributes!=null
+    - name: Dest
+      type: opaque
+      condition: mAudioAttributes!=null
+    - name: LightColor
+      type: int32
+    - name: BlockableSystem
+      type: bool
+    - name: AllowBubbles
+      type: int32
+    - name: OriginalImportance
+      type: int32
+    - name: ParentId
+      type: string16
+    - name: ConversationId
+      type: string16
+    - name: Demoted
+      type: bool
+    - name: ImportantConvo
+      type: bool
+    - name: DeletedTime
+      type: int64
+    - name: ImportanceLockedDefaultApp
+      type: bool

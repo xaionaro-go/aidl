@@ -1,0 +1,51 @@
+package: android.view
+type: InputDevice
+fields:
+    - name: Out
+      type: opaque
+    - name: Id
+      type: int32
+    - name: Generation
+      type: int32
+    - name: ControllerNumber
+      type: int32
+    - name: Name
+      type: string16
+    - name: VendorId
+      type: int32
+    - name: ProductId
+      type: int32
+    - name: DeviceBus
+      type: int32
+    - name: Descriptor
+      type: string16
+    - name: IsExternal?1:0
+      type: int32
+    - name: Sources
+      type: int32
+    - name: KeyboardType
+      type: int32
+    - name: KeyboardLanguageTag
+      type: string8
+    - name: KeyboardLayoutType
+      type: string8
+    - name: HasVibrator?1:0
+      type: int32
+    - name: HasMicrophone?1:0
+      type: int32
+    - name: HasButtonUnderPad?1:0
+      type: int32
+    - name: HasSensor?1:0
+      type: int32
+    - name: HasBattery?1:0
+      type: int32
+    - name: Out
+      type: opaque
+    - name: AssociatedDisplayId
+      type: int32
+    - name: Enabled?1:0
+      type: int32
+    - name: NumRanges
+      type: int32
+    - name: ViewBehavior.mShouldSmoothScroll
+      type: bool

@@ -1,0 +1,9 @@
+package: com.android.internal.net
+type: LegacyVpnInfo
+fields:
+    - name: Key
+      type: string16
+    - name: State
+      type: int32
+    - name: Intent
+      type: opaque

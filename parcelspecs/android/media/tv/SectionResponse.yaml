@@ -1,0 +1,11 @@
+package: android.media.tv
+type: SectionResponse
+fields:
+    - name: Dest
+      type: opaque
+    - name: SessionId
+      type: int32
+    - name: Version
+      type: int32
+    - name: SessionData
+      type: opaque

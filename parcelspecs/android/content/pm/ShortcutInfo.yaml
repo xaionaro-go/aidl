@@ -1,0 +1,71 @@
+package: android.content.pm
+type: ShortcutInfo
+fields:
+    - name: UserId
+      type: int32
+    - name: Id
+      type: string8
+    - name: PackageName
+      type: string8
+    - name: Activity
+      type: opaque
+    - name: Flags
+      type: int32
+    - name: IconResId
+      type: int32
+    - name: LastChangedTimestamp
+      type: int64
+    - name: DisabledReason
+      type: int32
+    - name: "0"
+      type: int32
+      condition: hasKeyFieldsOnly()
+    - name: "1"
+      type: int32
+    - name: Icon
+      type: opaque
+    - name: Title
+      type: opaque
+    - name: TitleResId
+      type: int32
+    - name: Text
+      type: opaque
+    - name: TextResId
+      type: int32
+    - name: DisabledMessage
+      type: opaque
+    - name: DisabledMessageResId
+      type: int32
+    - name: Intents
+      type: opaque
+    - name: IntentPersistableExtrases
+      type: opaque
+    - name: Rank
+      type: int32
+    - name: Extras
+      type: opaque
+    - name: BitmapPath
+      type: string8
+    - name: IconResName
+      type: string8
+    - name: TitleResName
+      type: string8
+    - name: TextResName
+      type: string8
+    - name: DisabledMessageResName
+      type: string8
+    - name: "N"
+      type: int32
+      condition: mCategories!=null
+    - name: Persons
+      type: opaque
+    - name: LocusId
+      type: opaque
+    - name: IconUri
+      type: string8
+    - name: StartingThemeResName
+      type: string8
+    - name: ExcludedSurfaces
+      type: int32
+    - name: CapabilityBindings
+      type: opaque

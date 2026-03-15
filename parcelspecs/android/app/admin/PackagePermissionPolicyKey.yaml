@@ -1,0 +1,9 @@
+package: android.app.admin
+type: PackagePermissionPolicyKey
+fields:
+    - name: GetIdentifier()
+      type: string16
+    - name: PackageName
+      type: string16
+    - name: PermissionName
+      type: string16

@@ -1,0 +1,7 @@
+package: android.media.tv
+type: DsmccRequest
+fields:
+    - name: Dest
+      type: opaque
+    - name: UriString
+      type: string16

@@ -1,0 +1,11 @@
+package: android.location
+type: LeapSecondsModel
+fields:
+    - name: LeapSeconds
+      type: int32
+    - name: LeapSecondsFuture
+      type: int32
+    - name: WeekNumberLeapSecondsFuture
+      type: int32
+    - name: DayNumberLeapSecondsFuture
+      type: int32

@@ -1,0 +1,9 @@
+package: android.hardware.face
+type: FaceEnrollFrame
+fields:
+    - name: Cell
+      type: opaque
+    - name: Stage
+      type: int32
+    - name: Data
+      type: opaque

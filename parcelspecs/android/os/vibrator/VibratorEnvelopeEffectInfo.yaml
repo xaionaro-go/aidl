@@ -1,0 +1,9 @@
+package: android.os.vibrator
+type: VibratorEnvelopeEffectInfo
+fields:
+    - name: MaxSize
+      type: int32
+    - name: MinControlPointDurationMillis
+      type: int64
+    - name: MaxControlPointDurationMillis
+      type: int64

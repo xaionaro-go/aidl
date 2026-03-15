@@ -1,0 +1,15 @@
+package: android.telephony.mbms
+type: DownloadRequest
+fields:
+    - name: FileServiceId
+      type: string16
+    - name: SourceUri
+      type: opaque
+    - name: DestinationUri
+      type: opaque
+    - name: SubscriptionId
+      type: int32
+    - name: SerializedResultIntentForApp
+      type: string16
+    - name: Version
+      type: int32

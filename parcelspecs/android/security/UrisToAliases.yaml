@@ -1,0 +1,5 @@
+package: android.security
+type: UrisToAliases
+fields:
+    - name: UrisToAliases
+      type: opaque

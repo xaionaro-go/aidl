@@ -1,0 +1,11 @@
+package: android.hardware.biometrics
+type: SensorLocationInternal
+fields:
+    - name: DisplayId
+      type: string16
+    - name: SensorLocationX
+      type: int32
+    - name: SensorLocationY
+      type: int32
+    - name: SensorRadius
+      type: int32

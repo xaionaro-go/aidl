@@ -1,0 +1,7 @@
+package: android.app.time
+type: TimeZoneState
+fields:
+    - name: Id
+      type: string8
+    - name: UserShouldConfirmId
+      type: bool

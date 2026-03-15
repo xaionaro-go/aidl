@@ -1,0 +1,11 @@
+package: android.media.tv
+type: BroadcastInfoResponse
+fields:
+    - name: Type
+      type: int32
+    - name: RequestId
+      type: int32
+    - name: Sequence
+      type: int32
+    - name: ResponseResult
+      type: int32

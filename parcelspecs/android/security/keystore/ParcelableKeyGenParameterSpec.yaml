@@ -1,0 +1,70 @@
+package: android.security.keystore
+type: ParcelableKeyGenParameterSpec
+fields:
+    - name: Spec.getKeystoreAlias()
+      type: string16
+    - name: Spec.getPurposes()
+      type: int32
+    - name: Spec.getNamespace()
+      type: int32
+    - name: Spec.getKeySize()
+      type: int32
+    - name: ALGORITHM_PARAMETER_SPEC_NONE
+      type: int32
+      condition: algoSpec==null
+    - name: Spec.getCertificateSubject().getEncoded()
+      type: opaque
+    - name: Spec.getCertificateSerialNumber().toByteArray()
+      type: opaque
+    - name: Spec.getCertificateNotBefore().getTime()
+      type: int64
+    - name: Spec.getCertificateNotAfter().getTime()
+      type: int64
+    - name: Spec.getDigests()
+      type: opaque
+      condition: mSpec.isDigestsSpecified()
+    - name: List.copyOf(mSpec.getMgf1Digests())
+      type: opaque
+      condition: mSpec.isMgf1DigestsSpecified()
+    - name: Spec.getEncryptionPaddings()
+      type: opaque
+    - name: Spec.getSignaturePaddings()
+      type: opaque
+    - name: Spec.getBlockModes()
+      type: opaque
+    - name: Spec.isRandomizedEncryptionRequired()
+      type: bool
+    - name: Spec.isUserAuthenticationRequired()
+      type: bool
+    - name: Spec.getUserAuthenticationValidityDurationSeconds()
+      type: int32
+    - name: Spec.getUserAuthenticationType()
+      type: int32
+    - name: Spec.isUserPresenceRequired()
+      type: bool
+    - name: Spec.getAttestationChallenge()
+      type: opaque
+    - name: Spec.isDevicePropertiesAttestationIncluded()
+      type: bool
+    - name: Spec.getAttestationIds()
+      type: opaque
+    - name: Spec.isUniqueIdIncluded()
+      type: bool
+    - name: Spec.isUserAuthenticationValidWhileOnBody()
+      type: bool
+    - name: Spec.isInvalidatedByBiometricEnrollment()
+      type: bool
+    - name: Spec.isStrongBoxBacked()
+      type: bool
+    - name: Spec.isUserConfirmationRequired()
+      type: bool
+    - name: Spec.isUnlockedDeviceRequired()
+      type: bool
+    - name: Spec.isCriticalToDeviceEncryption()
+      type: bool
+    - name: Spec.getMaxUsageCount()
+      type: int32
+    - name: Spec.getAttestKeyAlias()
+      type: string16
+    - name: Spec.getBoundToSpecificSecureUserId()
+      type: int64

@@ -1,0 +1,7 @@
+package: android.telephony
+type: PinResult
+fields:
+    - name: Result
+      type: int32
+    - name: AttemptsRemaining
+      type: int32

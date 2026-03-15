@@ -1,0 +1,11 @@
+package: android.view.textclassifier
+type: EntityConfig
+fields:
+    - name: IncludedTypes
+      type: opaque
+    - name: ExcludedTypes
+      type: opaque
+    - name: Hints
+      type: opaque
+    - name: (byte)(mIncludeTypesFromTextClassifier?1:0)
+      type: int32

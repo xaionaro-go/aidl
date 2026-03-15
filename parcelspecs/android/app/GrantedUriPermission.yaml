@@ -1,0 +1,7 @@
+package: android.app
+type: GrantedUriPermission
+fields:
+    - name: Uri
+      type: opaque
+    - name: PackageName
+      type: string16

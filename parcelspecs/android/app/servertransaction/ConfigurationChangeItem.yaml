@@ -1,0 +1,7 @@
+package: android.app.servertransaction
+type: ConfigurationChangeItem
+fields:
+    - name: Configuration
+      type: opaque
+    - name: DeviceId
+      type: int32

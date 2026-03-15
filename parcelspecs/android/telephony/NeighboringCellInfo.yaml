@@ -1,0 +1,13 @@
+package: android.telephony
+type: NeighboringCellInfo
+fields:
+    - name: Rssi
+      type: int32
+    - name: Lac
+      type: int32
+    - name: Cid
+      type: int32
+    - name: Psc
+      type: int32
+    - name: NetworkType
+      type: int32

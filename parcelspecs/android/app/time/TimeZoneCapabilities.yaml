@@ -1,0 +1,13 @@
+package: android.app.time
+type: TimeZoneCapabilities
+fields:
+    - name: UserHandle
+      type: opaque
+    - name: ConfigureAutoDetectionEnabledCapability
+      type: int32
+    - name: UseLocationEnabled
+      type: bool
+    - name: ConfigureGeoDetectionEnabledCapability
+      type: int32
+    - name: SetManualTimeZoneCapability
+      type: int32

@@ -1,0 +1,19 @@
+package: android.hardware.input
+type: KeyboardLayout
+fields:
+    - name: Descriptor
+      type: string16
+    - name: Label
+      type: string16
+    - name: Collection
+      type: string16
+    - name: Priority
+      type: int32
+    - name: Dest
+      type: opaque
+    - name: LayoutType.getValue()
+      type: int32
+    - name: VendorId
+      type: int32
+    - name: ProductId
+      type: int32

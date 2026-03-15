@@ -1,0 +1,15 @@
+package: android.os.vibrator
+type: RampSegment
+fields:
+    - name: PARCEL_TOKEN_RAMP
+      type: int32
+    - name: StartAmplitude
+      type: float32
+    - name: EndAmplitude
+      type: float32
+    - name: StartFrequencyHz
+      type: float32
+    - name: EndFrequencyHz
+      type: float32
+    - name: Duration
+      type: int32

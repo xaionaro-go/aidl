@@ -1,0 +1,5 @@
+package: com.android.internal.compat
+type: CompatibilityOverridesByPackageConfig
+fields:
+    - name: PackageNameToOverrides.size()
+      type: int32

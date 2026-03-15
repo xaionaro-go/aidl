@@ -1,0 +1,11 @@
+package: android.telephony
+type: SecurityAlgorithmUpdate
+fields:
+    - name: ConnectionEvent
+      type: int32
+    - name: Encryption
+      type: int32
+    - name: Integrity
+      type: int32
+    - name: IsUnprotectedEmergency
+      type: bool

@@ -1,0 +1,12 @@
+package: android.view.contentcapture
+type: DataShareRequest
+fields:
+    - name: Flg
+      type: int32
+    - name: PackageName
+      type: string16
+    - name: LocusId
+      type: opaque
+      condition: mLocusId!=null
+    - name: MimeType
+      type: string16

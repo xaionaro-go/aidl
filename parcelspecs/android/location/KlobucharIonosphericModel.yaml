@@ -1,0 +1,19 @@
+package: android.location
+type: KlobucharIonosphericModel
+fields:
+    - name: Alpha0
+      type: float64
+    - name: Alpha1
+      type: float64
+    - name: Alpha2
+      type: float64
+    - name: Alpha3
+      type: float64
+    - name: Beta0
+      type: float64
+    - name: Beta1
+      type: float64
+    - name: Beta2
+      type: float64
+    - name: Beta3
+      type: float64

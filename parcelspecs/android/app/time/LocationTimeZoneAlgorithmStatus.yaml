@@ -1,0 +1,13 @@
+package: android.app.time
+type: LocationTimeZoneAlgorithmStatus
+fields:
+    - name: Status
+      type: int32
+    - name: PrimaryProviderStatus
+      type: int32
+    - name: PrimaryProviderReportedStatus
+      type: opaque
+    - name: SecondaryProviderStatus
+      type: int32
+    - name: SecondaryProviderReportedStatus
+      type: opaque

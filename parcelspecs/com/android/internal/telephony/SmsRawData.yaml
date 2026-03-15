@@ -1,0 +1,7 @@
+package: com.android.internal.telephony
+type: SmsRawData
+fields:
+    - name: Data.length
+      type: int32
+    - name: Data
+      type: opaque

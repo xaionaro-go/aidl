@@ -1,0 +1,9 @@
+package: com.android.internal.statusbar
+type: LetterboxDetails
+fields:
+    - name: LetterboxInnerBounds
+      type: opaque
+    - name: LetterboxFullBounds
+      type: opaque
+    - name: AppAppearance
+      type: int32

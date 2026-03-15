@@ -1,0 +1,9 @@
+package: android.speech
+type: AlternativeSpan
+fields:
+    - name: StartPosition
+      type: int32
+    - name: EndPosition
+      type: int32
+    - name: Alternatives
+      type: opaque

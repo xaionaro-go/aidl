@@ -1,0 +1,11 @@
+package: android.telephony
+type: VoiceSpecificRegistrationInfo
+fields:
+    - name: CssSupported
+      type: bool
+    - name: RoamingIndicator
+      type: int32
+    - name: SystemIsInPrl
+      type: int32
+    - name: DefaultRoamingIndicator
+      type: int32

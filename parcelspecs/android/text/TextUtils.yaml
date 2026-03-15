@@ -1,0 +1,12 @@
+package: android.text
+type: TextUtils
+fields:
+    - name: "0"
+      type: int32
+      condition: csinstanceofSpanned
+    - name: Cs.toString()
+      type: string8
+      condition: csinstanceofSpanned
+    - name: "0"
+      type: int32
+      condition: csinstanceofSpanned

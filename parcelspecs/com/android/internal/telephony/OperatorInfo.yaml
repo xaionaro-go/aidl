@@ -1,0 +1,13 @@
+package: com.android.internal.telephony
+type: OperatorInfo
+fields:
+    - name: OperatorAlphaLong
+      type: string16
+    - name: OperatorAlphaShort
+      type: string16
+    - name: OperatorNumeric
+      type: string16
+    - name: State
+      type: opaque
+    - name: Ran
+      type: int32

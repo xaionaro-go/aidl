@@ -1,0 +1,9 @@
+package: android.hardware.location
+type: ActivityRecognitionEvent
+fields:
+    - name: Activity
+      type: string16
+    - name: EventType
+      type: int32
+    - name: TimestampNs
+      type: int64

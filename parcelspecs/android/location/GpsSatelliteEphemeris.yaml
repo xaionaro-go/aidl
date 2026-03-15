@@ -1,0 +1,15 @@
+package: android.location
+type: GpsSatelliteEphemeris
+fields:
+    - name: Prn
+      type: int32
+    - name: GpsL2Params
+      type: opaque
+    - name: SatelliteClockModel
+      type: opaque
+    - name: SatelliteOrbitModel
+      type: opaque
+    - name: SatelliteHealth
+      type: opaque
+    - name: SatelliteEphemerisTime
+      type: opaque

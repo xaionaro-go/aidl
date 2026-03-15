@@ -1,0 +1,5 @@
+package: android.service.voice
+type: HotwordRejectedResult
+fields:
+    - name: ConfidenceLevel
+      type: int32

@@ -1,0 +1,25 @@
+package: com.android.internal.pm.pkg.component
+type: ParsedComponentImpl
+fields:
+    - name: This.name
+      type: string16
+    - name: This.getIcon()
+      type: int32
+    - name: This.getLabelRes()
+      type: int32
+    - name: This.getNonLocalizedLabel()
+      type: opaque
+    - name: This.getLogo()
+      type: int32
+    - name: This.getBanner()
+      type: int32
+    - name: This.getDescriptionRes()
+      type: int32
+    - name: This.getFlags()
+      type: int32
+    - name: This.intents
+      type: opaque
+    - name: This.metaData
+      type: opaque
+    - name: This.mProperties
+      type: opaque

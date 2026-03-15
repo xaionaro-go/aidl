@@ -1,0 +1,25 @@
+package: android.location
+type: GnssMeasurementCorrections
+fields:
+    - name: LatitudeDegrees
+      type: float64
+    - name: LongitudeDegrees
+      type: float64
+    - name: AltitudeMeters
+      type: float64
+    - name: HorizontalPositionUncertaintyMeters
+      type: float64
+    - name: VerticalPositionUncertaintyMeters
+      type: float64
+    - name: ToaGpsNanosecondsOfWeek
+      type: int64
+    - name: SingleSatCorrectionList
+      type: opaque
+    - name: HasEnvironmentBearing
+      type: bool
+    - name: EnvironmentBearingDegrees
+      type: float32
+      condition: mHasEnvironmentBearing
+    - name: EnvironmentBearingUncertaintyDegrees
+      type: float32
+      condition: mHasEnvironmentBearing

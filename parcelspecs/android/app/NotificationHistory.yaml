@@ -1,0 +1,12 @@
+package: android.app
+type: NotificationHistory
+fields:
+    - name: HistoryCount
+      type: int32
+    - name: Index
+      type: int32
+    - name: StringPool
+      type: opaque
+      condition: mHistoryCount>0
+    - name: Data.marshall()
+      type: opaque

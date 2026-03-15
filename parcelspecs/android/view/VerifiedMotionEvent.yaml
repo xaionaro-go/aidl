@@ -1,0 +1,19 @@
+package: android.view
+type: VerifiedMotionEvent
+fields:
+    - name: Dest
+      type: opaque
+    - name: RawX
+      type: float32
+    - name: RawY
+      type: float32
+    - name: ActionMasked
+      type: int32
+    - name: DownTimeNanos
+      type: int64
+    - name: Flags
+      type: int32
+    - name: MetaState
+      type: int32
+    - name: ButtonState
+      type: int32

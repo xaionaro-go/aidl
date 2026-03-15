@@ -1,0 +1,49 @@
+package: android.hardware
+type: CameraSessionStats
+fields:
+    - name: CameraId
+      type: string16
+    - name: Facing
+      type: int32
+    - name: NewCameraState
+      type: int32
+    - name: ClientName
+      type: string16
+    - name: ApiLevel
+      type: int32
+    - name: IsNdk
+      type: bool
+    - name: LatencyMs
+      type: int32
+    - name: LogId
+      type: int64
+    - name: MaxPreviewFps
+      type: float32
+    - name: SessionType
+      type: int32
+    - name: InternalReconfigure
+      type: int32
+    - name: RequestCount
+      type: int64
+    - name: ResultErrorCount
+      type: int64
+    - name: DeviceError
+      type: bool
+    - name: StreamStats
+      type: opaque
+    - name: UserTag
+      type: string16
+    - name: VideoStabilizationMode
+      type: int32
+    - name: UsedUltraWide
+      type: bool
+    - name: UsedZoomOverride
+      type: bool
+    - name: SessionIndex
+      type: int32
+    - name: Dest
+      type: opaque
+    - name: MostRequestedFpsRange.getLower()
+      type: int32
+    - name: MostRequestedFpsRange.getUpper()
+      type: int32

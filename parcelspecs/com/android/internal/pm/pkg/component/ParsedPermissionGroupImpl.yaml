@@ -1,0 +1,15 @@
+package: com.android.internal.pm.pkg.component
+type: ParsedPermissionGroupImpl
+fields:
+    - name: Dest
+      type: opaque
+    - name: RequestDetailRes
+      type: int32
+    - name: BackgroundRequestRes
+      type: int32
+    - name: BackgroundRequestDetailRes
+      type: int32
+    - name: RequestRes
+      type: int32
+    - name: Priority
+      type: int32

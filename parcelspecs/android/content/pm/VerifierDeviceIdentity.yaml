@@ -1,0 +1,5 @@
+package: android.content.pm
+type: VerifierDeviceIdentity
+fields:
+    - name: Identity
+      type: int64

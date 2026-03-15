@@ -1,0 +1,9 @@
+package: com.android.internal.inputmethod
+type: InlineSuggestionsRequestInfo
+fields:
+    - name: ComponentName
+      type: opaque
+    - name: AutofillId
+      type: opaque
+    - name: UiExtras
+      type: opaque

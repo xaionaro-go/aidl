@@ -1,0 +1,7 @@
+package: android.view.contentcapture
+type: ContentCaptureCondition
+fields:
+    - name: LocusId
+      type: opaque
+    - name: Flags
+      type: int32

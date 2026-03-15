@@ -1,0 +1,14 @@
+package: android.service.autofill
+type: CustomDescription
+fields:
+    - name: Presentation
+      type: opaque
+    - name: "Null"
+      type: opaque
+      condition: mTransformations==null
+    - name: "Null"
+      type: opaque
+      condition: mUpdates==null
+    - name: "Null"
+      type: opaque
+      condition: mActions==null

@@ -1,0 +1,5 @@
+package: com.android.ims.internal.uce.options
+type: OptionsCmdId
+fields:
+    - name: CmdId
+      type: int32

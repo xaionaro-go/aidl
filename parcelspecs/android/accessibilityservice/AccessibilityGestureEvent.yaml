@@ -1,0 +1,9 @@
+package: android.accessibilityservice
+type: AccessibilityGestureEvent
+fields:
+    - name: GestureId
+      type: int32
+    - name: DisplayId
+      type: int32
+    - name: NewParceledListSlice<MotionEvent>(mMotionEvents)
+      type: opaque

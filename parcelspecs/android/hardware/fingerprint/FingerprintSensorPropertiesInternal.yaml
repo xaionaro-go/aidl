@@ -1,0 +1,11 @@
+package: android.hardware.fingerprint
+type: FingerprintSensorPropertiesInternal
+fields:
+    - name: Dest
+      type: opaque
+    - name: SensorType
+      type: int32
+    - name: HalControlsIllumination
+      type: bool
+    - name: SensorLocations
+      type: opaque

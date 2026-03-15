@@ -1,0 +1,17 @@
+package: android.media.quality
+type: PictureProfile
+fields:
+    - name: Id
+      type: string16
+    - name: Type
+      type: int32
+    - name: Name
+      type: string16
+    - name: InputId
+      type: string16
+    - name: PackageName
+      type: string16
+    - name: Params
+      type: opaque
+    - name: Handle
+      type: opaque

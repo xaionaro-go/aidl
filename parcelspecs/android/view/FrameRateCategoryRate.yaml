@@ -1,0 +1,7 @@
+package: android.view
+type: FrameRateCategoryRate
+fields:
+    - name: Normal
+      type: float32
+    - name: High
+      type: float32

@@ -1,0 +1,29 @@
+package: android.app.search
+type: SearchTarget
+fields:
+    - name: ResultType
+      type: int32
+    - name: LayoutType
+      type: string16
+    - name: Id
+      type: string16
+    - name: ParentId
+      type: string16
+    - name: Score
+      type: float32
+    - name: Hidden
+      type: bool
+    - name: PackageName
+      type: string16
+    - name: UserHandle.getIdentifier()
+      type: int32
+    - name: SearchAction
+      type: opaque
+    - name: ShortcutInfo
+      type: opaque
+    - name: AppWidgetProviderInfo
+      type: opaque
+    - name: SliceUri
+      type: opaque
+    - name: Extras
+      type: opaque

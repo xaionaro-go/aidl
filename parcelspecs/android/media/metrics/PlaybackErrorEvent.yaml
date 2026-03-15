@@ -1,0 +1,16 @@
+package: android.media.metrics
+type: PlaybackErrorEvent
+fields:
+    - name: Flg
+      type: int32
+    - name: ExceptionStack
+      type: string16
+      condition: mExceptionStack!=null
+    - name: ErrorCode
+      type: int32
+    - name: SubErrorCode
+      type: int32
+    - name: TimeSinceCreatedMillis
+      type: int64
+    - name: MetricsBundle
+      type: opaque

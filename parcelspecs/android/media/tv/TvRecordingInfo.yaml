@@ -1,0 +1,31 @@
+package: android.media.tv
+type: TvRecordingInfo
+fields:
+    - name: RecordingId
+      type: string16
+    - name: StartPaddingMillis
+      type: int64
+    - name: EndPaddingMillis
+      type: int64
+    - name: RepeatDays
+      type: int32
+    - name: Name
+      type: string16
+    - name: Description
+      type: string16
+    - name: ScheduledStartTimeMillis
+      type: int64
+    - name: ScheduledDurationMillis
+      type: int64
+    - name: ChannelUri==null?null:mChannelUri.toString()
+      type: string16
+    - name: ProgramUri==null?null:mProgramUri.toString()
+      type: string16
+    - name: ContentRatings
+      type: opaque
+    - name: RecordingUri==null?null:mProgramUri.toString()
+      type: string16
+    - name: RecordingDurationMillis
+      type: int64
+    - name: RecordingStartTimeMillis
+      type: int64

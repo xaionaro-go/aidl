@@ -1,0 +1,8 @@
+package: android.service.displayhash
+type: DisplayHashParams
+fields:
+    - name: Flg
+      type: int32
+    - name: BufferSize
+      type: opaque
+      condition: mBufferSize!=null

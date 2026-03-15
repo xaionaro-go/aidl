@@ -1,0 +1,9 @@
+package: android.hardware.input
+type: VirtualNavigationTouchpadConfig
+fields:
+    - name: Dest
+      type: opaque
+    - name: Height
+      type: int32
+    - name: Width
+      type: int32

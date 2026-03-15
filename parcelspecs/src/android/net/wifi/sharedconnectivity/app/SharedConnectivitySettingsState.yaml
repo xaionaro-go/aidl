@@ -1,0 +1,9 @@
+package: src.android.net.wifi.sharedconnectivity.app
+type: SharedConnectivitySettingsState
+fields:
+    - name: InstantTetherSettingsPendingIntent
+      type: opaque
+    - name: InstantTetherEnabled
+      type: bool
+    - name: Extras
+      type: opaque

@@ -1,0 +1,7 @@
+package: android.app.timezonedetector
+type: ManualTimeZoneSuggestion
+fields:
+    - name: ZoneId
+      type: string16
+    - name: DebugInfo
+      type: opaque

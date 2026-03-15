@@ -1,0 +1,19 @@
+package: android.hardware.display
+type: WifiDisplayStatus
+fields:
+    - name: FeatureState
+      type: int32
+    - name: ScanState
+      type: int32
+    - name: ActiveDisplayState
+      type: int32
+    - name: "1"
+      type: int32
+      condition: mActiveDisplay!=null
+    - name: Dest
+      type: opaque
+      condition: mActiveDisplay!=null
+    - name: Displays.length
+      type: int32
+    - name: Dest
+      type: opaque

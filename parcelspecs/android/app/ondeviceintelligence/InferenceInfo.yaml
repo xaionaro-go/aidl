@@ -1,0 +1,11 @@
+package: android.app.ondeviceintelligence
+type: InferenceInfo
+fields:
+    - name: Uid
+      type: int32
+    - name: StartTimeMs
+      type: int64
+    - name: EndTimeMs
+      type: int64
+    - name: SuspendedTimeMs
+      type: int64

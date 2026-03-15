@@ -1,0 +1,11 @@
+package: android.service.quickaccesswallet
+type: GetWalletCardsRequest
+fields:
+    - name: CardWidthPx
+      type: int32
+    - name: CardHeightPx
+      type: int32
+    - name: IconSizePx
+      type: int32
+    - name: MaxCards
+      type: int32

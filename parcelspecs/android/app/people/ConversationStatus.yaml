@@ -1,0 +1,17 @@
+package: android.app.people
+type: ConversationStatus
+fields:
+    - name: Id
+      type: string16
+    - name: Activity
+      type: int32
+    - name: Availability
+      type: int32
+    - name: Description
+      type: opaque
+    - name: Icon
+      type: opaque
+    - name: StartTimeMs
+      type: int64
+    - name: EndTimeMs
+      type: int64

@@ -1,0 +1,9 @@
+package: android.media
+type: RouteListingPreference
+fields:
+    - name: Items
+      type: opaque
+    - name: UseSystemOrdering
+      type: bool
+    - name: LinkedItemComponentName
+      type: opaque

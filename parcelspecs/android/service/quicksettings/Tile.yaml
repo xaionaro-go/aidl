@@ -1,0 +1,27 @@
+package: android.service.quicksettings
+type: Tile
+fields:
+    - name: (byte)1
+      type: int32
+      condition: mIcon!=null
+    - name: Dest
+      type: opaque
+      condition: mIcon!=null
+    - name: (byte)1
+      type: int32
+      condition: mPendingIntent!=null
+    - name: Dest
+      type: opaque
+      condition: mPendingIntent!=null
+    - name: State
+      type: int32
+    - name: Label
+      type: opaque
+    - name: DefaultLabel
+      type: opaque
+    - name: Subtitle
+      type: opaque
+    - name: ContentDescription
+      type: opaque
+    - name: StateDescription
+      type: opaque

@@ -1,0 +1,6 @@
+package: android.content
+type: ComponentName
+fields:
+    - name: Out
+      type: opaque
+      condition: c!=null

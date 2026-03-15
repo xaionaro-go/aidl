@@ -1,0 +1,13 @@
+package: android.content.pm
+type: InstantAppInfo
+fields:
+    - name: PackageName
+      type: string16
+    - name: LabelText
+      type: opaque
+    - name: RequestedPermissions
+      type: opaque
+    - name: GrantedPermissions
+      type: opaque
+    - name: ApplicationInfo
+      type: opaque

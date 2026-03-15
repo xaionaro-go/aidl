@@ -1,0 +1,14 @@
+package: android.content.pm
+type: InstantAppRequestInfo
+fields:
+    - name: Flg
+      type: int32
+    - name: Intent
+      type: opaque
+    - name: HostDigestPrefix
+      type: opaque
+      condition: mHostDigestPrefix!=null
+    - name: UserHandle
+      type: opaque
+    - name: Token
+      type: string16

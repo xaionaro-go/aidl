@@ -1,0 +1,47 @@
+package: android.telephony
+type: ServiceState
+fields:
+    - name: VoiceRegState
+      type: int32
+    - name: DataRegState
+      type: int32
+    - name: OperatorAlphaLong
+      type: string16
+    - name: OperatorAlphaShort
+      type: string16
+    - name: OperatorNumeric
+      type: string16
+    - name: IsManualNetworkSelection?1:0
+      type: int32
+    - name: CssIndicator?1:0
+      type: int32
+    - name: NetworkId
+      type: int32
+    - name: SystemId
+      type: int32
+    - name: CdmaRoamingIndicator
+      type: int32
+    - name: CdmaDefaultRoamingIndicator
+      type: int32
+    - name: CdmaEriIconIndex
+      type: int32
+    - name: CdmaEriIconMode
+      type: int32
+    - name: IsEmergencyOnly?1:0
+      type: int32
+    - name: ArfcnRsrpBoost
+      type: int32
+    - name: ChannelNumber
+      type: int32
+    - name: CellBandwidths
+      type: opaque
+    - name: NrFrequencyRange
+      type: int32
+    - name: OperatorAlphaLongRaw
+      type: string16
+    - name: OperatorAlphaShortRaw
+      type: string16
+    - name: IsDataRoamingFromRegistration
+      type: bool
+    - name: IsIwlanPreferred
+      type: bool

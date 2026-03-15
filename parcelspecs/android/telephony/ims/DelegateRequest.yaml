@@ -1,0 +1,5 @@
+package: android.telephony.ims
+type: DelegateRequest
+fields:
+    - name: FeatureTags
+      type: opaque

@@ -1,0 +1,25 @@
+package: android.companion
+type: BluetoothLeDeviceFilter
+fields:
+    - name: PatternToString(getNamePattern())
+      type: string16
+    - name: ScanFilter
+      type: opaque
+    - name: RawDataFilter
+      type: opaque
+    - name: RawDataFilterMask
+      type: opaque
+    - name: RenamePrefix
+      type: string16
+    - name: RenameSuffix
+      type: string16
+    - name: RenameBytesFrom
+      type: int32
+    - name: RenameBytesLength
+      type: int32
+    - name: RenameNameFrom
+      type: int32
+    - name: RenameNameLength
+      type: int32
+    - name: RenameBytesReverseOrder
+      type: bool

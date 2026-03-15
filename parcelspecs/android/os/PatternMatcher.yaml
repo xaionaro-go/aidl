@@ -1,0 +1,9 @@
+package: android.os
+type: PatternMatcher
+fields:
+    - name: Pattern
+      type: string16
+    - name: Type
+      type: int32
+    - name: ParsedPattern
+      type: opaque

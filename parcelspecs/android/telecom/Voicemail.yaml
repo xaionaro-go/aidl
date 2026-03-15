@@ -1,0 +1,29 @@
+package: android.telecom
+type: Voicemail
+fields:
+    - name: Timestamp
+      type: int64
+    - name: Number
+      type: opaque
+    - name: "0"
+      type: int32
+      condition: mPhoneAccount==null
+    - name: Id
+      type: int64
+    - name: Duration
+      type: int64
+    - name: Source
+      type: opaque
+    - name: ProviderData
+      type: opaque
+    - name: "0"
+      type: int32
+      condition: mUri==null
+    - name: "1"
+      type: int32
+      condition: mIsRead
+    - name: "1"
+      type: int32
+      condition: mHasContent
+    - name: Transcription
+      type: opaque

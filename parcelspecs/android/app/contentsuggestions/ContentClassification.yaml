@@ -1,0 +1,7 @@
+package: android.app.contentsuggestions
+type: ContentClassification
+fields:
+    - name: ClassificationId
+      type: string16
+    - name: Extras
+      type: opaque

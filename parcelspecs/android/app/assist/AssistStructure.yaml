@@ -1,0 +1,12 @@
+package: android.app.assist
+type: AssistStructure
+fields:
+    - name: TaskId
+      type: int32
+    - name: ActivityComponent
+      type: opaque
+    - name: IsHomeActivity?1:0
+      type: int32
+    - name: SendChannel
+      type: opaque
+      condition: mHaveData

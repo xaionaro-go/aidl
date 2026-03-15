@@ -1,0 +1,5 @@
+package: com.android.internal.inputmethod
+type: InputMethodSubtypeHandle
+fields:
+    - name: ToStringHandle()
+      type: string8

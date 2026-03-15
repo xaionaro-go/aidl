@@ -1,0 +1,17 @@
+package: android.location
+type: GnssExcessPathInfo
+fields:
+    - name: Flags
+      type: int32
+    - name: ExcessPathLengthMeters
+      type: float32
+      condition: hasExcessPathLength()
+    - name: ExcessPathLengthUncertaintyMeters
+      type: float32
+      condition: hasExcessPathLengthUncertainty()
+    - name: Parcel
+      type: opaque
+      condition: hasReflectingPlane()
+    - name: AttenuationDb
+      type: float32
+      condition: hasAttenuation()

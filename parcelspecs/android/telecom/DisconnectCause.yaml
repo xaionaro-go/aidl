@@ -1,0 +1,19 @@
+package: android.telecom
+type: DisconnectCause
+fields:
+    - name: DisconnectCode
+      type: int32
+    - name: DisconnectLabel
+      type: opaque
+    - name: DisconnectDescription
+      type: opaque
+    - name: DisconnectReason
+      type: string16
+    - name: ToneToPlay
+      type: int32
+    - name: TelephonyDisconnectCause
+      type: int32
+    - name: TelephonyPreciseDisconnectCause
+      type: int32
+    - name: ImsReasonInfo
+      type: opaque

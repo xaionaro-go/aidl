@@ -1,0 +1,23 @@
+package: android.telephony
+type: EmergencyRegistrationResult
+fields:
+    - name: AccessNetworkType
+      type: int32
+    - name: RegState
+      type: int32
+    - name: Domain
+      type: int32
+    - name: IsVopsSupported
+      type: bool
+    - name: IsEmcBearerSupported
+      type: bool
+    - name: NwProvidedEmc
+      type: int32
+    - name: NwProvidedEmf
+      type: int32
+    - name: Mcc
+      type: string8
+    - name: Mnc
+      type: string8
+    - name: CountryIso
+      type: string8

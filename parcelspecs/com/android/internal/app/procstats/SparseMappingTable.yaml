@@ -1,0 +1,11 @@
+package: com.android.internal.app.procstats
+type: SparseMappingTable
+fields:
+    - name: Sequence
+      type: int32
+    - name: NextIndex
+      type: int32
+    - name: "N"
+      type: int32
+    - name: NextIndex
+      type: int32

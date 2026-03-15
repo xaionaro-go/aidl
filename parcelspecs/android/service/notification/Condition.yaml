@@ -1,0 +1,20 @@
+package: android.service.notification
+type: Condition
+fields:
+    - name: Id
+      type: opaque
+    - name: Summary
+      type: string16
+    - name: Line1
+      type: string16
+    - name: Line2
+      type: string16
+    - name: Icon
+      type: int32
+    - name: State
+      type: int32
+    - name: This.source
+      type: int32
+      condition: Flags.modesApi()
+    - name: This.flags
+      type: int32

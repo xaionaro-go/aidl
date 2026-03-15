@@ -1,0 +1,23 @@
+package: android.net
+type: LinkQualityInfo
+fields:
+    - name: ObjectType
+      type: int32
+    - name: NetworkType
+      type: int32
+    - name: NormalizedSignalStrength
+      type: int32
+    - name: PacketCount
+      type: int64
+    - name: PacketErrorCount
+      type: int64
+    - name: TheoreticalTxBandwidth
+      type: int32
+    - name: TheoreticalRxBandwidth
+      type: int32
+    - name: TheoreticalLatency
+      type: int32
+    - name: LastDataSampleTime
+      type: int64
+    - name: DataSampleDuration
+      type: int32

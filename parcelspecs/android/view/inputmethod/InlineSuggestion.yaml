@@ -1,0 +1,10 @@
+package: android.view.inputmethod
+type: InlineSuggestion
+fields:
+    - name: Flg
+      type: int32
+    - name: Info
+      type: opaque
+    - name: ContentProvider
+      type: opaque
+      condition: mContentProvider!=null

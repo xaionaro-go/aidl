@@ -1,0 +1,13 @@
+package: android.view.textservice
+type: SpellCheckerInfo
+fields:
+    - name: Label
+      type: int32
+    - name: Id
+      type: string16
+    - name: SettingsActivityName
+      type: string16
+    - name: Dest
+      type: opaque
+    - name: Subtypes
+      type: opaque

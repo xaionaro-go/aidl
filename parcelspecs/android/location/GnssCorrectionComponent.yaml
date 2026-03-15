@@ -1,0 +1,9 @@
+package: android.location
+type: GnssCorrectionComponent
+fields:
+    - name: SourceKey
+      type: string8
+    - name: ValidityInterval
+      type: opaque
+    - name: PseudorangeCorrection
+      type: opaque

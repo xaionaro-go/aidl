@@ -1,0 +1,31 @@
+package: android.os.connectivity
+type: CellularBatteryStats
+fields:
+    - name: LoggingDurationMs
+      type: int64
+    - name: KernelActiveTimeMs
+      type: int64
+    - name: NumPacketsTx
+      type: int64
+    - name: NumBytesTx
+      type: int64
+    - name: NumPacketsRx
+      type: int64
+    - name: NumBytesRx
+      type: int64
+    - name: SleepTimeMs
+      type: int64
+    - name: IdleTimeMs
+      type: int64
+    - name: RxTimeMs
+      type: int64
+    - name: EnergyConsumedMaMs
+      type: int64
+    - name: TimeInRatMs
+      type: opaque
+    - name: TimeInRxSignalStrengthLevelMs
+      type: opaque
+    - name: TxTimeMs
+      type: opaque
+    - name: MonitoredRailChargeConsumedMaMs
+      type: int64

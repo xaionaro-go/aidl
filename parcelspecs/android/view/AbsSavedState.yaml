@@ -1,0 +1,5 @@
+package: android.view
+type: AbsSavedState
+fields:
+    - name: SuperState
+      type: opaque

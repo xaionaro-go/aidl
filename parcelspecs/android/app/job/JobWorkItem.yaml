@@ -1,0 +1,21 @@
+package: android.app.job
+type: JobWorkItem
+fields:
+    - name: "1"
+      type: int32
+      condition: mIntent!=null
+    - name: Out
+      type: opaque
+      condition: mIntent!=null
+    - name: Extras
+      type: opaque
+    - name: NetworkDownloadBytes
+      type: int64
+    - name: NetworkUploadBytes
+      type: int64
+    - name: MinimumChunkBytes
+      type: int64
+    - name: DeliveryCount
+      type: int32
+    - name: WorkId
+      type: int32

@@ -1,0 +1,13 @@
+package: android.net
+type: RssiCurve
+fields:
+    - name: Start
+      type: int32
+    - name: BucketWidth
+      type: int32
+    - name: RssiBuckets.length
+      type: int32
+    - name: RssiBuckets
+      type: opaque
+    - name: ActiveNetworkRssiBoost
+      type: int32

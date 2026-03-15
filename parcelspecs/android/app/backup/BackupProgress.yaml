@@ -1,0 +1,7 @@
+package: android.app.backup
+type: BackupProgress
+fields:
+    - name: BytesExpected
+      type: int64
+    - name: BytesTransferred
+      type: int64

@@ -1,0 +1,5 @@
+package: android.service.games
+type: GameScreenshotResult
+fields:
+    - name: Status
+      type: int32

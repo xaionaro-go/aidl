@@ -1,0 +1,5 @@
+package: android.security.advancedprotection
+type: AdvancedProtectionFeature
+fields:
+    - name: Id
+      type: string8

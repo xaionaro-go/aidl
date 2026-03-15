@@ -1,0 +1,9 @@
+package: com.android.internal.pm.pkg.component
+type: ParsedInstrumentationImpl
+fields:
+    - name: Dest
+      type: opaque
+    - name: This.handleProfiling
+      type: bool
+    - name: This.functionalTest
+      type: bool

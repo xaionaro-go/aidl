@@ -1,0 +1,15 @@
+package: android.os.connectivity
+type: WifiActivityEnergyInfo
+fields:
+    - name: TimeSinceBootMillis
+      type: int64
+    - name: StackState
+      type: int32
+    - name: ControllerTxDurationMillis
+      type: int64
+    - name: ControllerRxDurationMillis
+      type: int64
+    - name: ControllerScanDurationMillis
+      type: int64
+    - name: ControllerIdleDurationMillis
+      type: int64

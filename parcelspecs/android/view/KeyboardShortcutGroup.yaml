@@ -1,0 +1,11 @@
+package: android.view
+type: KeyboardShortcutGroup
+fields:
+    - name: Label
+      type: opaque
+    - name: Items
+      type: opaque
+    - name: SystemGroup?1:0
+      type: int32
+    - name: PackageName
+      type: opaque

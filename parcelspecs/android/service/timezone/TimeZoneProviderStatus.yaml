@@ -1,0 +1,9 @@
+package: android.service.timezone
+type: TimeZoneProviderStatus
+fields:
+    - name: LocationDetectionDependencyStatus
+      type: int32
+    - name: ConnectivityDependencyStatus
+      type: int32
+    - name: TimeZoneResolutionOperationStatus
+      type: int32

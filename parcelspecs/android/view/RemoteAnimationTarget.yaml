@@ -1,0 +1,49 @@
+package: android.view
+type: RemoteAnimationTarget
+fields:
+    - name: TaskId
+      type: int32
+    - name: Mode
+      type: int32
+    - name: Leash
+      type: opaque
+    - name: IsTranslucent
+      type: bool
+    - name: ClipRect
+      type: opaque
+    - name: ContentInsets
+      type: opaque
+    - name: PrefixOrderIndex
+      type: int32
+    - name: Position
+      type: opaque
+    - name: LocalBounds
+      type: opaque
+    - name: SourceContainerBounds
+      type: opaque
+    - name: ScreenSpaceBounds
+      type: opaque
+    - name: WindowConfiguration
+      type: opaque
+    - name: IsNotInRecents
+      type: bool
+    - name: StartLeash
+      type: opaque
+    - name: StartBounds
+      type: opaque
+    - name: TaskInfo
+      type: opaque
+    - name: AllowEnterPip
+      type: bool
+    - name: WindowType
+      type: int32
+    - name: HasAnimatingParent
+      type: bool
+    - name: BackgroundColor
+      type: int32
+    - name: ShowBackdrop
+      type: bool
+    - name: WillShowImeOnTarget
+      type: bool
+    - name: RotationChange
+      type: int32

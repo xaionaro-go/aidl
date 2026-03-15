@@ -1,0 +1,9 @@
+package: android.app.time
+type: TimeZoneDetectorStatus
+fields:
+    - name: DetectorStatus
+      type: int32
+    - name: TelephonyTimeZoneAlgorithmStatus
+      type: opaque
+    - name: LocationTimeZoneAlgorithmStatus
+      type: opaque

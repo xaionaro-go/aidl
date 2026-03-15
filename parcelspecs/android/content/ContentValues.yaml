@@ -1,0 +1,7 @@
+package: android.content
+type: ContentValues
+fields:
+    - name: Map.size()
+      type: int32
+    - name: Map
+      type: opaque

@@ -1,0 +1,9 @@
+package: android.view.inputmethod
+type: CorrectionInfo
+fields:
+    - name: Offset
+      type: int32
+    - name: OldText
+      type: opaque
+    - name: NewText
+      type: opaque

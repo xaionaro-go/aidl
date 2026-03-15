@@ -1,0 +1,9 @@
+package: android.service.euicc
+type: DownloadSubscriptionResult
+fields:
+    - name: Result
+      type: int32
+    - name: ResolvableErrors
+      type: int32
+    - name: CardId
+      type: int32

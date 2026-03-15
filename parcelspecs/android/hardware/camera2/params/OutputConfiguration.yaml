@@ -1,0 +1,45 @@
+package: android.hardware.camera2.params
+type: OutputConfiguration
+fields:
+    - name: Rotation
+      type: int32
+    - name: SurfaceGroupId
+      type: int32
+    - name: SurfaceType
+      type: int32
+    - name: ConfiguredSize.getWidth()
+      type: int32
+    - name: ConfiguredSize.getHeight()
+      type: int32
+    - name: IsDeferredConfig?1:0
+      type: int32
+    - name: IsShared?1:0
+      type: int32
+    - name: Surfaces
+      type: opaque
+    - name: PhysicalCameraId
+      type: string16
+    - name: IsMultiResolution?1:0
+      type: int32
+    - name: ConvertIntegerToIntList(mSensorPixelModesUsed)
+      type: opaque
+    - name: DynamicRangeProfile
+      type: int64
+    - name: ColorSpace
+      type: int32
+    - name: StreamUseCase
+      type: int64
+    - name: TimestampBase
+      type: int32
+    - name: MirrorMode
+      type: int32
+    - name: MirrorModeForSurfaces.toArray()
+      type: opaque
+    - name: ReadoutTimestampEnabled?1:0
+      type: int32
+    - name: ConfiguredFormat
+      type: int32
+    - name: ConfiguredDataspace
+      type: int32
+    - name: Usage
+      type: int64

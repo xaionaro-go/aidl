@@ -1,0 +1,5 @@
+package: android.accounts
+type: AccountManagerResponse
+fields:
+    - name: Response.asBinder()
+      type: opaque

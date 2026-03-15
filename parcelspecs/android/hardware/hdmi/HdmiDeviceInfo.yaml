@@ -1,0 +1,9 @@
+package: android.hardware.hdmi
+type: HdmiDeviceInfo
+fields:
+    - name: HdmiDeviceType
+      type: int32
+    - name: PhysicalAddress
+      type: int32
+    - name: PortId
+      type: int32

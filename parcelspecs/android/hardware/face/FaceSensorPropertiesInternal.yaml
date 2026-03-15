@@ -1,0 +1,11 @@
+package: android.hardware.face
+type: FaceSensorPropertiesInternal
+fields:
+    - name: Dest
+      type: opaque
+    - name: SensorType
+      type: int32
+    - name: SupportsFaceDetection
+      type: bool
+    - name: SupportsSelfIllumination
+      type: bool

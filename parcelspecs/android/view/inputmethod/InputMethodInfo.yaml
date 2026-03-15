@@ -1,0 +1,39 @@
+package: android.view.inputmethod
+type: InputMethodInfo
+fields:
+    - name: Id
+      type: string16
+    - name: SettingsActivityName
+      type: string16
+    - name: LanguageSettingsActivityName
+      type: string8
+    - name: IsDefaultResId
+      type: int32
+    - name: IsAuxIme?1:0
+      type: int32
+    - name: SupportsSwitchingToNextInputMethod?1:0
+      type: int32
+    - name: InlineSuggestionsEnabled?1:0
+      type: int32
+    - name: SupportsInlineSuggestionsWithTouchExploration?1:0
+      type: int32
+    - name: SuppressesSpellChecker
+      type: bool
+    - name: ShowInInputMethodPicker
+      type: bool
+    - name: IsVrOnly
+      type: bool
+    - name: IsVirtualDeviceOnly
+      type: bool
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: HandledConfigChanges
+      type: int32
+    - name: SupportsStylusHandwriting
+      type: bool
+    - name: SupportsConnectionlessStylusHandwriting
+      type: bool
+    - name: StylusHandwritingSettingsActivityAttr
+      type: string8

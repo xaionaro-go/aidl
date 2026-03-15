@@ -1,0 +1,9 @@
+package: android.service.contentcapture
+type: ActivityEvent
+fields:
+    - name: ComponentName
+      type: opaque
+    - name: Type
+      type: int32
+    - name: ActivityId
+      type: opaque

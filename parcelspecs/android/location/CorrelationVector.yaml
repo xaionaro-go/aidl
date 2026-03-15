@@ -1,0 +1,13 @@
+package: android.location
+type: CorrelationVector
+fields:
+    - name: SamplingWidthMeters
+      type: float64
+    - name: SamplingStartMeters
+      type: float64
+    - name: FrequencyOffsetMetersPerSecond
+      type: float64
+    - name: Magnitude.length
+      type: int32
+    - name: Magnitude
+      type: opaque

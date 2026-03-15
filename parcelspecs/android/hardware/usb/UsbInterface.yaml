@@ -1,0 +1,17 @@
+package: android.hardware.usb
+type: UsbInterface
+fields:
+    - name: Id
+      type: int32
+    - name: AlternateSetting
+      type: int32
+    - name: Name
+      type: string16
+    - name: Class
+      type: int32
+    - name: Subclass
+      type: int32
+    - name: Protocol
+      type: int32
+    - name: Endpoints
+      type: opaque

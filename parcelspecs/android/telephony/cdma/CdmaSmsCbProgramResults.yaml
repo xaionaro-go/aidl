@@ -1,0 +1,9 @@
+package: android.telephony.cdma
+type: CdmaSmsCbProgramResults
+fields:
+    - name: Category
+      type: int32
+    - name: Language
+      type: int32
+    - name: CategoryResult
+      type: int32

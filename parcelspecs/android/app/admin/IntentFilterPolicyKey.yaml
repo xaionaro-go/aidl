@@ -1,0 +1,7 @@
+package: android.app.admin
+type: IntentFilterPolicyKey
+fields:
+    - name: GetIdentifier()
+      type: string16
+    - name: Filter
+      type: opaque

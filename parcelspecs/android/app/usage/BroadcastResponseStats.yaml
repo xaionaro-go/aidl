@@ -1,0 +1,15 @@
+package: android.app.usage
+type: BroadcastResponseStats
+fields:
+    - name: PackageName
+      type: string8
+    - name: Id
+      type: int64
+    - name: BroadcastsDispatchedCount
+      type: int32
+    - name: NotificationsPostedCount
+      type: int32
+    - name: NotificationsUpdatedCount
+      type: int32
+    - name: NotificationsCancelledCount
+      type: int32

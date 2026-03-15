@@ -1,0 +1,15 @@
+package: android.hardware.face
+type: FaceDataFrame
+fields:
+    - name: AcquiredInfo
+      type: int32
+    - name: VendorCode
+      type: int32
+    - name: Pan
+      type: float32
+    - name: Tilt
+      type: float32
+    - name: Distance
+      type: float32
+    - name: IsCancellable
+      type: bool

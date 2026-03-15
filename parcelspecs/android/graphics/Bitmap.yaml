@@ -1,0 +1,9 @@
+package: android.graphics
+type: Bitmap
+fields:
+    - name: "True"
+      type: bool
+      condition: hasGainmap()
+    - name: Gainmap
+      type: opaque
+      condition: hasGainmap()

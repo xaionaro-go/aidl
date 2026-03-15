@@ -1,0 +1,17 @@
+package: android.app
+type: ProcessMemoryState
+fields:
+    - name: Uid
+      type: int32
+    - name: Pid
+      type: int32
+    - name: ProcessName
+      type: string16
+    - name: OomScore
+      type: int32
+    - name: HasForegroundServices?1:0
+      type: int32
+    - name: HostingComponentTypes
+      type: int32
+    - name: HistoricalHostingComponentTypes
+      type: int32

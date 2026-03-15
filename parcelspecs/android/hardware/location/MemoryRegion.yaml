@@ -1,0 +1,13 @@
+package: android.hardware.location
+type: MemoryRegion
+fields:
+    - name: SizeBytes
+      type: int32
+    - name: SizeBytesFree
+      type: int32
+    - name: IsReadable?1:0
+      type: int32
+    - name: IsWritable?1:0
+      type: int32
+    - name: IsExecutable?1:0
+      type: int32

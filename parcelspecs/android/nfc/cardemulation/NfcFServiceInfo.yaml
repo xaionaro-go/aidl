@@ -1,0 +1,25 @@
+package: android.nfc.cardemulation
+type: NfcFServiceInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: Description
+      type: string16
+    - name: SystemCode
+      type: string16
+    - name: DynamicSystemCode!=null?1:0
+      type: int32
+    - name: DynamicSystemCode
+      type: string16
+      condition: mDynamicSystemCode!=null
+    - name: Nfcid2
+      type: string16
+    - name: DynamicNfcid2!=null?1:0
+      type: int32
+    - name: DynamicNfcid2
+      type: string16
+      condition: mDynamicNfcid2!=null
+    - name: Uid
+      type: int32
+    - name: T3tPmm
+      type: string16

@@ -1,0 +1,32 @@
+package: android.view.accessibility
+type: AccessibilityWindowInfo
+fields:
+    - name: DisplayId
+      type: int32
+    - name: Type
+      type: int32
+    - name: Layer
+      type: int32
+    - name: BooleanProperties
+      type: int32
+    - name: Id
+      type: int32
+    - name: ParentId
+      type: int32
+    - name: TaskId
+      type: int32
+    - name: Parcel
+      type: opaque
+    - name: Title
+      type: opaque
+    - name: AnchorId
+      type: int64
+    - name: TransitionTime
+      type: int64
+    - name: "0"
+      type: int32
+      condition: childIds==null
+    - name: ConnectionId
+      type: int32
+    - name: Locales
+      type: opaque

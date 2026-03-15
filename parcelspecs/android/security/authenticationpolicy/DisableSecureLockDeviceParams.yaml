@@ -1,0 +1,5 @@
+package: android.security.authenticationpolicy
+type: DisableSecureLockDeviceParams
+fields:
+    - name: Message
+      type: opaque

@@ -1,0 +1,5 @@
+package: android.window
+type: TaskFragmentOrganizerToken
+fields:
+    - name: RealToken
+      type: opaque

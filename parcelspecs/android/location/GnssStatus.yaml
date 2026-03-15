@@ -1,0 +1,5 @@
+package: android.location
+type: GnssStatus
+fields:
+    - name: SvCount
+      type: int32

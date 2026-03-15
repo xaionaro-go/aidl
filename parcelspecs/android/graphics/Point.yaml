@@ -1,0 +1,7 @@
+package: android.graphics
+type: Point
+fields:
+    - name: x
+      type: int32
+    - name: "y"
+      type: int32

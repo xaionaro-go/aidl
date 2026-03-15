@@ -1,0 +1,13 @@
+package: android.flags
+type: SyncableFlag
+fields:
+    - name: Namespace
+      type: string16
+    - name: Name
+      type: string16
+    - name: Value
+      type: string16
+    - name: Dynamic
+      type: bool
+    - name: Overridden
+      type: bool

@@ -1,0 +1,13 @@
+package: android.app
+type: DirectAction
+fields:
+    - name: TaskId
+      type: int32
+    - name: ActivityId
+      type: opaque
+    - name: ID
+      type: string16
+    - name: Extras
+      type: opaque
+    - name: LocusId.getId()
+      type: string16

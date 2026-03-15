@@ -1,0 +1,15 @@
+package: com.android.ims.internal.uce.presence
+type: PresSipResponse
+fields:
+    - name: RequestId
+      type: int32
+    - name: SipResponseCode
+      type: int32
+    - name: ReasonPhrase
+      type: string16
+    - name: CmdId
+      type: opaque
+    - name: RetryAfter
+      type: int32
+    - name: ReasonHeader
+      type: string16

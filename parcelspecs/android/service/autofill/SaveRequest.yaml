@@ -1,0 +1,9 @@
+package: android.service.autofill
+type: SaveRequest
+fields:
+    - name: FillContexts
+      type: opaque
+    - name: ClientState
+      type: opaque
+    - name: DatasetIds
+      type: opaque

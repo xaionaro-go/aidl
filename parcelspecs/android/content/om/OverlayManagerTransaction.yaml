@@ -1,0 +1,5 @@
+package: android.content.om
+type: OverlayManagerTransaction
+fields:
+    - name: Size
+      type: int32

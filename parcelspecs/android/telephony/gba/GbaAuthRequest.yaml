@@ -1,0 +1,19 @@
+package: android.telephony.gba
+type: GbaAuthRequest
+fields:
+    - name: Token
+      type: int32
+    - name: SubId
+      type: int32
+    - name: AppType
+      type: int32
+    - name: NafUrl
+      type: opaque
+    - name: SecurityProtocol.length
+      type: int32
+    - name: SecurityProtocol
+      type: opaque
+    - name: ForceBootStrapping
+      type: bool
+    - name: Callback
+      type: opaque

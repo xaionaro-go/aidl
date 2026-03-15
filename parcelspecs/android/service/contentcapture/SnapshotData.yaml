@@ -1,0 +1,9 @@
+package: android.service.contentcapture
+type: SnapshotData
+fields:
+    - name: AssistData
+      type: opaque
+    - name: AssistStructure
+      type: opaque
+    - name: AssistContent
+      type: opaque

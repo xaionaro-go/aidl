@@ -1,0 +1,47 @@
+package: android.location
+type: Location
+fields:
+    - name: Provider
+      type: string8
+    - name: FieldsMask
+      type: int32
+    - name: TimeMs
+      type: int64
+    - name: ElapsedRealtimeNs
+      type: int64
+    - name: ElapsedRealtimeUncertaintyNs
+      type: float64
+      condition: FieldsMask & 256
+    - name: LatitudeDegrees
+      type: float64
+    - name: LongitudeDegrees
+      type: float64
+    - name: AltitudeMeters
+      type: float64
+      condition: FieldsMask & 1
+    - name: SpeedMetersPerSecond
+      type: float32
+      condition: FieldsMask & 2
+    - name: BearingDegrees
+      type: float32
+      condition: FieldsMask & 4
+    - name: HorizontalAccuracyMeters
+      type: float32
+      condition: FieldsMask & 8
+    - name: AltitudeAccuracyMeters
+      type: float32
+      condition: FieldsMask & 32
+    - name: SpeedAccuracyMetersPerSecond
+      type: float32
+      condition: FieldsMask & 64
+    - name: BearingAccuracyDegrees
+      type: float32
+      condition: FieldsMask & 128
+    - name: MslAltitudeMeters
+      type: float64
+      condition: FieldsMask & 512
+    - name: MslAltitudeAccuracyMeters
+      type: float32
+      condition: FieldsMask & 1024
+    - name: Extras
+      type: opaque

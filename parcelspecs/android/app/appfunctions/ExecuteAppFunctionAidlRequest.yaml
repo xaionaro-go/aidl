@@ -1,0 +1,11 @@
+package: android.app.appfunctions
+type: ExecuteAppFunctionAidlRequest
+fields:
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: CallingPackage
+      type: string8
+    - name: RequestTime
+      type: int64

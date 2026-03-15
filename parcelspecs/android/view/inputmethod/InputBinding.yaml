@@ -1,0 +1,9 @@
+package: android.view.inputmethod
+type: InputBinding
+fields:
+    - name: ConnectionToken
+      type: opaque
+    - name: Uid
+      type: int32
+    - name: Pid
+      type: int32

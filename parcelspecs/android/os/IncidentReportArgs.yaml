@@ -1,0 +1,15 @@
+package: android.os
+type: IncidentReportArgs
+fields:
+    - name: All?1:0
+      type: int32
+    - name: "N"
+      type: int32
+    - name: "N"
+      type: int32
+    - name: PrivacyPolicy
+      type: int32
+    - name: ReceiverPkg
+      type: string16
+    - name: ReceiverCls
+      type: string16

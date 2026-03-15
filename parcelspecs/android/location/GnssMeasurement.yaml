@@ -1,0 +1,64 @@
+package: android.location
+type: GnssMeasurement
+fields:
+    - name: Flags
+      type: int32
+    - name: Svid
+      type: int32
+    - name: ConstellationType
+      type: int32
+    - name: TimeOffsetNanos
+      type: float64
+    - name: State
+      type: int32
+    - name: ReceivedSvTimeNanos
+      type: int64
+    - name: ReceivedSvTimeUncertaintyNanos
+      type: int64
+    - name: Cn0DbHz
+      type: float64
+    - name: PseudorangeRateMetersPerSecond
+      type: float64
+    - name: PseudorangeRateUncertaintyMetersPerSecond
+      type: float64
+    - name: AccumulatedDeltaRangeState
+      type: int32
+    - name: AccumulatedDeltaRangeMeters
+      type: float64
+    - name: AccumulatedDeltaRangeUncertaintyMeters
+      type: float64
+    - name: CarrierFrequencyHz
+      type: float32
+    - name: CarrierCycles
+      type: int64
+    - name: CarrierPhase
+      type: float64
+    - name: CarrierPhaseUncertainty
+      type: float64
+    - name: MultipathIndicator
+      type: int32
+    - name: SnrInDb
+      type: float64
+    - name: AutomaticGainControlLevelInDb
+      type: float64
+    - name: CodeType
+      type: string16
+    - name: BasebandCn0DbHz
+      type: float64
+    - name: FullInterSignalBiasNanos
+      type: float64
+    - name: FullInterSignalBiasUncertaintyNanos
+      type: float64
+    - name: SatelliteInterSignalBiasNanos
+      type: float64
+    - name: SatelliteInterSignalBiasUncertaintyNanos
+      type: float64
+    - name: SatellitePvt
+      type: opaque
+      condition: hasSatellitePvt()
+    - name: CorrelationVectorArray.length
+      type: int32
+      condition: hasCorrelationVectors()
+    - name: CorrelationVectorArray
+      type: opaque
+      condition: hasCorrelationVectors()

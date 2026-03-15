@@ -1,0 +1,21 @@
+package: android.window
+type: TaskFragmentCreationParams
+fields:
+    - name: Dest
+      type: opaque
+    - name: FragmentToken
+      type: opaque
+    - name: OwnerToken
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: WindowingMode
+      type: int32
+    - name: PairedPrimaryFragmentToken
+      type: opaque
+    - name: PairedActivityToken
+      type: opaque
+    - name: AllowTransitionWhenEmpty
+      type: bool
+    - name: OverrideOrientation
+      type: int32

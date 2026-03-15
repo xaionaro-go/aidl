@@ -1,0 +1,15 @@
+package: android.hardware.input
+type: TouchCalibration
+fields:
+    - name: XScale
+      type: float32
+    - name: XYMix
+      type: float32
+    - name: XOffset
+      type: float32
+    - name: YXMix
+      type: float32
+    - name: YScale
+      type: float32
+    - name: YOffset
+      type: float32

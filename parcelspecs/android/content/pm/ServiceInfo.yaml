@@ -1,0 +1,11 @@
+package: android.content.pm
+type: ServiceInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: Permission
+      type: string8
+    - name: Flags
+      type: int32
+    - name: ForegroundServiceType
+      type: int32

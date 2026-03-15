@@ -1,0 +1,7 @@
+package: android.window
+type: DisplayAreaAppearedInfo
+fields:
+    - name: DisplayAreaInfo
+      type: opaque
+    - name: Leash
+      type: opaque

@@ -1,0 +1,5 @@
+package: android.media.quality
+type: PictureProfileHandle
+fields:
+    - name: Id
+      type: int64

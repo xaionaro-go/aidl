@@ -1,0 +1,23 @@
+package: android.content
+type: ContentCaptureOptions
+fields:
+    - name: Lite
+      type: bool
+    - name: LoggingLevel
+      type: int32
+    - name: MaxBufferSize
+      type: int32
+    - name: IdleFlushingFrequencyMs
+      type: int32
+    - name: TextChangeFlushingFrequencyMs
+      type: int32
+    - name: LogHistorySize
+      type: int32
+    - name: DisableFlushForViewTreeAppearing
+      type: bool
+    - name: EnableReceiver
+      type: bool
+    - name: Parcel
+      type: opaque
+    - name: WhitelistedComponents
+      type: opaque

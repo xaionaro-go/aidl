@@ -1,0 +1,19 @@
+package: android.telephony
+type: ImsiEncryptionInfo
+fields:
+    - name: B.length
+      type: int32
+    - name: b
+      type: opaque
+    - name: Mcc
+      type: string16
+    - name: Mnc
+      type: string16
+    - name: KeyIdentifier
+      type: string16
+    - name: KeyType
+      type: int32
+    - name: ExpirationTime.getTime()
+      type: int64
+    - name: CarrierId
+      type: int32

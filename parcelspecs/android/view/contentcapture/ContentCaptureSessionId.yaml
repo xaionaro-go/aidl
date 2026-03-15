@@ -1,0 +1,5 @@
+package: android.view.contentcapture
+type: ContentCaptureSessionId
+fields:
+    - name: Value
+      type: int32

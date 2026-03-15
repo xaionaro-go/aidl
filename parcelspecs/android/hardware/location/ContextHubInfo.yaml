@@ -1,0 +1,41 @@
+package: android.hardware.location
+type: ContextHubInfo
+fields:
+    - name: Id
+      type: int32
+    - name: Name
+      type: string16
+    - name: Vendor
+      type: string16
+    - name: Toolchain
+      type: string16
+    - name: PlatformVersion
+      type: int32
+    - name: ToolchainVersion
+      type: int32
+    - name: PeakMips
+      type: float32
+    - name: StoppedPowerDrawMw
+      type: float32
+    - name: SleepPowerDrawMw
+      type: float32
+    - name: PeakPowerDrawMw
+      type: float32
+    - name: MaxPacketLengthBytes
+      type: int32
+    - name: ChrePlatformId
+      type: int64
+    - name: ChreApiMajorVersion
+      type: int32
+    - name: ChreApiMinorVersion
+      type: int32
+    - name: ChrePatchVersion
+      type: int32
+    - name: SupportedSensors.length
+      type: int32
+    - name: SupportedSensors
+      type: opaque
+    - name: MemoryRegions
+      type: opaque
+    - name: SupportsReliableMessages
+      type: bool

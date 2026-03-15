@@ -1,0 +1,9 @@
+package: com.android.internal.content
+type: ReferrerIntent
+fields:
+    - name: Dest
+      type: opaque
+    - name: Referrer
+      type: string16
+    - name: CallerToken
+      type: opaque

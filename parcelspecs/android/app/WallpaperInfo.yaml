@@ -1,0 +1,27 @@
+package: android.app
+type: WallpaperInfo
+fields:
+    - name: SettingsActivityName
+      type: string16
+    - name: ThumbnailResource
+      type: int32
+    - name: AuthorResource
+      type: int32
+    - name: DescriptionResource
+      type: int32
+    - name: ContextUriResource
+      type: int32
+    - name: ContextDescriptionResource
+      type: int32
+    - name: ShowMetadataInPreview?1:0
+      type: int32
+    - name: SupportsAmbientMode?1:0
+      type: int32
+    - name: SettingsSliceUri
+      type: string16
+    - name: SupportMultipleDisplays?1:0
+      type: int32
+    - name: ShouldUseDefaultUnfoldTransition?1:0
+      type: int32
+    - name: Dest
+      type: opaque

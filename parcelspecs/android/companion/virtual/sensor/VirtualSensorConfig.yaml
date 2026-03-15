@@ -1,0 +1,21 @@
+package: android.companion.virtual.sensor
+type: VirtualSensorConfig
+fields:
+    - name: Type
+      type: int32
+    - name: Name
+      type: string8
+    - name: Vendor
+      type: string8
+    - name: MaximumRange
+      type: float32
+    - name: Resolution
+      type: float32
+    - name: Power
+      type: float32
+    - name: MinDelay
+      type: int32
+    - name: MaxDelay
+      type: int32
+    - name: Flags
+      type: int32

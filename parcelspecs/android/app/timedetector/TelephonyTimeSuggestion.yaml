@@ -1,0 +1,9 @@
+package: android.app.timedetector
+type: TelephonyTimeSuggestion
+fields:
+    - name: SlotIndex
+      type: int32
+    - name: UnixEpochTime
+      type: opaque
+    - name: DebugInfo
+      type: opaque

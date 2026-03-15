@@ -1,0 +1,33 @@
+package: android.widget
+type: RemoteViews
+fields:
+    - name: MODE_NORMAL
+      type: int32
+      condition: '!hasMultipleLayouts()'
+    - name: Dest
+      type: opaque
+      condition: '!hasMultipleLayouts() && mIsRoot'
+    - name: Dest
+      type: opaque
+      condition: '!hasMultipleLayouts() && mIsRoot'
+    - name: Application
+      type: opaque
+      condition: '!hasMultipleLayouts()'
+    - name: "0"
+      type: int32
+      condition: '!hasMultipleLayouts() && mIsRoot||mIdealSize==null'
+    - name: LayoutId
+      type: int32
+      condition: '!hasMultipleLayouts()'
+    - name: ViewId
+      type: int32
+      condition: '!hasMultipleLayouts()'
+    - name: LightBackgroundLayoutId
+      type: int32
+      condition: '!hasMultipleLayouts()'
+    - name: ApplyFlags
+      type: int32
+    - name: ProviderInstanceId
+      type: int64
+    - name: HasDrawInstructions
+      type: bool

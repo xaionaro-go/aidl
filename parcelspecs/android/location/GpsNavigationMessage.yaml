@@ -1,0 +1,17 @@
+package: android.location
+type: GpsNavigationMessage
+fields:
+    - name: Type
+      type: int32
+    - name: Prn
+      type: int32
+    - name: MessageId
+      type: int32
+    - name: SubmessageId
+      type: int32
+    - name: Data.length
+      type: int32
+    - name: Data
+      type: opaque
+    - name: Status
+      type: int32

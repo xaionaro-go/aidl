@@ -1,0 +1,11 @@
+package: android.content
+type: SyncInfo
+fields:
+    - name: AuthorityId
+      type: int32
+    - name: Account
+      type: opaque
+    - name: Authority
+      type: string16
+    - name: StartTime
+      type: int64

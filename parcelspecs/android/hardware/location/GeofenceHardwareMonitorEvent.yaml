@@ -1,0 +1,11 @@
+package: android.hardware.location
+type: GeofenceHardwareMonitorEvent
+fields:
+    - name: MonitoringType
+      type: int32
+    - name: MonitoringStatus
+      type: int32
+    - name: SourceTechnologies
+      type: int32
+    - name: Location
+      type: opaque

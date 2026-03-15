@@ -1,0 +1,9 @@
+package: android.hardware.input
+type: VirtualTouchDeviceConfig
+fields:
+    - name: Dest
+      type: opaque
+    - name: Width
+      type: int32
+    - name: Height
+      type: int32

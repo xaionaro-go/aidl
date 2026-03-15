@@ -1,0 +1,13 @@
+package: android.telephony.data
+type: DataProfile
+fields:
+    - name: Type
+      type: int32
+    - name: ApnSetting
+      type: opaque
+    - name: TrafficDescriptor
+      type: opaque
+    - name: Preferred
+      type: bool
+    - name: SetupTimestamp
+      type: int64

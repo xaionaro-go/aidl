@@ -1,0 +1,7 @@
+package: android.app.servertransaction
+type: StartActivityItem
+fields:
+    - name: Dest
+      type: opaque
+    - name: SceneTransitionInfo
+      type: opaque

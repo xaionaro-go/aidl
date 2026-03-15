@@ -1,0 +1,11 @@
+package: android.view.translation
+type: TranslationResponse
+fields:
+    - name: Flg
+      type: int32
+    - name: TranslationStatus
+      type: int32
+    - name: TranslationResponseValues
+      type: opaque
+    - name: ViewTranslationResponses
+      type: opaque

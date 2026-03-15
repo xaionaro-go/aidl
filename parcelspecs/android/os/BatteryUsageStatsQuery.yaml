@@ -1,0 +1,23 @@
+package: android.os
+type: BatteryUsageStatsQuery
+fields:
+    - name: MonotonicStartTime
+      type: int64
+    - name: MonotonicEndTime
+      type: int64
+    - name: Flags
+      type: int32
+    - name: UserIds.length
+      type: int32
+    - name: UserIds
+      type: opaque
+    - name: MaxStatsAgeMs
+      type: int64
+    - name: MinConsumedPowerThreshold
+      type: float64
+    - name: AggregatedFromTimestamp
+      type: int64
+    - name: AggregatedToTimestamp
+      type: int64
+    - name: PowerComponents
+      type: opaque

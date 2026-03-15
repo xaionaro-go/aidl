@@ -1,0 +1,15 @@
+package: android.window
+type: TaskFragmentParentInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: DisplayId
+      type: int32
+    - name: TaskId
+      type: int32
+    - name: Visible
+      type: bool
+    - name: HasDirectActivity
+      type: bool
+    - name: DecorSurface
+      type: opaque

@@ -1,0 +1,21 @@
+package: android.net
+type: NetworkPolicy
+fields:
+    - name: Template
+      type: opaque
+    - name: CycleRule
+      type: opaque
+    - name: WarningBytes
+      type: int64
+    - name: LimitBytes
+      type: int64
+    - name: LastWarningSnooze
+      type: int64
+    - name: LastLimitSnooze
+      type: int64
+    - name: LastRapidSnooze
+      type: int64
+    - name: Metered?1:0
+      type: int32
+    - name: Inferred?1:0
+      type: int32

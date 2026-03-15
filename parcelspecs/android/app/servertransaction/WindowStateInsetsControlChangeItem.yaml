@@ -1,0 +1,9 @@
+package: android.app.servertransaction
+type: WindowStateInsetsControlChangeItem
+fields:
+    - name: Dest
+      type: opaque
+    - name: InsetsState
+      type: opaque
+    - name: ActiveControls
+      type: opaque

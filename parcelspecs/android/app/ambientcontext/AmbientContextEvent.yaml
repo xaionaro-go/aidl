@@ -1,0 +1,11 @@
+package: android.app.ambientcontext
+type: AmbientContextEvent
+fields:
+    - name: EventType
+      type: int32
+    - name: ConfidenceLevel
+      type: int32
+    - name: DensityLevel
+      type: int32
+    - name: VendorData
+      type: opaque

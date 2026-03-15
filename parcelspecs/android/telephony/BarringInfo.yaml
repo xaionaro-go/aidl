@@ -1,0 +1,7 @@
+package: android.telephony
+type: BarringInfo
+fields:
+    - name: CellIdentity
+      type: opaque
+    - name: BarringServiceInfos
+      type: opaque

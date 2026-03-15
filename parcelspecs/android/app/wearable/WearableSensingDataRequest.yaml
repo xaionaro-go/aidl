@@ -1,0 +1,7 @@
+package: android.app.wearable
+type: WearableSensingDataRequest
+fields:
+    - name: DataType
+      type: int32
+    - name: RequestDetails
+      type: opaque

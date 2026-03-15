@@ -1,0 +1,7 @@
+package: android.telephony.ims
+type: FeatureTagState
+fields:
+    - name: FeatureTag
+      type: string16
+    - name: State
+      type: int32

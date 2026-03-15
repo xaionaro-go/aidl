@@ -1,0 +1,9 @@
+package: android.location
+type: GnssAutomaticGainControl
+fields:
+    - name: LevelDb
+      type: float64
+    - name: ConstellationType
+      type: int32
+    - name: CarrierFrequencyHz
+      type: int64

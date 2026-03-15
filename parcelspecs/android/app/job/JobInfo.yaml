@@ -1,0 +1,70 @@
+package: android.app.job
+type: JobInfo
+fields:
+    - name: JobId
+      type: int32
+    - name: Extras
+      type: opaque
+    - name: TransientExtras
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: clipData!=null
+    - name: Out
+      type: opaque
+      condition: clipData!=null
+    - name: ClipGrantFlags
+      type: int32
+      condition: clipData!=null
+    - name: Service
+      type: opaque
+    - name: ConstraintFlags
+      type: int32
+    - name: TriggerContentUris
+      type: opaque
+    - name: TriggerContentUpdateDelay
+      type: int64
+    - name: TriggerContentMaxDelay
+      type: int64
+    - name: "1"
+      type: int32
+      condition: networkRequest!=null
+    - name: Out
+      type: opaque
+      condition: networkRequest!=null
+    - name: NetworkDownloadBytes
+      type: int64
+    - name: NetworkUploadBytes
+      type: int64
+    - name: MinimumNetworkChunkBytes
+      type: int64
+    - name: MinLatencyMillis
+      type: int64
+    - name: MaxExecutionDelayMillis
+      type: int64
+    - name: IsPeriodic?1:0
+      type: int32
+    - name: IsPersisted?1:0
+      type: int32
+    - name: IntervalMillis
+      type: int64
+    - name: FlexMillis
+      type: int64
+    - name: InitialBackoffMillis
+      type: int64
+    - name: BackoffPolicy
+      type: int32
+    - name: HasEarlyConstraint?1:0
+      type: int32
+    - name: HasLateConstraint?1:0
+      type: int32
+    - name: Bias
+      type: int32
+    - name: Priority
+      type: int32
+    - name: This.flags
+      type: int32
+    - name: NumDebugTags
+      type: int32
+    - name: TraceTag
+      type: string16

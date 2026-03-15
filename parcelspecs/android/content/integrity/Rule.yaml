@@ -1,0 +1,7 @@
+package: android.content.integrity
+type: Rule
+fields:
+    - name: Formula
+      type: opaque
+    - name: Effect
+      type: int32

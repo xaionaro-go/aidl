@@ -1,0 +1,19 @@
+package: android.os
+type: Message
+fields:
+    - name: What
+      type: int32
+    - name: Arg1
+      type: int32
+    - name: Arg2
+      type: int32
+    - name: When
+      type: int64
+    - name: Data
+      type: opaque
+    - name: ReplyTo
+      type: opaque
+    - name: SendingUid
+      type: int32
+    - name: WorkSourceUid
+      type: int32

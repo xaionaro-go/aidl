@@ -1,0 +1,13 @@
+package: android.telephony
+type: PreciseCallState
+fields:
+    - name: RingingCallState
+      type: int32
+    - name: ForegroundCallState
+      type: int32
+    - name: BackgroundCallState
+      type: int32
+    - name: DisconnectCause
+      type: int32
+    - name: PreciseDisconnectCause
+      type: int32

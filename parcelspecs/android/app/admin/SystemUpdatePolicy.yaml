@@ -1,0 +1,11 @@
+package: android.app.admin
+type: SystemUpdatePolicy
+fields:
+    - name: PolicyType
+      type: int32
+    - name: MaintenanceWindowStart
+      type: int32
+    - name: MaintenanceWindowEnd
+      type: int32
+    - name: FreezeCount
+      type: int32

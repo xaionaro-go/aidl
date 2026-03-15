@@ -1,0 +1,9 @@
+package: android.service.notification
+type: NotifyingApp
+fields:
+    - name: UserId
+      type: int32
+    - name: Pkg
+      type: string16
+    - name: LastNotified
+      type: int64

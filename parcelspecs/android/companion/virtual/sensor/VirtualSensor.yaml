@@ -1,0 +1,13 @@
+package: android.companion.virtual.sensor
+type: VirtualSensor
+fields:
+    - name: Handle
+      type: int32
+    - name: Type
+      type: int32
+    - name: Name
+      type: string8
+    - name: VirtualDevice.asBinder()
+      type: opaque
+    - name: Token
+      type: opaque

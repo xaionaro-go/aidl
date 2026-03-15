@@ -1,0 +1,8 @@
+package: android.service.quickaccesswallet
+type: GetWalletCardsError
+fields:
+    - name: (byte)0
+      type: int32
+      condition: mIcon==null
+    - name: Message
+      type: opaque

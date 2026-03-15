@@ -1,0 +1,17 @@
+package: android.window
+type: BackMotionEvent
+fields:
+    - name: TouchX
+      type: float32
+    - name: TouchY
+      type: float32
+    - name: Progress
+      type: float32
+    - name: TriggerBack
+      type: bool
+    - name: SwipeEdge
+      type: int32
+    - name: DepartingAnimationTarget
+      type: opaque
+    - name: FrameTimeMillis
+      type: int64

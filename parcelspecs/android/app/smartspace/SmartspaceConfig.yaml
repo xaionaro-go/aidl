@@ -1,0 +1,11 @@
+package: android.app.smartspace
+type: SmartspaceConfig
+fields:
+    - name: UiSurface
+      type: string16
+    - name: SmartspaceTargetCount
+      type: int32
+    - name: PackageName
+      type: string16
+    - name: Extras
+      type: opaque

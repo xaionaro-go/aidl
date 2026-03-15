@@ -1,0 +1,7 @@
+package: android.media.tv
+type: TvContentRatingSystemInfo
+fields:
+    - name: XmlUri
+      type: opaque
+    - name: ApplicationInfo
+      type: opaque

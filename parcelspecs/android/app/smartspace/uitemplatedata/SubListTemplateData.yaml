@@ -1,0 +1,11 @@
+package: android.app.smartspace.uitemplatedata
+type: SubListTemplateData
+fields:
+    - name: Out
+      type: opaque
+    - name: SubListIcon
+      type: opaque
+    - name: SubListTexts
+      type: opaque
+    - name: SubListAction
+      type: opaque

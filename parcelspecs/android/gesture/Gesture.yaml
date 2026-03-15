@@ -1,0 +1,8 @@
+package: android.gesture
+type: Gesture
+fields:
+    - name: GestureID
+      type: int64
+    - name: ByteStream.toByteArray()
+      type: opaque
+      condition: result

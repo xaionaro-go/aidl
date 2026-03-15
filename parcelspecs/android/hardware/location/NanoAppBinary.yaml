@@ -1,0 +1,7 @@
+package: android.hardware.location
+type: NanoAppBinary
+fields:
+    - name: NanoAppBinary.length
+      type: int32
+    - name: NanoAppBinary
+      type: opaque

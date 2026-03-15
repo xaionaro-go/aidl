@@ -1,0 +1,20 @@
+package: android.view.inputmethod
+type: InlineSuggestionsRequest
+fields:
+    - name: Flg
+      type: int32
+    - name: MaxSuggestionCount
+      type: int32
+    - name: InlinePresentationSpecs
+      type: opaque
+    - name: HostPackageName
+      type: string16
+    - name: SupportedLocales
+      type: opaque
+    - name: Extras
+      type: opaque
+    - name: HostDisplayId
+      type: int32
+    - name: InlineTooltipPresentationSpec
+      type: opaque
+      condition: mInlineTooltipPresentationSpec!=null

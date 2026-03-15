@@ -1,0 +1,9 @@
+package: android.view.inputmethod
+type: InsertGesture
+fields:
+    - name: FallbackText
+      type: string8
+    - name: TextToInsert
+      type: string8
+    - name: Point
+      type: opaque

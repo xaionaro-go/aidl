@@ -1,0 +1,23 @@
+package: android.telephony
+type: PhysicalChannelConfig
+fields:
+    - name: CellConnectionStatus
+      type: int32
+    - name: CellBandwidthDownlinkKhz
+      type: int32
+    - name: CellBandwidthUplinkKhz
+      type: int32
+    - name: NetworkType
+      type: int32
+    - name: DownlinkChannelNumber
+      type: int32
+    - name: UplinkChannelNumber
+      type: int32
+    - name: FrequencyRange
+      type: int32
+    - name: ContextIds
+      type: opaque
+    - name: PhysicalCellId
+      type: int32
+    - name: Band
+      type: int32

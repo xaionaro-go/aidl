@@ -1,0 +1,9 @@
+package: android.app.job
+type: JobSnapshot
+fields:
+    - name: Out
+      type: opaque
+    - name: SatisfiedConstraints
+      type: int32
+    - name: IsRunnable
+      type: bool

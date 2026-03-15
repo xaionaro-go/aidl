@@ -1,0 +1,11 @@
+package: android.companion.datatransfer
+type: SystemDataTransferRequest
+fields:
+    - name: AssociationId
+      type: int32
+    - name: DataType
+      type: int32
+    - name: UserId
+      type: int32
+    - name: UserConsented
+      type: bool

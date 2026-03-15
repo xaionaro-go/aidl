@@ -1,0 +1,11 @@
+package: android.net
+type: VpnProfileState
+fields:
+    - name: State
+      type: int32
+    - name: SessionKey
+      type: string16
+    - name: AlwaysOn
+      type: bool
+    - name: Lockdown
+      type: bool

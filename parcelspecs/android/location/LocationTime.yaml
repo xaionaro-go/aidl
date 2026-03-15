@@ -1,0 +1,7 @@
+package: android.location
+type: LocationTime
+fields:
+    - name: UnixEpochTimeMillis
+      type: int64
+    - name: ElapsedRealtimeNanos
+      type: int64

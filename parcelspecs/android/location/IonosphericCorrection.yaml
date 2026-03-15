@@ -1,0 +1,7 @@
+package: android.location
+type: IonosphericCorrection
+fields:
+    - name: CarrierFrequencyHz
+      type: int64
+    - name: IonosphericCorrection
+      type: opaque

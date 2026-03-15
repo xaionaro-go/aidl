@@ -1,0 +1,23 @@
+package: android.telephony.data
+type: QosBearerFilter
+fields:
+    - name: LocalAddresses
+      type: opaque
+    - name: RemoteAddresses
+      type: opaque
+    - name: LocalPort
+      type: opaque
+    - name: RemotePort
+      type: opaque
+    - name: Protocol
+      type: int32
+    - name: TypeOfServiceMask
+      type: int32
+    - name: FlowLabel
+      type: int64
+    - name: SecurityParameterIndex
+      type: int64
+    - name: FilterDirection
+      type: int32
+    - name: Precedence
+      type: int32

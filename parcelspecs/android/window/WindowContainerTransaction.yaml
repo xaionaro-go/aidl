@@ -1,0 +1,11 @@
+package: android.window
+type: WindowContainerTransaction
+fields:
+    - name: Changes
+      type: opaque
+    - name: HierarchyOps
+      type: opaque
+    - name: ErrorCallbackToken
+      type: opaque
+    - name: TaskFragmentOrganizer
+      type: opaque

@@ -1,0 +1,9 @@
+package: android.service.voice
+type: VisualQueryDetectedResult
+fields:
+    - name: PartialQuery
+      type: string16
+    - name: SpeakerId
+      type: int32
+    - name: AccessibilityDetectionData
+      type: opaque

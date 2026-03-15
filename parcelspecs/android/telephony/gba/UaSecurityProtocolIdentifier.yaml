@@ -1,0 +1,9 @@
+package: android.telephony.gba
+type: UaSecurityProtocolIdentifier
+fields:
+    - name: Org
+      type: int32
+    - name: Protocol
+      type: int32
+    - name: TlsCipherSuite
+      type: int32

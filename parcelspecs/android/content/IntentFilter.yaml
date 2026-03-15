@@ -1,0 +1,65 @@
+package: android.content
+type: IntentFilter
+fields:
+    - name: Actions.toArray(newString[mActions.size()])
+      type: opaque
+    - name: "1"
+      type: int32
+      condition: mCategories!=null
+    - name: Categories
+      type: opaque
+      condition: mCategories!=null
+    - name: "1"
+      type: int32
+      condition: mDataSchemes!=null
+    - name: DataSchemes
+      type: opaque
+      condition: mDataSchemes!=null
+    - name: "1"
+      type: int32
+      condition: mStaticDataTypes!=null
+    - name: StaticDataTypes
+      type: opaque
+      condition: mStaticDataTypes!=null
+    - name: "1"
+      type: int32
+      condition: mDataTypes!=null
+    - name: DataTypes
+      type: opaque
+      condition: mDataTypes!=null
+    - name: "1"
+      type: int32
+      condition: mMimeGroups!=null
+    - name: MimeGroups
+      type: opaque
+      condition: mMimeGroups!=null
+    - name: "N"
+      type: int32
+      condition: mDataSchemeSpecificParts!=null
+    - name: "N"
+      type: int32
+      condition: mDataAuthorities!=null
+    - name: "N"
+      type: int32
+      condition: mDataPaths!=null
+    - name: Priority
+      type: int32
+    - name: HasStaticPartialTypes?1:0
+      type: int32
+    - name: HasDynamicPartialTypes?1:0
+      type: int32
+    - name: GetAutoVerify()?1:0
+      type: int32
+    - name: InstantAppVisibility
+      type: int32
+    - name: Order
+      type: int32
+    - name: "1"
+      type: int32
+      condition: mExtras!=null
+    - name: Dest
+      type: opaque
+      condition: mExtras!=null
+    - name: "N"
+      type: int32
+      condition: Flags.relativeReferenceIntentFilters()&&mUriRelativeFilterGroups!=null

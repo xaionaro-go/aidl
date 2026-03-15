@@ -1,0 +1,9 @@
+package: android.media.metrics
+type: PlaybackStateEvent
+fields:
+    - name: State
+      type: int32
+    - name: TimeSinceCreatedMillis
+      type: int64
+    - name: MetricsBundle
+      type: opaque

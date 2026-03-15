@@ -1,0 +1,9 @@
+package: android.location
+type: SatelliteEphemerisTime
+fields:
+    - name: Iode
+      type: int32
+    - name: WeekNumber
+      type: int32
+    - name: ToeSeconds
+      type: int32

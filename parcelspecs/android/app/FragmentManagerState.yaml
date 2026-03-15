@@ -1,0 +1,13 @@
+package: android.app
+type: FragmentManagerState
+fields:
+    - name: Active
+      type: opaque
+    - name: Added
+      type: opaque
+    - name: BackStack
+      type: opaque
+    - name: PrimaryNavActiveIndex
+      type: int32
+    - name: NextFragmentIndex
+      type: int32

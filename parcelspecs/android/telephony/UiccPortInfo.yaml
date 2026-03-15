@@ -1,0 +1,11 @@
+package: android.telephony
+type: UiccPortInfo
+fields:
+    - name: IccId
+      type: string8
+    - name: PortIndex
+      type: int32
+    - name: LogicalSlotIndex
+      type: int32
+    - name: IsActive
+      type: bool

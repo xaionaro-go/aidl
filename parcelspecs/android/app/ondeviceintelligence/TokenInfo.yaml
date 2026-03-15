@@ -1,0 +1,7 @@
+package: android.app.ondeviceintelligence
+type: TokenInfo
+fields:
+    - name: Count
+      type: int64
+    - name: InfoParams
+      type: opaque

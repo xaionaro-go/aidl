@@ -1,0 +1,9 @@
+package: android.content
+type: UriRelativeFilter
+fields:
+    - name: UriPart
+      type: int32
+    - name: PatternType
+      type: int32
+    - name: Filter
+      type: string16

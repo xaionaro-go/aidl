@@ -1,0 +1,5 @@
+package: android.location
+type: GpsNavigationMessageEvent
+fields:
+    - name: NavigationMessage
+      type: opaque

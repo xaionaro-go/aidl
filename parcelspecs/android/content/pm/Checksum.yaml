@@ -1,0 +1,7 @@
+package: android.content.pm
+type: Checksum
+fields:
+    - name: Type
+      type: int32
+    - name: Value
+      type: opaque

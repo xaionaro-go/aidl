@@ -1,0 +1,15 @@
+package: android.app
+type: SyncNotedAppOp
+fields:
+    - name: Flg
+      type: int32
+    - name: OpMode
+      type: int32
+    - name: OpCode
+      type: int32
+    - name: AttributionTag
+      type: string16
+      condition: mAttributionTag!=null
+    - name: PackageName
+      type: string16
+      condition: mPackageName!=null

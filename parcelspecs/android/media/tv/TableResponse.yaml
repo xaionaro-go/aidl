@@ -1,0 +1,19 @@
+package: android.media.tv
+type: TableResponse
+fields:
+    - name: Dest
+      type: opaque
+    - name: UriString
+      type: string16
+    - name: Version
+      type: int32
+    - name: Size
+      type: int32
+    - name: TableByteArray.length
+      type: int32
+      condition: mTableByteArray!=null
+    - name: TableByteArray
+      type: opaque
+      condition: mTableByteArray!=null
+    - name: TableSharedMemory
+      type: opaque

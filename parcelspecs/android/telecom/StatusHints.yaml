@@ -1,0 +1,9 @@
+package: android.telecom
+type: StatusHints
+fields:
+    - name: Label
+      type: opaque
+    - name: Icon
+      type: opaque
+    - name: Extras
+      type: opaque

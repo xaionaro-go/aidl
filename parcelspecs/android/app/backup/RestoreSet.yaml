@@ -1,0 +1,11 @@
+package: android.app.backup
+type: RestoreSet
+fields:
+    - name: Name
+      type: string16
+    - name: Device
+      type: string16
+    - name: Token
+      type: int64
+    - name: BackupTransportFlags
+      type: int32

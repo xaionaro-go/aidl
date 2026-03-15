@@ -1,0 +1,7 @@
+package: android.print
+type: PageRange
+fields:
+    - name: Start
+      type: int32
+    - name: End
+      type: int32

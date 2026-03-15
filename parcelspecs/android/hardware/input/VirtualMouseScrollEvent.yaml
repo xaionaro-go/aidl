@@ -1,0 +1,9 @@
+package: android.hardware.input
+type: VirtualMouseScrollEvent
+fields:
+    - name: XAxisMovement
+      type: float32
+    - name: YAxisMovement
+      type: float32
+    - name: EventTimeNanos
+      type: int64

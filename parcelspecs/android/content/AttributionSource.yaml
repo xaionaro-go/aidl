@@ -1,0 +1,5 @@
+package: android.content
+type: AttributionSource
+fields:
+    - name: Dest
+      type: opaque

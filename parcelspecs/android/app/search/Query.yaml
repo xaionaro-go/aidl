@@ -1,0 +1,9 @@
+package: android.app.search
+type: Query
+fields:
+    - name: Input
+      type: string16
+    - name: TimestampMillis
+      type: int64
+    - name: Extras
+      type: opaque

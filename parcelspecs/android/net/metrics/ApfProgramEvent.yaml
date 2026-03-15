@@ -1,0 +1,15 @@
+package: android.net.metrics
+type: ApfProgramEvent
+fields:
+    - name: Lifetime
+      type: int64
+    - name: ActualLifetime
+      type: int64
+    - name: FilteredRas
+      type: int32
+    - name: CurrentRas
+      type: int32
+    - name: ProgramLength
+      type: int32
+    - name: This.flags
+      type: int32

@@ -1,0 +1,9 @@
+package: android.app.admin
+type: DevicePolicyStringResource
+fields:
+    - name: StringId
+      type: string16
+    - name: ResourceIdInCallingPackage
+      type: int32
+    - name: Resource
+      type: opaque

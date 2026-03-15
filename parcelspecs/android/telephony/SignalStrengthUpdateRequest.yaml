@@ -1,0 +1,11 @@
+package: android.telephony
+type: SignalStrengthUpdateRequest
+fields:
+    - name: SignalThresholdInfos
+      type: opaque
+    - name: IsReportingRequestedWhileIdle
+      type: bool
+    - name: IsSystemThresholdReportingRequestedWhileIdle
+      type: bool
+    - name: LiveToken
+      type: opaque

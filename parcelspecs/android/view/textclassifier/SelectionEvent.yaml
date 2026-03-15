@@ -1,0 +1,47 @@
+package: android.view.textclassifier
+type: SelectionEvent
+fields:
+    - name: AbsoluteStart
+      type: int32
+    - name: AbsoluteEnd
+      type: int32
+    - name: EventType
+      type: int32
+    - name: EntityType
+      type: string16
+    - name: WidgetVersion!=null?1:0
+      type: int32
+    - name: WidgetVersion
+      type: string16
+      condition: mWidgetVersion!=null
+    - name: PackageName
+      type: string16
+    - name: WidgetType
+      type: string16
+    - name: InvocationMethod
+      type: int32
+    - name: ResultId
+      type: string16
+    - name: EventTime
+      type: int64
+    - name: DurationSinceSessionStart
+      type: int64
+    - name: DurationSincePreviousEvent
+      type: int64
+    - name: EventIndex
+      type: int32
+    - name: SessionId!=null?1:0
+      type: int32
+    - name: Dest
+      type: opaque
+      condition: mSessionId!=null
+    - name: Start
+      type: int32
+    - name: End
+      type: int32
+    - name: SmartStart
+      type: int32
+    - name: SmartEnd
+      type: int32
+    - name: SystemTcMetadata
+      type: opaque

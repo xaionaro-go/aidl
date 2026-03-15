@@ -1,0 +1,11 @@
+package: android.os
+type: Temperature
+fields:
+    - name: Value
+      type: float32
+    - name: Type
+      type: int32
+    - name: Name
+      type: string16
+    - name: Status
+      type: int32

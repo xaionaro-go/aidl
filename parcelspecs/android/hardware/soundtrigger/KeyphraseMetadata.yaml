@@ -1,0 +1,11 @@
+package: android.hardware.soundtrigger
+type: KeyphraseMetadata
+fields:
+    - name: Id
+      type: int32
+    - name: Keyphrase
+      type: string16
+    - name: SupportedLocales
+      type: opaque
+    - name: RecognitionModeFlags
+      type: int32

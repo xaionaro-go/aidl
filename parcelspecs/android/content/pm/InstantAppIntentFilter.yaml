@@ -1,0 +1,7 @@
+package: android.content.pm
+type: InstantAppIntentFilter
+fields:
+    - name: SplitName
+      type: string16
+    - name: Filters
+      type: opaque

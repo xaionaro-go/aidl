@@ -1,0 +1,19 @@
+package: android.app.usage
+type: ConfigurationStats
+fields:
+    - name: "1"
+      type: int32
+      condition: mConfiguration!=null
+    - name: Dest
+      type: opaque
+      condition: mConfiguration!=null
+    - name: BeginTimeStamp
+      type: int64
+    - name: EndTimeStamp
+      type: int64
+    - name: LastTimeActive
+      type: int64
+    - name: TotalTimeActive
+      type: int64
+    - name: ActivationCount
+      type: int32

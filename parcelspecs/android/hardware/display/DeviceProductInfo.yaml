@@ -1,0 +1,15 @@
+package: android.hardware.display
+type: DeviceProductInfo
+fields:
+    - name: Name
+      type: string16
+    - name: ManufacturerPnpId
+      type: string16
+    - name: ProductId
+      type: opaque
+    - name: ModelYear
+      type: opaque
+    - name: ManufactureDate
+      type: opaque
+    - name: ConnectionToSinkType
+      type: int32

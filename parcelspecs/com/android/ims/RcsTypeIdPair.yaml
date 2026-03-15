@@ -1,0 +1,7 @@
+package: com.android.ims
+type: RcsTypeIdPair
+fields:
+    - name: Type
+      type: int32
+    - name: Id
+      type: int32

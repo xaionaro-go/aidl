@@ -1,0 +1,7 @@
+package: android.telephony
+type: DataThrottlingRequest
+fields:
+    - name: DataThrottlingAction
+      type: int32
+    - name: CompletionDurationMillis
+      type: int64

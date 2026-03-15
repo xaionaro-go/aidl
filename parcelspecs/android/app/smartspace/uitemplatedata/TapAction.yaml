@@ -1,0 +1,15 @@
+package: android.app.smartspace.uitemplatedata
+type: TapAction
+fields:
+    - name: Id
+      type: opaque
+    - name: Intent
+      type: opaque
+    - name: PendingIntent
+      type: opaque
+    - name: UserHandle
+      type: opaque
+    - name: Extras
+      type: opaque
+    - name: ShouldShowOnLockscreen
+      type: bool

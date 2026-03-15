@@ -1,0 +1,9 @@
+package: android.telephony.ims
+type: PublishAttributes
+fields:
+    - name: PublishState
+      type: int32
+    - name: PresenceTuples
+      type: opaque
+    - name: SipDetails
+      type: opaque

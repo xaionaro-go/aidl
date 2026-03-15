@@ -1,0 +1,13 @@
+package: android.hardware
+type: CameraStatus
+fields:
+    - name: CameraId
+      type: string16
+    - name: Status
+      type: int32
+    - name: UnavailablePhysicalCameras
+      type: opaque
+    - name: ClientPackage
+      type: string16
+    - name: DeviceId
+      type: int32

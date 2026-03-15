@@ -1,0 +1,11 @@
+package: android.companion.virtual.camera
+type: VirtualCameraStreamConfig
+fields:
+    - name: Width
+      type: int32
+    - name: Height
+      type: int32
+    - name: Format
+      type: int32
+    - name: MaxFps
+      type: int32

@@ -1,0 +1,5 @@
+package: android.view.inputmethod
+type: InlineSuggestionsResponse
+fields:
+    - name: InlineSuggestions
+      type: opaque

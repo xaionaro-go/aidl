@@ -1,0 +1,15 @@
+package: android.view.translation
+type: TranslationResponseValue
+fields:
+    - name: Flg
+      type: int32
+    - name: StatusCode
+      type: int32
+    - name: Text
+      type: opaque
+      condition: mText!=null
+    - name: Extras
+      type: opaque
+    - name: Transliteration
+      type: opaque
+      condition: mTransliteration!=null

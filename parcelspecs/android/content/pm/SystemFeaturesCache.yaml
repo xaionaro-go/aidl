@@ -1,0 +1,5 @@
+package: android.content.pm
+type: SystemFeaturesCache
+fields:
+    - name: SdkFeatureVersions
+      type: opaque

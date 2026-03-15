@@ -1,0 +1,21 @@
+package: android.content.pm
+type: ComponentInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: ProcessName
+      type: string8
+    - name: SplitName
+      type: string8
+    - name: AttributionTags
+      type: opaque
+    - name: DescriptionRes
+      type: int32
+    - name: Enabled?1:0
+      type: int32
+    - name: Exported?1:0
+      type: int32
+    - name: DirectBootAware?1:0
+      type: int32

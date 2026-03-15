@@ -1,0 +1,13 @@
+package: android.window
+type: DisplayAreaInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: Dest
+      type: opaque
+    - name: DisplayId
+      type: int32
+    - name: FeatureId
+      type: int32
+    - name: RootDisplayAreaId
+      type: int32

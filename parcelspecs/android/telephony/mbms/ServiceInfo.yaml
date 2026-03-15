@@ -1,0 +1,15 @@
+package: android.telephony.mbms
+type: ServiceInfo
+fields:
+    - name: KeySet.size()
+      type: int32
+    - name: ClassName
+      type: string16
+    - name: LocalesCount
+      type: int32
+    - name: ServiceId
+      type: string16
+    - name: SessionStartTime
+      type: opaque
+    - name: SessionEndTime
+      type: opaque

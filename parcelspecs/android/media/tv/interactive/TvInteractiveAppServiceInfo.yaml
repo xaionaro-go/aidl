@@ -1,0 +1,11 @@
+package: android.media.tv.interactive
+type: TvInteractiveAppServiceInfo
+fields:
+    - name: Dest
+      type: opaque
+    - name: Id
+      type: string16
+    - name: Types
+      type: int32
+    - name: ExtraTypes
+      type: opaque

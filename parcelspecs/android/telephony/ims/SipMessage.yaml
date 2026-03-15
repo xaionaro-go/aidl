@@ -1,0 +1,15 @@
+package: android.telephony.ims
+type: SipMessage
+fields:
+    - name: StartLine
+      type: string16
+    - name: HeaderSection
+      type: string16
+    - name: Content.length
+      type: int32
+    - name: Content
+      type: opaque
+    - name: ViaBranchParam
+      type: string16
+    - name: CallIdParam
+      type: string16

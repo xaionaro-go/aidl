@@ -1,0 +1,5 @@
+package: android.service.autofill
+type: LuhnChecksumValidator
+fields:
+    - name: Ids
+      type: opaque

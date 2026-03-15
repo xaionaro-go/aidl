@@ -1,0 +1,15 @@
+package: android.view.textclassifier
+type: TextSelection
+fields:
+    - name: StartIndex
+      type: int32
+    - name: EndIndex
+      type: int32
+    - name: Dest
+      type: opaque
+    - name: Id
+      type: string16
+    - name: Extras
+      type: opaque
+    - name: TextClassification
+      type: opaque

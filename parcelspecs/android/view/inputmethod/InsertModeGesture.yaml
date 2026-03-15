@@ -1,0 +1,9 @@
+package: android.view.inputmethod
+type: InsertModeGesture
+fields:
+    - name: FallbackText
+      type: string8
+    - name: Point
+      type: opaque
+    - name: CancellationSignalBeamer.Sender.beamFromScope(mCancellationSignal)
+      type: opaque

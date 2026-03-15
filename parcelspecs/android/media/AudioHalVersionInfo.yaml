@@ -1,0 +1,5 @@
+package: android.media
+type: AudioHalVersionInfo
+fields:
+    - name: HalVersion
+      type: opaque

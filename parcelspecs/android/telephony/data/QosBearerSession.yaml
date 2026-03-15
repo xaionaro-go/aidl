@@ -1,0 +1,10 @@
+package: android.telephony.data
+type: QosBearerSession
+fields:
+    - name: QosBearerSessionId
+      type: int32
+    - name: (EpsQos)qos
+      type: opaque
+      condition: qos.getType()==Qos.QOS_TYPE_EPS
+    - name: QosBearerFilterList
+      type: opaque

@@ -1,0 +1,7 @@
+package: android.os
+type: TimestampedValue
+fields:
+    - name: ReferenceTimeMillis
+      type: int64
+    - name: Value
+      type: opaque
