@@ -184,18 +184,6 @@ adb shell /data/local/tmp/bindercli android.location.ILocationManager get-gnss-h
 
 See the full [bindercli reference](#bindercli) for all subcommands and more examples.
 
-## Building and Running
-
-Binaries are pure Go (no CGO) and run directly on Android:
-
-```bash
-GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/list_services ./examples/list_services/
-adb push build/list_services /data/local/tmp/
-adb shell /data/local/tmp/list_services
-```
-
-Requires access to `/dev/binder` on the target device (typically available as `shell` user or root).
-
 ## Packages
 
 |                                                                                                                                                           | Package              | Description                                                                            | Import Path                                        |
