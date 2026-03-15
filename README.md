@@ -10,7 +10,31 @@ Call Android system services from pure Go. Provides ~12000 type-safe Go methods 
 
 Includes a complete AIDL compiler that parses Android Interface Definition Language files and generates the Go proxies, a version-aware runtime that adapts transaction codes across Android API levels, and a CLI tool (`bindercli`) for interactive service discovery and invocation.
 
-## Android Interfaces for Go
+## What can it do?
+
+- **Query system services** — battery level, GPS location, thermal status, running processes, installed packages
+- **Control hardware** — connect to WiFi, toggle flashlight, manage Bluetooth, configure audio
+- **Interact with any binder service** — ActivityManager, PowerManager, SurfaceFlinger, camera/sensor HALs, and 600+ more
+- **No Java, no cgo** — pure Go, cross-compiles to a static binary, runs on Android or any Linux with `/dev/binder`
+- **CLI tool included** — `bindercli` for interactive service discovery, method invocation, and debugging
+
+## Quick start
+
+**Go library** — `go get github.com/xaionaro-go/binder` and call any service:
+
+```go
+driver, _ := kernelbinder.Open(ctx, binder.WithMapSize(128*1024))
+defer driver.Close(ctx)
+sm := servicemanager.New(driver)
+svc, _ := sm.GetService(ctx, "activity")
+am := app.NewActivityManagerProxy(svc)
+limit, _ := am.GetProcessLimit(ctx)
+```
+
+## Related Projects
+
+<details>
+<summary>ndk, jni, binder (click to expand)</summary>
 
 This project is part of a family of three Go libraries that cover the major Android interface surfaces. Each wraps a different layer of the Android platform:
 
@@ -68,6 +92,8 @@ All three libraries talk to the same Android system services, but through differ
 - The **NDK C APIs** are provided by Google as stable C interfaces to Android platform features. Some (camera, sensors, audio) internally use binder IPC to talk to system services; others (EGL, Vulkan, OpenGL) talk directly to kernel drivers. The `ndk` library wraps these C APIs via cgo.
 - The **Java SDK** uses binder IPC internally for system service access (BluetoothManager, LocationManager, etc.), routing calls through the Android Runtime (ART/Dalvik). The `jni` library calls into these Java APIs via the JNI C interface and cgo.
 - The **AIDL binder protocol** is the underlying IPC mechanism that system-facing NDK and Java SDK APIs use. The `binder` library implements this protocol directly in pure Go, bypassing both C and Java layers entirely.
+
+</details>
 
 ## Usage Examples
 
@@ -1749,16 +1775,6 @@ Each binder method has a numeric transaction code that can differ between Androi
 3. **Live transaction probing** (last resort) — sends a test transaction (`isUserAMonkey()` on ActivityManager) with each candidate code and picks the one that returns a valid response.
 
 Methods 2 and 3 exist only for extra reliability in edge cases (e.g. no read access to `/system/framework/`). The `genversions` tool builds the version tables by checking out AOSP revision tags and recording method→code mappings.
-
-The resolved table can be cached to disk for fast subsequent startups by passing `OptionCachePath`:
-
-```go
-transport, err := versionaware.NewTransport(ctx, driver, 0,
-    versionaware.OptionCachePath("/data/local/tmp/binder-codes.json"),
-)
-```
-
-Caching is disabled by default. The cache is fingerprinted and automatically invalidated when the device firmware changes.
 
 ## Testing and Verification
 
