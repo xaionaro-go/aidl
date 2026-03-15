@@ -1,4 +1,4 @@
-.PHONY: generate test e2e vet build build-examples lint clean readme smoke \
+.PHONY: generate genversions test e2e vet build build-examples lint clean readme smoke \
        aidlcli genaidlcli list-commands check-generated release
 
 # Generated top-level directories.
@@ -6,6 +6,10 @@ GENERATED_DIRS := android com fuzztest libgui_test_server parcelables src
 
 # All non-3rdparty Go packages.
 GO_PACKAGES = $(shell go list -e ./... | grep -v /3rdparty/)
+
+# Regenerate version-aware transaction code tables from AOSP tags.
+genversions:
+	go run ./tools/cmd/genversions
 
 # Generate all Go code from AOSP AIDL definitions.
 generate:
