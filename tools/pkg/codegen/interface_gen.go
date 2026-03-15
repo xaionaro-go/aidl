@@ -158,10 +158,15 @@ func writeProxyMethod(
 	isOneway := m.Oneway || interfaceOneway
 	hasReturn := m.ReturnType != nil && m.ReturnType.Name != "void"
 
-	// Method signature.
+	// Classify parameters: some are auto-filled from CallerIdentity
+	// and omitted from the proxy method signature.
+	regularParams, identityParams := classifyParams(m.Params)
+	hasIdentity := len(identityParams) > 0
+
+	// Method signature — identity params are omitted.
 	f.P("func (p *%s) %s(", proxyName, goName)
 	f.P("\tctx context.Context,")
-	for _, param := range m.Params {
+	for _, param := range regularParams {
 		goType := resolveTypeRef(typeRef, param.Type)
 		f.P("\t%s %s,", sanitizeGoIdent(param.ParamName), goType)
 	}
@@ -177,14 +182,28 @@ func writeProxyMethod(
 		f.P("\tvar _result %s", resolveTypeRef(typeRef, m.ReturnType))
 	}
 
+	// Retrieve caller identity when any parameters are auto-filled.
+	if hasIdentity {
+		f.P("\t_identity := p.remote.Identity()")
+	}
+
 	// Build and write data parcel.
 	f.P("\t_data := parcel.New()")
 	f.P("\t_data.WriteInterfaceToken(%s)", descriptorConst)
 
-	for _, param := range m.Params {
+	for i, param := range m.Params {
 		if param.Direction == parser.DirectionOut {
 			continue
 		}
+
+		// Identity params are written from _identity instead of a
+		// method parameter.
+		if field, ok := identityParams[i]; ok {
+			expr := fmt.Sprintf(identityWriteExpr[param.Type.Name], "_identity."+field)
+			f.P("\t%s", expr)
+			continue
+		}
+
 		writeParamToParcel(f, param, hasReturn, opts, typeRef)
 	}
 
