@@ -1,4 +1,4 @@
-.PHONY: generate genversions test e2e vet build build-examples lint clean readme smoke \
+.PHONY: generate genversions test e2e e2e-bindercli vet build build-examples lint clean readme smoke \
        bindercli genbindercli genservicemap genaccessors list-commands check-generated release
 
 # Generated top-level directories.
@@ -19,9 +19,18 @@ generate:
 test:
 	go test -v -race $(GO_PACKAGES)
 
-# Run E2E tests (requires Android emulator or device).
+# Run E2E tests on a connected device via adb.
+# Cross-compiles the test binary, pushes it, and runs on the device.
+# bindercli tests are skipped (they require an emulator); on-device tests
+# open /dev/binder directly.
 e2e:
-	go test -tags e2e ./tests/e2e/... -run TestAidlcli -v -timeout 300s
+	GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go test -tags e2e -c -o build/e2e_test ./tests/e2e/
+	adb push build/e2e_test /data/local/tmp/
+	adb shell /data/local/tmp/e2e_test -test.v -test.timeout 300s
+
+# Run bindercli E2E tests via emulator (starts emulator if needed).
+e2e-bindercli:
+	go test -tags e2e ./tests/e2e/... -run TestBindercli -v -timeout 300s
 
 # Run go vet on all packages.
 vet:

@@ -34,7 +34,20 @@ var emulatorSerial string
 // so cleanup only kills it if we own it.
 var emulatorStartedByTest bool
 
+// onDevice reports whether the test binary is running directly on an
+// Android device (i.e. /dev/binder is accessible). When true, the
+// emulator/adb setup is skipped — on-device tests open /dev/binder
+// directly, and aidlcli tests are skipped.
+var onDevice bool
+
 func TestMain(m *testing.M) {
+	if _, err := os.Stat("/dev/binder"); err == nil {
+		// Running on the device itself — skip emulator setup.
+		onDevice = true
+		os.Exit(m.Run())
+	}
+
+	// Running on the host — need emulator for aidlcli tests.
 	serial := findEmulator()
 	if serial == "" {
 		startEmulator()
@@ -217,9 +230,13 @@ func shellQuote(s string) string {
 	return "'" + strings.ReplaceAll(s, "'", "'\\''") + "'"
 }
 
-// runBindercliOrSkip runs bindercli; skips the test when the service is unavailable.
+// runBindercliOrSkip runs bindercli; skips the test when the service is unavailable
+// or when running directly on the device (aidlcli tests require adb from the host).
 func runBindercliOrSkip(t *testing.T, args ...string) string {
 	t.Helper()
+	if onDevice {
+		t.Skip("bindercli tests require adb from host; skipping on-device")
+	}
 	stdout, stderr, err := runBindercli(args...)
 	if err != nil {
 		combined := stderr + stdout
@@ -685,6 +702,9 @@ func runBindercliHALOrSkip(
 	args ...string,
 ) string {
 	t.Helper()
+	if onDevice {
+		t.Skip("bindercli tests require adb from host; skipping on-device")
+	}
 	fullArgs := append([]string{serviceName}, args...)
 	stdout, stderr, err := runBindercli(fullArgs...)
 	if err != nil {
