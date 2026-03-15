@@ -1438,7 +1438,7 @@ aidlcli com.android.internal.telephony.ITelephony get-active-phone-type
 
 # Get network country ISO
 aidlcli com.android.internal.telephony.ITelephony get-network-country-iso-for-phone \
-  --phoneId 0 --callingPackage com.android.shell --callingFeatureId ""
+  --phoneId 0
 ```
 
 </details>

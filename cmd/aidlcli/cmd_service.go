@@ -224,20 +224,33 @@ func newServiceMethodsCmd() *cobra.Command {
 
 			descriptor := queryDescriptor(ctx, svc)
 
+			// InterfaceTransaction may return empty on some services.
+			// Fall back to the static knownServiceNames map (reverse lookup).
+			if descriptor == "" || descriptor == "(unknown)" {
+				for desc, svcName := range knownServiceNames {
+					if svcName == name {
+						descriptor = desc
+						break
+					}
+				}
+			}
+
 			mode, err := cmd.Root().PersistentFlags().GetString("format")
 			if err != nil {
 				return fmt.Errorf("reading --format flag: %w", err)
 			}
 
 			if generatedRegistry == nil {
-				fmt.Fprintf(os.Stdout, "unknown interface %s — no methods in registry\n", descriptor)
-				return nil
+				return fmt.Errorf("no method registry available")
 			}
 
 			info := generatedRegistry.ByDescriptor(descriptor)
 			if info == nil {
-				fmt.Fprintf(os.Stdout, "unknown interface %s — no methods in registry\n", descriptor)
-				return nil
+				// Also try looking up by alias (the service name itself).
+				info = generatedRegistry.ByAlias(name)
+			}
+			if info == nil {
+				return fmt.Errorf("unknown interface %q for service %q — not in registry", descriptor, name)
 			}
 
 			f := NewFormatter(mode, os.Stdout)

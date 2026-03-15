@@ -831,8 +831,6 @@ func TestAidlcli_Telephony_GetNetworkCountryIso(t *testing.T) {
 	stdout, stderr, err := runAidlcli(
 		"com.android.internal.telephony.ITelephony", "get-network-country-iso-for-phone",
 		"--phoneId=0",
-		"--callingPackage=com.android.shell",
-		"--callingFeatureId=none",
 	)
 	if err != nil {
 		combined := stderr + stdout
