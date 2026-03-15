@@ -16,7 +16,7 @@ const (
 
 type IDeviceIdleControllerAdapter interface {
 	AsBinder() binder.IBinder
-	ExemptAppTemporarilyForEvent(ctx context.Context, packageName string, duration int64, userHandle int32, reason string) error
+	ExemptAppTemporarilyForEvent(ctx context.Context, packageName string, duration int64, reason string) error
 }
 
 type DeviceIdleControllerAdapterProxy struct {

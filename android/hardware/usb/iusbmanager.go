@@ -64,8 +64,8 @@ type IUsbManager interface {
 	OpenDevice(ctx context.Context, deviceName string, packageName string) (int32, error)
 	GetCurrentAccessory(ctx context.Context) (UsbAccessory, error)
 	OpenAccessory(ctx context.Context, accessory UsbAccessory) (int32, error)
-	SetDevicePackage(ctx context.Context, device UsbDevice, packageName string, userId int32) error
-	SetAccessoryPackage(ctx context.Context, accessory UsbAccessory, packageName string, userId int32) error
+	SetDevicePackage(ctx context.Context, device UsbDevice, packageName string) error
+	SetAccessoryPackage(ctx context.Context, accessory UsbAccessory, packageName string) error
 	AddDevicePackagesToPreferenceDenied(ctx context.Context, device UsbDevice, packageNames []string, user interface{}) error
 	AddAccessoryPackagesToPreferenceDenied(ctx context.Context, accessory UsbAccessory, packageNames []string, user interface{}) error
 	RemoveDevicePackagesFromPreferenceDenied(ctx context.Context, device UsbDevice, packageNames []string, user interface{}) error
@@ -80,8 +80,8 @@ type IUsbManager interface {
 	RequestAccessoryPermission(ctx context.Context, accessory UsbAccessory, packageName string, pi interface{}) error
 	GrantDevicePermission(ctx context.Context, device UsbDevice, uid int32) error
 	GrantAccessoryPermission(ctx context.Context, accessory UsbAccessory, uid int32) error
-	HasDefaults(ctx context.Context, packageName string, userId int32) (bool, error)
-	ClearDefaults(ctx context.Context, packageName string, userId int32) error
+	HasDefaults(ctx context.Context, packageName string) (bool, error)
+	ClearDefaults(ctx context.Context, packageName string) error
 	IsFunctionEnabled(ctx context.Context, function string) (bool, error)
 	SetCurrentFunctions(ctx context.Context, functions int64, operationId int32) error
 	SetCurrentFunction(ctx context.Context, function string, usbDataUnlocked bool, operationId int32) error

@@ -16,7 +16,7 @@ const (
 
 type IUserRestrictionsListener interface {
 	AsBinder() binder.IBinder
-	OnUserRestrictionsChanged(ctx context.Context, userId int32, newRestrictions Bundle, prevRestrictions Bundle) error
+	OnUserRestrictionsChanged(ctx context.Context, newRestrictions Bundle, prevRestrictions Bundle) error
 }
 
 type UserRestrictionsListenerProxy struct {

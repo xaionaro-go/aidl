@@ -19,7 +19,7 @@ const (
 
 type IKeyguardStateCallback interface {
 	AsBinder() binder.IBinder
-	OnShowingStateChanged(ctx context.Context, showing bool, userId int32) error
+	OnShowingStateChanged(ctx context.Context, showing bool) error
 	OnSimSecureStateChanged(ctx context.Context, simSecure bool) error
 	OnInputRestrictedStateChanged(ctx context.Context, inputRestricted bool) error
 	OnTrustedChanged(ctx context.Context, trusted bool) error

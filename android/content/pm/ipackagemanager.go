@@ -240,23 +240,23 @@ const (
 
 type IPackageManager interface {
 	AsBinder() binder.IBinder
-	CheckPackageStartable(ctx context.Context, packageName string, userId int32) error
-	IsPackageAvailable(ctx context.Context, packageName string, userId int32) (bool, error)
-	GetPackageInfo(ctx context.Context, packageName string, flags int64, userId int32) (PackageInfo, error)
-	GetPackageInfoVersioned(ctx context.Context, versionedPackage VersionedPackage, flags int64, userId int32) (PackageInfo, error)
-	GetPackageUid(ctx context.Context, packageName string, flags int64, userId int32) (int32, error)
-	GetPackageGids(ctx context.Context, packageName string, flags int64, userId int32) ([]int32, error)
+	CheckPackageStartable(ctx context.Context, packageName string) error
+	IsPackageAvailable(ctx context.Context, packageName string) (bool, error)
+	GetPackageInfo(ctx context.Context, packageName string, flags int64) (PackageInfo, error)
+	GetPackageInfoVersioned(ctx context.Context, versionedPackage VersionedPackage, flags int64) (PackageInfo, error)
+	GetPackageUid(ctx context.Context, packageName string, flags int64) (int32, error)
+	GetPackageGids(ctx context.Context, packageName string, flags int64) ([]int32, error)
 	CurrentToCanonicalPackageNames(ctx context.Context, names []string) ([]string, error)
 	CanonicalToCurrentPackageNames(ctx context.Context, names []string) ([]string, error)
-	GetApplicationInfo(ctx context.Context, packageName string, flags int64, userId int32) (ApplicationInfo, error)
+	GetApplicationInfo(ctx context.Context, packageName string, flags int64) (ApplicationInfo, error)
 	GetTargetSdkVersion(ctx context.Context, packageName string) (int32, error)
-	GetActivityInfo(ctx context.Context, className interface{}, flags int64, userId int32) (ActivityInfo, error)
-	ActivitySupportsIntentAsUser(ctx context.Context, className interface{}, intent interface{}, resolvedType string, userId int32) (bool, error)
-	GetReceiverInfo(ctx context.Context, className interface{}, flags int64, userId int32) (ActivityInfo, error)
-	GetServiceInfo(ctx context.Context, className interface{}, flags int64, userId int32) (ServiceInfo, error)
-	GetProviderInfo(ctx context.Context, className interface{}, flags int64, userId int32) (ProviderInfo, error)
+	GetActivityInfo(ctx context.Context, className interface{}, flags int64) (ActivityInfo, error)
+	ActivitySupportsIntentAsUser(ctx context.Context, className interface{}, intent interface{}, resolvedType string) (bool, error)
+	GetReceiverInfo(ctx context.Context, className interface{}, flags int64) (ActivityInfo, error)
+	GetServiceInfo(ctx context.Context, className interface{}, flags int64) (ServiceInfo, error)
+	GetProviderInfo(ctx context.Context, className interface{}, flags int64) (ProviderInfo, error)
 	IsProtectedBroadcast(ctx context.Context, actionName string) (bool, error)
-	CheckSignatures(ctx context.Context, pkg1 string, pkg2 string, userId int32) (int32, error)
+	CheckSignatures(ctx context.Context, pkg1 string, pkg2 string) (int32, error)
 	CheckUidSignatures(ctx context.Context, uid1 int32, uid2 int32) (int32, error)
 	GetAllPackages(ctx context.Context) ([]string, error)
 	GetPackagesForUid(ctx context.Context, uid int32) ([]string, error)
@@ -266,80 +266,80 @@ type IPackageManager interface {
 	GetFlagsForUid(ctx context.Context, uid int32) (int32, error)
 	GetPrivateFlagsForUid(ctx context.Context, uid int32) (int32, error)
 	IsUidPrivileged(ctx context.Context, uid int32) (bool, error)
-	ResolveIntent(ctx context.Context, intent interface{}, resolvedType string, flags int64, userId int32) (ResolveInfo, error)
-	FindPersistentPreferredActivity(ctx context.Context, intent interface{}, userId int32) (ResolveInfo, error)
+	ResolveIntent(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ResolveInfo, error)
+	FindPersistentPreferredActivity(ctx context.Context, intent interface{}) (ResolveInfo, error)
 	CanForwardTo(ctx context.Context, intent interface{}, resolvedType string, sourceUserId int32, targetUserId int32) (bool, error)
-	QueryIntentActivities(ctx context.Context, intent interface{}, resolvedType string, flags int64, userId int32) (ParceledListSlice, error)
-	QueryIntentActivityOptions(ctx context.Context, caller interface{}, specifics []interface{}, specificTypes []string, intent interface{}, resolvedType string, flags int64, userId int32) (ParceledListSlice, error)
-	QueryIntentReceivers(ctx context.Context, intent interface{}, resolvedType string, flags int64, userId int32) (ParceledListSlice, error)
-	ResolveService(ctx context.Context, intent interface{}, resolvedType string, flags int64, userId int32) (ResolveInfo, error)
-	QueryIntentServices(ctx context.Context, intent interface{}, resolvedType string, flags int64, userId int32) (ParceledListSlice, error)
-	QueryIntentContentProviders(ctx context.Context, intent interface{}, resolvedType string, flags int64, userId int32) (ParceledListSlice, error)
-	GetInstalledPackages(ctx context.Context, flags int64, userId int32) (ParceledListSlice, error)
-	GetAppMetadataFd(ctx context.Context, packageName string, userId int32) (int32, error)
-	GetPackagesHoldingPermissions(ctx context.Context, permissions []string, flags int64, userId int32) (ParceledListSlice, error)
-	GetInstalledApplications(ctx context.Context, flags int64, userId int32) (ParceledListSlice, error)
+	QueryIntentActivities(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ParceledListSlice, error)
+	QueryIntentActivityOptions(ctx context.Context, caller interface{}, specifics []interface{}, specificTypes []string, intent interface{}, resolvedType string, flags int64) (ParceledListSlice, error)
+	QueryIntentReceivers(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ParceledListSlice, error)
+	ResolveService(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ResolveInfo, error)
+	QueryIntentServices(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ParceledListSlice, error)
+	QueryIntentContentProviders(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ParceledListSlice, error)
+	GetInstalledPackages(ctx context.Context, flags int64) (ParceledListSlice, error)
+	GetAppMetadataFd(ctx context.Context, packageName string) (int32, error)
+	GetPackagesHoldingPermissions(ctx context.Context, permissions []string, flags int64) (ParceledListSlice, error)
+	GetInstalledApplications(ctx context.Context, flags int64) (ParceledListSlice, error)
 	GetPersistentApplications(ctx context.Context, flags int32) (ParceledListSlice, error)
-	ResolveContentProvider(ctx context.Context, name string, flags int64, userId int32) (ProviderInfo, error)
+	ResolveContentProvider(ctx context.Context, name string, flags int64) (ProviderInfo, error)
 	QuerySyncProviders(ctx context.Context, outNames []string, outInfo []ProviderInfo) error
 	QueryContentProviders(ctx context.Context, processName string, uid int32, flags int64, metaDataKey string) (ParceledListSlice, error)
-	GetInstrumentationInfoAsUser(ctx context.Context, className interface{}, flags int32, userId int32) (InstrumentationInfo, error)
-	QueryInstrumentationAsUser(ctx context.Context, targetPackage string, flags int32, userId int32) (ParceledListSlice, error)
+	GetInstrumentationInfoAsUser(ctx context.Context, className interface{}, flags int32) (InstrumentationInfo, error)
+	QueryInstrumentationAsUser(ctx context.Context, targetPackage string, flags int32) (ParceledListSlice, error)
 	FinishPackageInstall(ctx context.Context, token int32, didLaunch bool) error
 	SetInstallerPackageName(ctx context.Context, targetPackage string, installerPackageName string) error
 	RelinquishUpdateOwnership(ctx context.Context, targetPackage string) error
 	SetApplicationCategoryHint(ctx context.Context, packageName string, categoryHint int32, callerPackageName string) error
-	DeletePackageAsUser(ctx context.Context, packageName string, versionCode int32, observer IPackageDeleteObserver, userId int32, flags int32) error
-	DeletePackageVersioned(ctx context.Context, versionedPackage VersionedPackage, observer IPackageDeleteObserver2, userId int32, flags int32) error
-	DeleteExistingPackageAsUser(ctx context.Context, versionedPackage VersionedPackage, observer IPackageDeleteObserver2, userId int32) error
+	DeletePackageAsUser(ctx context.Context, packageName string, versionCode int32, observer IPackageDeleteObserver, flags int32) error
+	DeletePackageVersioned(ctx context.Context, versionedPackage VersionedPackage, observer IPackageDeleteObserver2, flags int32) error
+	DeleteExistingPackageAsUser(ctx context.Context, versionedPackage VersionedPackage, observer IPackageDeleteObserver2) error
 	GetInstallerPackageName(ctx context.Context, packageName string) (string, error)
-	GetInstallSourceInfo(ctx context.Context, packageName string, userId int32) (InstallSourceInfo, error)
-	ResetApplicationPreferences(ctx context.Context, userId int32) error
+	GetInstallSourceInfo(ctx context.Context, packageName string) (InstallSourceInfo, error)
+	ResetApplicationPreferences(ctx context.Context) error
 	GetLastChosenActivity(ctx context.Context, intent interface{}, resolvedType string, flags int32) (ResolveInfo, error)
 	SetLastChosenActivity(ctx context.Context, intent interface{}, resolvedType string, flags int32, filter interface{}, match int32, activity interface{}) error
-	AddPreferredActivity(ctx context.Context, filter interface{}, match int32, set []interface{}, activity interface{}, userId int32, removeExisting bool) error
-	ReplacePreferredActivity(ctx context.Context, filter interface{}, match int32, set []interface{}, activity interface{}, userId int32) error
+	AddPreferredActivity(ctx context.Context, filter interface{}, match int32, set []interface{}, activity interface{}, removeExisting bool) error
+	ReplacePreferredActivity(ctx context.Context, filter interface{}, match int32, set []interface{}, activity interface{}) error
 	ClearPackagePreferredActivities(ctx context.Context, packageName string) error
 	GetPreferredActivities(ctx context.Context, outFilters []interface{}, outActivities []interface{}, packageName string) (int32, error)
-	AddPersistentPreferredActivity(ctx context.Context, filter interface{}, activity interface{}, userId int32) error
-	ClearPackagePersistentPreferredActivities(ctx context.Context, packageName string, userId int32) error
-	ClearPersistentPreferredActivity(ctx context.Context, filter interface{}, userId int32) error
+	AddPersistentPreferredActivity(ctx context.Context, filter interface{}, activity interface{}) error
+	ClearPackagePersistentPreferredActivities(ctx context.Context, packageName string) error
+	ClearPersistentPreferredActivity(ctx context.Context, filter interface{}) error
 	AddCrossProfileIntentFilter(ctx context.Context, intentFilter interface{}, ownerPackage string, sourceUserId int32, targetUserId int32, flags int32) error
 	RemoveCrossProfileIntentFilter(ctx context.Context, intentFilter interface{}, ownerPackage string, sourceUserId int32, targetUserId int32, flags int32) (bool, error)
 	ClearCrossProfileIntentFilters(ctx context.Context, sourceUserId int32, ownerPackage string) error
-	SetDistractingPackageRestrictionsAsUser(ctx context.Context, packageNames []string, restrictionFlags int32, userId int32) ([]string, error)
+	SetDistractingPackageRestrictionsAsUser(ctx context.Context, packageNames []string, restrictionFlags int32) ([]string, error)
 	SetPackagesSuspendedAsUser(ctx context.Context, packageNames []string, suspended bool, appExtras interface{}, launcherExtras interface{}, dialogInfo SuspendDialogInfo, flags int32, suspendingPackage string, suspendingUserId int32, targetUserId int32) ([]string, error)
-	GetUnsuspendablePackagesForUser(ctx context.Context, packageNames []string, userId int32) ([]string, error)
-	IsPackageSuspendedForUser(ctx context.Context, packageName string, userId int32) (bool, error)
-	IsPackageQuarantinedForUser(ctx context.Context, packageName string, userId int32) (bool, error)
-	IsPackageStoppedForUser(ctx context.Context, packageName string, userId int32) (bool, error)
-	GetSuspendedPackageAppExtras(ctx context.Context, packageName string, userId int32) (interface{}, error)
-	GetSuspendingPackage(ctx context.Context, packageName string, userId int32) (string, error)
-	GetPreferredActivityBackup(ctx context.Context, userId int32) ([]byte, error)
-	RestorePreferredActivities(ctx context.Context, backup []byte, userId int32) error
-	GetDefaultAppsBackup(ctx context.Context, userId int32) ([]byte, error)
-	RestoreDefaultApps(ctx context.Context, backup []byte, userId int32) error
-	GetDomainVerificationBackup(ctx context.Context, userId int32) ([]byte, error)
-	RestoreDomainVerification(ctx context.Context, backup []byte, userId int32) error
+	GetUnsuspendablePackagesForUser(ctx context.Context, packageNames []string) ([]string, error)
+	IsPackageSuspendedForUser(ctx context.Context, packageName string) (bool, error)
+	IsPackageQuarantinedForUser(ctx context.Context, packageName string) (bool, error)
+	IsPackageStoppedForUser(ctx context.Context, packageName string) (bool, error)
+	GetSuspendedPackageAppExtras(ctx context.Context, packageName string) (interface{}, error)
+	GetSuspendingPackage(ctx context.Context, packageName string) (string, error)
+	GetPreferredActivityBackup(ctx context.Context) ([]byte, error)
+	RestorePreferredActivities(ctx context.Context, backup []byte) error
+	GetDefaultAppsBackup(ctx context.Context) ([]byte, error)
+	RestoreDefaultApps(ctx context.Context, backup []byte) error
+	GetDomainVerificationBackup(ctx context.Context) ([]byte, error)
+	RestoreDomainVerification(ctx context.Context, backup []byte) error
 	GetHomeActivities(ctx context.Context, outHomeCandidates []ResolveInfo) (interface{}, error)
-	SetHomeActivity(ctx context.Context, className interface{}, userId int32) error
-	OverrideLabelAndIcon(ctx context.Context, componentName interface{}, nonLocalizedLabel string, icon int32, userId int32) error
-	RestoreLabelAndIcon(ctx context.Context, componentName interface{}, userId int32) error
-	SetComponentEnabledSetting(ctx context.Context, componentName interface{}, newState int32, flags int32, userId int32, callingPackage string) error
-	SetComponentEnabledSettings(ctx context.Context, settings []PackageManagerComponentEnabledSetting, userId int32, callingPackage string) error
-	GetComponentEnabledSetting(ctx context.Context, componentName interface{}, userId int32) (int32, error)
-	SetApplicationEnabledSetting(ctx context.Context, packageName string, newState int32, flags int32, userId int32, callingPackage string) error
-	GetApplicationEnabledSetting(ctx context.Context, packageName string, userId int32) (int32, error)
+	SetHomeActivity(ctx context.Context, className interface{}) error
+	OverrideLabelAndIcon(ctx context.Context, componentName interface{}, nonLocalizedLabel string, icon int32) error
+	RestoreLabelAndIcon(ctx context.Context, componentName interface{}) error
+	SetComponentEnabledSetting(ctx context.Context, componentName interface{}, newState int32, flags int32) error
+	SetComponentEnabledSettings(ctx context.Context, settings []PackageManagerComponentEnabledSetting) error
+	GetComponentEnabledSetting(ctx context.Context, componentName interface{}) (int32, error)
+	SetApplicationEnabledSetting(ctx context.Context, packageName string, newState int32, flags int32) error
+	GetApplicationEnabledSetting(ctx context.Context, packageName string) (int32, error)
 	LogAppProcessStartIfNeeded(ctx context.Context, packageName string, processName string, uid int32, seinfo string, apkFile string, pid int32) error
-	FlushPackageRestrictionsAsUser(ctx context.Context, userId int32) error
-	SetPackageStoppedState(ctx context.Context, packageName string, stopped bool, userId int32) error
+	FlushPackageRestrictionsAsUser(ctx context.Context) error
+	SetPackageStoppedState(ctx context.Context, packageName string, stopped bool) error
 	FreeStorageAndNotify(ctx context.Context, volumeUuid string, freeStorageSize int64, storageFlags int32, observer IPackageDataObserver) error
 	FreeStorage(ctx context.Context, volumeUuid string, freeStorageSize int64, storageFlags int32, pi interface{}) error
 	DeleteApplicationCacheFiles(ctx context.Context, packageName string, observer IPackageDataObserver) error
-	DeleteApplicationCacheFilesAsUser(ctx context.Context, packageName string, userId int32, observer IPackageDataObserver) error
-	ClearApplicationUserData(ctx context.Context, packageName string, observer IPackageDataObserver, userId int32) error
+	DeleteApplicationCacheFilesAsUser(ctx context.Context, packageName string, observer IPackageDataObserver) error
+	ClearApplicationUserData(ctx context.Context, packageName string, observer IPackageDataObserver) error
 	ClearApplicationProfileData(ctx context.Context, packageName string) error
-	GetPackageSizeInfo(ctx context.Context, packageName string, userHandle int32, observer IPackageStatsObserver) error
+	GetPackageSizeInfo(ctx context.Context, packageName string, observer IPackageStatsObserver) error
 	GetSystemSharedLibraryNames(ctx context.Context) ([]string, error)
 	GetSystemSharedLibraryNamesAndPaths(ctx context.Context) (map[string]string, error)
 	GetSystemAvailableFeatures(ctx context.Context) (ParceledListSlice, error)
@@ -360,54 +360,54 @@ type IPackageManager interface {
 	MovePrimaryStorage(ctx context.Context, volumeUuid string) (int32, error)
 	SetInstallLocation(ctx context.Context, loc int32) (bool, error)
 	GetInstallLocation(ctx context.Context) (int32, error)
-	InstallExistingPackageAsUser(ctx context.Context, packageName string, userId int32, installFlags int32, installReason int32, whiteListedPermissions []string) (int32, error)
+	InstallExistingPackageAsUser(ctx context.Context, packageName string, installFlags int32, installReason int32, whiteListedPermissions []string) (int32, error)
 	VerifyPendingInstall(ctx context.Context, id int32, verificationCode int32) error
 	ExtendVerificationTimeout(ctx context.Context, id int32, verificationCodeAtTimeout int32, millisecondsToDelay int64) error
 	VerifyIntentFilter(ctx context.Context, id int32, verificationCode int32, failedDomains []string) error
-	GetIntentVerificationStatus(ctx context.Context, packageName string, userId int32) (int32, error)
-	UpdateIntentVerificationStatus(ctx context.Context, packageName string, status int32, userId int32) (bool, error)
+	GetIntentVerificationStatus(ctx context.Context, packageName string) (int32, error)
+	UpdateIntentVerificationStatus(ctx context.Context, packageName string, status int32) (bool, error)
 	GetIntentFilterVerifications(ctx context.Context, packageName string) (ParceledListSlice, error)
 	GetAllIntentFilters(ctx context.Context, packageName string) (ParceledListSlice, error)
 	GetVerifierDeviceIdentity(ctx context.Context) (VerifierDeviceIdentity, error)
 	IsFirstBoot(ctx context.Context) (bool, error)
 	IsDeviceUpgrading(ctx context.Context) (bool, error)
 	IsStorageLow(ctx context.Context) (bool, error)
-	SetApplicationHiddenSettingAsUser(ctx context.Context, packageName string, hidden bool, userId int32) (bool, error)
-	GetApplicationHiddenSettingAsUser(ctx context.Context, packageName string, userId int32) (bool, error)
+	SetApplicationHiddenSettingAsUser(ctx context.Context, packageName string, hidden bool) (bool, error)
+	GetApplicationHiddenSettingAsUser(ctx context.Context, packageName string) (bool, error)
 	SetSystemAppHiddenUntilInstalled(ctx context.Context, packageName string, hidden bool) error
-	SetSystemAppInstallState(ctx context.Context, packageName string, installed bool, userId int32) (bool, error)
+	SetSystemAppInstallState(ctx context.Context, packageName string, installed bool) (bool, error)
 	GetPackageInstaller(ctx context.Context) (IPackageInstaller, error)
-	SetBlockUninstallForUser(ctx context.Context, packageName string, blockUninstall bool, userId int32) (bool, error)
-	GetBlockUninstallForUser(ctx context.Context, packageName string, userId int32) (bool, error)
+	SetBlockUninstallForUser(ctx context.Context, packageName string, blockUninstall bool) (bool, error)
+	GetBlockUninstallForUser(ctx context.Context, packageName string) (bool, error)
 	GetKeySetByAlias(ctx context.Context, packageName string, alias string) (KeySet, error)
 	GetSigningKeySet(ctx context.Context, packageName string) (KeySet, error)
 	IsPackageSignedByKeySet(ctx context.Context, packageName string, ks KeySet) (bool, error)
 	IsPackageSignedByKeySetExactly(ctx context.Context, packageName string, ks KeySet) (bool, error)
 	GetPermissionControllerPackageName(ctx context.Context) (string, error)
 	GetSdkSandboxPackageName(ctx context.Context) (string, error)
-	GetInstantApps(ctx context.Context, userId int32) (ParceledListSlice, error)
-	GetInstantAppCookie(ctx context.Context, packageName string, userId int32) ([]byte, error)
-	SetInstantAppCookie(ctx context.Context, packageName string, cookie []byte, userId int32) (bool, error)
-	GetInstantAppIcon(ctx context.Context, packageName string, userId int32) (graphics.Bitmap, error)
-	IsInstantApp(ctx context.Context, packageName string, userId int32) (bool, error)
+	GetInstantApps(ctx context.Context) (ParceledListSlice, error)
+	GetInstantAppCookie(ctx context.Context, packageName string) ([]byte, error)
+	SetInstantAppCookie(ctx context.Context, packageName string, cookie []byte) (bool, error)
+	GetInstantAppIcon(ctx context.Context, packageName string) (graphics.Bitmap, error)
+	IsInstantApp(ctx context.Context, packageName string) (bool, error)
 	SetRequiredForSystemUser(ctx context.Context, packageName string, systemUserApp bool) (bool, error)
 	SetUpdateAvailable(ctx context.Context, packageName string, updateAvaialble bool) error
 	GetServicesSystemSharedLibraryPackageName(ctx context.Context) (string, error)
 	GetSharedSystemSharedLibraryPackageName(ctx context.Context) (string, error)
-	GetChangedPackages(ctx context.Context, sequenceNumber int32, userId int32) (ChangedPackages, error)
+	GetChangedPackages(ctx context.Context, sequenceNumber int32) (ChangedPackages, error)
 	IsPackageDeviceAdminOnAnyUser(ctx context.Context, packageName string) (bool, error)
-	GetInstallReason(ctx context.Context, packageName string, userId int32) (int32, error)
-	GetSharedLibraries(ctx context.Context, packageName string, flags int64, userId int32) (ParceledListSlice, error)
-	GetDeclaredSharedLibraries(ctx context.Context, packageName string, flags int64, userId int32) (ParceledListSlice, error)
-	CanRequestPackageInstalls(ctx context.Context, packageName string, userId int32) (bool, error)
+	GetInstallReason(ctx context.Context, packageName string) (int32, error)
+	GetSharedLibraries(ctx context.Context, packageName string, flags int64) (ParceledListSlice, error)
+	GetDeclaredSharedLibraries(ctx context.Context, packageName string, flags int64) (ParceledListSlice, error)
+	CanRequestPackageInstalls(ctx context.Context, packageName string) (bool, error)
 	DeletePreloadsFileCache(ctx context.Context) error
 	GetInstantAppResolverComponent(ctx context.Context) (interface{}, error)
 	GetInstantAppResolverSettingsComponent(ctx context.Context) (interface{}, error)
 	GetInstantAppInstallerComponent(ctx context.Context) (interface{}, error)
-	GetInstantAppAndroidId(ctx context.Context, packageName string, userId int32) (string, error)
+	GetInstantAppAndroidId(ctx context.Context, packageName string) (string, error)
 	GetArtManager(ctx context.Context) (dex.IArtManager, error)
-	SetHarmfulAppWarning(ctx context.Context, packageName string, warning interface{}, userId int32) error
-	GetHarmfulAppWarning(ctx context.Context, packageName string, userId int32) (interface{}, error)
+	SetHarmfulAppWarning(ctx context.Context, packageName string, warning interface{}) error
+	GetHarmfulAppWarning(ctx context.Context, packageName string) (interface{}, error)
 	HasSigningCertificate(ctx context.Context, packageName string, signingCertificate []byte, flags int32) (bool, error)
 	HasUidSigningCertificate(ctx context.Context, uid int32, signingCertificate []byte, flags int32) (bool, error)
 	GetDefaultTextClassifierPackageName(ctx context.Context) (string, error)
@@ -419,46 +419,46 @@ type IPackageManager interface {
 	GetSystemCaptionsServicePackageName(ctx context.Context) (string, error)
 	GetSetupWizardPackageName(ctx context.Context) (string, error)
 	GetIncidentReportApproverPackageName(ctx context.Context) (string, error)
-	IsPackageStateProtected(ctx context.Context, packageName string, userId int32) (bool, error)
+	IsPackageStateProtected(ctx context.Context, packageName string) (bool, error)
 	SendDeviceCustomizationReadyBroadcast(ctx context.Context) error
 	GetInstalledModules(ctx context.Context, flags int32) ([]ModuleInfo, error)
 	GetModuleInfo(ctx context.Context, packageName string, flags int32) (ModuleInfo, error)
-	GetRuntimePermissionsVersion(ctx context.Context, userId int32) (int32, error)
-	SetRuntimePermissionsVersion(ctx context.Context, version int32, userId int32) error
+	GetRuntimePermissionsVersion(ctx context.Context) (int32, error)
+	SetRuntimePermissionsVersion(ctx context.Context, version int32) error
 	NotifyPackagesReplacedReceived(ctx context.Context, packages []string) error
-	RequestPackageChecksums(ctx context.Context, packageName string, includeSplits bool, optional int32, required int32, trustedInstallers []interface{}, onChecksumsReadyListener IOnChecksumsReadyListener, userId int32) error
-	GetLaunchIntentSenderForPackage(ctx context.Context, packageName string, callingPackage string, featureId string, userId int32) (interface{}, error)
-	GetAppOpPermissionPackages(ctx context.Context, permissionName string, userId int32) ([]string, error)
+	RequestPackageChecksums(ctx context.Context, packageName string, includeSplits bool, optional int32, required int32, trustedInstallers []interface{}, onChecksumsReadyListener IOnChecksumsReadyListener) error
+	GetLaunchIntentSenderForPackage(ctx context.Context, packageName string, featureId string) (interface{}, error)
+	GetAppOpPermissionPackages(ctx context.Context, permissionName string) ([]string, error)
 	GetPermissionGroupInfo(ctx context.Context, name string, flags int32) (PermissionGroupInfo, error)
 	AddPermission(ctx context.Context, info PermissionInfo) (bool, error)
 	AddPermissionAsync(ctx context.Context, info PermissionInfo) (bool, error)
 	RemovePermission(ctx context.Context, name string) error
-	CheckPermission(ctx context.Context, permName string, pkgName string, userId int32) (int32, error)
-	GrantRuntimePermission(ctx context.Context, packageName string, permissionName string, userId int32) error
+	CheckPermission(ctx context.Context, permName string, pkgName string) (int32, error)
+	GrantRuntimePermission(ctx context.Context, packageName string, permissionName string) error
 	CheckUidPermission(ctx context.Context, permName string, uid int32) (int32, error)
 	SetMimeGroup(ctx context.Context, packageName string, group string, mimeTypes []string) error
-	GetSplashScreenTheme(ctx context.Context, packageName string, userId int32) (string, error)
-	SetSplashScreenTheme(ctx context.Context, packageName string, themeName string, userId int32) error
-	GetUserMinAspectRatio(ctx context.Context, packageName string, userId int32) (int32, error)
-	SetUserMinAspectRatio(ctx context.Context, packageName string, userId int32, aspectRatio int32) error
+	GetSplashScreenTheme(ctx context.Context, packageName string) (string, error)
+	SetSplashScreenTheme(ctx context.Context, packageName string, themeName string) error
+	GetUserMinAspectRatio(ctx context.Context, packageName string) (int32, error)
+	SetUserMinAspectRatio(ctx context.Context, packageName string, aspectRatio int32) error
 	GetMimeGroup(ctx context.Context, packageName string, group string) ([]string, error)
 	IsAutoRevokeWhitelisted(ctx context.Context, packageName string) (bool, error)
 	MakeProviderVisible(ctx context.Context, recipientAppId int32, visibleAuthority string) error
 	MakeUidVisible(ctx context.Context, recipientAppId int32, visibleUid int32) error
 	GetHoldLockToken(ctx context.Context) (binder.IBinder, error)
 	HoldLock(ctx context.Context, token binder.IBinder, durationMs int32) error
-	GetPropertyAsUser(ctx context.Context, propertyName string, packageName string, className string, userId int32) (PackageManagerProperty, error)
+	GetPropertyAsUser(ctx context.Context, propertyName string, packageName string, className string) (PackageManagerProperty, error)
 	QueryProperty(ctx context.Context, propertyName string, componentType int32) (ParceledListSlice, error)
 	SetKeepUninstalledPackages(ctx context.Context, packageList []string) error
-	CanPackageQuery(ctx context.Context, sourcePackageName string, targetPackageNames []string, userId int32) ([]bool, error)
+	CanPackageQuery(ctx context.Context, sourcePackageName string, targetPackageNames []string) ([]bool, error)
 	WaitForHandler(ctx context.Context, timeoutMillis int64, forBackgroundHandler bool) (bool, error)
-	RegisterPackageMonitorCallback(ctx context.Context, callback interface{}, userId int32) error
+	RegisterPackageMonitorCallback(ctx context.Context, callback interface{}) error
 	UnregisterPackageMonitorCallback(ctx context.Context, callback interface{}) error
-	GetArchivedPackage(ctx context.Context, packageName string, userId int32) (ArchivedPackageParcel, error)
+	GetArchivedPackage(ctx context.Context, packageName string) (ArchivedPackageParcel, error)
 	GetArchivedAppIcon(ctx context.Context, packageName string, user interface{}, callingPackageName string) (graphics.Bitmap, error)
 	IsAppArchivable(ctx context.Context, packageName string, user interface{}) (bool, error)
-	GetAppMetadataSource(ctx context.Context, packageName string, userId int32) (int32, error)
-	GetDomainVerificationAgent(ctx context.Context, userId int32) (interface{}, error)
+	GetAppMetadataSource(ctx context.Context, packageName string) (int32, error)
+	GetDomainVerificationAgent(ctx context.Context) (interface{}, error)
 	SetPageSizeAppCompatFlagsSettingsOverride(ctx context.Context, packageName string, enabled bool) error
 	IsPageSizeCompatEnabled(ctx context.Context, packageName string) (bool, error)
 	GetPageSizeCompatWarningMessage(ctx context.Context, packageName string) (string, error)

@@ -110,12 +110,12 @@ type IDisplayManager interface {
 	ReleaseVirtualDisplay(ctx context.Context, token IVirtualDisplayCallback) error
 	SetVirtualDisplayRotation(ctx context.Context, token IVirtualDisplayCallback, rotation int32) error
 	GetStableDisplaySize(ctx context.Context) (graphics.Point, error)
-	GetBrightnessEvents(ctx context.Context, callingPackage string) (pm.ParceledListSlice, error)
+	GetBrightnessEvents(ctx context.Context) (pm.ParceledListSlice, error)
 	GetAmbientBrightnessStats(ctx context.Context) (pm.ParceledListSlice, error)
-	SetBrightnessConfigurationForUser(ctx context.Context, c BrightnessConfiguration, userId int32, packageName string) error
-	SetBrightnessConfigurationForDisplay(ctx context.Context, c BrightnessConfiguration, uniqueDisplayId string, userId int32, packageName string) error
-	GetBrightnessConfigurationForDisplay(ctx context.Context, uniqueDisplayId string, userId int32) (BrightnessConfiguration, error)
-	GetBrightnessConfigurationForUser(ctx context.Context, userId int32) (BrightnessConfiguration, error)
+	SetBrightnessConfigurationForUser(ctx context.Context, c BrightnessConfiguration, packageName string) error
+	SetBrightnessConfigurationForDisplay(ctx context.Context, c BrightnessConfiguration, uniqueDisplayId string, packageName string) error
+	GetBrightnessConfigurationForDisplay(ctx context.Context, uniqueDisplayId string) (BrightnessConfiguration, error)
+	GetBrightnessConfigurationForUser(ctx context.Context) (BrightnessConfiguration, error)
 	GetDefaultBrightnessConfiguration(ctx context.Context) (BrightnessConfiguration, error)
 	IsMinimalPostProcessingRequested(ctx context.Context, displayId int32) (bool, error)
 	SetTemporaryBrightness(ctx context.Context, displayId int32, brightness float32) error

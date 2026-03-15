@@ -18,9 +18,9 @@ const (
 
 type IHardwarePropertiesManager interface {
 	AsBinder() binder.IBinder
-	GetDeviceTemperatures(ctx context.Context, callingPackage string, type_ int32, source int32) ([]float32, error)
-	GetCpuUsages(ctx context.Context, callingPackage string) ([]CpuUsageInfo, error)
-	GetFanSpeeds(ctx context.Context, callingPackage string) ([]float32, error)
+	GetDeviceTemperatures(ctx context.Context, type_ int32, source int32) ([]float32, error)
+	GetCpuUsages(ctx context.Context) ([]CpuUsageInfo, error)
+	GetFanSpeeds(ctx context.Context) ([]float32, error)
 }
 
 type HardwarePropertiesManagerProxy struct {

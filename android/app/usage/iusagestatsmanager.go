@@ -56,44 +56,44 @@ const (
 
 type IUsageStatsManager interface {
 	AsBinder() binder.IBinder
-	QueryUsageStats(ctx context.Context, bucketType int32, beginTime int64, endTime int64, callingPackage string, userId int32) (pm.ParceledListSlice, error)
-	QueryConfigurationStats(ctx context.Context, bucketType int32, beginTime int64, endTime int64, callingPackage string) (pm.ParceledListSlice, error)
-	QueryEventStats(ctx context.Context, bucketType int32, beginTime int64, endTime int64, callingPackage string) (pm.ParceledListSlice, error)
-	QueryEvents(ctx context.Context, beginTime int64, endTime int64, callingPackage string) (UsageEvents, error)
-	QueryEventsForPackage(ctx context.Context, beginTime int64, endTime int64, callingPackage string) (UsageEvents, error)
-	QueryEventsForUser(ctx context.Context, beginTime int64, endTime int64, userId int32, callingPackage string) (UsageEvents, error)
-	QueryEventsForPackageForUser(ctx context.Context, beginTime int64, endTime int64, userId int32, pkg string, callingPackage string) (UsageEvents, error)
-	QueryEventsWithFilter(ctx context.Context, query UsageEventsQuery, callingPackage string) (UsageEvents, error)
-	SetAppInactive(ctx context.Context, packageName string, inactive bool, userId int32) error
+	QueryUsageStats(ctx context.Context, bucketType int32, beginTime int64, endTime int64) (pm.ParceledListSlice, error)
+	QueryConfigurationStats(ctx context.Context, bucketType int32, beginTime int64, endTime int64) (pm.ParceledListSlice, error)
+	QueryEventStats(ctx context.Context, bucketType int32, beginTime int64, endTime int64) (pm.ParceledListSlice, error)
+	QueryEvents(ctx context.Context, beginTime int64, endTime int64) (UsageEvents, error)
+	QueryEventsForPackage(ctx context.Context, beginTime int64, endTime int64) (UsageEvents, error)
+	QueryEventsForUser(ctx context.Context, beginTime int64, endTime int64) (UsageEvents, error)
+	QueryEventsForPackageForUser(ctx context.Context, beginTime int64, endTime int64, pkg string) (UsageEvents, error)
+	QueryEventsWithFilter(ctx context.Context, query UsageEventsQuery) (UsageEvents, error)
+	SetAppInactive(ctx context.Context, packageName string, inactive bool) error
 	IsAppStandbyEnabled(ctx context.Context) (bool, error)
-	IsAppInactive(ctx context.Context, packageName string, userId int32, callingPackage string) (bool, error)
+	IsAppInactive(ctx context.Context, packageName string) (bool, error)
 	OnCarrierPrivilegedAppsChanged(ctx context.Context) error
-	ReportChooserSelection(ctx context.Context, packageName string, userId int32, contentType string, annotations []string, action string) error
-	GetAppStandbyBucket(ctx context.Context, packageName string, callingPackage string, userId int32) (int32, error)
-	SetAppStandbyBucket(ctx context.Context, packageName string, bucket int32, userId int32) error
-	GetAppStandbyBuckets(ctx context.Context, callingPackage string, userId int32) (pm.ParceledListSlice, error)
-	SetAppStandbyBuckets(ctx context.Context, appBuckets pm.ParceledListSlice, userId int32) error
-	GetAppMinStandbyBucket(ctx context.Context, packageName string, callingPackage string, userId int32) (int32, error)
-	SetEstimatedLaunchTime(ctx context.Context, packageName string, estimatedLaunchTime int64, userId int32) error
-	SetEstimatedLaunchTimes(ctx context.Context, appLaunchTimes pm.ParceledListSlice, userId int32) error
-	RegisterAppUsageObserver(ctx context.Context, observerId int32, packages []string, timeLimitMs int64, callback app.PendingIntent, callingPackage string) error
-	UnregisterAppUsageObserver(ctx context.Context, observerId int32, callingPackage string) error
-	RegisterUsageSessionObserver(ctx context.Context, sessionObserverId int32, observed []string, timeLimitMs int64, sessionThresholdTimeMs int64, limitReachedCallbackIntent app.PendingIntent, sessionEndCallbackIntent app.PendingIntent, callingPackage string) error
-	UnregisterUsageSessionObserver(ctx context.Context, sessionObserverId int32, callingPackage string) error
-	RegisterAppUsageLimitObserver(ctx context.Context, observerId int32, packages []string, timeLimitMs int64, timeUsedMs int64, callback app.PendingIntent, callingPackage string) error
-	UnregisterAppUsageLimitObserver(ctx context.Context, observerId int32, callingPackage string) error
-	ReportUsageStart(ctx context.Context, activity binder.IBinder, token string, callingPackage string) error
-	ReportPastUsageStart(ctx context.Context, activity binder.IBinder, token string, timeAgoMs int64, callingPackage string) error
-	ReportUsageStop(ctx context.Context, activity binder.IBinder, token string, callingPackage string) error
-	ReportUserInteraction(ctx context.Context, packageName string, userId int32) error
-	ReportUserInteractionWithBundle(ctx context.Context, packageName string, userId int32, eventExtras interface{}) error
+	ReportChooserSelection(ctx context.Context, packageName string, contentType string, annotations []string, action string) error
+	GetAppStandbyBucket(ctx context.Context, packageName string) (int32, error)
+	SetAppStandbyBucket(ctx context.Context, packageName string, bucket int32) error
+	GetAppStandbyBuckets(ctx context.Context) (pm.ParceledListSlice, error)
+	SetAppStandbyBuckets(ctx context.Context, appBuckets pm.ParceledListSlice) error
+	GetAppMinStandbyBucket(ctx context.Context, packageName string) (int32, error)
+	SetEstimatedLaunchTime(ctx context.Context, packageName string, estimatedLaunchTime int64) error
+	SetEstimatedLaunchTimes(ctx context.Context, appLaunchTimes pm.ParceledListSlice) error
+	RegisterAppUsageObserver(ctx context.Context, observerId int32, packages []string, timeLimitMs int64, callback app.PendingIntent) error
+	UnregisterAppUsageObserver(ctx context.Context, observerId int32) error
+	RegisterUsageSessionObserver(ctx context.Context, sessionObserverId int32, observed []string, timeLimitMs int64, sessionThresholdTimeMs int64, limitReachedCallbackIntent app.PendingIntent, sessionEndCallbackIntent app.PendingIntent) error
+	UnregisterUsageSessionObserver(ctx context.Context, sessionObserverId int32) error
+	RegisterAppUsageLimitObserver(ctx context.Context, observerId int32, packages []string, timeLimitMs int64, timeUsedMs int64, callback app.PendingIntent) error
+	UnregisterAppUsageLimitObserver(ctx context.Context, observerId int32) error
+	ReportUsageStart(ctx context.Context, activity binder.IBinder, token string) error
+	ReportPastUsageStart(ctx context.Context, activity binder.IBinder, token string, timeAgoMs int64) error
+	ReportUsageStop(ctx context.Context, activity binder.IBinder, token string) error
+	ReportUserInteraction(ctx context.Context, packageName string) error
+	ReportUserInteractionWithBundle(ctx context.Context, packageName string, eventExtras interface{}) error
 	GetUsageSource(ctx context.Context) (int32, error)
 	ForceUsageSourceSettingRead(ctx context.Context) error
-	GetLastTimeAnyComponentUsed(ctx context.Context, packageName string, callingPackage string) (int64, error)
-	QueryBroadcastResponseStats(ctx context.Context, packageName string, id int64, callingPackage string, userId int32) (BroadcastResponseStatsList, error)
-	ClearBroadcastResponseStats(ctx context.Context, packageName string, id int64, callingPackage string, userId int32) error
-	ClearBroadcastEvents(ctx context.Context, callingPackage string, userId int32) error
-	IsPackageExemptedFromBroadcastResponseStats(ctx context.Context, packageName string, userId int32) (bool, error)
+	GetLastTimeAnyComponentUsed(ctx context.Context, packageName string) (int64, error)
+	QueryBroadcastResponseStats(ctx context.Context, packageName string, id int64) (BroadcastResponseStatsList, error)
+	ClearBroadcastResponseStats(ctx context.Context, packageName string, id int64) error
+	ClearBroadcastEvents(ctx context.Context) error
+	IsPackageExemptedFromBroadcastResponseStats(ctx context.Context, packageName string) (bool, error)
 	GetAppStandbyConstant(ctx context.Context, key string) (string, error)
 }
 

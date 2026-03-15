@@ -98,8 +98,8 @@ type IApplicationThread interface {
 	ScheduleLowMemory(ctx context.Context) error
 	ProfilerControl(ctx context.Context, start bool, profilerInfo ProfilerInfo, profileType int32) error
 	SetSchedulingGroup(ctx context.Context, group int32) error
-	ScheduleCreateBackupAgent(ctx context.Context, app interface{}, backupMode int32, userId int32, operationType int32) error
-	ScheduleDestroyBackupAgent(ctx context.Context, app interface{}, userId int32) error
+	ScheduleCreateBackupAgent(ctx context.Context, app interface{}, backupMode int32, operationType int32) error
+	ScheduleDestroyBackupAgent(ctx context.Context, app interface{}) error
 	ScheduleOnNewSceneTransitionInfo(ctx context.Context, token binder.IBinder, info ActivityOptionsSceneTransitionInfo) error
 	ScheduleSuicide(ctx context.Context) error
 	DispatchPackageBroadcast(ctx context.Context, cmd int32, packages []string) error
@@ -138,7 +138,7 @@ type IApplicationThread interface {
 	ScheduleTaskFragmentTransaction(ctx context.Context, organizer interface{}, transaction interface{}) error
 	RequestDirectActions(ctx context.Context, activityToken binder.IBinder, intractor interface{}, cancellationCallback interface{}, callback interface{}) error
 	PerformDirectAction(ctx context.Context, activityToken binder.IBinder, actionId string, arguments interface{}, cancellationCallback interface{}, resultCallback interface{}) error
-	NotifyContentProviderPublishStatus(ctx context.Context, holder ContentProviderHolder, authorities string, userId int32, published bool) error
+	NotifyContentProviderPublishStatus(ctx context.Context, holder ContentProviderHolder, authorities string, published bool) error
 	InstrumentWithoutRestart(ctx context.Context, instrumentationName interface{}, instrumentationArgs interface{}, instrumentationWatcher IInstrumentationWatcher, instrumentationUiConnection IUiAutomationConnection, targetInfo interface{}) error
 	UpdateUiTranslationState(ctx context.Context, activityToken binder.IBinder, state int32, sourceSpec interface{}, targetSpec interface{}, viewIds []interface{}, uiTranslationSpec interface{}) error
 	ScheduleTimeoutService(ctx context.Context, token binder.IBinder, startId int32) error

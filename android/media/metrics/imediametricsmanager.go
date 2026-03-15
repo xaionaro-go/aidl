@@ -28,19 +28,19 @@ const (
 
 type IMediaMetricsManager interface {
 	AsBinder() binder.IBinder
-	ReportPlaybackMetrics(ctx context.Context, sessionId string, metrics PlaybackMetrics, userId int32) error
-	GetPlaybackSessionId(ctx context.Context, userId int32) (string, error)
-	GetRecordingSessionId(ctx context.Context, userId int32) (string, error)
-	ReportNetworkEvent(ctx context.Context, sessionId string, event NetworkEvent, userId int32) error
-	ReportPlaybackErrorEvent(ctx context.Context, sessionId string, event PlaybackErrorEvent, userId int32) error
-	ReportPlaybackStateEvent(ctx context.Context, sessionId string, event PlaybackStateEvent, userId int32) error
-	ReportTrackChangeEvent(ctx context.Context, sessionId string, event TrackChangeEvent, userId int32) error
-	ReportEditingEndedEvent(ctx context.Context, sessionId string, event EditingEndedEvent, userId int32) error
-	GetTranscodingSessionId(ctx context.Context, userId int32) (string, error)
-	GetEditingSessionId(ctx context.Context, userId int32) (string, error)
-	GetBundleSessionId(ctx context.Context, userId int32) (string, error)
-	ReportBundleMetrics(ctx context.Context, sessionId string, metrics interface{}, userId int32) error
-	ReleaseSessionId(ctx context.Context, sessionId string, userId int32) error
+	ReportPlaybackMetrics(ctx context.Context, sessionId string, metrics PlaybackMetrics) error
+	GetPlaybackSessionId(ctx context.Context) (string, error)
+	GetRecordingSessionId(ctx context.Context) (string, error)
+	ReportNetworkEvent(ctx context.Context, sessionId string, event NetworkEvent) error
+	ReportPlaybackErrorEvent(ctx context.Context, sessionId string, event PlaybackErrorEvent) error
+	ReportPlaybackStateEvent(ctx context.Context, sessionId string, event PlaybackStateEvent) error
+	ReportTrackChangeEvent(ctx context.Context, sessionId string, event TrackChangeEvent) error
+	ReportEditingEndedEvent(ctx context.Context, sessionId string, event EditingEndedEvent) error
+	GetTranscodingSessionId(ctx context.Context) (string, error)
+	GetEditingSessionId(ctx context.Context) (string, error)
+	GetBundleSessionId(ctx context.Context) (string, error)
+	ReportBundleMetrics(ctx context.Context, sessionId string, metrics interface{}) error
+	ReleaseSessionId(ctx context.Context, sessionId string) error
 }
 
 type MediaMetricsManagerProxy struct {

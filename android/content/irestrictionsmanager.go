@@ -22,7 +22,7 @@ const (
 type IRestrictionsManager interface {
 	AsBinder() binder.IBinder
 	GetApplicationRestrictions(ctx context.Context, packageName string) (interface{}, error)
-	GetApplicationRestrictionsPerAdminForUser(ctx context.Context, userId int32, packageName string) ([]interface{}, error)
+	GetApplicationRestrictionsPerAdminForUser(ctx context.Context, packageName string) ([]interface{}, error)
 	HasRestrictionsProvider(ctx context.Context) (bool, error)
 	RequestPermission(ctx context.Context, packageName string, requestType string, requestId string, requestData interface{}) error
 	NotifyPermissionResponse(ctx context.Context, packageName string, response interface{}) error

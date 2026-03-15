@@ -27,15 +27,15 @@ const (
 
 type IContentSuggestionsManager interface {
 	AsBinder() binder.IBinder
-	ProvideContextImage(ctx context.Context, userId int32, taskId int32, imageContextRequestExtras os.Bundle) error
-	ProvideContextBitmap(ctx context.Context, userId int32, bitmap graphics.Bitmap, imageContextRequestExtras os.Bundle) error
-	SuggestContentSelections(ctx context.Context, userId int32, request SelectionsRequest, callback ISelectionsCallback) error
-	ClassifyContentSelections(ctx context.Context, userId int32, request ClassificationsRequest, callback IClassificationsCallback) error
-	NotifyInteraction(ctx context.Context, userId int32, requestId string, interaction os.Bundle) error
-	IsEnabled(ctx context.Context, userId int32, receiver internalOs.IResultReceiver) error
-	ResetTemporaryService(ctx context.Context, userId int32) error
-	SetTemporaryService(ctx context.Context, userId int32, serviceName string, duration int32) error
-	SetDefaultServiceEnabled(ctx context.Context, userId int32, enabled bool) error
+	ProvideContextImage(ctx context.Context, taskId int32, imageContextRequestExtras os.Bundle) error
+	ProvideContextBitmap(ctx context.Context, bitmap graphics.Bitmap, imageContextRequestExtras os.Bundle) error
+	SuggestContentSelections(ctx context.Context, request SelectionsRequest, callback ISelectionsCallback) error
+	ClassifyContentSelections(ctx context.Context, request ClassificationsRequest, callback IClassificationsCallback) error
+	NotifyInteraction(ctx context.Context, requestId string, interaction os.Bundle) error
+	IsEnabled(ctx context.Context, receiver internalOs.IResultReceiver) error
+	ResetTemporaryService(ctx context.Context) error
+	SetTemporaryService(ctx context.Context, serviceName string, duration int32) error
+	SetDefaultServiceEnabled(ctx context.Context, enabled bool) error
 }
 
 type ContentSuggestionsManagerProxy struct {

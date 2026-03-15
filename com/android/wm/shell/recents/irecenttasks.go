@@ -26,7 +26,7 @@ type IRecentTasks interface {
 	AsBinder() binder.IBinder
 	RegisterRecentTasksListener(ctx context.Context, listener IRecentTasksListener) error
 	UnregisterRecentTasksListener(ctx context.Context, listener IRecentTasksListener) error
-	GetRecentTasks(ctx context.Context, maxNum int32, flags int32, userId int32) ([]shared.GroupedTaskInfo, error)
+	GetRecentTasks(ctx context.Context, maxNum int32, flags int32) ([]shared.GroupedTaskInfo, error)
 	GetRunningTasks(ctx context.Context, maxNum int32) ([]app.ActivityManagerRunningTaskInfo, error)
 	StartRecentsTransition(ctx context.Context, intent app.PendingIntent, fillIn content.Intent, options os.Bundle, appThread app.IApplicationThread, listener IRecentsAnimationRunner) error
 }

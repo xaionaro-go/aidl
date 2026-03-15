@@ -17,8 +17,8 @@ const (
 
 type ITestSessionCallback interface {
 	AsBinder() binder.IBinder
-	OnCleanupStarted(ctx context.Context, userId int32) error
-	OnCleanupFinished(ctx context.Context, userId int32) error
+	OnCleanupStarted(ctx context.Context) error
+	OnCleanupFinished(ctx context.Context) error
 }
 
 type TestSessionCallbackProxy struct {

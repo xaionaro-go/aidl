@@ -19,10 +19,10 @@ const (
 
 type IDumpstate interface {
 	AsBinder() binder.IBinder
-	PreDumpUiData(ctx context.Context, callingPackage string) error
-	StartBugreport(ctx context.Context, callingUid int32, callingPackage string, bugreportFd interface{}, screenshotFd interface{}, bugreportMode int32, bugreportFlags int32, listener IDumpstateListener, isScreenshotRequested bool, skipUserConsent bool) error
-	CancelBugreport(ctx context.Context, callingUid int32, callingPackage string) error
-	RetrieveBugreport(ctx context.Context, callingUid int32, callingPackage string, userId int32, bugreportFd interface{}, bugreportFile string, keepBugreportOnRetrieval bool, skipUserConsent bool, listener IDumpstateListener) error
+	PreDumpUiData(ctx context.Context) error
+	StartBugreport(ctx context.Context, bugreportFd interface{}, screenshotFd interface{}, bugreportMode int32, bugreportFlags int32, listener IDumpstateListener, isScreenshotRequested bool, skipUserConsent bool) error
+	CancelBugreport(ctx context.Context) error
+	RetrieveBugreport(ctx context.Context, bugreportFd interface{}, bugreportFile string, keepBugreportOnRetrieval bool, skipUserConsent bool, listener IDumpstateListener) error
 }
 
 const (

@@ -74,7 +74,7 @@ const (
 type IAccessibilityServiceConnection interface {
 	AsBinder() binder.IBinder
 	SetServiceInfo(ctx context.Context, info AccessibilityServiceInfo) error
-	SetAttributionTag(ctx context.Context, attributionTag string) error
+	SetAttributionTag(ctx context.Context) error
 	FindAccessibilityNodeInfoByAccessibilityId(ctx context.Context, accessibilityWindowId int32, accessibilityNodeId int64, interactionId int32, callback interface{}, flags int32, threadId int64, arguments interface{}) ([]string, error)
 	FindAccessibilityNodeInfosByText(ctx context.Context, accessibilityWindowId int32, accessibilityNodeId int64, text string, interactionId int32, callback interface{}, threadId int64) ([]string, error)
 	FindAccessibilityNodeInfosByViewId(ctx context.Context, accessibilityWindowId int32, accessibilityNodeId int64, viewId string, interactionId int32, callback interface{}, threadId int64) ([]string, error)
@@ -115,7 +115,7 @@ type IAccessibilityServiceConnection interface {
 	SetTouchExplorationPassthroughRegion(ctx context.Context, displayId int32, region graphics.Region) error
 	SetFocusAppearance(ctx context.Context, strokeWidth int32, color int32) error
 	SetCacheEnabled(ctx context.Context, enabled bool) error
-	LogTrace(ctx context.Context, timestamp int64, where string, loggingTypes int64, callingParams string, processId int32, threadId int64, callingUid int32, serializedCallingStackInBundle interface{}) error
+	LogTrace(ctx context.Context, timestamp int64, where string, loggingTypes int64, callingParams string, processId int32, threadId int64, serializedCallingStackInBundle interface{}) error
 	SetServiceDetectsGesturesEnabled(ctx context.Context, displayId int32, mode bool) error
 	RequestTouchExploration(ctx context.Context, displayId int32) error
 	RequestDragging(ctx context.Context, displayId int32, pointerId int32) error

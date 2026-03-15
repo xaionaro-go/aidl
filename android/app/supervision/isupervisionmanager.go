@@ -16,7 +16,7 @@ const (
 
 type ISupervisionManager interface {
 	AsBinder() binder.IBinder
-	IsSupervisionEnabledForUser(ctx context.Context, userId int32) (bool, error)
+	IsSupervisionEnabledForUser(ctx context.Context) (bool, error)
 }
 
 type SupervisionManagerProxy struct {

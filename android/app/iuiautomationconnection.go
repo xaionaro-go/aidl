@@ -54,8 +54,8 @@ type IUiAutomationConnection interface {
 	ClearWindowAnimationFrameStats(ctx context.Context) error
 	GetWindowAnimationFrameStats(ctx context.Context) (interface{}, error)
 	ExecuteShellCommand(ctx context.Context, command string, sink int32, source int32) error
-	GrantRuntimePermission(ctx context.Context, packageName string, permission string, userId int32) error
-	RevokeRuntimePermission(ctx context.Context, packageName string, permission string, userId int32) error
+	GrantRuntimePermission(ctx context.Context, packageName string, permission string) error
+	RevokeRuntimePermission(ctx context.Context, packageName string, permission string) error
 	AdoptShellPermissionIdentity(ctx context.Context, uid int32, permissions []string) error
 	DropShellPermissionIdentity(ctx context.Context) error
 	Shutdown(ctx context.Context) error

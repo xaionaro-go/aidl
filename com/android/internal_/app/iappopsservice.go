@@ -75,9 +75,9 @@ const (
 type IAppOpsService interface {
 	AsBinder() binder.IBinder
 	CheckOperation(ctx context.Context, code int32, uid int32, packageName string) (int32, error)
-	NoteOperation(ctx context.Context, code int32, uid int32, packageName string, attributionTag string, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool) (interface{}, error)
-	StartOperation(ctx context.Context, clientId binder.IBinder, code int32, uid int32, packageName string, attributionTag string, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, attributionFlags int32, attributionChainId int32) (interface{}, error)
-	FinishOperation(ctx context.Context, clientId binder.IBinder, code int32, uid int32, packageName string, attributionTag string) error
+	NoteOperation(ctx context.Context, code int32, uid int32, packageName string, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool) (interface{}, error)
+	StartOperation(ctx context.Context, clientId binder.IBinder, code int32, uid int32, packageName string, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, attributionFlags int32, attributionChainId int32) (interface{}, error)
+	FinishOperation(ctx context.Context, clientId binder.IBinder, code int32, uid int32, packageName string) error
 	StartWatchingMode(ctx context.Context, op int32, packageName string, callback IAppOpsCallback) error
 	StopWatchingMode(ctx context.Context, callback IAppOpsCallback) error
 	PermissionToOpCode(ctx context.Context, permission string) (int32, error)
@@ -93,8 +93,8 @@ type IAppOpsService interface {
 	ReportRuntimeAppOpAccessMessageAndGetConfig(ctx context.Context, packageName string, appOp interface{}, message string) (MessageSamplingConfig, error)
 	GetPackagesForOps(ctx context.Context, ops []int32) ([]interface{}, error)
 	GetOpsForPackage(ctx context.Context, uid int32, packageName string, ops []int32) ([]interface{}, error)
-	GetHistoricalOps(ctx context.Context, uid int32, packageName string, attributionTag string, ops []string, historyFlags int32, filter int32, beginTimeMillis int64, endTimeMillis int64, flags int32, callback interface{}) error
-	GetHistoricalOpsFromDiskRaw(ctx context.Context, uid int32, packageName string, attributionTag string, ops []string, historyFlags int32, filter int32, beginTimeMillis int64, endTimeMillis int64, flags int32, callback interface{}) error
+	GetHistoricalOps(ctx context.Context, uid int32, packageName string, ops []string, historyFlags int32, filter int32, beginTimeMillis int64, endTimeMillis int64, flags int32, callback interface{}) error
+	GetHistoricalOpsFromDiskRaw(ctx context.Context, uid int32, packageName string, ops []string, historyFlags int32, filter int32, beginTimeMillis int64, endTimeMillis int64, flags int32, callback interface{}) error
 	OffsetHistory(ctx context.Context, duration int64) error
 	SetHistoryParameters(ctx context.Context, mode int32, baseSnapshotInterval int64, compressionStep int32) error
 	AddHistoricalOps(ctx context.Context, ops interface{}) error
@@ -107,9 +107,9 @@ type IAppOpsService interface {
 	SetMode(ctx context.Context, code int32, uid int32, packageName string, mode int32) error
 	ResetAllModes(ctx context.Context, reqUserId int32, reqPackageName string) error
 	SetAudioRestriction(ctx context.Context, code int32, usage int32, uid int32, mode int32, exceptionPackages []string) error
-	SetUserRestrictions(ctx context.Context, restrictions interface{}, token binder.IBinder, userHandle int32) error
-	SetUserRestriction(ctx context.Context, code int32, restricted bool, token binder.IBinder, userHandle int32, excludedPackageTags interface{}) error
-	RemoveUser(ctx context.Context, userHandle int32) error
+	SetUserRestrictions(ctx context.Context, restrictions interface{}, token binder.IBinder) error
+	SetUserRestriction(ctx context.Context, code int32, restricted bool, token binder.IBinder, excludedPackageTags interface{}) error
+	RemoveUser(ctx context.Context) error
 	StartWatchingActive(ctx context.Context, ops []int32, callback IAppOpsActiveCallback) error
 	StopWatchingActive(ctx context.Context, callback IAppOpsActiveCallback) error
 	IsOperationActive(ctx context.Context, code int32, uid int32, packageName string) (bool, error)
@@ -121,17 +121,17 @@ type IAppOpsService interface {
 	StartWatchingAsyncNoted(ctx context.Context, packageName string, callback IAppOpsAsyncNotedCallback) error
 	StopWatchingAsyncNoted(ctx context.Context, packageName string, callback IAppOpsAsyncNotedCallback) error
 	ExtractAsyncOps(ctx context.Context, packageName string) ([]interface{}, error)
-	CheckOperationRaw(ctx context.Context, code int32, uid int32, packageName string, attributionTag string) (int32, error)
+	CheckOperationRaw(ctx context.Context, code int32, uid int32, packageName string) (int32, error)
 	ReloadNonHistoricalState(ctx context.Context) error
 	CollectNoteOpCallsForValidation(ctx context.Context, stackTrace string, op int32, packageName string, version int64) error
 	NoteProxyOperationWithState(ctx context.Context, code int32, attributionSourceStateState interface{}, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool) (interface{}, error)
 	StartProxyOperationWithState(ctx context.Context, clientId binder.IBinder, code int32, attributionSourceStateState interface{}, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool, proxyAttributionFlags int32, proxiedAttributionFlags int32, attributionChainId int32) (interface{}, error)
 	FinishProxyOperationWithState(ctx context.Context, clientId binder.IBinder, code int32, attributionSourceStateState interface{}, skipProxyOperation bool) error
-	CheckOperationRawForDevice(ctx context.Context, code int32, uid int32, packageName string, attributionTag string, virtualDeviceId int32) (int32, error)
-	CheckOperationForDevice(ctx context.Context, code int32, uid int32, packageName string, attributionTag string, virtualDeviceId int32) (int32, error)
-	NoteOperationForDevice(ctx context.Context, code int32, uid int32, packageName string, attributionTag string, virtualDeviceId int32, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool) (interface{}, error)
-	StartOperationForDevice(ctx context.Context, clientId binder.IBinder, code int32, uid int32, packageName string, attributionTag string, virtualDeviceId int32, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, attributionFlags int32, attributionChainId int32) (interface{}, error)
-	FinishOperationForDevice(ctx context.Context, clientId binder.IBinder, code int32, uid int32, packageName string, attributionTag string, virtualDeviceId int32) error
+	CheckOperationRawForDevice(ctx context.Context, code int32, uid int32, packageName string, virtualDeviceId int32) (int32, error)
+	CheckOperationForDevice(ctx context.Context, code int32, uid int32, packageName string, virtualDeviceId int32) (int32, error)
+	NoteOperationForDevice(ctx context.Context, code int32, uid int32, packageName string, virtualDeviceId int32, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool) (interface{}, error)
+	StartOperationForDevice(ctx context.Context, clientId binder.IBinder, code int32, uid int32, packageName string, virtualDeviceId int32, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, attributionFlags int32, attributionChainId int32) (interface{}, error)
+	FinishOperationForDevice(ctx context.Context, clientId binder.IBinder, code int32, uid int32, packageName string, virtualDeviceId int32) error
 	GetPackagesForOpsForDevice(ctx context.Context, ops []int32, persistentDeviceId string) ([]interface{}, error)
 }
 

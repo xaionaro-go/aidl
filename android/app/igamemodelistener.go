@@ -16,7 +16,7 @@ const (
 
 type IGameModeListener interface {
 	AsBinder() binder.IBinder
-	OnGameModeChanged(ctx context.Context, packageName string, gameModeFrom int32, gameModeTo int32, userId int32) error
+	OnGameModeChanged(ctx context.Context, packageName string, gameModeFrom int32, gameModeTo int32) error
 }
 
 type GameModeListenerProxy struct {

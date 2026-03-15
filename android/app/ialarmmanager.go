@@ -25,15 +25,15 @@ const (
 
 type IAlarmManager interface {
 	AsBinder() binder.IBinder
-	Set(ctx context.Context, callingPackage string, type_ int32, triggerAtTime int64, windowLength int64, interval int64, flags int32, operation PendingIntent, listener IAlarmListener, listenerTag string, workSource interface{}, alarmClock AlarmManagerAlarmClockInfo) error
+	Set(ctx context.Context, type_ int32, triggerAtTime int64, windowLength int64, interval int64, flags int32, operation PendingIntent, listener IAlarmListener, listenerTag string, workSource interface{}, alarmClock AlarmManagerAlarmClockInfo) error
 	SetTime(ctx context.Context, millis int64) (bool, error)
 	SetTimeZone(ctx context.Context, zone string) error
 	Remove(ctx context.Context, operation PendingIntent, listener IAlarmListener) error
 	RemoveAll(ctx context.Context, packageName string) error
 	GetNextWakeFromIdleTime(ctx context.Context) (int64, error)
-	GetNextAlarmClock(ctx context.Context, userId int32) (AlarmManagerAlarmClockInfo, error)
+	GetNextAlarmClock(ctx context.Context) (AlarmManagerAlarmClockInfo, error)
 	CanScheduleExactAlarms(ctx context.Context, packageName string) (bool, error)
-	HasScheduleExactAlarm(ctx context.Context, packageName string, userId int32) (bool, error)
+	HasScheduleExactAlarm(ctx context.Context, packageName string) (bool, error)
 	GetConfigVersion(ctx context.Context) (int32, error)
 }
 

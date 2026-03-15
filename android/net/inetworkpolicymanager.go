@@ -49,7 +49,7 @@ type INetworkPolicyManager interface {
 	RegisterListener(ctx context.Context, listener INetworkPolicyListener) error
 	UnregisterListener(ctx context.Context, listener INetworkPolicyListener) error
 	SetNetworkPolicies(ctx context.Context, policies []NetworkPolicy) error
-	GetNetworkPolicies(ctx context.Context, callingPackage string) ([]NetworkPolicy, error)
+	GetNetworkPolicies(ctx context.Context) ([]NetworkPolicy, error)
 	SnoozeLimit(ctx context.Context, template interface{}) error
 	SetRestrictBackground(ctx context.Context, restrictBackground bool) error
 	GetRestrictBackground(ctx context.Context) (bool, error)
@@ -60,10 +60,10 @@ type INetworkPolicyManager interface {
 	GetMultipathPreference(ctx context.Context, network interface{}) (int32, error)
 	GetSubscriptionPlan(ctx context.Context, template interface{}) (interface{}, error)
 	NotifyStatsProviderWarningOrLimitReached(ctx context.Context) error
-	GetSubscriptionPlans(ctx context.Context, subId int32, callingPackage string) ([]interface{}, error)
-	SetSubscriptionPlans(ctx context.Context, subId int32, plans []interface{}, expirationDurationMillis int64, callingPackage string) error
+	GetSubscriptionPlans(ctx context.Context, subId int32) ([]interface{}, error)
+	SetSubscriptionPlans(ctx context.Context, subId int32, plans []interface{}, expirationDurationMillis int64) error
 	GetSubscriptionPlansOwner(ctx context.Context, subId int32) (string, error)
-	SetSubscriptionOverride(ctx context.Context, subId int32, overrideMask int32, overrideValue int32, networkTypes []int32, expirationDurationMillis int64, callingPackage string) error
+	SetSubscriptionOverride(ctx context.Context, subId int32, overrideMask int32, overrideValue int32, networkTypes []int32, expirationDurationMillis int64) error
 	FactoryReset(ctx context.Context, subscriber string) error
 	IsUidNetworkingBlocked(ctx context.Context, uid int32, meteredNetwork bool) (bool, error)
 	IsUidRestrictedOnMeteredNetworks(ctx context.Context, uid int32) (bool, error)

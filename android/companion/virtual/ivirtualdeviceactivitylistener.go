@@ -22,7 +22,7 @@ const (
 
 type IVirtualDeviceActivityListener interface {
 	AsBinder() binder.IBinder
-	OnTopActivityChanged(ctx context.Context, displayId int32, topActivity content.ComponentName, userId int32) error
+	OnTopActivityChanged(ctx context.Context, displayId int32, topActivity content.ComponentName) error
 	OnDisplayEmpty(ctx context.Context, displayId int32) error
 	OnActivityLaunchBlocked(ctx context.Context, displayId int32, componentName content.ComponentName, user os.UserHandle, intentSender content.IntentSender) error
 	OnSecureWindowShown(ctx context.Context, displayId int32, componentName content.ComponentName, user os.UserHandle) error

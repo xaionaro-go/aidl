@@ -43,9 +43,9 @@ const (
 type IUiModeManager interface {
 	AsBinder() binder.IBinder
 	AddCallback(ctx context.Context, callback IUiModeManagerCallback) error
-	EnableCarMode(ctx context.Context, flags int32, priority int32, callingPackage string) error
+	EnableCarMode(ctx context.Context, flags int32, priority int32) error
 	DisableCarMode(ctx context.Context, flags int32) error
-	DisableCarModeByCallingPackage(ctx context.Context, flags int32, callingPackage string) error
+	DisableCarModeByCallingPackage(ctx context.Context, flags int32) error
 	GetCurrentModeType(ctx context.Context) (int32, error)
 	SetNightMode(ctx context.Context, mode int32) error
 	GetNightMode(ctx context.Context) (int32, error)
@@ -62,8 +62,8 @@ type IUiModeManager interface {
 	SetCustomNightModeStart(ctx context.Context, time int64) error
 	GetCustomNightModeEnd(ctx context.Context) (int64, error)
 	SetCustomNightModeEnd(ctx context.Context, time int64) error
-	RequestProjection(ctx context.Context, binder_ binder.IBinder, projectionType int32, callingPackage string) (bool, error)
-	ReleaseProjection(ctx context.Context, projectionType int32, callingPackage string) (bool, error)
+	RequestProjection(ctx context.Context, binder_ binder.IBinder, projectionType int32) (bool, error)
+	ReleaseProjection(ctx context.Context, projectionType int32) (bool, error)
 	AddOnProjectionStateChangedListener(ctx context.Context, listener IOnProjectionStateChangedListener, projectionType int32) error
 	RemoveOnProjectionStateChangedListener(ctx context.Context, listener IOnProjectionStateChangedListener) error
 	GetProjectingPackages(ctx context.Context, projectionType int32) ([]string, error)

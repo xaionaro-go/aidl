@@ -63,15 +63,15 @@ type IAccountManager interface {
 	AsBinder() binder.IBinder
 	GetPassword(ctx context.Context, account Account) (string, error)
 	GetUserData(ctx context.Context, account Account, key string) (string, error)
-	GetAuthenticatorTypes(ctx context.Context, userId int32) ([]AuthenticatorDescription, error)
-	GetAccountsForPackage(ctx context.Context, packageName string, uid int32, opPackageName string) ([]Account, error)
-	GetAccountsByTypeForPackage(ctx context.Context, type_ string, packageName string, opPackageName string) ([]Account, error)
-	GetAccountsAsUser(ctx context.Context, accountType string, userId int32, opPackageName string) ([]Account, error)
-	HasFeatures(ctx context.Context, response IAccountManagerResponse, account Account, features []string, userId int32, opPackageName string) error
-	GetAccountByTypeAndFeatures(ctx context.Context, response IAccountManagerResponse, accountType string, features []string, opPackageName string) error
-	GetAccountsByFeatures(ctx context.Context, response IAccountManagerResponse, accountType string, features []string, opPackageName string) error
-	AddAccountExplicitly(ctx context.Context, account Account, password string, extras interface{}, opPackageName string) (bool, error)
-	RemoveAccountAsUser(ctx context.Context, response IAccountManagerResponse, account Account, expectActivityLaunch bool, userId int32) error
+	GetAuthenticatorTypes(ctx context.Context) ([]AuthenticatorDescription, error)
+	GetAccountsForPackage(ctx context.Context, packageName string, uid int32) ([]Account, error)
+	GetAccountsByTypeForPackage(ctx context.Context, type_ string, packageName string) ([]Account, error)
+	GetAccountsAsUser(ctx context.Context, accountType string) ([]Account, error)
+	HasFeatures(ctx context.Context, response IAccountManagerResponse, account Account, features []string) error
+	GetAccountByTypeAndFeatures(ctx context.Context, response IAccountManagerResponse, accountType string, features []string) error
+	GetAccountsByFeatures(ctx context.Context, response IAccountManagerResponse, accountType string, features []string) error
+	AddAccountExplicitly(ctx context.Context, account Account, password string, extras interface{}) (bool, error)
+	RemoveAccountAsUser(ctx context.Context, response IAccountManagerResponse, account Account, expectActivityLaunch bool) error
 	RemoveAccountExplicitly(ctx context.Context, account Account) (bool, error)
 	CopyAccountToUser(ctx context.Context, response IAccountManagerResponse, account Account, userFrom int32, userTo int32) error
 	InvalidateAuthToken(ctx context.Context, accountType string, authToken string) error
@@ -83,27 +83,27 @@ type IAccountManager interface {
 	UpdateAppPermission(ctx context.Context, account Account, authTokenType string, uid int32, value bool) error
 	GetAuthToken(ctx context.Context, response IAccountManagerResponse, account Account, authTokenType string, notifyOnAuthFailure bool, expectActivityLaunch bool, options interface{}) error
 	AddAccount(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string, requiredFeatures []string, expectActivityLaunch bool, options interface{}) error
-	AddAccountAsUser(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string, requiredFeatures []string, expectActivityLaunch bool, options interface{}, userId int32) error
+	AddAccountAsUser(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string, requiredFeatures []string, expectActivityLaunch bool, options interface{}) error
 	UpdateCredentials(ctx context.Context, response IAccountManagerResponse, account Account, authTokenType string, expectActivityLaunch bool, options interface{}) error
 	EditProperties(ctx context.Context, response IAccountManagerResponse, accountType string, expectActivityLaunch bool) error
-	ConfirmCredentialsAsUser(ctx context.Context, response IAccountManagerResponse, account Account, options interface{}, expectActivityLaunch bool, userId int32) error
+	ConfirmCredentialsAsUser(ctx context.Context, response IAccountManagerResponse, account Account, options interface{}, expectActivityLaunch bool) error
 	AccountAuthenticated(ctx context.Context, account Account) (bool, error)
 	GetAuthTokenLabel(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string) error
-	AddSharedAccountsFromParentUser(ctx context.Context, parentUserId int32, userId int32, opPackageName string) error
+	AddSharedAccountsFromParentUser(ctx context.Context, parentUserId int32) error
 	RenameAccount(ctx context.Context, response IAccountManagerResponse, accountToRename Account, newName string) error
 	GetPreviousName(ctx context.Context, account Account) (string, error)
 	StartAddAccountSession(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string, requiredFeatures []string, expectActivityLaunch bool, options interface{}) error
 	StartUpdateCredentialsSession(ctx context.Context, response IAccountManagerResponse, account Account, authTokenType string, expectActivityLaunch bool, options interface{}) error
-	FinishSessionAsUser(ctx context.Context, response IAccountManagerResponse, sessionBundle interface{}, expectActivityLaunch bool, appInfo interface{}, userId int32) error
+	FinishSessionAsUser(ctx context.Context, response IAccountManagerResponse, sessionBundle interface{}, expectActivityLaunch bool, appInfo interface{}) error
 	SomeUserHasAccount(ctx context.Context, account Account) (bool, error)
 	IsCredentialsUpdateSuggested(ctx context.Context, response IAccountManagerResponse, account Account, statusToken string) error
 	GetPackagesAndVisibilityForAccount(ctx context.Context, account Account) (map[interface{}]interface{}, error)
-	AddAccountExplicitlyWithVisibility(ctx context.Context, account Account, password string, extras interface{}, visibility map[interface{}]interface{}, opPackageName string) (bool, error)
+	AddAccountExplicitlyWithVisibility(ctx context.Context, account Account, password string, extras interface{}, visibility map[interface{}]interface{}) (bool, error)
 	SetAccountVisibility(ctx context.Context, a Account, packageName string, newVisibility int32) (bool, error)
 	GetAccountVisibility(ctx context.Context, a Account, packageName string) (int32, error)
 	GetAccountsAndVisibilityForPackage(ctx context.Context, packageName string, accountType string) (map[interface{}]interface{}, error)
-	RegisterAccountListener(ctx context.Context, accountTypes []string, opPackageName string) error
-	UnregisterAccountListener(ctx context.Context, accountTypes []string, opPackageName string) error
+	RegisterAccountListener(ctx context.Context, accountTypes []string) error
+	UnregisterAccountListener(ctx context.Context, accountTypes []string) error
 	HasAccountAccess(ctx context.Context, account Account, packageName string, userHandle interface{}) (bool, error)
 	CreateRequestAccountAccessIntentSenderAsUser(ctx context.Context, account Account, packageName string, userHandle interface{}) (interface{}, error)
 	OnAccountAccessed(ctx context.Context, token string) error

@@ -36,9 +36,9 @@ type IContentCaptureManager interface {
 	IsContentCaptureFeatureEnabled(ctx context.Context, result interface{}) error
 	GetServiceSettingsActivity(ctx context.Context, result interface{}) error
 	GetContentCaptureConditions(ctx context.Context, packageName string, result interface{}) error
-	ResetTemporaryService(ctx context.Context, userId int32) error
-	SetTemporaryService(ctx context.Context, userId int32, serviceName string, duration int32) error
-	SetDefaultServiceEnabled(ctx context.Context, userId int32, enabled bool) error
+	ResetTemporaryService(ctx context.Context) error
+	SetTemporaryService(ctx context.Context, serviceName string, duration int32) error
+	SetDefaultServiceEnabled(ctx context.Context, enabled bool) error
 	RegisterContentCaptureOptionsCallback(ctx context.Context, packageName string, callback IContentCaptureOptionsCallback) error
 	OnLoginDetected(ctx context.Context, events interface{}) error
 }

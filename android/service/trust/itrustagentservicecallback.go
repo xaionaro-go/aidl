@@ -31,10 +31,10 @@ type ITrustAgentServiceCallback interface {
 	LockUser(ctx context.Context) error
 	SetManagingTrust(ctx context.Context, managingTrust bool) error
 	OnConfigureCompleted(ctx context.Context, result bool, token binder.IBinder) error
-	AddEscrowToken(ctx context.Context, token []byte, userId int32) error
-	IsEscrowTokenActive(ctx context.Context, handle int64, userId int32) error
-	RemoveEscrowToken(ctx context.Context, handle int64, userId int32) error
-	UnlockUserWithToken(ctx context.Context, handle int64, token []byte, userId int32) error
+	AddEscrowToken(ctx context.Context, token []byte) error
+	IsEscrowTokenActive(ctx context.Context, handle int64) error
+	RemoveEscrowToken(ctx context.Context, handle int64) error
+	UnlockUserWithToken(ctx context.Context, handle int64, token []byte) error
 	ShowKeyguardErrorMessage(ctx context.Context, message interface{}) error
 }
 

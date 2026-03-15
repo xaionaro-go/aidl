@@ -22,13 +22,13 @@ const (
 
 type IUriGrantsManager interface {
 	AsBinder() binder.IBinder
-	TakePersistableUriPermission(ctx context.Context, uri interface{}, modeFlags int32, toPackage string, userId int32) error
-	ReleasePersistableUriPermission(ctx context.Context, uri interface{}, modeFlags int32, toPackage string, userId int32) error
+	TakePersistableUriPermission(ctx context.Context, uri interface{}, modeFlags int32, toPackage string) error
+	ReleasePersistableUriPermission(ctx context.Context, uri interface{}, modeFlags int32, toPackage string) error
 	GrantUriPermissionFromOwner(ctx context.Context, owner binder.IBinder, fromUid int32, targetPkg string, uri interface{}, mode int32, sourceUserId int32, targetUserId int32) error
-	GetGrantedUriPermissions(ctx context.Context, packageName string, userId int32) (interface{}, error)
-	ClearGrantedUriPermissions(ctx context.Context, packageName string, userId int32) error
+	GetGrantedUriPermissions(ctx context.Context, packageName string) (interface{}, error)
+	ClearGrantedUriPermissions(ctx context.Context, packageName string) error
 	GetUriPermissions(ctx context.Context, packageName string, incoming bool, persistedOnly bool) (interface{}, error)
-	CheckGrantUriPermission_ignoreNonSystem(ctx context.Context, sourceUid int32, targetPkg string, uri interface{}, modeFlags int32, userId int32) (int32, error)
+	CheckGrantUriPermission_ignoreNonSystem(ctx context.Context, sourceUid int32, targetPkg string, uri interface{}, modeFlags int32) (int32, error)
 }
 
 type UriGrantsManagerProxy struct {

@@ -16,7 +16,7 @@ const (
 
 type IForegroundServiceObserver interface {
 	AsBinder() binder.IBinder
-	OnForegroundStateChanged(ctx context.Context, serviceToken binder.IBinder, packageName string, userId int32, isForeground bool) error
+	OnForegroundStateChanged(ctx context.Context, serviceToken binder.IBinder, packageName string, isForeground bool) error
 }
 
 type ForegroundServiceObserverProxy struct {

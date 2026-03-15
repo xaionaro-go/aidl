@@ -16,7 +16,7 @@ const (
 
 type IGameStateListener interface {
 	AsBinder() binder.IBinder
-	OnGameStateChanged(ctx context.Context, packageName string, state GameState, userId int32) error
+	OnGameStateChanged(ctx context.Context, packageName string, state GameState) error
 }
 
 type GameStateListenerProxy struct {

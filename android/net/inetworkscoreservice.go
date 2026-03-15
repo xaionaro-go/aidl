@@ -33,7 +33,7 @@ type INetworkScoreService interface {
 	RegisterNetworkScoreCache(ctx context.Context, networkType int32, scoreCache INetworkScoreCache, filterType int32) error
 	UnregisterNetworkScoreCache(ctx context.Context, networkType int32, scoreCache INetworkScoreCache) error
 	RequestScores(ctx context.Context, networks []NetworkKey) (bool, error)
-	IsCallerActiveScorer(ctx context.Context, callingUid int32) (bool, error)
+	IsCallerActiveScorer(ctx context.Context) (bool, error)
 	GetActiveScorerPackage(ctx context.Context) (string, error)
 	GetActiveScorer(ctx context.Context) (NetworkScorerAppData, error)
 	GetAllValidScorers(ctx context.Context) ([]NetworkScorerAppData, error)

@@ -50,34 +50,34 @@ const (
 
 type IFaceService interface {
 	AsBinder() binder.IBinder
-	CreateTestSession(ctx context.Context, sensorId int32, callback biometrics.ITestSessionCallback, opPackageName string) (biometrics.ITestSession, error)
+	CreateTestSession(ctx context.Context, sensorId int32, callback biometrics.ITestSessionCallback) (biometrics.ITestSession, error)
 	DumpSensorServiceStateProto(ctx context.Context, sensorId int32, clearSchedulerBuffer bool) ([]byte, error)
-	GetSensorPropertiesInternal(ctx context.Context, opPackageName string) ([]FaceSensorPropertiesInternal, error)
-	GetSensorProperties(ctx context.Context, sensorId int32, opPackageName string) (FaceSensorPropertiesInternal, error)
+	GetSensorPropertiesInternal(ctx context.Context) ([]FaceSensorPropertiesInternal, error)
+	GetSensorProperties(ctx context.Context, sensorId int32) (FaceSensorPropertiesInternal, error)
 	Authenticate(ctx context.Context, token binder.IBinder, operationId int64, receiver IFaceServiceReceiver, options FaceAuthenticateOptions) (int64, error)
 	DetectFace(ctx context.Context, token binder.IBinder, receiver IFaceServiceReceiver, options FaceAuthenticateOptions) (int64, error)
 	PrepareForAuthentication(ctx context.Context, requireConfirmation bool, token binder.IBinder, operationId int64, sensorReceiver biometrics.IBiometricSensorReceiver, options FaceAuthenticateOptions, requestId int64, cookie int32, allowBackgroundAuthentication bool) error
 	StartPreparedClient(ctx context.Context, sensorId int32, cookie int32) error
-	CancelAuthentication(ctx context.Context, token binder.IBinder, opPackageName string, requestId int64) error
-	CancelFaceDetect(ctx context.Context, token binder.IBinder, opPackageName string, requestId int64) error
-	CancelAuthenticationFromService(ctx context.Context, sensorId int32, token binder.IBinder, opPackageName string, requestId int64) error
-	Enroll(ctx context.Context, userId int32, token binder.IBinder, hardwareAuthToken []byte, receiver IFaceServiceReceiver, opPackageName string, disabledFeatures []int32, previewSurface interface{}, debugConsent bool, options FaceEnrollOptions) (int64, error)
-	EnrollRemotely(ctx context.Context, userId int32, token binder.IBinder, hardwareAuthToken []byte, receiver IFaceServiceReceiver, opPackageName string, disabledFeatures []int32) (int64, error)
+	CancelAuthentication(ctx context.Context, token binder.IBinder, requestId int64) error
+	CancelFaceDetect(ctx context.Context, token binder.IBinder, requestId int64) error
+	CancelAuthenticationFromService(ctx context.Context, sensorId int32, token binder.IBinder, requestId int64) error
+	Enroll(ctx context.Context, token binder.IBinder, hardwareAuthToken []byte, receiver IFaceServiceReceiver, disabledFeatures []int32, previewSurface interface{}, debugConsent bool, options FaceEnrollOptions) (int64, error)
+	EnrollRemotely(ctx context.Context, token binder.IBinder, hardwareAuthToken []byte, receiver IFaceServiceReceiver, disabledFeatures []int32) (int64, error)
 	CancelEnrollment(ctx context.Context, token binder.IBinder, requestId int64) error
-	Remove(ctx context.Context, token binder.IBinder, faceId int32, userId int32, receiver IFaceServiceReceiver, opPackageName string) error
-	RemoveAll(ctx context.Context, token binder.IBinder, userId int32, receiver IFaceServiceReceiver, opPackageName string) error
-	GetEnrolledFaces(ctx context.Context, sensorId int32, userId int32, opPackageName string) ([]Face, error)
-	IsHardwareDetected(ctx context.Context, sensorId int32, opPackageName string) (bool, error)
-	GenerateChallenge(ctx context.Context, token binder.IBinder, sensorId int32, userId int32, receiver IFaceServiceReceiver, opPackageName string) error
-	RevokeChallenge(ctx context.Context, token binder.IBinder, sensorId int32, userId int32, opPackageName string, challenge int64) error
-	HasEnrolledFaces(ctx context.Context, sensorId int32, userId int32, opPackageName string) (bool, error)
-	GetLockoutModeForUser(ctx context.Context, sensorId int32, userId int32) (int32, error)
-	InvalidateAuthenticatorId(ctx context.Context, sensorId int32, userId int32, callback biometrics.IInvalidationCallback) error
-	GetAuthenticatorId(ctx context.Context, sensorId int32, callingUserId int32) (int64, error)
-	ResetLockout(ctx context.Context, token binder.IBinder, sensorId int32, userId int32, hardwareAuthToken []byte, opPackageName string) error
-	AddLockoutResetCallback(ctx context.Context, callback biometrics.IBiometricServiceLockoutResetCallback, opPackageName string) error
-	SetFeature(ctx context.Context, token binder.IBinder, userId int32, feature int32, enabled bool, hardwareAuthToken []byte, receiver IFaceServiceReceiver, opPackageName string) error
-	GetFeature(ctx context.Context, token binder.IBinder, userId int32, feature int32, receiver IFaceServiceReceiver, opPackageName string) error
+	Remove(ctx context.Context, token binder.IBinder, faceId int32, receiver IFaceServiceReceiver) error
+	RemoveAll(ctx context.Context, token binder.IBinder, receiver IFaceServiceReceiver) error
+	GetEnrolledFaces(ctx context.Context, sensorId int32) ([]Face, error)
+	IsHardwareDetected(ctx context.Context, sensorId int32) (bool, error)
+	GenerateChallenge(ctx context.Context, token binder.IBinder, sensorId int32, receiver IFaceServiceReceiver) error
+	RevokeChallenge(ctx context.Context, token binder.IBinder, sensorId int32, challenge int64) error
+	HasEnrolledFaces(ctx context.Context, sensorId int32) (bool, error)
+	GetLockoutModeForUser(ctx context.Context, sensorId int32) (int32, error)
+	InvalidateAuthenticatorId(ctx context.Context, sensorId int32, callback biometrics.IInvalidationCallback) error
+	GetAuthenticatorId(ctx context.Context, sensorId int32) (int64, error)
+	ResetLockout(ctx context.Context, token binder.IBinder, sensorId int32, hardwareAuthToken []byte) error
+	AddLockoutResetCallback(ctx context.Context, callback biometrics.IBiometricServiceLockoutResetCallback) error
+	SetFeature(ctx context.Context, token binder.IBinder, feature int32, enabled bool, hardwareAuthToken []byte, receiver IFaceServiceReceiver) error
+	GetFeature(ctx context.Context, token binder.IBinder, feature int32, receiver IFaceServiceReceiver) error
 	RegisterAuthenticators(ctx context.Context, faceSensorConfigurations FaceSensorConfigurations) error
 	AddAuthenticatorsRegisteredCallback(ctx context.Context, callback IFaceAuthenticatorsRegisteredCallback) error
 	RegisterAuthenticationStateListener(ctx context.Context, listener biometrics.AuthenticationStateListener) error

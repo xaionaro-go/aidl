@@ -82,9 +82,9 @@ type ISms interface {
 	CreateAppSpecificSmsTokenWithPackageInfo(ctx context.Context, subId int32, callingPkg string, prefixes string, intent app.PendingIntent) (string, error)
 	SetStorageMonitorMemoryStatusOverride(ctx context.Context, subId int32, isStorageAvailable bool) error
 	ClearStorageMonitorMemoryStatusOverride(ctx context.Context, subId int32) error
-	CheckSmsShortCodeDestination(ctx context.Context, subId int32, callingApk string, callingFeatureId string, destAddress string, countryIso string) (int32, error)
-	GetSmscAddressFromIccEfForSubscriber(ctx context.Context, subId int32, callingPackage string) (string, error)
-	SetSmscAddressOnIccEfForSubscriber(ctx context.Context, smsc string, subId int32, callingPackage string) (bool, error)
+	CheckSmsShortCodeDestination(ctx context.Context, subId int32, callingApk string, destAddress string, countryIso string) (int32, error)
+	GetSmscAddressFromIccEfForSubscriber(ctx context.Context, subId int32) (string, error)
+	SetSmscAddressOnIccEfForSubscriber(ctx context.Context, smsc string, subId int32) (bool, error)
 	GetSmsCapacityOnIccForSubscriber(ctx context.Context, subId int32) (int32, error)
 	ResetAllCellBroadcastRanges(ctx context.Context, subId int32) (bool, error)
 	GetWapMessageSize(ctx context.Context, locationUrl string) (int64, error)

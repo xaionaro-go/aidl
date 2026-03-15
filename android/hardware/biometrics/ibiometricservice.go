@@ -32,22 +32,22 @@ const (
 
 type IBiometricService interface {
 	AsBinder() binder.IBinder
-	CreateTestSession(ctx context.Context, sensorId int32, callback ITestSessionCallback, opPackageName string) (ITestSession, error)
-	GetSensorProperties(ctx context.Context, opPackageName string) ([]SensorPropertiesInternal, error)
-	Authenticate(ctx context.Context, token binder.IBinder, operationId int64, userId int32, receiver IBiometricServiceReceiver, opPackageName string, promptInfo PromptInfo) (int64, error)
-	CancelAuthentication(ctx context.Context, token binder.IBinder, opPackageName string, requestId int64) error
-	CanAuthenticate(ctx context.Context, opPackageName string, userId int32, callingUserId int32, authenticators int32) (int32, error)
-	GetLastAuthenticationTime(ctx context.Context, userId int32, authenticators int32) (int64, error)
-	HasEnrolledBiometrics(ctx context.Context, userId int32, opPackageName string) (bool, error)
+	CreateTestSession(ctx context.Context, sensorId int32, callback ITestSessionCallback) (ITestSession, error)
+	GetSensorProperties(ctx context.Context) ([]SensorPropertiesInternal, error)
+	Authenticate(ctx context.Context, token binder.IBinder, operationId int64, receiver IBiometricServiceReceiver, promptInfo PromptInfo) (int64, error)
+	CancelAuthentication(ctx context.Context, token binder.IBinder, requestId int64) error
+	CanAuthenticate(ctx context.Context, authenticators int32) (int32, error)
+	GetLastAuthenticationTime(ctx context.Context, authenticators int32) (int64, error)
+	HasEnrolledBiometrics(ctx context.Context) (bool, error)
 	RegisterAuthenticator(ctx context.Context, id int32, modality int32, strength int32, authenticator IBiometricAuthenticator) error
 	RegisterEnabledOnKeyguardCallback(ctx context.Context, callback IBiometricEnabledOnKeyguardCallback) error
 	OnReadyForAuthentication(ctx context.Context, requestId int64, cookie int32) error
-	InvalidateAuthenticatorIds(ctx context.Context, userId int32, fromSensorId int32, callback IInvalidationCallback) error
-	GetAuthenticatorIds(ctx context.Context, callingUserId int32) ([]int64, error)
-	ResetLockoutTimeBound(ctx context.Context, token binder.IBinder, opPackageName string, fromSensorId int32, userId int32, hardwareAuthToken []byte) error
-	ResetLockout(ctx context.Context, userId int32, hardwareAuthToken []byte) error
+	InvalidateAuthenticatorIds(ctx context.Context, fromSensorId int32, callback IInvalidationCallback) error
+	GetAuthenticatorIds(ctx context.Context) ([]int64, error)
+	ResetLockoutTimeBound(ctx context.Context, token binder.IBinder, fromSensorId int32, hardwareAuthToken []byte) error
+	ResetLockout(ctx context.Context, hardwareAuthToken []byte) error
 	GetCurrentStrength(ctx context.Context, sensorId int32) (int32, error)
-	GetCurrentModality(ctx context.Context, opPackageName string, userId int32, callingUserId int32, authenticators int32) (int32, error)
+	GetCurrentModality(ctx context.Context, authenticators int32) (int32, error)
 	GetSupportedModalities(ctx context.Context, authenticators int32) (int32, error)
 }
 

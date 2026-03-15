@@ -112,9 +112,9 @@ type IInputManager interface {
 	SetTouchCalibrationForInputDevice(ctx context.Context, inputDeviceDescriptor string, rotation int32, calibration TouchCalibration) error
 	GetKeyboardLayouts(ctx context.Context) ([]KeyboardLayout, error)
 	GetKeyboardLayout(ctx context.Context, keyboardLayoutDescriptor string) (KeyboardLayout, error)
-	GetKeyboardLayoutForInputDevice(ctx context.Context, identifier InputDeviceIdentifier, userId int32, imeInfo inputmethod.InputMethodInfo, imeSubtype inputmethod.InputMethodSubtype) (KeyboardLayoutSelectionResult, error)
-	SetKeyboardLayoutForInputDevice(ctx context.Context, identifier InputDeviceIdentifier, userId int32, imeInfo inputmethod.InputMethodInfo, imeSubtype inputmethod.InputMethodSubtype, keyboardLayoutDescriptor string) error
-	GetKeyboardLayoutListForInputDevice(ctx context.Context, identifier InputDeviceIdentifier, userId int32, imeInfo inputmethod.InputMethodInfo, imeSubtype inputmethod.InputMethodSubtype) ([]KeyboardLayout, error)
+	GetKeyboardLayoutForInputDevice(ctx context.Context, identifier InputDeviceIdentifier, imeInfo inputmethod.InputMethodInfo, imeSubtype inputmethod.InputMethodSubtype) (KeyboardLayoutSelectionResult, error)
+	SetKeyboardLayoutForInputDevice(ctx context.Context, identifier InputDeviceIdentifier, imeInfo inputmethod.InputMethodInfo, imeSubtype inputmethod.InputMethodSubtype, keyboardLayoutDescriptor string) error
+	GetKeyboardLayoutListForInputDevice(ctx context.Context, identifier InputDeviceIdentifier, imeInfo inputmethod.InputMethodInfo, imeSubtype inputmethod.InputMethodSubtype) ([]KeyboardLayout, error)
 	RemapModifierKey(ctx context.Context, fromKey int32, toKey int32) error
 	ClearAllModifierKeyRemappings(ctx context.Context) error
 	GetModifierKeyRemapping(ctx context.Context) (map[interface{}]interface{}, error)
@@ -165,10 +165,10 @@ type IInputManager interface {
 	UnregisterKeyGestureEventListener(ctx context.Context, listener IKeyGestureEventListener) error
 	RegisterKeyGestureHandler(ctx context.Context, handler IKeyGestureHandler) error
 	UnregisterKeyGestureHandler(ctx context.Context, handler IKeyGestureHandler) error
-	AddCustomInputGesture(ctx context.Context, userId int32, data AidlInputGestureData) (int32, error)
-	RemoveCustomInputGesture(ctx context.Context, userId int32, data AidlInputGestureData) (int32, error)
-	RemoveAllCustomInputGestures(ctx context.Context, userId int32, tag int32) error
-	GetCustomInputGestures(ctx context.Context, userId int32, tag int32) ([]AidlInputGestureData, error)
+	AddCustomInputGesture(ctx context.Context, data AidlInputGestureData) (int32, error)
+	RemoveCustomInputGesture(ctx context.Context, data AidlInputGestureData) (int32, error)
+	RemoveAllCustomInputGestures(ctx context.Context, tag int32) error
+	GetCustomInputGestures(ctx context.Context, tag int32) ([]AidlInputGestureData, error)
 	GetAppLaunchBookmarks(ctx context.Context) ([]AidlInputGestureData, error)
 	ResetLockedModifierState(ctx context.Context) error
 }

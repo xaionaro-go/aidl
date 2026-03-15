@@ -77,63 +77,63 @@ const (
 
 type IBackupManager interface {
 	AsBinder() binder.IBinder
-	DataChangedForUser(ctx context.Context, userId int32, packageName string) error
+	DataChangedForUser(ctx context.Context, packageName string) error
 	DataChanged(ctx context.Context, packageName string) error
-	ClearBackupDataForUser(ctx context.Context, userId int32, transportName string, packageName string) error
+	ClearBackupDataForUser(ctx context.Context, transportName string, packageName string) error
 	ClearBackupData(ctx context.Context, transportName string, packageName string) error
-	InitializeTransportsForUser(ctx context.Context, userId int32, transportNames []string, observer IBackupObserver) error
-	AgentConnectedForUser(ctx context.Context, userId int32, packageName string, agent binder.IBinder) error
+	InitializeTransportsForUser(ctx context.Context, transportNames []string, observer IBackupObserver) error
+	AgentConnectedForUser(ctx context.Context, packageName string, agent binder.IBinder) error
 	AgentConnected(ctx context.Context, packageName string, agent binder.IBinder) error
-	AgentDisconnectedForUser(ctx context.Context, userId int32, packageName string) error
+	AgentDisconnectedForUser(ctx context.Context, packageName string) error
 	AgentDisconnected(ctx context.Context, packageName string) error
-	RestoreAtInstallForUser(ctx context.Context, userId int32, packageName string, token int32) error
+	RestoreAtInstallForUser(ctx context.Context, packageName string, token int32) error
 	RestoreAtInstall(ctx context.Context, packageName string, token int32) error
-	SetBackupEnabledForUser(ctx context.Context, userId int32, isEnabled bool) error
-	SetFrameworkSchedulingEnabledForUser(ctx context.Context, userId int32, isEnabled bool) error
+	SetBackupEnabledForUser(ctx context.Context, isEnabled bool) error
+	SetFrameworkSchedulingEnabledForUser(ctx context.Context, isEnabled bool) error
 	SetBackupEnabled(ctx context.Context, isEnabled bool) error
-	SetAutoRestoreForUser(ctx context.Context, userId int32, doAutoRestore bool) error
+	SetAutoRestoreForUser(ctx context.Context, doAutoRestore bool) error
 	SetAutoRestore(ctx context.Context, doAutoRestore bool) error
-	IsBackupEnabledForUser(ctx context.Context, userId int32) (bool, error)
+	IsBackupEnabledForUser(ctx context.Context) (bool, error)
 	IsBackupEnabled(ctx context.Context) (bool, error)
 	SetBackupPassword(ctx context.Context, currentPw string, newPw string) (bool, error)
 	HasBackupPassword(ctx context.Context) (bool, error)
-	BackupNowForUser(ctx context.Context, userId int32) error
+	BackupNowForUser(ctx context.Context) error
 	BackupNow(ctx context.Context) error
-	AdbBackup(ctx context.Context, userId int32, fd int32, includeApks bool, includeObbs bool, includeShared bool, doWidgets bool, allApps bool, allIncludesSystem bool, doCompress bool, doKeyValue bool, packageNames []string) error
-	FullTransportBackupForUser(ctx context.Context, userId int32, packageNames []string) error
-	AdbRestore(ctx context.Context, userId int32, fd int32) error
-	AcknowledgeFullBackupOrRestoreForUser(ctx context.Context, userId int32, token int32, allow bool, curPassword string, encryptionPassword string, observer IFullBackupRestoreObserver) error
+	AdbBackup(ctx context.Context, fd int32, includeApks bool, includeObbs bool, includeShared bool, doWidgets bool, allApps bool, allIncludesSystem bool, doCompress bool, doKeyValue bool, packageNames []string) error
+	FullTransportBackupForUser(ctx context.Context, packageNames []string) error
+	AdbRestore(ctx context.Context, fd int32) error
+	AcknowledgeFullBackupOrRestoreForUser(ctx context.Context, token int32, allow bool, curPassword string, encryptionPassword string, observer IFullBackupRestoreObserver) error
 	AcknowledgeFullBackupOrRestore(ctx context.Context, token int32, allow bool, curPassword string, encryptionPassword string, observer IFullBackupRestoreObserver) error
-	UpdateTransportAttributesForUser(ctx context.Context, userId int32, transportComponent interface{}, name string, configurationIntent interface{}, currentDestinationString string, dataManagementIntent interface{}, dataManagementLabel interface{}) error
-	GetCurrentTransportForUser(ctx context.Context, userId int32) (string, error)
+	UpdateTransportAttributesForUser(ctx context.Context, transportComponent interface{}, name string, configurationIntent interface{}, currentDestinationString string, dataManagementIntent interface{}, dataManagementLabel interface{}) error
+	GetCurrentTransportForUser(ctx context.Context) (string, error)
 	GetCurrentTransport(ctx context.Context) (string, error)
-	GetCurrentTransportComponentForUser(ctx context.Context, userId int32) (interface{}, error)
-	ListAllTransportsForUser(ctx context.Context, userId int32) ([]string, error)
+	GetCurrentTransportComponentForUser(ctx context.Context) (interface{}, error)
+	ListAllTransportsForUser(ctx context.Context) ([]string, error)
 	ListAllTransports(ctx context.Context) ([]string, error)
-	ListAllTransportComponentsForUser(ctx context.Context, userId int32) ([]interface{}, error)
+	ListAllTransportComponentsForUser(ctx context.Context) ([]interface{}, error)
 	GetTransportWhitelist(ctx context.Context) ([]string, error)
-	SelectBackupTransportForUser(ctx context.Context, userId int32, transport string) (string, error)
+	SelectBackupTransportForUser(ctx context.Context, transport string) (string, error)
 	SelectBackupTransport(ctx context.Context, transport string) (string, error)
-	SelectBackupTransportAsyncForUser(ctx context.Context, userId int32, transport interface{}, listener ISelectBackupTransportCallback) error
-	GetConfigurationIntentForUser(ctx context.Context, userId int32, transport string) (interface{}, error)
+	SelectBackupTransportAsyncForUser(ctx context.Context, transport interface{}, listener ISelectBackupTransportCallback) error
+	GetConfigurationIntentForUser(ctx context.Context, transport string) (interface{}, error)
 	GetConfigurationIntent(ctx context.Context, transport string) (interface{}, error)
-	GetDestinationStringForUser(ctx context.Context, userId int32, transport string) (string, error)
+	GetDestinationStringForUser(ctx context.Context, transport string) (string, error)
 	GetDestinationString(ctx context.Context, transport string) (string, error)
-	GetDataManagementIntentForUser(ctx context.Context, userId int32, transport string) (interface{}, error)
+	GetDataManagementIntentForUser(ctx context.Context, transport string) (interface{}, error)
 	GetDataManagementIntent(ctx context.Context, transport string) (interface{}, error)
-	GetDataManagementLabelForUser(ctx context.Context, userId int32, transport string) (interface{}, error)
-	BeginRestoreSessionForUser(ctx context.Context, userId int32, packageName string, transportID string) (IRestoreSession, error)
-	OpCompleteForUser(ctx context.Context, userId int32, token int32, result int64) error
+	GetDataManagementLabelForUser(ctx context.Context, transport string) (interface{}, error)
+	BeginRestoreSessionForUser(ctx context.Context, packageName string, transportID string) (IRestoreSession, error)
+	OpCompleteForUser(ctx context.Context, token int32, result int64) error
 	OpComplete(ctx context.Context, token int32, result int64) error
 	SetBackupServiceActive(ctx context.Context, whichUser int32, makeActive bool) error
 	IsBackupServiceActive(ctx context.Context, whichUser int32) (bool, error)
-	IsUserReadyForBackup(ctx context.Context, userId int32) (bool, error)
-	GetAvailableRestoreTokenForUser(ctx context.Context, userId int32, packageName string) (int64, error)
-	IsAppEligibleForBackupForUser(ctx context.Context, userId int32, packageName string) (bool, error)
-	FilterAppsEligibleForBackupForUser(ctx context.Context, userId int32, packages []string) ([]string, error)
-	RequestBackupForUser(ctx context.Context, userId int32, packages []string, observer IBackupObserver, monitor IBackupManagerMonitor, flags int32) (int32, error)
+	IsUserReadyForBackup(ctx context.Context) (bool, error)
+	GetAvailableRestoreTokenForUser(ctx context.Context, packageName string) (int64, error)
+	IsAppEligibleForBackupForUser(ctx context.Context, packageName string) (bool, error)
+	FilterAppsEligibleForBackupForUser(ctx context.Context, packages []string) ([]string, error)
+	RequestBackupForUser(ctx context.Context, packages []string, observer IBackupObserver, monitor IBackupManagerMonitor, flags int32) (int32, error)
 	RequestBackup(ctx context.Context, packages []string, observer IBackupObserver, monitor IBackupManagerMonitor, flags int32) (int32, error)
-	CancelBackupsForUser(ctx context.Context, userId int32) error
+	CancelBackupsForUser(ctx context.Context) error
 	CancelBackups(ctx context.Context) error
 	GetUserForAncestralSerialNumber(ctx context.Context, ancestralSerialNumber int64) (interface{}, error)
 	SetAncestralSerialNumber(ctx context.Context, ancestralSerialNumber int64) error

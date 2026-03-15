@@ -17,8 +17,8 @@ const (
 
 type IStopUserCallback interface {
 	AsBinder() binder.IBinder
-	UserStopped(ctx context.Context, userId int32) error
-	UserStopAborted(ctx context.Context, userId int32) error
+	UserStopped(ctx context.Context) error
+	UserStopAborted(ctx context.Context) error
 }
 
 type StopUserCallbackProxy struct {

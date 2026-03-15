@@ -18,9 +18,9 @@ const (
 
 type IInlineSuggestionRenderService interface {
 	AsBinder() binder.IBinder
-	RenderSuggestion(ctx context.Context, callback IInlineSuggestionUiCallback, presentation InlinePresentation, width int32, height int32, hostInputToken binder.IBinder, displayId int32, userId int32, sessionId int32) error
+	RenderSuggestion(ctx context.Context, callback IInlineSuggestionUiCallback, presentation InlinePresentation, width int32, height int32, hostInputToken binder.IBinder, displayId int32, sessionId int32) error
 	GetInlineSuggestionsRendererInfo(ctx context.Context, callback interface{}) error
-	DestroySuggestionViews(ctx context.Context, userId int32, sessionId int32) error
+	DestroySuggestionViews(ctx context.Context, sessionId int32) error
 }
 
 type InlineSuggestionRenderServiceProxy struct {

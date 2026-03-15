@@ -40,30 +40,30 @@ const (
 
 type IShortcutService interface {
 	AsBinder() binder.IBinder
-	SetDynamicShortcuts(ctx context.Context, packageName string, shortcutInfoList ParceledListSlice, userId int32) (bool, error)
-	AddDynamicShortcuts(ctx context.Context, packageName string, shortcutInfoList ParceledListSlice, userId int32) (bool, error)
-	RemoveDynamicShortcuts(ctx context.Context, packageName string, shortcutIds []string, userId int32) error
-	RemoveAllDynamicShortcuts(ctx context.Context, packageName string, userId int32) error
-	UpdateShortcuts(ctx context.Context, packageName string, shortcuts ParceledListSlice, userId int32) (bool, error)
-	RequestPinShortcut(ctx context.Context, packageName string, shortcut ShortcutInfo, resultIntent interface{}, userId int32, ret infra.AndroidFuture) error
-	CreateShortcutResultIntent(ctx context.Context, packageName string, shortcut ShortcutInfo, userId int32, ret infra.AndroidFuture) error
-	DisableShortcuts(ctx context.Context, packageName string, shortcutIds []string, disabledMessage interface{}, disabledMessageResId int32, userId int32) error
-	EnableShortcuts(ctx context.Context, packageName string, shortcutIds []string, userId int32) error
-	GetMaxShortcutCountPerActivity(ctx context.Context, packageName string, userId int32) (int32, error)
-	GetRemainingCallCount(ctx context.Context, packageName string, userId int32) (int32, error)
-	GetRateLimitResetTime(ctx context.Context, packageName string, userId int32) (int64, error)
-	GetIconMaxDimensions(ctx context.Context, packageName string, userId int32) (int32, error)
-	ReportShortcutUsed(ctx context.Context, packageName string, shortcutId string, userId int32) error
+	SetDynamicShortcuts(ctx context.Context, packageName string, shortcutInfoList ParceledListSlice) (bool, error)
+	AddDynamicShortcuts(ctx context.Context, packageName string, shortcutInfoList ParceledListSlice) (bool, error)
+	RemoveDynamicShortcuts(ctx context.Context, packageName string, shortcutIds []string) error
+	RemoveAllDynamicShortcuts(ctx context.Context, packageName string) error
+	UpdateShortcuts(ctx context.Context, packageName string, shortcuts ParceledListSlice) (bool, error)
+	RequestPinShortcut(ctx context.Context, packageName string, shortcut ShortcutInfo, resultIntent interface{}, ret infra.AndroidFuture) error
+	CreateShortcutResultIntent(ctx context.Context, packageName string, shortcut ShortcutInfo, ret infra.AndroidFuture) error
+	DisableShortcuts(ctx context.Context, packageName string, shortcutIds []string, disabledMessage interface{}, disabledMessageResId int32) error
+	EnableShortcuts(ctx context.Context, packageName string, shortcutIds []string) error
+	GetMaxShortcutCountPerActivity(ctx context.Context, packageName string) (int32, error)
+	GetRemainingCallCount(ctx context.Context, packageName string) (int32, error)
+	GetRateLimitResetTime(ctx context.Context, packageName string) (int64, error)
+	GetIconMaxDimensions(ctx context.Context, packageName string) (int32, error)
+	ReportShortcutUsed(ctx context.Context, packageName string, shortcutId string) error
 	ResetThrottling(ctx context.Context) error
-	OnApplicationActive(ctx context.Context, packageName string, userId int32) error
+	OnApplicationActive(ctx context.Context, packageName string) error
 	GetBackupPayload(ctx context.Context, user int32) ([]byte, error)
 	ApplyRestore(ctx context.Context, payload []byte, user int32) error
 	IsRequestPinItemSupported(ctx context.Context, user int32, requestType int32) (bool, error)
-	GetShareTargets(ctx context.Context, packageName string, filter interface{}, userId int32) (ParceledListSlice, error)
-	HasShareTargets(ctx context.Context, packageName string, packageToCheck string, userId int32) (bool, error)
-	RemoveLongLivedShortcuts(ctx context.Context, packageName string, shortcutIds []string, userId int32) error
-	GetShortcuts(ctx context.Context, packageName string, matchFlags int32, userId int32) (ParceledListSlice, error)
-	PushDynamicShortcut(ctx context.Context, packageName string, shortcut ShortcutInfo, userId int32) error
+	GetShareTargets(ctx context.Context, packageName string, filter interface{}) (ParceledListSlice, error)
+	HasShareTargets(ctx context.Context, packageName string, packageToCheck string) (bool, error)
+	RemoveLongLivedShortcuts(ctx context.Context, packageName string, shortcutIds []string) error
+	GetShortcuts(ctx context.Context, packageName string, matchFlags int32) (ParceledListSlice, error)
+	PushDynamicShortcut(ctx context.Context, packageName string, shortcut ShortcutInfo) error
 }
 
 type ShortcutServiceProxy struct {

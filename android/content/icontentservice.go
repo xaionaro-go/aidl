@@ -57,44 +57,44 @@ const (
 type IContentService interface {
 	AsBinder() binder.IBinder
 	UnregisterContentObserver(ctx context.Context, observer interface{}) error
-	RegisterContentObserver(ctx context.Context, uri interface{}, notifyForDescendants bool, observer interface{}, userHandle int32, targetSdkVersion int32) error
-	NotifyChange(ctx context.Context, uris []interface{}, observer interface{}, observerWantsSelfNotifications bool, flags int32, userHandle int32, targetSdkVersion int32, callingPackage string) error
-	RequestSync(ctx context.Context, account interface{}, authority string, extras interface{}, callingPackage string) error
-	Sync(ctx context.Context, request SyncRequest, callingPackage string) error
-	SyncAsUser(ctx context.Context, request SyncRequest, userId int32, callingPackage string) error
+	RegisterContentObserver(ctx context.Context, uri interface{}, notifyForDescendants bool, observer interface{}, targetSdkVersion int32) error
+	NotifyChange(ctx context.Context, uris []interface{}, observer interface{}, observerWantsSelfNotifications bool, flags int32, targetSdkVersion int32) error
+	RequestSync(ctx context.Context, account interface{}, authority string, extras interface{}) error
+	Sync(ctx context.Context, request SyncRequest) error
+	SyncAsUser(ctx context.Context, request SyncRequest) error
 	CancelSync(ctx context.Context, account interface{}, authority string, cname ComponentName) error
-	CancelSyncAsUser(ctx context.Context, account interface{}, authority string, cname ComponentName, userId int32) error
+	CancelSyncAsUser(ctx context.Context, account interface{}, authority string, cname ComponentName) error
 	CancelRequest(ctx context.Context, request SyncRequest) error
 	GetSyncAutomatically(ctx context.Context, account interface{}, providerName string) (bool, error)
-	GetSyncAutomaticallyAsUser(ctx context.Context, account interface{}, providerName string, userId int32) (bool, error)
+	GetSyncAutomaticallyAsUser(ctx context.Context, account interface{}, providerName string) (bool, error)
 	SetSyncAutomatically(ctx context.Context, account interface{}, providerName string, sync bool) error
-	SetSyncAutomaticallyAsUser(ctx context.Context, account interface{}, providerName string, sync bool, userId int32) error
+	SetSyncAutomaticallyAsUser(ctx context.Context, account interface{}, providerName string, sync bool) error
 	GetPeriodicSyncs(ctx context.Context, account interface{}, providerName string, cname ComponentName) ([]PeriodicSync, error)
 	AddPeriodicSync(ctx context.Context, account interface{}, providerName string, extras interface{}, pollFrequency int64) error
 	RemovePeriodicSync(ctx context.Context, account interface{}, providerName string, extras interface{}) error
 	GetIsSyncable(ctx context.Context, account interface{}, providerName string) (int32, error)
-	GetIsSyncableAsUser(ctx context.Context, account interface{}, providerName string, userId int32) (int32, error)
+	GetIsSyncableAsUser(ctx context.Context, account interface{}, providerName string) (int32, error)
 	SetIsSyncable(ctx context.Context, account interface{}, providerName string, syncable int32) error
-	SetIsSyncableAsUser(ctx context.Context, account interface{}, providerName string, syncable int32, userId int32) error
+	SetIsSyncableAsUser(ctx context.Context, account interface{}, providerName string, syncable int32) error
 	SetMasterSyncAutomatically(ctx context.Context, flag bool) error
-	SetMasterSyncAutomaticallyAsUser(ctx context.Context, flag bool, userId int32) error
+	SetMasterSyncAutomaticallyAsUser(ctx context.Context, flag bool) error
 	GetMasterSyncAutomatically(ctx context.Context) (bool, error)
-	GetMasterSyncAutomaticallyAsUser(ctx context.Context, userId int32) (bool, error)
+	GetMasterSyncAutomaticallyAsUser(ctx context.Context) (bool, error)
 	GetCurrentSyncs(ctx context.Context) ([]SyncInfo, error)
-	GetCurrentSyncsAsUser(ctx context.Context, userId int32) ([]SyncInfo, error)
+	GetCurrentSyncsAsUser(ctx context.Context) ([]SyncInfo, error)
 	GetSyncAdapterTypes(ctx context.Context) ([]SyncAdapterType, error)
-	GetSyncAdapterTypesAsUser(ctx context.Context, userId int32) ([]SyncAdapterType, error)
-	GetSyncAdapterPackagesForAuthorityAsUser(ctx context.Context, authority string, userId int32) ([]string, error)
-	GetSyncAdapterPackageAsUser(ctx context.Context, accountType string, authority string, userId int32) (string, error)
+	GetSyncAdapterTypesAsUser(ctx context.Context) ([]SyncAdapterType, error)
+	GetSyncAdapterPackagesForAuthorityAsUser(ctx context.Context, authority string) ([]string, error)
+	GetSyncAdapterPackageAsUser(ctx context.Context, accountType string, authority string) (string, error)
 	IsSyncActive(ctx context.Context, account interface{}, authority string, cname ComponentName) (bool, error)
 	GetSyncStatus(ctx context.Context, account interface{}, authority string, cname ComponentName) (SyncStatusInfo, error)
-	GetSyncStatusAsUser(ctx context.Context, account interface{}, authority string, cname ComponentName, userId int32) (SyncStatusInfo, error)
+	GetSyncStatusAsUser(ctx context.Context, account interface{}, authority string, cname ComponentName) (SyncStatusInfo, error)
 	IsSyncPending(ctx context.Context, account interface{}, authority string, cname ComponentName) (bool, error)
-	IsSyncPendingAsUser(ctx context.Context, account interface{}, authority string, cname ComponentName, userId int32) (bool, error)
+	IsSyncPendingAsUser(ctx context.Context, account interface{}, authority string, cname ComponentName) (bool, error)
 	AddStatusChangeListener(ctx context.Context, mask int32, callback ISyncStatusObserver) error
 	RemoveStatusChangeListener(ctx context.Context, callback ISyncStatusObserver) error
-	PutCache(ctx context.Context, packageName string, key interface{}, value interface{}, userId int32) error
-	GetCache(ctx context.Context, packageName string, key interface{}, userId int32) (interface{}, error)
+	PutCache(ctx context.Context, packageName string, key interface{}, value interface{}) error
+	GetCache(ctx context.Context, packageName string, key interface{}) (interface{}, error)
 	ResetTodayStats(ctx context.Context) error
 	OnDbCorruption(ctx context.Context, tag string, message string, stacktrace string) error
 }

@@ -19,10 +19,10 @@ const (
 
 type IGrammaticalInflectionManager interface {
 	AsBinder() binder.IBinder
-	SetRequestedApplicationGrammaticalGender(ctx context.Context, appPackageName string, userId int32, gender int32) error
-	SetSystemWideGrammaticalGender(ctx context.Context, gender int32, userId int32) error
-	GetSystemGrammaticalGender(ctx context.Context, attributionSource interface{}, userId int32) (int32, error)
-	PeekSystemGrammaticalGenderByUserId(ctx context.Context, attributionSource interface{}, userId int32) (int32, error)
+	SetRequestedApplicationGrammaticalGender(ctx context.Context, appPackageName string, gender int32) error
+	SetSystemWideGrammaticalGender(ctx context.Context, gender int32) error
+	GetSystemGrammaticalGender(ctx context.Context, attributionSource interface{}) (int32, error)
+	PeekSystemGrammaticalGenderByUserId(ctx context.Context, attributionSource interface{}) (int32, error)
 }
 
 type GrammaticalInflectionManagerProxy struct {

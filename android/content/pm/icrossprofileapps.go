@@ -25,16 +25,16 @@ const (
 
 type ICrossProfileApps interface {
 	AsBinder() binder.IBinder
-	StartActivityAsUser(ctx context.Context, caller interface{}, callingPackage string, callingFeatureId string, component interface{}, userId int32, launchMainActivity bool, task binder.IBinder, options interface{}) error
-	StartActivityAsUserByIntent(ctx context.Context, caller interface{}, callingPackage string, callingFeatureId string, intent interface{}, userId int32, callingActivity binder.IBinder, options interface{}) error
-	GetTargetUserProfiles(ctx context.Context, callingPackage string) ([]interface{}, error)
-	CanInteractAcrossProfiles(ctx context.Context, callingPackage string) (bool, error)
-	CanRequestInteractAcrossProfiles(ctx context.Context, callingPackage string) (bool, error)
-	SetInteractAcrossProfilesAppOp(ctx context.Context, userId int32, packageName string, newMode int32) error
-	CanConfigureInteractAcrossProfiles(ctx context.Context, userId int32, packageName string) (bool, error)
-	CanUserAttemptToConfigureInteractAcrossProfiles(ctx context.Context, userId int32, packageName string) (bool, error)
-	ResetInteractAcrossProfilesAppOps(ctx context.Context, userId int32, packageNames []string) error
-	ClearInteractAcrossProfilesAppOps(ctx context.Context, userId int32) error
+	StartActivityAsUser(ctx context.Context, caller interface{}, component interface{}, launchMainActivity bool, task binder.IBinder, options interface{}) error
+	StartActivityAsUserByIntent(ctx context.Context, caller interface{}, intent interface{}, callingActivity binder.IBinder, options interface{}) error
+	GetTargetUserProfiles(ctx context.Context) ([]interface{}, error)
+	CanInteractAcrossProfiles(ctx context.Context) (bool, error)
+	CanRequestInteractAcrossProfiles(ctx context.Context) (bool, error)
+	SetInteractAcrossProfilesAppOp(ctx context.Context, packageName string, newMode int32) error
+	CanConfigureInteractAcrossProfiles(ctx context.Context, packageName string) (bool, error)
+	CanUserAttemptToConfigureInteractAcrossProfiles(ctx context.Context, packageName string) (bool, error)
+	ResetInteractAcrossProfilesAppOps(ctx context.Context, packageNames []string) error
+	ClearInteractAcrossProfilesAppOps(ctx context.Context) error
 }
 
 type CrossProfileAppsProxy struct {

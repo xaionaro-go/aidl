@@ -44,31 +44,31 @@ const (
 
 type IPrintManager interface {
 	AsBinder() binder.IBinder
-	GetPrintJobInfos(ctx context.Context, appId int32, userId int32) ([]PrintJobInfo, error)
-	GetPrintJobInfo(ctx context.Context, printJobId PrintJobId, appId int32, userId int32) (PrintJobInfo, error)
-	Print(ctx context.Context, printJobName string, printAdapter IPrintDocumentAdapter, attributes PrintAttributes, packageName string, appId int32, userId int32) (os.Bundle, error)
-	CancelPrintJob(ctx context.Context, printJobId PrintJobId, appId int32, userId int32) error
-	RestartPrintJob(ctx context.Context, printJobId PrintJobId, appId int32, userId int32) error
-	AddPrintJobStateChangeListener(ctx context.Context, listener IPrintJobStateChangeListener, appId int32, userId int32) error
-	RemovePrintJobStateChangeListener(ctx context.Context, listener IPrintJobStateChangeListener, userId int32) error
-	AddPrintServicesChangeListener(ctx context.Context, listener IPrintServicesChangeListener, userId int32) error
-	RemovePrintServicesChangeListener(ctx context.Context, listener IPrintServicesChangeListener, userId int32) error
-	GetPrintServices(ctx context.Context, selectionFlags int32, userId int32) ([]interface{}, error)
-	SetPrintServiceEnabled(ctx context.Context, service content.ComponentName, isEnabled bool, userId int32) error
-	IsPrintServiceEnabled(ctx context.Context, service content.ComponentName, userId int32) (bool, error)
-	AddPrintServiceRecommendationsChangeListener(ctx context.Context, listener recommendation.IRecommendationsChangeListener, userId int32) error
-	RemovePrintServiceRecommendationsChangeListener(ctx context.Context, listener recommendation.IRecommendationsChangeListener, userId int32) error
-	GetPrintServiceRecommendations(ctx context.Context, userId int32) ([]recommendation.RecommendationInfo, error)
-	CreatePrinterDiscoverySession(ctx context.Context, observer IPrinterDiscoveryObserver, userId int32) error
-	StartPrinterDiscovery(ctx context.Context, observer IPrinterDiscoveryObserver, priorityList []PrinterId, userId int32) error
-	StopPrinterDiscovery(ctx context.Context, observer IPrinterDiscoveryObserver, userId int32) error
-	ValidatePrinters(ctx context.Context, printerIds []PrinterId, userId int32) error
-	StartPrinterStateTracking(ctx context.Context, printerId PrinterId, userId int32) error
-	GetCustomPrinterIcon(ctx context.Context, printerId PrinterId, userId int32) (drawable.Icon, error)
-	StopPrinterStateTracking(ctx context.Context, printerId PrinterId, userId int32) error
-	DestroyPrinterDiscoverySession(ctx context.Context, observer IPrinterDiscoveryObserver, userId int32) error
-	GetBindInstantServiceAllowed(ctx context.Context, userId int32) (bool, error)
-	SetBindInstantServiceAllowed(ctx context.Context, userId int32, allowed bool) error
+	GetPrintJobInfos(ctx context.Context, appId int32) ([]PrintJobInfo, error)
+	GetPrintJobInfo(ctx context.Context, printJobId PrintJobId, appId int32) (PrintJobInfo, error)
+	Print(ctx context.Context, printJobName string, printAdapter IPrintDocumentAdapter, attributes PrintAttributes, packageName string, appId int32) (os.Bundle, error)
+	CancelPrintJob(ctx context.Context, printJobId PrintJobId, appId int32) error
+	RestartPrintJob(ctx context.Context, printJobId PrintJobId, appId int32) error
+	AddPrintJobStateChangeListener(ctx context.Context, listener IPrintJobStateChangeListener, appId int32) error
+	RemovePrintJobStateChangeListener(ctx context.Context, listener IPrintJobStateChangeListener) error
+	AddPrintServicesChangeListener(ctx context.Context, listener IPrintServicesChangeListener) error
+	RemovePrintServicesChangeListener(ctx context.Context, listener IPrintServicesChangeListener) error
+	GetPrintServices(ctx context.Context, selectionFlags int32) ([]interface{}, error)
+	SetPrintServiceEnabled(ctx context.Context, service content.ComponentName, isEnabled bool) error
+	IsPrintServiceEnabled(ctx context.Context, service content.ComponentName) (bool, error)
+	AddPrintServiceRecommendationsChangeListener(ctx context.Context, listener recommendation.IRecommendationsChangeListener) error
+	RemovePrintServiceRecommendationsChangeListener(ctx context.Context, listener recommendation.IRecommendationsChangeListener) error
+	GetPrintServiceRecommendations(ctx context.Context) ([]recommendation.RecommendationInfo, error)
+	CreatePrinterDiscoverySession(ctx context.Context, observer IPrinterDiscoveryObserver) error
+	StartPrinterDiscovery(ctx context.Context, observer IPrinterDiscoveryObserver, priorityList []PrinterId) error
+	StopPrinterDiscovery(ctx context.Context, observer IPrinterDiscoveryObserver) error
+	ValidatePrinters(ctx context.Context, printerIds []PrinterId) error
+	StartPrinterStateTracking(ctx context.Context, printerId PrinterId) error
+	GetCustomPrinterIcon(ctx context.Context, printerId PrinterId) (drawable.Icon, error)
+	StopPrinterStateTracking(ctx context.Context, printerId PrinterId) error
+	DestroyPrinterDiscoverySession(ctx context.Context, observer IPrinterDiscoveryObserver) error
+	GetBindInstantServiceAllowed(ctx context.Context) (bool, error)
+	SetBindInstantServiceAllowed(ctx context.Context, allowed bool) error
 }
 
 type PrintManagerProxy struct {

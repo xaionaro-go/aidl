@@ -97,8 +97,8 @@ type IPowerManager interface {
 	IsWakeLockLevelSupported(ctx context.Context, level int32) (bool, error)
 	IsWakeLockLevelSupportedWithDisplayId(ctx context.Context, level int32, displayId int32) (bool, error)
 	UserActivity(ctx context.Context, displayId int32, time int64, event int32, flags int32) error
-	WakeUp(ctx context.Context, time int64, reason int32, details string, opPackageName string) error
-	WakeUpWithDisplayId(ctx context.Context, time int64, reason int32, details string, opPackageName string, displayId int32) error
+	WakeUp(ctx context.Context, time int64, reason int32, details string) error
+	WakeUpWithDisplayId(ctx context.Context, time int64, reason int32, details string, displayId int32) error
 	GoToSleep(ctx context.Context, time int64, reason int32, flags int32) error
 	GoToSleepWithDisplayId(ctx context.Context, displayId int32, time int64, reason int32, flags int32) error
 	Nap(ctx context.Context, time int64) error
@@ -152,7 +152,7 @@ type IPowerManager interface {
 	SuppressAmbientDisplay(ctx context.Context, token string, suppress bool) error
 	IsAmbientDisplaySuppressedForToken(ctx context.Context, token string) (bool, error)
 	IsAmbientDisplaySuppressed(ctx context.Context) (bool, error)
-	IsAmbientDisplaySuppressedForTokenByApp(ctx context.Context, token string, appUid int32) (bool, error)
+	IsAmbientDisplaySuppressedForTokenByApp(ctx context.Context, token string) (bool, error)
 	ForceSuspend(ctx context.Context) (bool, error)
 }
 

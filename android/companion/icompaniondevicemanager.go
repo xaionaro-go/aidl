@@ -58,22 +58,22 @@ const (
 
 type ICompanionDeviceManager interface {
 	AsBinder() binder.IBinder
-	Associate(ctx context.Context, request AssociationRequest, callback IAssociationRequestCallback, callingPackage string, userId int32) error
-	GetAssociations(ctx context.Context, callingPackage string, userId int32) ([]AssociationInfo, error)
-	GetAllAssociationsForUser(ctx context.Context, userId int32) ([]AssociationInfo, error)
-	LegacyDisassociate(ctx context.Context, deviceMacAddress string, callingPackage string, userId int32) error
+	Associate(ctx context.Context, request AssociationRequest, callback IAssociationRequestCallback) error
+	GetAssociations(ctx context.Context) ([]AssociationInfo, error)
+	GetAllAssociationsForUser(ctx context.Context) ([]AssociationInfo, error)
+	LegacyDisassociate(ctx context.Context, deviceMacAddress string) error
 	Disassociate(ctx context.Context, associationId int32) error
 	HasNotificationAccess(ctx context.Context, component content.ComponentName) (bool, error)
-	RequestNotificationAccess(ctx context.Context, component content.ComponentName, userId int32) (app.PendingIntent, error)
-	IsDeviceAssociatedForWifiConnection(ctx context.Context, packageName string, macAddress string, userId int32) (bool, error)
-	LegacyStartObservingDevicePresence(ctx context.Context, deviceAddress string, callingPackage string, userId int32) error
-	LegacyStopObservingDevicePresence(ctx context.Context, deviceAddress string, callingPackage string, userId int32) error
-	StartObservingDevicePresence(ctx context.Context, request ObservingDevicePresenceRequest, packageName string, userId int32) error
-	StopObservingDevicePresence(ctx context.Context, request ObservingDevicePresenceRequest, packageName string, userId int32) error
-	CanPairWithoutPrompt(ctx context.Context, packageName string, deviceMacAddress string, userId int32) (bool, error)
-	CreateAssociation(ctx context.Context, packageName string, macAddress string, userId int32, certificate []byte) error
-	AddOnAssociationsChangedListener(ctx context.Context, listener IOnAssociationsChangedListener, userId int32) error
-	RemoveOnAssociationsChangedListener(ctx context.Context, listener IOnAssociationsChangedListener, userId int32) error
+	RequestNotificationAccess(ctx context.Context, component content.ComponentName) (app.PendingIntent, error)
+	IsDeviceAssociatedForWifiConnection(ctx context.Context, packageName string, macAddress string) (bool, error)
+	LegacyStartObservingDevicePresence(ctx context.Context, deviceAddress string) error
+	LegacyStopObservingDevicePresence(ctx context.Context, deviceAddress string) error
+	StartObservingDevicePresence(ctx context.Context, request ObservingDevicePresenceRequest, packageName string) error
+	StopObservingDevicePresence(ctx context.Context, request ObservingDevicePresenceRequest, packageName string) error
+	CanPairWithoutPrompt(ctx context.Context, packageName string, deviceMacAddress string) (bool, error)
+	CreateAssociation(ctx context.Context, packageName string, macAddress string, certificate []byte) error
+	AddOnAssociationsChangedListener(ctx context.Context, listener IOnAssociationsChangedListener) error
+	RemoveOnAssociationsChangedListener(ctx context.Context, listener IOnAssociationsChangedListener) error
 	AddOnTransportsChangedListener(ctx context.Context, listener IOnTransportsChangedListener) error
 	RemoveOnTransportsChangedListener(ctx context.Context, listener IOnTransportsChangedListener) error
 	SendMessage(ctx context.Context, messageType int32, data []byte, associationIds []int32) error
@@ -81,13 +81,13 @@ type ICompanionDeviceManager interface {
 	RemoveOnMessageReceivedListener(ctx context.Context, messageType int32, listener IOnMessageReceivedListener) error
 	NotifySelfManagedDeviceAppeared(ctx context.Context, associationId int32) error
 	NotifySelfManagedDeviceDisappeared(ctx context.Context, associationId int32) error
-	BuildPermissionTransferUserConsentIntent(ctx context.Context, callingPackage string, userId int32, associationId int32) (app.PendingIntent, error)
-	IsPermissionTransferUserConsented(ctx context.Context, callingPackage string, userId int32, associationId int32) (bool, error)
-	StartSystemDataTransfer(ctx context.Context, packageName string, userId int32, associationId int32, callback ISystemDataTransferCallback) error
-	AttachSystemDataTransport(ctx context.Context, packageName string, userId int32, associationId int32, fd int32) error
-	DetachSystemDataTransport(ctx context.Context, packageName string, userId int32, associationId int32) error
-	IsCompanionApplicationBound(ctx context.Context, packageName string, userId int32) (bool, error)
-	BuildAssociationCancellationIntent(ctx context.Context, callingPackage string, userId int32) (app.PendingIntent, error)
+	BuildPermissionTransferUserConsentIntent(ctx context.Context, associationId int32) (app.PendingIntent, error)
+	IsPermissionTransferUserConsented(ctx context.Context, associationId int32) (bool, error)
+	StartSystemDataTransfer(ctx context.Context, packageName string, associationId int32, callback ISystemDataTransferCallback) error
+	AttachSystemDataTransport(ctx context.Context, packageName string, associationId int32, fd int32) error
+	DetachSystemDataTransport(ctx context.Context, packageName string, associationId int32) error
+	IsCompanionApplicationBound(ctx context.Context, packageName string) (bool, error)
+	BuildAssociationCancellationIntent(ctx context.Context) (app.PendingIntent, error)
 	EnableSystemDataSync(ctx context.Context, associationId int32, flags int32) error
 	DisableSystemDataSync(ctx context.Context, associationId int32, flags int32) error
 	EnablePermissionsSync(ctx context.Context, associationId int32) error
@@ -95,9 +95,9 @@ type ICompanionDeviceManager interface {
 	GetPermissionSyncRequest(ctx context.Context, associationId int32) (datatransfer.PermissionSyncRequest, error)
 	EnableSecureTransport(ctx context.Context, enabled bool) error
 	SetDeviceId(ctx context.Context, associationId int32, deviceId DeviceId) error
-	GetBackupPayload(ctx context.Context, userId int32) ([]byte, error)
-	ApplyRestoredPayload(ctx context.Context, payload []byte, userId int32) error
-	RemoveBond(ctx context.Context, associationId int32, packageName string, userId int32) (bool, error)
+	GetBackupPayload(ctx context.Context) ([]byte, error)
+	ApplyRestoredPayload(ctx context.Context, payload []byte) error
+	RemoveBond(ctx context.Context, associationId int32, packageName string) (bool, error)
 }
 
 type CompanionDeviceManagerProxy struct {

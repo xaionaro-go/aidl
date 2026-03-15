@@ -41,8 +41,8 @@ type IDreamManager interface {
 	Awaken(ctx context.Context) error
 	SetDreamComponents(ctx context.Context, componentNames []content.ComponentName) error
 	GetDreamComponents(ctx context.Context) ([]content.ComponentName, error)
-	GetDefaultDreamComponentForUser(ctx context.Context, userId int32) (content.ComponentName, error)
-	TestDream(ctx context.Context, userId int32, componentName content.ComponentName) error
+	GetDefaultDreamComponentForUser(ctx context.Context) (content.ComponentName, error)
+	TestDream(ctx context.Context, componentName content.ComponentName) error
 	IsDreaming(ctx context.Context) (bool, error)
 	IsDreamingOrInPreview(ctx context.Context) (bool, error)
 	CanStartDreaming(ctx context.Context, isScreenOn bool) (bool, error)
@@ -50,8 +50,8 @@ type IDreamManager interface {
 	StartDozing(ctx context.Context, token binder.IBinder, screenState int32, reason int32, screenBrightnessFloat float32, screenBrightnessInt int32, useNormalBrightnessForDoze bool) error
 	StopDozing(ctx context.Context, token binder.IBinder) error
 	ForceAmbientDisplayEnabled(ctx context.Context, enabled bool) error
-	GetDreamComponentsForUser(ctx context.Context, userId int32) ([]content.ComponentName, error)
-	SetDreamComponentsForUser(ctx context.Context, userId int32, componentNames []content.ComponentName) error
+	GetDreamComponentsForUser(ctx context.Context) ([]content.ComponentName, error)
+	SetDreamComponentsForUser(ctx context.Context, componentNames []content.ComponentName) error
 	SetSystemDreamComponent(ctx context.Context, componentName content.ComponentName) error
 	RegisterDreamOverlayService(ctx context.Context, componentName content.ComponentName) error
 	StartDreamActivity(ctx context.Context, intent content.Intent) error

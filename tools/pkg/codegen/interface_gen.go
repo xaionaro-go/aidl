@@ -857,6 +857,9 @@ func errReturnStr(hasReturn bool) string {
 }
 
 // methodSignature returns the Go signature for a method declaration.
+// Identity parameters (callingPackage, attributionTag, etc.) are excluded
+// to match the proxy method signatures, which auto-fill them from
+// CallerIdentity.
 func methodSignature(
 	m *parser.MethodDecl,
 	typeRef *TypeRefResolver,
@@ -864,9 +867,11 @@ func methodSignature(
 	goName := AIDLToGoName(m.MethodName)
 	hasReturn := m.ReturnType != nil && m.ReturnType.Name != "void"
 
+	regularParams, _ := classifyParams(m.Params)
+
 	var params []string
 	params = append(params, "ctx context.Context")
-	for _, p := range m.Params {
+	for _, p := range regularParams {
 		goType := resolveTypeRef(typeRef, p.Type)
 		params = append(params, sanitizeGoIdent(p.ParamName)+" "+goType)
 	}

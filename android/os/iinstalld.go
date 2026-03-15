@@ -68,23 +68,23 @@ const (
 
 type IInstalld interface {
 	AsBinder() binder.IBinder
-	CreateUserData(ctx context.Context, uuid string, userId int32, userSerial int32, flags int32) error
-	DestroyUserData(ctx context.Context, uuid string, userId int32, flags int32) error
+	CreateUserData(ctx context.Context, uuid string, userSerial int32, flags int32) error
+	DestroyUserData(ctx context.Context, uuid string, flags int32) error
 	SetFirstBoot(ctx context.Context) error
 	CreateAppData(ctx context.Context, args CreateAppDataArgs) (CreateAppDataResult, error)
 	CreateAppDataBatched(ctx context.Context, args []CreateAppDataArgs) ([]CreateAppDataResult, error)
 	ReconcileSdkData(ctx context.Context, args ReconcileSdkDataArgs) error
-	RestoreconAppData(ctx context.Context, uuid string, packageName string, userId int32, flags int32, appId int32, seInfo string) error
-	MigrateAppData(ctx context.Context, uuid string, packageName string, userId int32, flags int32) error
-	ClearAppData(ctx context.Context, uuid string, packageName string, userId int32, flags int32, ceDataInode int64) error
-	DestroyAppData(ctx context.Context, uuid string, packageName string, userId int32, flags int32, ceDataInode int64) error
+	RestoreconAppData(ctx context.Context, uuid string, packageName string, flags int32, appId int32, seInfo string) error
+	MigrateAppData(ctx context.Context, uuid string, packageName string, flags int32) error
+	ClearAppData(ctx context.Context, uuid string, packageName string, flags int32, ceDataInode int64) error
+	DestroyAppData(ctx context.Context, uuid string, packageName string, flags int32, ceDataInode int64) error
 	FixupAppData(ctx context.Context, uuid string, flags int32) error
-	GetAppSize(ctx context.Context, uuid string, packageNames []string, userId int32, flags int32, appId int32, ceDataInodes []int64, codePaths []string) ([]int64, error)
-	GetUserSize(ctx context.Context, uuid string, userId int32, flags int32, appIds []int32) ([]int64, error)
-	GetExternalSize(ctx context.Context, uuid string, userId int32, flags int32, appIds []int32) ([]int64, error)
-	GetAppCrates(ctx context.Context, uuid string, packageNames []string, userId int32) ([]interface{}, error)
-	GetUserCrates(ctx context.Context, uuid string, userId int32) ([]interface{}, error)
-	SetAppQuota(ctx context.Context, uuid string, userId int32, appId int32, cacheQuota int64) error
+	GetAppSize(ctx context.Context, uuid string, packageNames []string, flags int32, appId int32, ceDataInodes []int64, codePaths []string) ([]int64, error)
+	GetUserSize(ctx context.Context, uuid string, flags int32, appIds []int32) ([]int64, error)
+	GetExternalSize(ctx context.Context, uuid string, flags int32, appIds []int32) ([]int64, error)
+	GetAppCrates(ctx context.Context, uuid string, packageNames []string) ([]interface{}, error)
+	GetUserCrates(ctx context.Context, uuid string) ([]interface{}, error)
+	SetAppQuota(ctx context.Context, uuid string, appId int32, cacheQuota int64) error
 	MoveCompleteApp(ctx context.Context, fromUuid string, toUuid string, packageName string, appId int32, seInfo string, targetSdkVersion int32, fromCodePath string) error
 	Dexopt(ctx context.Context, apkPath string, uid int32, packageName string, instructionSet string, dexoptNeeded int32, outputPath string, dexFlags int32, compilerFilter string, uuid string, sharedLibraries string, seInfo string, downgrade bool, targetSdkVersion int32, profileName string, dexMetadataPath string, compilationReason string) (bool, error)
 	ControlDexOptBlocking(ctx context.Context, block bool) error
@@ -99,7 +99,7 @@ type IInstalld interface {
 	DestroyProfileSnapshot(ctx context.Context, packageName string, profileName string) error
 	RmPackageDir(ctx context.Context, packageName string, packageDir string) error
 	FreeCache(ctx context.Context, uuid string, targetFreeBytes int64, flags int32) error
-	LinkNativeLibraryDirectory(ctx context.Context, uuid string, packageName string, nativeLibPath32 string, userId int32) error
+	LinkNativeLibraryDirectory(ctx context.Context, uuid string, packageName string, nativeLibPath32 string) error
 	CreateOatDir(ctx context.Context, packageName string, oatDir string, instructionSet string) error
 	LinkFile(ctx context.Context, packageName string, relativePath string, fromBase string, toBase string) error
 	MoveAb(ctx context.Context, packageName string, apkPath string, instructionSet string, outputPath string) error
@@ -108,15 +108,15 @@ type IInstalld interface {
 	HashSecondaryDexFile(ctx context.Context, dexPath string, pkgName string, uid int32, volumeUuid string, storageFlag int32) ([]byte, error)
 	InvalidateMounts(ctx context.Context) error
 	IsQuotaSupported(ctx context.Context, uuid string) (bool, error)
-	PrepareAppProfile(ctx context.Context, packageName string, userId int32, appId int32, profileName string, codePath string, dexMetadata string) (bool, error)
-	SnapshotAppData(ctx context.Context, uuid string, packageName string, userId int32, snapshotId int32, storageFlags int32) (int64, error)
+	PrepareAppProfile(ctx context.Context, packageName string, appId int32, profileName string, codePath string, dexMetadata string) (bool, error)
+	SnapshotAppData(ctx context.Context, uuid string, packageName string, snapshotId int32, storageFlags int32) (int64, error)
 	RestoreAppDataSnapshot(ctx context.Context, uuid string, packageName string, appId int32, seInfo string, user int32, snapshotId int32, storageflags int32) error
-	DestroyAppDataSnapshot(ctx context.Context, uuid string, packageName string, userId int32, ceSnapshotInode int64, snapshotId int32, storageFlags int32) error
-	DestroyCeSnapshotsNotSpecified(ctx context.Context, uuid string, userId int32, retainSnapshotIds []int32) error
+	DestroyAppDataSnapshot(ctx context.Context, uuid string, packageName string, ceSnapshotInode int64, snapshotId int32, storageFlags int32) error
+	DestroyCeSnapshotsNotSpecified(ctx context.Context, uuid string, retainSnapshotIds []int32) error
 	TryMountDataMirror(ctx context.Context, volumeUuid string) error
 	OnPrivateVolumeRemoved(ctx context.Context, volumeUuid string) error
 	MigrateLegacyObbData(ctx context.Context) error
-	CleanupInvalidPackageDirs(ctx context.Context, uuid string, userId int32, flags int32) error
+	CleanupInvalidPackageDirs(ctx context.Context, uuid string, flags int32) error
 	GetOdexVisibility(ctx context.Context, packageName string, apkPath string, instructionSet string, outputPath string) (int32, error)
 	CreateFsveritySetupAuthToken(ctx context.Context, authFd int32, uid int32) (osIInstalld.IFsveritySetupAuthToken, error)
 	EnableFsverity(ctx context.Context, authToken osIInstalld.IFsveritySetupAuthToken, filePath string, packageName string) (int32, error)

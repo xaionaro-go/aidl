@@ -20,7 +20,7 @@ type ISecureElementService interface {
 	AsBinder() binder.IBinder
 	GetReaders(ctx context.Context) ([]string, error)
 	GetReader(ctx context.Context, reader string) (ISecureElementReader, error)
-	IsNfcEventAllowed(ctx context.Context, reader string, aid []byte, packageNames []string, userId int32) ([]bool, error)
+	IsNfcEventAllowed(ctx context.Context, reader string, aid []byte, packageNames []string) ([]bool, error)
 }
 
 type SecureElementServiceProxy struct {

@@ -26,7 +26,7 @@ type ISearchManager interface {
 	GetGlobalSearchActivities(ctx context.Context) ([]interface{}, error)
 	GetGlobalSearchActivity(ctx context.Context) (interface{}, error)
 	GetWebSearchActivity(ctx context.Context) (interface{}, error)
-	LaunchAssist(ctx context.Context, userHandle int32, args interface{}) error
+	LaunchAssist(ctx context.Context, args interface{}) error
 }
 
 type SearchManagerProxy struct {

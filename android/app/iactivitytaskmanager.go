@@ -112,21 +112,21 @@ const (
 
 type IActivityTaskManager interface {
 	AsBinder() binder.IBinder
-	StartActivity(ctx context.Context, caller IApplicationThread, callingPackage string, callingFeatureId string, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
-	StartActivities(ctx context.Context, caller IApplicationThread, callingPackage string, callingFeatureId string, intents []interface{}, resolvedTypes []string, resultTo binder.IBinder, options interface{}, userId int32) (int32, error)
-	StartActivityAsUser(ctx context.Context, caller IApplicationThread, callingPackage string, callingFeatureId string, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}, userId int32) (int32, error)
+	StartActivity(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
+	StartActivities(ctx context.Context, caller IApplicationThread, intents []interface{}, resolvedTypes []string, resultTo binder.IBinder, options interface{}) (int32, error)
+	StartActivityAsUser(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
 	StartNextMatchingActivity(ctx context.Context, callingActivity binder.IBinder, intent interface{}, options interface{}) (bool, error)
 	StartActivityIntentSender(ctx context.Context, caller IApplicationThread, target interface{}, whitelistToken binder.IBinder, fillInIntent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flagsMask int32, flagsValues int32, options interface{}) (int32, error)
-	StartActivityAndWait(ctx context.Context, caller IApplicationThread, callingPackage string, callingFeatureId string, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}, userId int32) (WaitResult, error)
-	StartActivityWithConfig(ctx context.Context, caller IApplicationThread, callingPackage string, callingFeatureId string, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, startFlags int32, newConfig interface{}, options interface{}, userId int32) (int32, error)
-	StartVoiceActivity(ctx context.Context, callingPackage string, callingFeatureId string, callingPid int32, callingUid int32, intent interface{}, resolvedType string, session interface{}, interactor interface{}, flags int32, profilerInfo ProfilerInfo, options interface{}, userId int32) (int32, error)
+	StartActivityAndWait(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (WaitResult, error)
+	StartActivityWithConfig(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, startFlags int32, newConfig interface{}, options interface{}) (int32, error)
+	StartVoiceActivity(ctx context.Context, intent interface{}, resolvedType string, session interface{}, interactor interface{}, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
 	GetVoiceInteractorPackageName(ctx context.Context, callingVoiceInteractor binder.IBinder) (string, error)
-	StartAssistantActivity(ctx context.Context, callingPackage string, callingFeatureId string, callingPid int32, callingUid int32, intent interface{}, resolvedType string, options interface{}, userId int32) (int32, error)
-	StartActivityFromGameSession(ctx context.Context, caller IApplicationThread, callingPackage string, callingFeatureId string, callingPid int32, callingUid int32, intent interface{}, taskId int32, userId int32) (int32, error)
+	StartAssistantActivity(ctx context.Context, intent interface{}, resolvedType string, options interface{}) (int32, error)
+	StartActivityFromGameSession(ctx context.Context, caller IApplicationThread, intent interface{}, taskId int32) (int32, error)
 	StartActivityFromRecents(ctx context.Context, taskId int32, options interface{}) (int32, error)
-	StartActivityAsCaller(ctx context.Context, caller IApplicationThread, callingPackage string, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}, ignoreTargetSecurity bool, userId int32) (int32, error)
+	StartActivityAsCaller(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}, ignoreTargetSecurity bool) (int32, error)
 	PreloadRecentsActivity(ctx context.Context, intent interface{}) error
-	IsActivityStartAllowedOnDisplay(ctx context.Context, displayId int32, intent interface{}, resolvedType string, userId int32) (bool, error)
+	IsActivityStartAllowedOnDisplay(ctx context.Context, displayId int32, intent interface{}, resolvedType string) (bool, error)
 	UnhandledBack(ctx context.Context) error
 	GetActivityClientController(ctx context.Context) (IActivityClientController, error)
 	GetFrontActivityScreenCompatMode(ctx context.Context) (int32, error)
@@ -135,25 +135,25 @@ type IActivityTaskManager interface {
 	RemoveTask(ctx context.Context, taskId int32) (bool, error)
 	RemoveAllVisibleRecentTasks(ctx context.Context) error
 	GetTasks(ctx context.Context, maxNum int32, filterOnlyVisibleRecents bool, keepIntentExtra bool, displayId int32) ([]ActivityManagerRunningTaskInfo, error)
-	MoveTaskToFront(ctx context.Context, app IApplicationThread, callingPackage string, task int32, flags int32, options interface{}) error
-	GetRecentTasks(ctx context.Context, maxNum int32, flags int32, userId int32) (interface{}, error)
+	MoveTaskToFront(ctx context.Context, app IApplicationThread, task int32, flags int32, options interface{}) error
+	GetRecentTasks(ctx context.Context, maxNum int32, flags int32) (interface{}, error)
 	IsTopActivityImmersive(ctx context.Context) (bool, error)
 	ReportAssistContextExtras(ctx context.Context, assistToken binder.IBinder, extras interface{}, structure assist.AssistStructure, content assist.AssistContent, referrer interface{}) error
 	SetFocusedRootTask(ctx context.Context, taskId int32) error
 	GetFocusedRootTaskInfo(ctx context.Context) (ActivityTaskManagerRootTaskInfo, error)
 	GetTaskBounds(ctx context.Context, taskId int32) (graphics.Rect, error)
 	FocusTopTask(ctx context.Context, displayId int32) error
-	UpdateLockTaskPackages(ctx context.Context, userId int32, packages []string) error
+	UpdateLockTaskPackages(ctx context.Context, packages []string) error
 	IsInLockTaskMode(ctx context.Context) (bool, error)
 	GetLockTaskModeState(ctx context.Context) (int32, error)
-	GetAppTasks(ctx context.Context, callingPackage string) ([]binder.IBinder, error)
+	GetAppTasks(ctx context.Context) ([]binder.IBinder, error)
 	StartSystemLockTaskMode(ctx context.Context, taskId int32) error
 	StopSystemLockTaskMode(ctx context.Context) error
 	FinishVoiceTask(ctx context.Context, session interface{}) error
 	AddAppTask(ctx context.Context, activityToken binder.IBinder, intent interface{}, description ActivityManagerTaskDescription, thumbnail graphics.Bitmap) (int32, error)
 	GetAppTaskThumbnailSize(ctx context.Context) (graphics.Point, error)
 	ReleaseSomeActivities(ctx context.Context, app IApplicationThread) error
-	GetTaskDescriptionIcon(ctx context.Context, filename string, userId int32) (graphics.Bitmap, error)
+	GetTaskDescriptionIcon(ctx context.Context, filename string) (graphics.Bitmap, error)
 	RegisterTaskStackListener(ctx context.Context, listener ITaskStackListener) error
 	UnregisterTaskStackListener(ctx context.Context, listener ITaskStackListener) error
 	SetTaskResizeable(ctx context.Context, taskId int32, resizeableMode int32) error
@@ -183,7 +183,7 @@ type IActivityTaskManager interface {
 	TakeTaskSnapshot(ctx context.Context, taskId int32, updateCache bool) (interface{}, error)
 	GetLastResumedActivityUserId(ctx context.Context) (int32, error)
 	UpdateConfiguration(ctx context.Context, values interface{}) (bool, error)
-	UpdateLockTaskFeatures(ctx context.Context, userId int32, flags int32) error
+	UpdateLockTaskFeatures(ctx context.Context, flags int32) error
 	RegisterRemoteAnimationForNextActivityStart(ctx context.Context, packageName string, adapter interface{}, launchCookie binder.IBinder) error
 	RegisterRemoteAnimationsForDisplay(ctx context.Context, displayId int32, definition interface{}) error
 	AlwaysShowUnsupportedCompileSdkWarning(ctx context.Context, activity interface{}) error

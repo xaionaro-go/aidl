@@ -35,7 +35,7 @@ type IMagnificationConnection interface {
 	RemoveMagnificationButton(ctx context.Context, displayId int32) error
 	RemoveMagnificationSettingsPanel(ctx context.Context, displayId int32) error
 	SetConnectionCallback(ctx context.Context, callback IMagnificationConnectionCallback) error
-	OnUserMagnificationScaleChanged(ctx context.Context, userId int32, displayId int32, scale float32) error
+	OnUserMagnificationScaleChanged(ctx context.Context, displayId int32, scale float32) error
 	OnFullscreenMagnificationActivationChanged(ctx context.Context, displayId int32, activated bool) error
 }
 

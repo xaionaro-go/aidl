@@ -33,24 +33,24 @@ const (
 
 type IAuthService interface {
 	AsBinder() binder.IBinder
-	CreateTestSession(ctx context.Context, sensorId int32, callback ITestSessionCallback, opPackageName string) (ITestSession, error)
-	GetSensorProperties(ctx context.Context, opPackageName string) ([]SensorPropertiesInternal, error)
+	CreateTestSession(ctx context.Context, sensorId int32, callback ITestSessionCallback) (ITestSession, error)
+	GetSensorProperties(ctx context.Context) ([]SensorPropertiesInternal, error)
 	GetUiPackage(ctx context.Context) (string, error)
-	Authenticate(ctx context.Context, token binder.IBinder, sessionId int64, userId int32, receiver IBiometricServiceReceiver, opPackageName string, promptInfo PromptInfo) (int64, error)
-	CancelAuthentication(ctx context.Context, token binder.IBinder, opPackageName string, requestId int64) error
-	CanAuthenticate(ctx context.Context, opPackageName string, userId int32, authenticators int32) (int32, error)
-	GetLastAuthenticationTime(ctx context.Context, userId int32, authenticators int32) (int64, error)
-	HasEnrolledBiometrics(ctx context.Context, userId int32, opPackageName string) (bool, error)
+	Authenticate(ctx context.Context, token binder.IBinder, sessionId int64, receiver IBiometricServiceReceiver, promptInfo PromptInfo) (int64, error)
+	CancelAuthentication(ctx context.Context, token binder.IBinder, requestId int64) error
+	CanAuthenticate(ctx context.Context, authenticators int32) (int32, error)
+	GetLastAuthenticationTime(ctx context.Context, authenticators int32) (int64, error)
+	HasEnrolledBiometrics(ctx context.Context) (bool, error)
 	RegisterEnabledOnKeyguardCallback(ctx context.Context, callback IBiometricEnabledOnKeyguardCallback) error
 	RegisterAuthenticationStateListener(ctx context.Context, listener AuthenticationStateListener) error
 	UnregisterAuthenticationStateListener(ctx context.Context, listener AuthenticationStateListener) error
-	InvalidateAuthenticatorIds(ctx context.Context, userId int32, fromSensorId int32, callback IInvalidationCallback) error
-	GetAuthenticatorIds(ctx context.Context, userId int32) ([]int64, error)
-	ResetLockoutTimeBound(ctx context.Context, token binder.IBinder, opPackageName string, fromSensorId int32, userId int32, hardwareAuthToken []byte) error
-	ResetLockout(ctx context.Context, userId int32, hardwareAuthToken []byte) error
-	GetButtonLabel(ctx context.Context, userId int32, opPackageName string, authenticators int32) (interface{}, error)
-	GetPromptMessage(ctx context.Context, userId int32, opPackageName string, authenticators int32) (interface{}, error)
-	GetSettingName(ctx context.Context, userId int32, opPackageName string, authenticators int32) (interface{}, error)
+	InvalidateAuthenticatorIds(ctx context.Context, fromSensorId int32, callback IInvalidationCallback) error
+	GetAuthenticatorIds(ctx context.Context) ([]int64, error)
+	ResetLockoutTimeBound(ctx context.Context, token binder.IBinder, fromSensorId int32, hardwareAuthToken []byte) error
+	ResetLockout(ctx context.Context, hardwareAuthToken []byte) error
+	GetButtonLabel(ctx context.Context, authenticators int32) (interface{}, error)
+	GetPromptMessage(ctx context.Context, authenticators int32) (interface{}, error)
+	GetSettingName(ctx context.Context, authenticators int32) (interface{}, error)
 }
 
 type AuthServiceProxy struct {

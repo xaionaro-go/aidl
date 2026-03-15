@@ -28,12 +28,12 @@ type IFingerprintServiceReceiver interface {
 	AsBinder() binder.IBinder
 	OnEnrollResult(ctx context.Context, fp Fingerprint, remaining int32) error
 	OnAcquired(ctx context.Context, acquiredInfo int32, vendorCode int32) error
-	OnAuthenticationSucceeded(ctx context.Context, fp Fingerprint, userId int32, isStrongBiometric bool) error
-	OnFingerprintDetected(ctx context.Context, sensorId int32, userId int32, isStrongBiometric bool) error
+	OnAuthenticationSucceeded(ctx context.Context, fp Fingerprint, isStrongBiometric bool) error
+	OnFingerprintDetected(ctx context.Context, sensorId int32, isStrongBiometric bool) error
 	OnAuthenticationFailed(ctx context.Context) error
 	OnError(ctx context.Context, error_ int32, vendorCode int32) error
 	OnRemoved(ctx context.Context, fp Fingerprint, remaining int32) error
-	OnChallengeGenerated(ctx context.Context, sensorId int32, userId int32, challenge int64) error
+	OnChallengeGenerated(ctx context.Context, sensorId int32, challenge int64) error
 	OnUdfpsPointerDown(ctx context.Context, sensorId int32) error
 	OnUdfpsPointerUp(ctx context.Context, sensorId int32) error
 	OnUdfpsOverlayShown(ctx context.Context) error

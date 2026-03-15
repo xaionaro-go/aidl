@@ -39,10 +39,10 @@ const (
 type IPlatformCompat interface {
 	AsBinder() binder.IBinder
 	ReportChange(ctx context.Context, changeId int64, appInfo pm.ApplicationInfo) error
-	ReportChangeByPackageName(ctx context.Context, changeId int64, packageName string, userId int32) error
+	ReportChangeByPackageName(ctx context.Context, changeId int64, packageName string) error
 	ReportChangeByUid(ctx context.Context, changeId int64, uid int32) error
 	IsChangeEnabled(ctx context.Context, changeId int64, appInfo pm.ApplicationInfo) (bool, error)
-	IsChangeEnabledByPackageName(ctx context.Context, changeId int64, packageName string, userId int32) (bool, error)
+	IsChangeEnabledByPackageName(ctx context.Context, changeId int64, packageName string) (bool, error)
 	IsChangeEnabledByUid(ctx context.Context, changeId int64, uid int32) (bool, error)
 	SetOverrides(ctx context.Context, overrides CompatibilityChangeConfig, packageName string) error
 	PutAllOverridesOnReleaseBuilds(ctx context.Context, overridesByPackage CompatibilityOverridesByPackageConfig) error

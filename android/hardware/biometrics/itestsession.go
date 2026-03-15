@@ -25,13 +25,13 @@ const (
 type ITestSession interface {
 	AsBinder() binder.IBinder
 	SetTestHalEnabled(ctx context.Context, enableTestHal bool) error
-	StartEnroll(ctx context.Context, userId int32) error
-	FinishEnroll(ctx context.Context, userId int32) error
-	AcceptAuthentication(ctx context.Context, userId int32) error
-	RejectAuthentication(ctx context.Context, userId int32) error
-	NotifyAcquired(ctx context.Context, userId int32, acquireInfo int32) error
-	NotifyError(ctx context.Context, userId int32, errorCode int32) error
-	CleanupInternalState(ctx context.Context, userId int32) error
+	StartEnroll(ctx context.Context) error
+	FinishEnroll(ctx context.Context) error
+	AcceptAuthentication(ctx context.Context) error
+	RejectAuthentication(ctx context.Context) error
+	NotifyAcquired(ctx context.Context, acquireInfo int32) error
+	NotifyError(ctx context.Context, errorCode int32) error
+	CleanupInternalState(ctx context.Context) error
 	GetSensorId(ctx context.Context) (int32, error)
 }
 

@@ -21,7 +21,7 @@ const (
 
 type ILocationProviderManager interface {
 	AsBinder() binder.IBinder
-	OnInitialize(ctx context.Context, allowed bool, properties ProviderProperties, attributionTag string) error
+	OnInitialize(ctx context.Context, allowed bool, properties ProviderProperties) error
 	OnSetAllowed(ctx context.Context, allowed bool) error
 	OnSetProperties(ctx context.Context, properties ProviderProperties) error
 	OnReportLocation(ctx context.Context, location interface{}) error

@@ -18,7 +18,7 @@ const (
 
 type IBackgroundInstallControlService interface {
 	AsBinder() binder.IBinder
-	GetBackgroundInstalledPackages(ctx context.Context, flags int64, userId int32) (ParceledListSlice, error)
+	GetBackgroundInstalledPackages(ctx context.Context, flags int64) (ParceledListSlice, error)
 	RegisterBackgroundInstallCallback(ctx context.Context, callback interface{}) error
 	UnregisterBackgroundInstallCallback(ctx context.Context, callback interface{}) error
 }

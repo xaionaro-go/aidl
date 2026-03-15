@@ -26,11 +26,11 @@ type IDomainVerificationManager interface {
 	AsBinder() binder.IBinder
 	QueryValidVerificationPackageNames(ctx context.Context) ([]string, error)
 	GetDomainVerificationInfo(ctx context.Context, packageName string) (DomainVerificationInfo, error)
-	GetDomainVerificationUserState(ctx context.Context, packageName string, userId int32) (DomainVerificationUserState, error)
-	GetOwnersForDomain(ctx context.Context, domain string, userId int32) ([]DomainOwner, error)
+	GetDomainVerificationUserState(ctx context.Context, packageName string) (DomainVerificationUserState, error)
+	GetOwnersForDomain(ctx context.Context, domain string) ([]DomainOwner, error)
 	SetDomainVerificationStatus(ctx context.Context, domainSetId string, domains DomainSet, state int32) (int32, error)
-	SetDomainVerificationLinkHandlingAllowed(ctx context.Context, packageName string, allowed bool, userId int32) error
-	SetDomainVerificationUserSelection(ctx context.Context, domainSetId string, domains DomainSet, enabled bool, userId int32) (int32, error)
+	SetDomainVerificationLinkHandlingAllowed(ctx context.Context, packageName string, allowed bool) error
+	SetDomainVerificationUserSelection(ctx context.Context, domainSetId string, domains DomainSet, enabled bool) (int32, error)
 	SetUriRelativeFilterGroups(ctx context.Context, packageName string, domainToGroupsBundle interface{}) error
 	GetUriRelativeFilterGroups(ctx context.Context, packageName string, domains []string) (interface{}, error)
 }

@@ -94,63 +94,63 @@ const (
 
 type ITelecomService interface {
 	AsBinder() binder.IBinder
-	ShowInCallScreen(ctx context.Context, showDialpad bool, callingPackage string, callingFeatureId string) error
-	GetDefaultOutgoingPhoneAccount(ctx context.Context, uriScheme string, callingPackage string, callingFeatureId string) (androidTelecom.PhoneAccountHandle, error)
-	GetUserSelectedOutgoingPhoneAccount(ctx context.Context, callingPackage string) (androidTelecom.PhoneAccountHandle, error)
+	ShowInCallScreen(ctx context.Context, showDialpad bool) error
+	GetDefaultOutgoingPhoneAccount(ctx context.Context, uriScheme string) (androidTelecom.PhoneAccountHandle, error)
+	GetUserSelectedOutgoingPhoneAccount(ctx context.Context) (androidTelecom.PhoneAccountHandle, error)
 	SetUserSelectedOutgoingPhoneAccount(ctx context.Context, account androidTelecom.PhoneAccountHandle) error
-	GetCallCapablePhoneAccounts(ctx context.Context, includeDisabledAccounts bool, callingPackage string, callingFeatureId string, acrossProfiles bool) (pm.ParceledListSlice, error)
-	GetSelfManagedPhoneAccounts(ctx context.Context, callingPackage string, callingFeatureId string) (pm.ParceledListSlice, error)
-	GetOwnSelfManagedPhoneAccounts(ctx context.Context, callingPackage string, callingFeatureId string) (pm.ParceledListSlice, error)
-	GetPhoneAccountsSupportingScheme(ctx context.Context, uriScheme string, callingPackage string) (pm.ParceledListSlice, error)
+	GetCallCapablePhoneAccounts(ctx context.Context, includeDisabledAccounts bool, acrossProfiles bool) (pm.ParceledListSlice, error)
+	GetSelfManagedPhoneAccounts(ctx context.Context) (pm.ParceledListSlice, error)
+	GetOwnSelfManagedPhoneAccounts(ctx context.Context) (pm.ParceledListSlice, error)
+	GetPhoneAccountsSupportingScheme(ctx context.Context, uriScheme string) (pm.ParceledListSlice, error)
 	GetPhoneAccountsForPackage(ctx context.Context, packageName string) (pm.ParceledListSlice, error)
-	GetPhoneAccount(ctx context.Context, account androidTelecom.PhoneAccountHandle, callingPackage string) (androidTelecom.PhoneAccount, error)
-	GetRegisteredPhoneAccounts(ctx context.Context, callingPackage string, callingFeatureId string) (pm.ParceledListSlice, error)
+	GetPhoneAccount(ctx context.Context, account androidTelecom.PhoneAccountHandle) (androidTelecom.PhoneAccount, error)
+	GetRegisteredPhoneAccounts(ctx context.Context) (pm.ParceledListSlice, error)
 	GetAllPhoneAccountsCount(ctx context.Context) (int32, error)
 	GetAllPhoneAccounts(ctx context.Context) (pm.ParceledListSlice, error)
 	GetAllPhoneAccountHandles(ctx context.Context) (pm.ParceledListSlice, error)
-	GetSimCallManager(ctx context.Context, subId int32, callingPackage string) (androidTelecom.PhoneAccountHandle, error)
-	GetSimCallManagerForUser(ctx context.Context, userId int32, callingPackage string) (androidTelecom.PhoneAccountHandle, error)
-	RegisterPhoneAccount(ctx context.Context, metadata androidTelecom.PhoneAccount, callingPackage string) error
-	UnregisterPhoneAccount(ctx context.Context, account androidTelecom.PhoneAccountHandle, callingPackage string) error
+	GetSimCallManager(ctx context.Context, subId int32) (androidTelecom.PhoneAccountHandle, error)
+	GetSimCallManagerForUser(ctx context.Context) (androidTelecom.PhoneAccountHandle, error)
+	RegisterPhoneAccount(ctx context.Context, metadata androidTelecom.PhoneAccount) error
+	UnregisterPhoneAccount(ctx context.Context, account androidTelecom.PhoneAccountHandle) error
 	ClearAccounts(ctx context.Context, packageName string) error
-	IsVoiceMailNumber(ctx context.Context, accountHandle androidTelecom.PhoneAccountHandle, number string, callingPackage string, callingFeatureId string) (bool, error)
-	GetVoiceMailNumber(ctx context.Context, accountHandle androidTelecom.PhoneAccountHandle, callingPackage string, callingFeatureId string) (string, error)
-	GetLine1Number(ctx context.Context, accountHandle androidTelecom.PhoneAccountHandle, callingPackage string, callingFeatureId string) (string, error)
+	IsVoiceMailNumber(ctx context.Context, accountHandle androidTelecom.PhoneAccountHandle, number string) (bool, error)
+	GetVoiceMailNumber(ctx context.Context, accountHandle androidTelecom.PhoneAccountHandle) (string, error)
+	GetLine1Number(ctx context.Context, accountHandle androidTelecom.PhoneAccountHandle) (string, error)
 	GetDefaultPhoneApp(ctx context.Context) (content.ComponentName, error)
-	GetDefaultDialerPackage(ctx context.Context, callingPackage string) (string, error)
-	GetDefaultDialerPackageForUser(ctx context.Context, userId int32) (string, error)
-	GetSystemDialerPackage(ctx context.Context, callingPackage string) (string, error)
+	GetDefaultDialerPackage(ctx context.Context) (string, error)
+	GetDefaultDialerPackageForUser(ctx context.Context) (string, error)
+	GetSystemDialerPackage(ctx context.Context) (string, error)
 	DumpCallAnalytics(ctx context.Context) (androidTelecom.TelecomAnalytics, error)
-	SilenceRinger(ctx context.Context, callingPackage string) error
-	IsInCall(ctx context.Context, callingPackage string, callingFeatureId string) (bool, error)
-	HasManageOngoingCallsPermission(ctx context.Context, callingPackage string) (bool, error)
-	IsInManagedCall(ctx context.Context, callingPackage string, callingFeatureId string) (bool, error)
-	IsRinging(ctx context.Context, callingPackage string) (bool, error)
+	SilenceRinger(ctx context.Context) error
+	IsInCall(ctx context.Context) (bool, error)
+	HasManageOngoingCallsPermission(ctx context.Context) (bool, error)
+	IsInManagedCall(ctx context.Context) (bool, error)
+	IsRinging(ctx context.Context) (bool, error)
 	GetCallState(ctx context.Context) (int32, error)
-	GetCallStateUsingPackage(ctx context.Context, callingPackage string, callingFeatureId string) (int32, error)
-	EndCall(ctx context.Context, callingPackage string) (bool, error)
-	AcceptRingingCall(ctx context.Context, callingPackage string) error
-	AcceptRingingCallWithVideoState(ctx context.Context, callingPackage string, videoState int32) error
-	CancelMissedCallsNotification(ctx context.Context, callingPackage string) error
-	HandlePinMmi(ctx context.Context, dialString string, callingPackage string) (bool, error)
-	HandlePinMmiForPhoneAccount(ctx context.Context, accountHandle androidTelecom.PhoneAccountHandle, dialString string, callingPackage string) (bool, error)
-	GetAdnUriForPhoneAccount(ctx context.Context, accountHandle androidTelecom.PhoneAccountHandle, callingPackage string) (net.Uri, error)
-	IsTtySupported(ctx context.Context, callingPackage string, callingFeatureId string) (bool, error)
-	GetCurrentTtyMode(ctx context.Context, callingPackage string, callingFeatureId string) (int32, error)
-	AddNewIncomingCall(ctx context.Context, phoneAccount androidTelecom.PhoneAccountHandle, extras os.Bundle, callingPackage string) error
-	AddNewIncomingConference(ctx context.Context, phoneAccount androidTelecom.PhoneAccountHandle, extras os.Bundle, callingPackage string) error
+	GetCallStateUsingPackage(ctx context.Context) (int32, error)
+	EndCall(ctx context.Context) (bool, error)
+	AcceptRingingCall(ctx context.Context) error
+	AcceptRingingCallWithVideoState(ctx context.Context, videoState int32) error
+	CancelMissedCallsNotification(ctx context.Context) error
+	HandlePinMmi(ctx context.Context, dialString string) (bool, error)
+	HandlePinMmiForPhoneAccount(ctx context.Context, accountHandle androidTelecom.PhoneAccountHandle, dialString string) (bool, error)
+	GetAdnUriForPhoneAccount(ctx context.Context, accountHandle androidTelecom.PhoneAccountHandle) (net.Uri, error)
+	IsTtySupported(ctx context.Context) (bool, error)
+	GetCurrentTtyMode(ctx context.Context) (int32, error)
+	AddNewIncomingCall(ctx context.Context, phoneAccount androidTelecom.PhoneAccountHandle, extras os.Bundle) error
+	AddNewIncomingConference(ctx context.Context, phoneAccount androidTelecom.PhoneAccountHandle, extras os.Bundle) error
 	AddNewUnknownCall(ctx context.Context, phoneAccount androidTelecom.PhoneAccountHandle, extras os.Bundle) error
-	StartConference(ctx context.Context, participants []net.Uri, extras os.Bundle, callingPackage string) error
-	PlaceCall(ctx context.Context, handle net.Uri, extras os.Bundle, callingPackage string, callingFeatureId string) error
+	StartConference(ctx context.Context, participants []net.Uri, extras os.Bundle) error
+	PlaceCall(ctx context.Context, handle net.Uri, extras os.Bundle) error
 	EnablePhoneAccount(ctx context.Context, accountHandle androidTelecom.PhoneAccountHandle, isEnabled bool) (bool, error)
 	SetDefaultDialer(ctx context.Context, packageName string) (bool, error)
 	StopBlockSuppression(ctx context.Context) error
-	CreateManageBlockedNumbersIntent(ctx context.Context, callingPackage string) (content.Intent, error)
+	CreateManageBlockedNumbersIntent(ctx context.Context) (content.Intent, error)
 	CreateLaunchEmergencyDialerIntent(ctx context.Context, number string) (content.Intent, error)
-	IsIncomingCallPermitted(ctx context.Context, phoneAccountHandle androidTelecom.PhoneAccountHandle, callingPackage string) (bool, error)
-	IsOutgoingCallPermitted(ctx context.Context, phoneAccountHandle androidTelecom.PhoneAccountHandle, callingPackage string) (bool, error)
+	IsIncomingCallPermitted(ctx context.Context, phoneAccountHandle androidTelecom.PhoneAccountHandle) (bool, error)
+	IsOutgoingCallPermitted(ctx context.Context, phoneAccountHandle androidTelecom.PhoneAccountHandle) (bool, error)
 	WaitOnHandlers(ctx context.Context) error
-	AcceptHandover(ctx context.Context, srcAddr net.Uri, videoState int32, destAcct androidTelecom.PhoneAccountHandle, callingPackage string) error
+	AcceptHandover(ctx context.Context, srcAddr net.Uri, videoState int32, destAcct androidTelecom.PhoneAccountHandle) error
 	SetTestEmergencyPhoneAccountPackageNameFilter(ctx context.Context, packageName string) error
 	IsInEmergencyCall(ctx context.Context) (bool, error)
 	HandleCallIntent(ctx context.Context, intent content.Intent, callingPackageProxy string) error
@@ -166,8 +166,8 @@ type ITelecomService interface {
 	SetSystemDialer(ctx context.Context, testComponentName content.ComponentName) error
 	SetTestDefaultDialer(ctx context.Context, packageName string) error
 	SetTestCallDiagnosticService(ctx context.Context, packageName string) error
-	IsInSelfManagedCall(ctx context.Context, packageName string, userHandle os.UserHandle, callingPackage string) (bool, error)
-	AddCall(ctx context.Context, callAttributes androidTelecom.CallAttributes, callback ICallEventCallback, callId string, callingPackage string) error
+	IsInSelfManagedCall(ctx context.Context, packageName string, userHandle os.UserHandle) (bool, error)
+	AddCall(ctx context.Context, callAttributes androidTelecom.CallAttributes, callback ICallEventCallback, callId string) error
 }
 
 type TelecomServiceProxy struct {

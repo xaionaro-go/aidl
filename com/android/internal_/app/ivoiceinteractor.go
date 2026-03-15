@@ -23,12 +23,12 @@ const (
 
 type IVoiceInteractor interface {
 	AsBinder() binder.IBinder
-	StartConfirmation(ctx context.Context, callingPackage string, callback IVoiceInteractorCallback, prompt interface{}, extras interface{}) (IVoiceInteractorRequest, error)
-	StartPickOption(ctx context.Context, callingPackage string, callback IVoiceInteractorCallback, prompt interface{}, options []interface{}, extras interface{}) (IVoiceInteractorRequest, error)
-	StartCompleteVoice(ctx context.Context, callingPackage string, callback IVoiceInteractorCallback, prompt interface{}, extras interface{}) (IVoiceInteractorRequest, error)
-	StartAbortVoice(ctx context.Context, callingPackage string, callback IVoiceInteractorCallback, prompt interface{}, extras interface{}) (IVoiceInteractorRequest, error)
-	StartCommand(ctx context.Context, callingPackage string, callback IVoiceInteractorCallback, command string, extras interface{}) (IVoiceInteractorRequest, error)
-	SupportsCommands(ctx context.Context, callingPackage string, commands []string) ([]bool, error)
+	StartConfirmation(ctx context.Context, callback IVoiceInteractorCallback, prompt interface{}, extras interface{}) (IVoiceInteractorRequest, error)
+	StartPickOption(ctx context.Context, callback IVoiceInteractorCallback, prompt interface{}, options []interface{}, extras interface{}) (IVoiceInteractorRequest, error)
+	StartCompleteVoice(ctx context.Context, callback IVoiceInteractorCallback, prompt interface{}, extras interface{}) (IVoiceInteractorRequest, error)
+	StartAbortVoice(ctx context.Context, callback IVoiceInteractorCallback, prompt interface{}, extras interface{}) (IVoiceInteractorRequest, error)
+	StartCommand(ctx context.Context, callback IVoiceInteractorCallback, command string, extras interface{}) (IVoiceInteractorRequest, error)
+	SupportsCommands(ctx context.Context, commands []string) ([]bool, error)
 	NotifyDirectActionsChanged(ctx context.Context, taskId int32, assistToken binder.IBinder) error
 	SetKillCallback(ctx context.Context, callback interface{}) error
 }

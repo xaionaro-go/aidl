@@ -77,7 +77,7 @@ type IConnectionServiceAdapter interface {
 	RemoveCall(ctx context.Context, callId string, sessionInfo Logging.SessionInfo) error
 	OnPostDialWait(ctx context.Context, callId string, remaining string, sessionInfo Logging.SessionInfo) error
 	OnPostDialChar(ctx context.Context, callId string, nextChar uint16, sessionInfo Logging.SessionInfo) error
-	QueryRemoteConnectionServices(ctx context.Context, callback RemoteServiceCallback, callingPackage string, sessionInfo Logging.SessionInfo) error
+	QueryRemoteConnectionServices(ctx context.Context, callback RemoteServiceCallback, sessionInfo Logging.SessionInfo) error
 	SetVideoProvider(ctx context.Context, callId string, videoProvider IVideoProvider, sessionInfo Logging.SessionInfo) error
 	SetVideoState(ctx context.Context, callId string, videoState int32, sessionInfo Logging.SessionInfo) error
 	SetIsVoipAudioMode(ctx context.Context, callId string, isVoip bool, sessionInfo Logging.SessionInfo) error

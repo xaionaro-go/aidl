@@ -40,12 +40,12 @@ type ISensorPrivacyManager interface {
 	IsCombinedToggleSensorPrivacyEnabled(ctx context.Context, sensor int32) (bool, error)
 	IsToggleSensorPrivacyEnabled(ctx context.Context, toggleType int32, sensor int32) (bool, error)
 	SetSensorPrivacy(ctx context.Context, enable bool) error
-	SetToggleSensorPrivacy(ctx context.Context, userId int32, source int32, sensor int32, enable bool) error
-	SetToggleSensorPrivacyForProfileGroup(ctx context.Context, userId int32, source int32, sensor int32, enable bool) error
+	SetToggleSensorPrivacy(ctx context.Context, source int32, sensor int32, enable bool) error
+	SetToggleSensorPrivacyForProfileGroup(ctx context.Context, source int32, sensor int32, enable bool) error
 	GetCameraPrivacyAllowlist(ctx context.Context) ([]string, error)
 	GetToggleSensorPrivacyState(ctx context.Context, toggleType int32, sensor int32) (int32, error)
-	SetToggleSensorPrivacyState(ctx context.Context, userId int32, source int32, sensor int32, state int32) error
-	SetToggleSensorPrivacyStateForProfileGroup(ctx context.Context, userId int32, source int32, sensor int32, state int32) error
+	SetToggleSensorPrivacyState(ctx context.Context, source int32, sensor int32, state int32) error
+	SetToggleSensorPrivacyStateForProfileGroup(ctx context.Context, source int32, sensor int32, state int32) error
 	IsCameraPrivacyEnabled(ctx context.Context, packageName string) (bool, error)
 }
 

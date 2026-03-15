@@ -77,15 +77,15 @@ const (
 
 type ISub interface {
 	AsBinder() binder.IBinder
-	GetAllSubInfoList(ctx context.Context, callingPackage string, callingFeatureId string) ([]androidTelephony.SubscriptionInfo, error)
-	GetActiveSubscriptionInfo(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (androidTelephony.SubscriptionInfo, error)
-	GetActiveSubscriptionInfoForIccId(ctx context.Context, iccId string, callingPackage string, callingFeatureId string) (androidTelephony.SubscriptionInfo, error)
-	GetActiveSubscriptionInfoForSimSlotIndex(ctx context.Context, slotIndex int32, callingPackage string, callingFeatureId string) (androidTelephony.SubscriptionInfo, error)
-	GetActiveSubscriptionInfoList(ctx context.Context, callingPackage string, callingFeatureId string, isForAllProfiles bool) ([]androidTelephony.SubscriptionInfo, error)
-	GetActiveSubInfoCount(ctx context.Context, callingPackage string, callingFeatureId string, isForAllProfile bool) (int32, error)
+	GetAllSubInfoList(ctx context.Context) ([]androidTelephony.SubscriptionInfo, error)
+	GetActiveSubscriptionInfo(ctx context.Context, subId int32) (androidTelephony.SubscriptionInfo, error)
+	GetActiveSubscriptionInfoForIccId(ctx context.Context, iccId string) (androidTelephony.SubscriptionInfo, error)
+	GetActiveSubscriptionInfoForSimSlotIndex(ctx context.Context, slotIndex int32) (androidTelephony.SubscriptionInfo, error)
+	GetActiveSubscriptionInfoList(ctx context.Context, isForAllProfiles bool) ([]androidTelephony.SubscriptionInfo, error)
+	GetActiveSubInfoCount(ctx context.Context, isForAllProfile bool) (int32, error)
 	GetActiveSubInfoCountMax(ctx context.Context) (int32, error)
-	GetAvailableSubscriptionInfoList(ctx context.Context, callingPackage string, callingFeatureId string) ([]androidTelephony.SubscriptionInfo, error)
-	GetAccessibleSubscriptionInfoList(ctx context.Context, callingPackage string) ([]androidTelephony.SubscriptionInfo, error)
+	GetAvailableSubscriptionInfoList(ctx context.Context) ([]androidTelephony.SubscriptionInfo, error)
+	GetAccessibleSubscriptionInfoList(ctx context.Context) ([]androidTelephony.SubscriptionInfo, error)
 	RequestEmbeddedSubscriptionInfoListRefresh(ctx context.Context, cardId int32) error
 	AddSubInfo(ctx context.Context, uniqueId string, displayName string, slotIndex int32, subscriptionType int32) (int32, error)
 	RemoveSubInfo(ctx context.Context, uniqueId string, subscriptionType int32) (bool, error)
@@ -93,42 +93,42 @@ type ISub interface {
 	SetDisplayNameUsingSrc(ctx context.Context, displayName string, subId int32, nameSource int32) (int32, error)
 	SetDisplayNumber(ctx context.Context, number string, subId int32) (int32, error)
 	SetDataRoaming(ctx context.Context, roaming int32, subId int32) (int32, error)
-	SetOpportunistic(ctx context.Context, opportunistic bool, subId int32, callingPackage string) (int32, error)
-	CreateSubscriptionGroup(ctx context.Context, subIdList []int32, callingPackage string) (interface{}, error)
+	SetOpportunistic(ctx context.Context, opportunistic bool, subId int32) (int32, error)
+	CreateSubscriptionGroup(ctx context.Context, subIdList []int32) (interface{}, error)
 	SetPreferredDataSubscriptionId(ctx context.Context, subId int32, needValidation bool, callback ISetOpportunisticDataCallback) error
 	GetPreferredDataSubscriptionId(ctx context.Context) (int32, error)
-	GetOpportunisticSubscriptions(ctx context.Context, callingPackage string, callingFeatureId string) ([]androidTelephony.SubscriptionInfo, error)
-	RemoveSubscriptionsFromGroup(ctx context.Context, subIdList []int32, groupUuid interface{}, callingPackage string) error
-	AddSubscriptionsIntoGroup(ctx context.Context, subIdList []int32, groupUuid interface{}, callingPackage string) error
-	GetSubscriptionsInGroup(ctx context.Context, groupUuid interface{}, callingPackage string, callingFeatureId string) ([]androidTelephony.SubscriptionInfo, error)
+	GetOpportunisticSubscriptions(ctx context.Context) ([]androidTelephony.SubscriptionInfo, error)
+	RemoveSubscriptionsFromGroup(ctx context.Context, subIdList []int32, groupUuid interface{}) error
+	AddSubscriptionsIntoGroup(ctx context.Context, subIdList []int32, groupUuid interface{}) error
+	GetSubscriptionsInGroup(ctx context.Context, groupUuid interface{}) ([]androidTelephony.SubscriptionInfo, error)
 	GetSlotIndex(ctx context.Context, subId int32) (int32, error)
 	GetSubId(ctx context.Context, slotIndex int32) (int32, error)
 	GetDefaultSubId(ctx context.Context) (int32, error)
-	GetDefaultSubIdAsUser(ctx context.Context, userId int32) (int32, error)
+	GetDefaultSubIdAsUser(ctx context.Context) (int32, error)
 	GetPhoneId(ctx context.Context, subId int32) (int32, error)
 	GetDefaultDataSubId(ctx context.Context) (int32, error)
 	SetDefaultDataSubId(ctx context.Context, subId int32) error
 	GetDefaultVoiceSubId(ctx context.Context) (int32, error)
-	GetDefaultVoiceSubIdAsUser(ctx context.Context, userId int32) (int32, error)
+	GetDefaultVoiceSubIdAsUser(ctx context.Context) (int32, error)
 	SetDefaultVoiceSubId(ctx context.Context, subId int32) error
 	GetDefaultSmsSubId(ctx context.Context) (int32, error)
-	GetDefaultSmsSubIdAsUser(ctx context.Context, userId int32) (int32, error)
+	GetDefaultSmsSubIdAsUser(ctx context.Context) (int32, error)
 	SetDefaultSmsSubId(ctx context.Context, subId int32) error
 	GetActiveSubIdList(ctx context.Context, visibleOnly bool) ([]int32, error)
 	SetSubscriptionProperty(ctx context.Context, subId int32, propKey string, propValue string) error
-	GetSubscriptionProperty(ctx context.Context, subId int32, propKey string, callingPackage string, callingFeatureId string) (string, error)
+	GetSubscriptionProperty(ctx context.Context, subId int32, propKey string) (string, error)
 	IsSubscriptionEnabled(ctx context.Context, subId int32) (bool, error)
 	GetEnabledSubscriptionId(ctx context.Context, slotIndex int32) (int32, error)
-	IsActiveSubId(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (bool, error)
+	IsActiveSubId(ctx context.Context, subId int32) (bool, error)
 	GetActiveDataSubscriptionId(ctx context.Context) (int32, error)
 	CanDisablePhysicalSubscription(ctx context.Context) (bool, error)
 	SetUiccApplicationsEnabled(ctx context.Context, enabled bool, subscriptionId int32) error
 	SetDeviceToDeviceStatusSharing(ctx context.Context, sharing int32, subId int32) (int32, error)
 	SetDeviceToDeviceStatusSharingContacts(ctx context.Context, contacts string, subscriptionId int32) (int32, error)
-	GetPhoneNumber(ctx context.Context, subId int32, source int32, callingPackage string, callingFeatureId string) (string, error)
-	GetPhoneNumberFromFirstAvailableSource(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (string, error)
-	SetPhoneNumber(ctx context.Context, subId int32, source int32, number string, callingPackage string, callingFeatureId string) error
-	SetUsageSetting(ctx context.Context, usageSetting int32, subId int32, callingPackage string) (int32, error)
+	GetPhoneNumber(ctx context.Context, subId int32, source int32) (string, error)
+	GetPhoneNumberFromFirstAvailableSource(ctx context.Context, subId int32) (string, error)
+	SetPhoneNumber(ctx context.Context, subId int32, source int32, number string) error
+	SetUsageSetting(ctx context.Context, usageSetting int32, subId int32) (int32, error)
 	SetGroupOwner(ctx context.Context, subId int32, groupOwner string) error
 	SetSubscriptionUserHandle(ctx context.Context, userHandle os.UserHandle, subId int32) (int32, error)
 	GetSubscriptionUserHandle(ctx context.Context, subId int32) (os.UserHandle, error)

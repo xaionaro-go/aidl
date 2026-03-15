@@ -83,7 +83,7 @@ type IStorageManager interface {
 	UnmountObb(ctx context.Context, rawPath string, force bool, token IObbActionListener, nonce int32) error
 	IsObbMounted(ctx context.Context, rawPath string) (bool, error)
 	GetMountedObbPath(ctx context.Context, rawPath string) (string, error)
-	GetVolumeList(ctx context.Context, userId int32, callingPackage string, flags int32) ([]StorageVolume, error)
+	GetVolumeList(ctx context.Context, flags int32) ([]StorageVolume, error)
 	Mkdirs(ctx context.Context, callingPkg string, path string) error
 	LastMaintenance(ctx context.Context) (int64, error)
 	RunMaintenance(ctx context.Context) error
@@ -104,21 +104,21 @@ type IStorageManager interface {
 	SetPrimaryStorageUuid(ctx context.Context, volumeUuid string, callback interface{}) error
 	Benchmark(ctx context.Context, volId string, listener interface{}) error
 	SetDebugFlags(ctx context.Context, flags int32, mask int32) error
-	CreateUserStorageKeys(ctx context.Context, userId int32, ephemeral bool) error
-	DestroyUserStorageKeys(ctx context.Context, userId int32) error
-	UnlockCeStorage(ctx context.Context, userId int32, secret []byte) error
-	LockCeStorage(ctx context.Context, userId int32) error
-	IsCeStorageUnlocked(ctx context.Context, userId int32) (bool, error)
-	PrepareUserStorage(ctx context.Context, volumeUuid string, userId int32, flags int32) error
-	DestroyUserStorage(ctx context.Context, volumeUuid string, userId int32, flags int32) error
-	SetCeStorageProtection(ctx context.Context, userId int32, secret []byte) error
+	CreateUserStorageKeys(ctx context.Context, ephemeral bool) error
+	DestroyUserStorageKeys(ctx context.Context) error
+	UnlockCeStorage(ctx context.Context, secret []byte) error
+	LockCeStorage(ctx context.Context) error
+	IsCeStorageUnlocked(ctx context.Context) (bool, error)
+	PrepareUserStorage(ctx context.Context, volumeUuid string, flags int32) error
+	DestroyUserStorage(ctx context.Context, volumeUuid string, flags int32) error
+	SetCeStorageProtection(ctx context.Context, secret []byte) error
 	Fstrim(ctx context.Context, flags int32, listener interface{}) error
 	MountProxyFileDescriptorBridge(ctx context.Context) (interface{}, error)
 	OpenProxyFileDescriptor(ctx context.Context, mountPointId int32, fileId int32, mode int32) (int32, error)
 	GetCacheQuotaBytes(ctx context.Context, volumeUuid string, uid int32) (int64, error)
 	GetCacheSizeBytes(ctx context.Context, volumeUuid string, uid int32) (int64, error)
-	GetAllocatableBytes(ctx context.Context, volumeUuid string, flags int32, callingPackage string) (int64, error)
-	AllocateBytes(ctx context.Context, volumeUuid string, bytes int64, flags int32, callingPackage string) error
+	GetAllocatableBytes(ctx context.Context, volumeUuid string, flags int32) (int64, error)
+	AllocateBytes(ctx context.Context, volumeUuid string, bytes int64, flags int32) error
 	RunIdleMaintenance(ctx context.Context) error
 	AbortIdleMaintenance(ctx context.Context) error
 	CommitChanges(ctx context.Context) error
@@ -127,7 +127,7 @@ type IStorageManager interface {
 	NeedsCheckpoint(ctx context.Context) (bool, error)
 	AbortChanges(ctx context.Context, message string, retry bool) error
 	FixupAppDir(ctx context.Context, path string) error
-	DisableAppDataIsolation(ctx context.Context, pkgName string, pid int32, userId int32) error
+	DisableAppDataIsolation(ctx context.Context, pkgName string, pid int32) error
 	GetManageSpaceActivityIntent(ctx context.Context, packageName string, requestCode int32) (interface{}, error)
 	NotifyAppIoBlocked(ctx context.Context, volumeUuid string, uid int32, tid int32, reason int32) error
 	NotifyAppIoResumed(ctx context.Context, volumeUuid string, uid int32, tid int32, reason int32) error

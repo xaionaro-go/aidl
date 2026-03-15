@@ -78,64 +78,64 @@ const (
 
 type ITvInteractiveAppManager interface {
 	AsBinder() binder.IBinder
-	GetTvInteractiveAppServiceList(ctx context.Context, userId int32) ([]TvInteractiveAppServiceInfo, error)
-	GetAppLinkInfoList(ctx context.Context, userId int32) ([]AppLinkInfo, error)
-	RegisterAppLinkInfo(ctx context.Context, tiasId string, info AppLinkInfo, userId int32) error
-	UnregisterAppLinkInfo(ctx context.Context, tiasId string, info AppLinkInfo, userId int32) error
-	SendAppLinkCommand(ctx context.Context, tiasId string, command os.Bundle, userId int32) error
-	StartInteractiveApp(ctx context.Context, sessionToken binder.IBinder, userId int32) error
-	StopInteractiveApp(ctx context.Context, sessionToken binder.IBinder, userId int32) error
-	ResetInteractiveApp(ctx context.Context, sessionToken binder.IBinder, userId int32) error
-	CreateBiInteractiveApp(ctx context.Context, sessionToken binder.IBinder, biIAppUri net.Uri, params os.Bundle, userId int32) error
-	DestroyBiInteractiveApp(ctx context.Context, sessionToken binder.IBinder, biIAppId string, userId int32) error
-	SetTeletextAppEnabled(ctx context.Context, sessionToken binder.IBinder, enable bool, userId int32) error
-	SendCurrentVideoBounds(ctx context.Context, sessionToken binder.IBinder, bounds graphics.Rect, userId int32) error
-	SendCurrentChannelUri(ctx context.Context, sessionToken binder.IBinder, channelUri net.Uri, userId int32) error
-	SendCurrentChannelLcn(ctx context.Context, sessionToken binder.IBinder, lcn int32, userId int32) error
-	SendStreamVolume(ctx context.Context, sessionToken binder.IBinder, volume float32, userId int32) error
-	SendTrackInfoList(ctx context.Context, sessionToken binder.IBinder, tracks []tv.TvTrackInfo, userId int32) error
-	SendCurrentTvInputId(ctx context.Context, sessionToken binder.IBinder, inputId string, userId int32) error
-	SendTimeShiftMode(ctx context.Context, sessionToken binder.IBinder, mode int32, userId int32) error
-	SendAvailableSpeeds(ctx context.Context, sessionToken binder.IBinder, speeds []float32, userId int32) error
-	SendSigningResult(ctx context.Context, sessionToken binder.IBinder, signingId string, result []byte, userId int32) error
-	SendCertificate(ctx context.Context, sessionToken binder.IBinder, host string, port int32, certBundle os.Bundle, userId int32) error
-	SendTvRecordingInfo(ctx context.Context, sessionToken binder.IBinder, recordingInfo tv.TvRecordingInfo, userId int32) error
-	SendTvRecordingInfoList(ctx context.Context, sessionToken binder.IBinder, recordingInfoList []tv.TvRecordingInfo, userId int32) error
-	NotifyError(ctx context.Context, sessionToken binder.IBinder, errMsg string, params os.Bundle, userId int32) error
-	NotifyTimeShiftPlaybackParams(ctx context.Context, sessionToken binder.IBinder, params media.PlaybackParams, userId int32) error
-	NotifyTimeShiftStatusChanged(ctx context.Context, sessionToken binder.IBinder, inputId string, status int32, userId int32) error
-	NotifyTimeShiftStartPositionChanged(ctx context.Context, sessionToken binder.IBinder, inputId string, timeMs int64, userId int32) error
-	NotifyTimeShiftCurrentPositionChanged(ctx context.Context, sessionToken binder.IBinder, inputId string, timeMs int64, userId int32) error
-	NotifyRecordingConnectionFailed(ctx context.Context, sessionToken binder.IBinder, recordingId string, inputId string, userId int32) error
-	NotifyRecordingDisconnected(ctx context.Context, sessionToken binder.IBinder, recordingId string, inputId string, userId int32) error
-	NotifyRecordingTuned(ctx context.Context, sessionToken binder.IBinder, recordingId string, channelUri net.Uri, userId int32) error
-	NotifyRecordingError(ctx context.Context, sessionToken binder.IBinder, recordingId string, err int32, userId int32) error
-	NotifyRecordingScheduled(ctx context.Context, sessionToken binder.IBinder, recordingId string, requestId string, userId int32) error
-	CreateSession(ctx context.Context, client ITvInteractiveAppClient, iAppServiceId string, type_ int32, seq int32, userId int32) error
-	ReleaseSession(ctx context.Context, sessionToken binder.IBinder, userId int32) error
-	NotifyTuned(ctx context.Context, sessionToken binder.IBinder, channelUri net.Uri, userId int32) error
-	NotifyTrackSelected(ctx context.Context, sessionToken binder.IBinder, type_ int32, trackId string, userId int32) error
-	NotifyTracksChanged(ctx context.Context, sessionToken binder.IBinder, tracks []tv.TvTrackInfo, userId int32) error
-	NotifyVideoAvailable(ctx context.Context, sessionToken binder.IBinder, userId int32) error
-	NotifyVideoUnavailable(ctx context.Context, sessionToken binder.IBinder, reason int32, userId int32) error
-	NotifyVideoFreezeUpdated(ctx context.Context, sessionToken binder.IBinder, isFrozen bool, userId int32) error
-	NotifyContentAllowed(ctx context.Context, sessionToken binder.IBinder, userId int32) error
-	NotifyContentBlocked(ctx context.Context, sessionToken binder.IBinder, rating string, userId int32) error
-	NotifySignalStrength(ctx context.Context, sessionToken binder.IBinder, stength int32, userId int32) error
-	NotifyRecordingStarted(ctx context.Context, sessionToken binder.IBinder, recordingId string, requestId string, userId int32) error
-	NotifyRecordingStopped(ctx context.Context, sessionToken binder.IBinder, recordingId string, userId int32) error
-	NotifyTvMessage(ctx context.Context, sessionToken binder.IBinder, type_ int32, data os.Bundle, userId int32) error
-	SetSurface(ctx context.Context, sessionToken binder.IBinder, surface interface{}, userId int32) error
-	DispatchSurfaceChanged(ctx context.Context, sessionToken binder.IBinder, format int32, width int32, height int32, userId int32) error
+	GetTvInteractiveAppServiceList(ctx context.Context) ([]TvInteractiveAppServiceInfo, error)
+	GetAppLinkInfoList(ctx context.Context) ([]AppLinkInfo, error)
+	RegisterAppLinkInfo(ctx context.Context, tiasId string, info AppLinkInfo) error
+	UnregisterAppLinkInfo(ctx context.Context, tiasId string, info AppLinkInfo) error
+	SendAppLinkCommand(ctx context.Context, tiasId string, command os.Bundle) error
+	StartInteractiveApp(ctx context.Context, sessionToken binder.IBinder) error
+	StopInteractiveApp(ctx context.Context, sessionToken binder.IBinder) error
+	ResetInteractiveApp(ctx context.Context, sessionToken binder.IBinder) error
+	CreateBiInteractiveApp(ctx context.Context, sessionToken binder.IBinder, biIAppUri net.Uri, params os.Bundle) error
+	DestroyBiInteractiveApp(ctx context.Context, sessionToken binder.IBinder, biIAppId string) error
+	SetTeletextAppEnabled(ctx context.Context, sessionToken binder.IBinder, enable bool) error
+	SendCurrentVideoBounds(ctx context.Context, sessionToken binder.IBinder, bounds graphics.Rect) error
+	SendCurrentChannelUri(ctx context.Context, sessionToken binder.IBinder, channelUri net.Uri) error
+	SendCurrentChannelLcn(ctx context.Context, sessionToken binder.IBinder, lcn int32) error
+	SendStreamVolume(ctx context.Context, sessionToken binder.IBinder, volume float32) error
+	SendTrackInfoList(ctx context.Context, sessionToken binder.IBinder, tracks []tv.TvTrackInfo) error
+	SendCurrentTvInputId(ctx context.Context, sessionToken binder.IBinder, inputId string) error
+	SendTimeShiftMode(ctx context.Context, sessionToken binder.IBinder, mode int32) error
+	SendAvailableSpeeds(ctx context.Context, sessionToken binder.IBinder, speeds []float32) error
+	SendSigningResult(ctx context.Context, sessionToken binder.IBinder, signingId string, result []byte) error
+	SendCertificate(ctx context.Context, sessionToken binder.IBinder, host string, port int32, certBundle os.Bundle) error
+	SendTvRecordingInfo(ctx context.Context, sessionToken binder.IBinder, recordingInfo tv.TvRecordingInfo) error
+	SendTvRecordingInfoList(ctx context.Context, sessionToken binder.IBinder, recordingInfoList []tv.TvRecordingInfo) error
+	NotifyError(ctx context.Context, sessionToken binder.IBinder, errMsg string, params os.Bundle) error
+	NotifyTimeShiftPlaybackParams(ctx context.Context, sessionToken binder.IBinder, params media.PlaybackParams) error
+	NotifyTimeShiftStatusChanged(ctx context.Context, sessionToken binder.IBinder, inputId string, status int32) error
+	NotifyTimeShiftStartPositionChanged(ctx context.Context, sessionToken binder.IBinder, inputId string, timeMs int64) error
+	NotifyTimeShiftCurrentPositionChanged(ctx context.Context, sessionToken binder.IBinder, inputId string, timeMs int64) error
+	NotifyRecordingConnectionFailed(ctx context.Context, sessionToken binder.IBinder, recordingId string, inputId string) error
+	NotifyRecordingDisconnected(ctx context.Context, sessionToken binder.IBinder, recordingId string, inputId string) error
+	NotifyRecordingTuned(ctx context.Context, sessionToken binder.IBinder, recordingId string, channelUri net.Uri) error
+	NotifyRecordingError(ctx context.Context, sessionToken binder.IBinder, recordingId string, err int32) error
+	NotifyRecordingScheduled(ctx context.Context, sessionToken binder.IBinder, recordingId string, requestId string) error
+	CreateSession(ctx context.Context, client ITvInteractiveAppClient, iAppServiceId string, type_ int32, seq int32) error
+	ReleaseSession(ctx context.Context, sessionToken binder.IBinder) error
+	NotifyTuned(ctx context.Context, sessionToken binder.IBinder, channelUri net.Uri) error
+	NotifyTrackSelected(ctx context.Context, sessionToken binder.IBinder, type_ int32, trackId string) error
+	NotifyTracksChanged(ctx context.Context, sessionToken binder.IBinder, tracks []tv.TvTrackInfo) error
+	NotifyVideoAvailable(ctx context.Context, sessionToken binder.IBinder) error
+	NotifyVideoUnavailable(ctx context.Context, sessionToken binder.IBinder, reason int32) error
+	NotifyVideoFreezeUpdated(ctx context.Context, sessionToken binder.IBinder, isFrozen bool) error
+	NotifyContentAllowed(ctx context.Context, sessionToken binder.IBinder) error
+	NotifyContentBlocked(ctx context.Context, sessionToken binder.IBinder, rating string) error
+	NotifySignalStrength(ctx context.Context, sessionToken binder.IBinder, stength int32) error
+	NotifyRecordingStarted(ctx context.Context, sessionToken binder.IBinder, recordingId string, requestId string) error
+	NotifyRecordingStopped(ctx context.Context, sessionToken binder.IBinder, recordingId string) error
+	NotifyTvMessage(ctx context.Context, sessionToken binder.IBinder, type_ int32, data os.Bundle) error
+	SetSurface(ctx context.Context, sessionToken binder.IBinder, surface interface{}) error
+	DispatchSurfaceChanged(ctx context.Context, sessionToken binder.IBinder, format int32, width int32, height int32) error
 	NotifyBroadcastInfoResponse(ctx context.Context, sessionToken binder.IBinder, response tv.BroadcastInfoResponse, UserId int32) error
 	NotifyAdResponse(ctx context.Context, sessionToken binder.IBinder, response tv.AdResponse, UserId int32) error
-	NotifyAdBufferConsumed(ctx context.Context, sessionToken binder.IBinder, buffer tv.AdBuffer, userId int32) error
-	SendSelectedTrackInfo(ctx context.Context, sessionToken binder.IBinder, tracks []tv.TvTrackInfo, userId int32) error
-	CreateMediaView(ctx context.Context, sessionToken binder.IBinder, windowToken binder.IBinder, frame graphics.Rect, userId int32) error
-	RelayoutMediaView(ctx context.Context, sessionToken binder.IBinder, frame graphics.Rect, userId int32) error
-	RemoveMediaView(ctx context.Context, sessionToken binder.IBinder, userId int32) error
-	RegisterCallback(ctx context.Context, callback ITvInteractiveAppManagerCallback, userId int32) error
-	UnregisterCallback(ctx context.Context, callback ITvInteractiveAppManagerCallback, userId int32) error
+	NotifyAdBufferConsumed(ctx context.Context, sessionToken binder.IBinder, buffer tv.AdBuffer) error
+	SendSelectedTrackInfo(ctx context.Context, sessionToken binder.IBinder, tracks []tv.TvTrackInfo) error
+	CreateMediaView(ctx context.Context, sessionToken binder.IBinder, windowToken binder.IBinder, frame graphics.Rect) error
+	RelayoutMediaView(ctx context.Context, sessionToken binder.IBinder, frame graphics.Rect) error
+	RemoveMediaView(ctx context.Context, sessionToken binder.IBinder) error
+	RegisterCallback(ctx context.Context, callback ITvInteractiveAppManagerCallback) error
+	UnregisterCallback(ctx context.Context, callback ITvInteractiveAppManagerCallback) error
 }
 
 type TvInteractiveAppManagerProxy struct {

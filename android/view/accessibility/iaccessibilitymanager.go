@@ -63,18 +63,18 @@ const (
 
 type IAccessibilityManager interface {
 	AsBinder() binder.IBinder
-	Interrupt(ctx context.Context, userId int32) error
-	SendAccessibilityEvent(ctx context.Context, uiEvent AccessibilityEvent, userId int32) error
-	AddClient(ctx context.Context, client IAccessibilityManagerClient, userId int32) (int64, error)
-	RemoveClient(ctx context.Context, client IAccessibilityManagerClient, userId int32) (bool, error)
-	GetInstalledAccessibilityServiceList(ctx context.Context, userId int32) (interface{}, error)
-	GetEnabledAccessibilityServiceList(ctx context.Context, feedbackType int32, userId int32) ([]interface{}, error)
-	AddAccessibilityInteractionConnection(ctx context.Context, windowToken interface{}, leashToken binder.IBinder, connection IAccessibilityInteractionConnection, packageName string, userId int32) (int32, error)
+	Interrupt(ctx context.Context) error
+	SendAccessibilityEvent(ctx context.Context, uiEvent AccessibilityEvent) error
+	AddClient(ctx context.Context, client IAccessibilityManagerClient) (int64, error)
+	RemoveClient(ctx context.Context, client IAccessibilityManagerClient) (bool, error)
+	GetInstalledAccessibilityServiceList(ctx context.Context) (interface{}, error)
+	GetEnabledAccessibilityServiceList(ctx context.Context, feedbackType int32) ([]interface{}, error)
+	AddAccessibilityInteractionConnection(ctx context.Context, windowToken interface{}, leashToken binder.IBinder, connection IAccessibilityInteractionConnection, packageName string) (int32, error)
 	RemoveAccessibilityInteractionConnection(ctx context.Context, windowToken interface{}) error
 	SetPictureInPictureActionReplacingConnection(ctx context.Context, connection IAccessibilityInteractionConnection) error
-	RegisterUiTestAutomationService(ctx context.Context, owner binder.IBinder, client interface{}, info interface{}, userId int32, flags int32) error
+	RegisterUiTestAutomationService(ctx context.Context, owner binder.IBinder, client interface{}, info interface{}, flags int32) error
 	UnregisterUiTestAutomationService(ctx context.Context, client interface{}) error
-	GetWindowToken(ctx context.Context, windowId int32, userId int32) (binder.IBinder, error)
+	GetWindowToken(ctx context.Context, windowId int32) (binder.IBinder, error)
 	NotifyAccessibilityButtonClicked(ctx context.Context, displayId int32, targetName string) error
 	NotifyAccessibilityButtonLongClicked(ctx context.Context, displayId int32) error
 	NotifyAccessibilityButtonVisibilityChanged(ctx context.Context, available bool) error
@@ -91,24 +91,24 @@ type IAccessibilityManager interface {
 	GetFocusStrokeWidth(ctx context.Context) (int32, error)
 	GetFocusColor(ctx context.Context) (int32, error)
 	IsAudioDescriptionByDefaultEnabled(ctx context.Context) (bool, error)
-	SetSystemAudioCaptioningEnabled(ctx context.Context, isEnabled bool, userId int32) error
-	IsSystemAudioCaptioningUiEnabled(ctx context.Context, userId int32) (bool, error)
-	SetSystemAudioCaptioningUiEnabled(ctx context.Context, isEnabled bool, userId int32) error
-	SetAccessibilityWindowAttributes(ctx context.Context, displayId int32, windowId int32, userId int32, attributes AccessibilityWindowAttributes) error
+	SetSystemAudioCaptioningEnabled(ctx context.Context, isEnabled bool) error
+	IsSystemAudioCaptioningUiEnabled(ctx context.Context) (bool, error)
+	SetSystemAudioCaptioningUiEnabled(ctx context.Context, isEnabled bool) error
+	SetAccessibilityWindowAttributes(ctx context.Context, displayId int32, windowId int32, attributes AccessibilityWindowAttributes) error
 	RegisterProxyForDisplay(ctx context.Context, proxy interface{}, displayId int32) (bool, error)
 	UnregisterProxyForDisplay(ctx context.Context, displayId int32) (bool, error)
 	InjectInputEventToInputFilter(ctx context.Context, event interface{}) error
 	StartFlashNotificationSequence(ctx context.Context, opPkg string, reason int32, token binder.IBinder) (bool, error)
 	StopFlashNotificationSequence(ctx context.Context, opPkg string) (bool, error)
 	StartFlashNotificationEvent(ctx context.Context, opPkg string, reason int32, reasonPkg string) (bool, error)
-	IsAccessibilityTargetAllowed(ctx context.Context, packageName string, uid int32, userId int32) (bool, error)
-	SendRestrictedDialogIntent(ctx context.Context, packageName string, uid int32, userId int32) (bool, error)
+	IsAccessibilityTargetAllowed(ctx context.Context, packageName string, uid int32) (bool, error)
+	SendRestrictedDialogIntent(ctx context.Context, packageName string, uid int32) (bool, error)
 	IsAccessibilityServiceWarningRequired(ctx context.Context, info interface{}) (bool, error)
 	GetWindowTransformationSpec(ctx context.Context, windowId int32) (interface{}, error)
 	AttachAccessibilityOverlayToDisplay(ctx context.Context, displayId int32, surfaceControl interface{}) error
-	NotifyQuickSettingsTilesChanged(ctx context.Context, userId int32, tileComponentNames []interface{}) error
-	EnableShortcutsForTargets(ctx context.Context, enable bool, shortcutTypes int32, shortcutTargets []string, userId int32) error
-	GetA11yFeatureToTileMap(ctx context.Context, userId int32) (interface{}, error)
+	NotifyQuickSettingsTilesChanged(ctx context.Context, tileComponentNames []interface{}) error
+	EnableShortcutsForTargets(ctx context.Context, enable bool, shortcutTypes int32, shortcutTargets []string) error
+	GetA11yFeatureToTileMap(ctx context.Context) (interface{}, error)
 	RegisterUserInitializationCompleteCallback(ctx context.Context, callback IUserInitializationCompleteCallback) error
 	UnregisterUserInitializationCompleteCallback(ctx context.Context, callback IUserInitializationCompleteCallback) error
 }

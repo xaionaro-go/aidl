@@ -21,11 +21,11 @@ const (
 
 type IOns interface {
 	AsBinder() binder.IBinder
-	SetEnable(ctx context.Context, enable bool, callingPackage string) (bool, error)
-	IsEnabled(ctx context.Context, callingPackage string) (bool, error)
-	SetPreferredDataSubscriptionId(ctx context.Context, subId int32, needValidation bool, callbackStub ISetOpportunisticDataCallback, callingPackage string) error
-	GetPreferredDataSubscriptionId(ctx context.Context, callingPackage string, callingFeatureId string) (int32, error)
-	UpdateAvailableNetworks(ctx context.Context, availableNetworks []androidTelephony.AvailableNetworkInfo, callbackStub IUpdateAvailableNetworksCallback, callingPackage string) error
+	SetEnable(ctx context.Context, enable bool) (bool, error)
+	IsEnabled(ctx context.Context) (bool, error)
+	SetPreferredDataSubscriptionId(ctx context.Context, subId int32, needValidation bool, callbackStub ISetOpportunisticDataCallback) error
+	GetPreferredDataSubscriptionId(ctx context.Context) (int32, error)
+	UpdateAvailableNetworks(ctx context.Context, availableNetworks []androidTelephony.AvailableNetworkInfo, callbackStub IUpdateAvailableNetworksCallback) error
 }
 
 type OnsProxy struct {

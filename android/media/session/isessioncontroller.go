@@ -62,8 +62,8 @@ type ISessionController interface {
 	GetLaunchPendingIntent(ctx context.Context) (interface{}, error)
 	GetFlags(ctx context.Context) (int64, error)
 	GetVolumeAttributes(ctx context.Context) (MediaControllerPlaybackInfo, error)
-	AdjustVolume(ctx context.Context, packageName string, opPackageName string, direction int32, flags int32) error
-	SetVolumeTo(ctx context.Context, packageName string, opPackageName string, value int32, flags int32) error
+	AdjustVolume(ctx context.Context, packageName string, direction int32, flags int32) error
+	SetVolumeTo(ctx context.Context, packageName string, value int32, flags int32) error
 	Prepare(ctx context.Context, packageName string) error
 	PrepareFromMediaId(ctx context.Context, packageName string, mediaId string, extras interface{}) error
 	PrepareFromSearch(ctx context.Context, packageName string, string_ string, extras interface{}) error

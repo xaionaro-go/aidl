@@ -18,7 +18,7 @@ const (
 
 type ICompanionDeviceDiscoveryService interface {
 	AsBinder() binder.IBinder
-	StartDiscovery(ctx context.Context, request AssociationRequest, callingPackage string, applicationCallback IAssociationRequestCallback, serviceCallback infra.AndroidFuture) error
+	StartDiscovery(ctx context.Context, request AssociationRequest, applicationCallback IAssociationRequestCallback, serviceCallback infra.AndroidFuture) error
 	OnAssociationCreated(ctx context.Context) error
 }
 

@@ -16,7 +16,7 @@ const (
 
 type IBiometricEnabledOnKeyguardCallback interface {
 	AsBinder() binder.IBinder
-	OnChanged(ctx context.Context, enabled bool, userId int32) error
+	OnChanged(ctx context.Context, enabled bool) error
 }
 
 type BiometricEnabledOnKeyguardCallbackProxy struct {

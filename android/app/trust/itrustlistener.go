@@ -20,11 +20,11 @@ const (
 
 type ITrustListener interface {
 	AsBinder() binder.IBinder
-	OnEnabledTrustAgentsChanged(ctx context.Context, userId int32) error
-	OnTrustChanged(ctx context.Context, enabled bool, newlyUnlocked bool, userId int32, flags int32, trustGrantedMessages []string) error
-	OnTrustManagedChanged(ctx context.Context, managed bool, userId int32) error
+	OnEnabledTrustAgentsChanged(ctx context.Context) error
+	OnTrustChanged(ctx context.Context, enabled bool, newlyUnlocked bool, flags int32, trustGrantedMessages []string) error
+	OnTrustManagedChanged(ctx context.Context, managed bool) error
 	OnTrustError(ctx context.Context, message interface{}) error
-	OnIsActiveUnlockRunningChanged(ctx context.Context, isRunning bool, userId int32) error
+	OnIsActiveUnlockRunningChanged(ctx context.Context, isRunning bool) error
 }
 
 type TrustListenerProxy struct {

@@ -22,13 +22,13 @@ const (
 
 type ICarrierConfigLoader interface {
 	AsBinder() binder.IBinder
-	GetConfigForSubId(ctx context.Context, subId int32, callingPackage string) (interface{}, error)
-	GetConfigForSubIdWithFeature(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (interface{}, error)
+	GetConfigForSubId(ctx context.Context, subId int32) (interface{}, error)
+	GetConfigForSubIdWithFeature(ctx context.Context, subId int32) (interface{}, error)
 	OverrideConfig(ctx context.Context, subId int32, overrides interface{}, persistent bool) error
 	NotifyConfigChangedForSubId(ctx context.Context, subId int32) error
 	UpdateConfigForPhoneId(ctx context.Context, phoneId int32, simState string) error
 	GetDefaultCarrierServicePackageName(ctx context.Context) (string, error)
-	GetConfigSubsetForSubIdWithFeature(ctx context.Context, subId int32, callingPackage string, callingFeatureId string, carrierConfigs []string) (interface{}, error)
+	GetConfigSubsetForSubIdWithFeature(ctx context.Context, subId int32, carrierConfigs []string) (interface{}, error)
 }
 
 type CarrierConfigLoaderProxy struct {

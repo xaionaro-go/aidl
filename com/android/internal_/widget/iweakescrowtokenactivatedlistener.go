@@ -16,7 +16,7 @@ const (
 
 type IWeakEscrowTokenActivatedListener interface {
 	AsBinder() binder.IBinder
-	OnWeakEscrowTokenActivated(ctx context.Context, handle int64, userId int32) error
+	OnWeakEscrowTokenActivated(ctx context.Context, handle int64) error
 }
 
 type WeakEscrowTokenActivatedListenerProxy struct {

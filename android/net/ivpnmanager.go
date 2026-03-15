@@ -45,8 +45,8 @@ const (
 
 type IVpnManager interface {
 	AsBinder() binder.IBinder
-	PrepareVpn(ctx context.Context, oldPackage string, newPackage string, userId int32) (bool, error)
-	SetVpnPackageAuthorization(ctx context.Context, packageName string, userId int32, vpnType int32) error
+	PrepareVpn(ctx context.Context, oldPackage string, newPackage string) (bool, error)
+	SetVpnPackageAuthorization(ctx context.Context, packageName string, vpnType int32) error
 	EstablishVpn(ctx context.Context, config internalNet.VpnConfig) (int32, error)
 	AddVpnAddress(ctx context.Context, address string, prefixLength int32) (bool, error)
 	RemoveVpnAddress(ctx context.Context, address string, prefixLength int32) (bool, error)
@@ -56,23 +56,23 @@ type IVpnManager interface {
 	StartVpnProfile(ctx context.Context, packageName string) (string, error)
 	StopVpnProfile(ctx context.Context, packageName string) error
 	GetProvisionedVpnProfileState(ctx context.Context, packageName string) (VpnProfileState, error)
-	SetAppExclusionList(ctx context.Context, userId int32, vpnPackage string, excludedApps []string) (bool, error)
-	GetAppExclusionList(ctx context.Context, userId int32, vpnPackage string) ([]string, error)
-	IsAlwaysOnVpnPackageSupported(ctx context.Context, userId int32, packageName string) (bool, error)
-	SetAlwaysOnVpnPackage(ctx context.Context, userId int32, packageName string, lockdown bool, lockdownAllowlist []string) (bool, error)
-	GetAlwaysOnVpnPackage(ctx context.Context, userId int32) (string, error)
-	IsVpnLockdownEnabled(ctx context.Context, userId int32) (bool, error)
-	GetVpnLockdownAllowlist(ctx context.Context, userId int32) ([]string, error)
+	SetAppExclusionList(ctx context.Context, vpnPackage string, excludedApps []string) (bool, error)
+	GetAppExclusionList(ctx context.Context, vpnPackage string) ([]string, error)
+	IsAlwaysOnVpnPackageSupported(ctx context.Context, packageName string) (bool, error)
+	SetAlwaysOnVpnPackage(ctx context.Context, packageName string, lockdown bool, lockdownAllowlist []string) (bool, error)
+	GetAlwaysOnVpnPackage(ctx context.Context) (string, error)
+	IsVpnLockdownEnabled(ctx context.Context) (bool, error)
+	GetVpnLockdownAllowlist(ctx context.Context) ([]string, error)
 	IsCallerCurrentAlwaysOnVpnApp(ctx context.Context) (bool, error)
 	IsCallerCurrentAlwaysOnVpnLockdownApp(ctx context.Context) (bool, error)
 	StartLegacyVpn(ctx context.Context, profile internalNet.VpnProfile) error
-	GetLegacyVpnInfo(ctx context.Context, userId int32) (internalNet.LegacyVpnInfo, error)
+	GetLegacyVpnInfo(ctx context.Context) (internalNet.LegacyVpnInfo, error)
 	UpdateLockdownVpn(ctx context.Context) (bool, error)
 	GetFromVpnProfileStore(ctx context.Context, name string) ([]byte, error)
 	PutIntoVpnProfileStore(ctx context.Context, name string, blob []byte) (bool, error)
 	RemoveFromVpnProfileStore(ctx context.Context, name string) (bool, error)
 	ListFromVpnProfileStore(ctx context.Context, prefix string) ([]string, error)
-	GetVpnConfig(ctx context.Context, userId int32) (internalNet.VpnConfig, error)
+	GetVpnConfig(ctx context.Context) (internalNet.VpnConfig, error)
 	FactoryReset(ctx context.Context) error
 }
 

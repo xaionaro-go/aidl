@@ -77,16 +77,16 @@ const (
 
 type ILocationManager interface {
 	AsBinder() binder.IBinder
-	GetLastLocation(ctx context.Context, provider string, request LastLocationRequest, packageName string, attributionTag string) (Location, error)
-	GetCurrentLocation(ctx context.Context, provider string, request LocationRequest, callback ILocationCallback, packageName string, attributionTag string, listenerId string) (interface{}, error)
-	RegisterLocationListener(ctx context.Context, provider string, request LocationRequest, listener ILocationListener, packageName string, attributionTag string, listenerId string) error
+	GetLastLocation(ctx context.Context, provider string, request LastLocationRequest, packageName string) (Location, error)
+	GetCurrentLocation(ctx context.Context, provider string, request LocationRequest, callback ILocationCallback, packageName string, listenerId string) (interface{}, error)
+	RegisterLocationListener(ctx context.Context, provider string, request LocationRequest, listener ILocationListener, packageName string, listenerId string) error
 	UnregisterLocationListener(ctx context.Context, listener ILocationListener) error
-	RegisterLocationPendingIntent(ctx context.Context, provider string, request LocationRequest, pendingIntent interface{}, packageName string, attributionTag string) error
+	RegisterLocationPendingIntent(ctx context.Context, provider string, request LocationRequest, pendingIntent interface{}, packageName string) error
 	UnregisterLocationPendingIntent(ctx context.Context, pendingIntent interface{}) error
 	InjectLocation(ctx context.Context, location Location) error
 	RequestListenerFlush(ctx context.Context, provider string, listener ILocationListener, requestCode int32) error
 	RequestPendingIntentFlush(ctx context.Context, provider string, pendingIntent interface{}, requestCode int32) error
-	RequestGeofence(ctx context.Context, geofence Geofence, intent interface{}, packageName string, attributionTag string) error
+	RequestGeofence(ctx context.Context, geofence Geofence, intent interface{}, packageName string) error
 	RemoveGeofence(ctx context.Context, intent interface{}) error
 	IsGeocodeAvailable(ctx context.Context) (bool, error)
 	ReverseGeocode(ctx context.Context, request interface{}, callback interface{}) error
@@ -95,21 +95,21 @@ type ILocationManager interface {
 	GetGnssYearOfHardware(ctx context.Context) (int32, error)
 	GetGnssHardwareModelName(ctx context.Context) (string, error)
 	GetGnssAntennaInfos(ctx context.Context) ([]GnssAntennaInfo, error)
-	RegisterGnssStatusCallback(ctx context.Context, callback IGnssStatusListener, packageName string, attributionTag string, listenerId string) error
+	RegisterGnssStatusCallback(ctx context.Context, callback IGnssStatusListener, packageName string, listenerId string) error
 	UnregisterGnssStatusCallback(ctx context.Context, callback IGnssStatusListener) error
-	RegisterGnssNmeaCallback(ctx context.Context, callback IGnssNmeaListener, packageName string, attributionTag string, listenerId string) error
+	RegisterGnssNmeaCallback(ctx context.Context, callback IGnssNmeaListener, packageName string, listenerId string) error
 	UnregisterGnssNmeaCallback(ctx context.Context, callback IGnssNmeaListener) error
-	AddGnssMeasurementsListener(ctx context.Context, request GnssMeasurementRequest, listener IGnssMeasurementsListener, packageName string, attributionTag string, listenerId string) error
+	AddGnssMeasurementsListener(ctx context.Context, request GnssMeasurementRequest, listener IGnssMeasurementsListener, packageName string, listenerId string) error
 	RemoveGnssMeasurementsListener(ctx context.Context, listener IGnssMeasurementsListener) error
 	InjectGnssMeasurementCorrections(ctx context.Context, corrections GnssMeasurementCorrections) error
-	AddGnssNavigationMessageListener(ctx context.Context, listener IGnssNavigationMessageListener, packageName string, attributionTag string, listenerId string) error
+	AddGnssNavigationMessageListener(ctx context.Context, listener IGnssNavigationMessageListener, packageName string, listenerId string) error
 	RemoveGnssNavigationMessageListener(ctx context.Context, listener IGnssNavigationMessageListener) error
-	AddGnssAntennaInfoListener(ctx context.Context, listener IGnssAntennaInfoListener, packageName string, attributionTag string, listenerId string) error
+	AddGnssAntennaInfoListener(ctx context.Context, listener IGnssAntennaInfoListener, packageName string, listenerId string) error
 	RemoveGnssAntennaInfoListener(ctx context.Context, listener IGnssAntennaInfoListener) error
 	AddProviderRequestListener(ctx context.Context, listener interface{}) error
 	RemoveProviderRequestListener(ctx context.Context, listener interface{}) error
 	GetGnssBatchSize(ctx context.Context) (int32, error)
-	StartGnssBatch(ctx context.Context, periodNanos int64, listener ILocationListener, packageName string, attributionTag string, listenerId string) error
+	StartGnssBatch(ctx context.Context, periodNanos int64, listener ILocationListener, packageName string, listenerId string) error
 	FlushGnssBatch(ctx context.Context) error
 	StopGnssBatch(ctx context.Context) error
 	HasProvider(ctx context.Context, provider string) (bool, error)
@@ -117,23 +117,23 @@ type ILocationManager interface {
 	GetProviders(ctx context.Context, criteria Criteria, enabledOnly bool) ([]string, error)
 	GetBestProvider(ctx context.Context, criteria Criteria, enabledOnly bool) (string, error)
 	GetProviderProperties(ctx context.Context, provider string) (interface{}, error)
-	IsProviderPackage(ctx context.Context, provider string, packageName string, attributionTag string) (bool, error)
+	IsProviderPackage(ctx context.Context, provider string, packageName string) (bool, error)
 	GetProviderPackages(ctx context.Context, provider string) ([]string, error)
 	SetExtraLocationControllerPackage(ctx context.Context, packageName string) error
 	GetExtraLocationControllerPackage(ctx context.Context) (string, error)
 	SetExtraLocationControllerPackageEnabled(ctx context.Context, enabled bool) error
 	IsExtraLocationControllerPackageEnabled(ctx context.Context) (bool, error)
-	IsProviderEnabledForUser(ctx context.Context, provider string, userId int32) (bool, error)
-	IsLocationEnabledForUser(ctx context.Context, userId int32) (bool, error)
-	SetLocationEnabledForUser(ctx context.Context, enabled bool, userId int32) error
-	IsAdasGnssLocationEnabledForUser(ctx context.Context, userId int32) (bool, error)
-	SetAdasGnssLocationEnabledForUser(ctx context.Context, enabled bool, userId int32) error
+	IsProviderEnabledForUser(ctx context.Context, provider string) (bool, error)
+	IsLocationEnabledForUser(ctx context.Context) (bool, error)
+	SetLocationEnabledForUser(ctx context.Context, enabled bool) error
+	IsAdasGnssLocationEnabledForUser(ctx context.Context) (bool, error)
+	SetAdasGnssLocationEnabledForUser(ctx context.Context, enabled bool) error
 	IsAutomotiveGnssSuspended(ctx context.Context) (bool, error)
 	SetAutomotiveGnssSuspended(ctx context.Context, suspended bool) error
-	AddTestProvider(ctx context.Context, name string, properties interface{}, locationTags []string, packageName string, attributionTag string) error
-	RemoveTestProvider(ctx context.Context, provider string, packageName string, attributionTag string) error
-	SetTestProviderLocation(ctx context.Context, provider string, location Location, packageName string, attributionTag string) error
-	SetTestProviderEnabled(ctx context.Context, provider string, enabled bool, packageName string, attributionTag string) error
+	AddTestProvider(ctx context.Context, name string, properties interface{}, locationTags []string, packageName string) error
+	RemoveTestProvider(ctx context.Context, provider string, packageName string) error
+	SetTestProviderLocation(ctx context.Context, provider string, location Location, packageName string) error
+	SetTestProviderEnabled(ctx context.Context, provider string, enabled bool, packageName string) error
 	GetGnssTimeMillis(ctx context.Context) (LocationTime, error)
 	SendExtraCommand(ctx context.Context, provider string, command string, extras interface{}) error
 	GetBackgroundThrottlingWhitelist(ctx context.Context) ([]string, error)

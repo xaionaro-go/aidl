@@ -146,7 +146,7 @@ type IStatusBar interface {
 	ShowPinningEnterExitToast(ctx context.Context, entering bool) error
 	ShowPinningEscapeToast(ctx context.Context) error
 	ShowShutdownUi(ctx context.Context, isReboot bool, reason string) error
-	ShowAuthenticationDialog(ctx context.Context, promptInfo biometrics.PromptInfo, sysuiReceiver biometrics.IBiometricSysuiReceiver, sensorIds []int32, credentialAllowed bool, requireConfirmation bool, userId int32, operationId int64, opPackageName string, requestId int64) error
+	ShowAuthenticationDialog(ctx context.Context, promptInfo biometrics.PromptInfo, sysuiReceiver biometrics.IBiometricSysuiReceiver, sensorIds []int32, credentialAllowed bool, requireConfirmation bool, operationId int64, requestId int64) error
 	OnBiometricAuthenticated(ctx context.Context, modality int32) error
 	OnBiometricHelp(ctx context.Context, modality int32, message string) error
 	OnBiometricError(ctx context.Context, modality int32, error_ int32, vendorCode int32) error
@@ -169,7 +169,7 @@ type IStatusBar interface {
 	SetNavigationBarLumaSamplingEnabled(ctx context.Context, displayId int32, enable bool) error
 	RunGcForTest(ctx context.Context) error
 	RequestTileServiceListeningState(ctx context.Context, componentName content.ComponentName) error
-	RequestAddTile(ctx context.Context, callingUid int32, componentName content.ComponentName, appName interface{}, label interface{}, icon drawable.Icon, callback IAddTileResultCallback) error
+	RequestAddTile(ctx context.Context, componentName content.ComponentName, appName interface{}, label interface{}, icon drawable.Icon, callback IAddTileResultCallback) error
 	CancelRequestAddTile(ctx context.Context, packageName string) error
 	UpdateMediaTapToTransferSenderDisplay(ctx context.Context, displayState int32, routeInfo media.MediaRoute2Info, undoCallback IUndoMediaTransferCallback) error
 	UpdateMediaTapToTransferReceiverDisplay(ctx context.Context, displayState int32, routeInfo media.MediaRoute2Info, appIcon drawable.Icon, appName interface{}) error

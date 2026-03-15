@@ -58,7 +58,7 @@ type IKeyguardService interface {
 	OnSystemReady(ctx context.Context) error
 	DoKeyguardTimeout(ctx context.Context, options interface{}) error
 	SetSwitchingUser(ctx context.Context, switching bool) error
-	SetCurrentUser(ctx context.Context, userId int32) error
+	SetCurrentUser(ctx context.Context) error
 	OnBootCompleted(ctx context.Context) error
 	StartKeyguardExitAnimation(ctx context.Context, startTime int64, fadeoutDuration int64) error
 	OnShortPowerPressedGoHome(ctx context.Context) error

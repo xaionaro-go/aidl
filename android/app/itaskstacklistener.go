@@ -43,7 +43,7 @@ const (
 type ITaskStackListener interface {
 	AsBinder() binder.IBinder
 	OnTaskStackChanged(ctx context.Context) error
-	OnActivityPinned(ctx context.Context, packageName string, userId int32, taskId int32, stackId int32) error
+	OnActivityPinned(ctx context.Context, packageName string, taskId int32, stackId int32) error
 	OnActivityUnpinned(ctx context.Context) error
 	OnActivityRestartAttempt(ctx context.Context, task ActivityManagerRunningTaskInfo, homeTaskVisible bool, clearedTask bool, wasVisible bool) error
 	OnActivityForcedResizable(ctx context.Context, packageName string, taskId int32, reason int32) error
@@ -56,7 +56,7 @@ type ITaskStackListener interface {
 	OnTaskDescriptionChanged(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
 	OnActivityRequestedOrientationChanged(ctx context.Context, taskId int32, requestedOrientation int32) error
 	OnTaskRemovalStarted(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
-	OnTaskProfileLocked(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo, userId int32) error
+	OnTaskProfileLocked(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
 	OnTaskSnapshotChanged(ctx context.Context, taskId int32, snapshot interface{}) error
 	OnTaskSnapshotInvalidated(ctx context.Context, taskId int32) error
 	OnBackPressedOnTaskRoot(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error

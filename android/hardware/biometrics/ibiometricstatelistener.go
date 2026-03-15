@@ -20,7 +20,7 @@ type IBiometricStateListener interface {
 	AsBinder() binder.IBinder
 	OnStateChanged(ctx context.Context, newState int32) error
 	OnBiometricAction(ctx context.Context, action int32) error
-	OnEnrollmentsChanged(ctx context.Context, userId int32, sensorId int32, hasEnrollments bool) error
+	OnEnrollmentsChanged(ctx context.Context, sensorId int32, hasEnrollments bool) error
 }
 
 type BiometricStateListenerProxy struct {

@@ -28,17 +28,17 @@ const (
 
 type IPeopleManager interface {
 	AsBinder() binder.IBinder
-	GetConversation(ctx context.Context, packageName string, userId int32, shortcutId string) (ConversationChannel, error)
+	GetConversation(ctx context.Context, packageName string, shortcutId string) (ConversationChannel, error)
 	GetRecentConversations(ctx context.Context) (pm.ParceledListSlice, error)
-	RemoveRecentConversation(ctx context.Context, packageName string, userId int32, shortcutId string) error
+	RemoveRecentConversation(ctx context.Context, packageName string, shortcutId string) error
 	RemoveAllRecentConversations(ctx context.Context) error
-	IsConversation(ctx context.Context, packageName string, userId int32, shortcutId string) (bool, error)
-	GetLastInteraction(ctx context.Context, packageName string, userId int32, shortcutId string) (int64, error)
-	AddOrUpdateStatus(ctx context.Context, packageName string, userId int32, conversationId string, status ConversationStatus) error
-	ClearStatus(ctx context.Context, packageName string, userId int32, conversationId string, statusId string) error
-	ClearStatuses(ctx context.Context, packageName string, userId int32, conversationId string) error
-	GetStatuses(ctx context.Context, packageName string, userId int32, conversationId string) (pm.ParceledListSlice, error)
-	RegisterConversationListener(ctx context.Context, packageName string, userId int32, shortcutId string, callback IConversationListener) error
+	IsConversation(ctx context.Context, packageName string, shortcutId string) (bool, error)
+	GetLastInteraction(ctx context.Context, packageName string, shortcutId string) (int64, error)
+	AddOrUpdateStatus(ctx context.Context, packageName string, conversationId string, status ConversationStatus) error
+	ClearStatus(ctx context.Context, packageName string, conversationId string, statusId string) error
+	ClearStatuses(ctx context.Context, packageName string, conversationId string) error
+	GetStatuses(ctx context.Context, packageName string, conversationId string) (pm.ParceledListSlice, error)
+	RegisterConversationListener(ctx context.Context, packageName string, shortcutId string, callback IConversationListener) error
 	UnregisterConversationListener(ctx context.Context, callback IConversationListener) error
 }
 

@@ -43,28 +43,28 @@ const (
 type IEuiccController interface {
 	AsBinder() binder.IBinder
 	ContinueOperation(ctx context.Context, cardId int32, resolutionIntent content.Intent, resolutionExtras os.Bundle) error
-	GetDownloadableSubscriptionMetadata(ctx context.Context, cardId int32, subscription telephonyEuicc.DownloadableSubscription, callingPackage string, callbackIntent app.PendingIntent) error
-	GetDefaultDownloadableSubscriptionList(ctx context.Context, cardId int32, callingPackage string, callbackIntent app.PendingIntent) error
-	GetEid(ctx context.Context, cardId int32, callingPackage string) (string, error)
+	GetDownloadableSubscriptionMetadata(ctx context.Context, cardId int32, subscription telephonyEuicc.DownloadableSubscription, callbackIntent app.PendingIntent) error
+	GetDefaultDownloadableSubscriptionList(ctx context.Context, cardId int32, callbackIntent app.PendingIntent) error
+	GetEid(ctx context.Context, cardId int32) (string, error)
 	GetOtaStatus(ctx context.Context, cardId int32) (int32, error)
-	DownloadSubscription(ctx context.Context, cardId int32, subscription telephonyEuicc.DownloadableSubscription, switchAfterDownload bool, callingPackage string, resolvedBundle os.Bundle, callbackIntent app.PendingIntent) error
+	DownloadSubscription(ctx context.Context, cardId int32, subscription telephonyEuicc.DownloadableSubscription, switchAfterDownload bool, resolvedBundle os.Bundle, callbackIntent app.PendingIntent) error
 	GetEuiccInfo(ctx context.Context, cardId int32) (telephonyEuicc.EuiccInfo, error)
-	DeleteSubscription(ctx context.Context, cardId int32, subscriptionId int32, callingPackage string, callbackIntent app.PendingIntent) error
-	SwitchToSubscription(ctx context.Context, cardId int32, subscriptionId int32, callingPackage string, callbackIntent app.PendingIntent) error
-	SwitchToSubscriptionWithPort(ctx context.Context, cardId int32, subscriptionId int32, portIndex int32, callingPackage string, callbackIntent app.PendingIntent) error
-	UpdateSubscriptionNickname(ctx context.Context, cardId int32, subscriptionId int32, nickname string, callingPackage string, callbackIntent app.PendingIntent) error
+	DeleteSubscription(ctx context.Context, cardId int32, subscriptionId int32, callbackIntent app.PendingIntent) error
+	SwitchToSubscription(ctx context.Context, cardId int32, subscriptionId int32, callbackIntent app.PendingIntent) error
+	SwitchToSubscriptionWithPort(ctx context.Context, cardId int32, subscriptionId int32, portIndex int32, callbackIntent app.PendingIntent) error
+	UpdateSubscriptionNickname(ctx context.Context, cardId int32, subscriptionId int32, nickname string, callbackIntent app.PendingIntent) error
 	EraseSubscriptions(ctx context.Context, cardId int32, callbackIntent app.PendingIntent) error
 	EraseSubscriptionsWithOptions(ctx context.Context, cardId int32, options int32, callbackIntent app.PendingIntent) error
 	RetainSubscriptionsForFactoryReset(ctx context.Context, cardId int32, callbackIntent app.PendingIntent) error
 	SetSupportedCountries(ctx context.Context, isSupported bool, countriesList []string) error
 	GetSupportedCountries(ctx context.Context, isSupported bool) ([]string, error)
 	IsSupportedCountry(ctx context.Context, countryIso string) (bool, error)
-	IsSimPortAvailable(ctx context.Context, cardId int32, portIndex int32, callingPackage string) (bool, error)
-	HasCarrierPrivilegesForPackageOnAnyPhone(ctx context.Context, callingPackage string) (bool, error)
-	IsCompatChangeEnabled(ctx context.Context, callingPackage string, changeId int64) (bool, error)
+	IsSimPortAvailable(ctx context.Context, cardId int32, portIndex int32) (bool, error)
+	HasCarrierPrivilegesForPackageOnAnyPhone(ctx context.Context) (bool, error)
+	IsCompatChangeEnabled(ctx context.Context, changeId int64) (bool, error)
 	SetPsimConversionSupportedCarriers(ctx context.Context, carrierIds []int32) error
 	IsPsimConversionSupported(ctx context.Context, carrierId int32) (bool, error)
-	GetAvailableMemoryInBytes(ctx context.Context, cardId int32, callingPackage string) (int64, error)
+	GetAvailableMemoryInBytes(ctx context.Context, cardId int32) (int64, error)
 }
 
 type EuiccControllerProxy struct {

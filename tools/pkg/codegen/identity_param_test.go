@@ -210,9 +210,9 @@ func TestGenerateInterface_IdentityParamAutoFilled(t *testing.T) {
 
 	srcStr := string(src)
 
-	// The interface type should still have all params (it's the
-	// server-side contract -- implementations receive all values).
-	assert.Contains(t, srcStr, "RegisterListener(ctx context.Context, provider string, callingPackage string, attributionTag string, listenerId string) error")
+	// The interface type should omit identity params, matching the proxy
+	// signature so that *Proxy satisfies the interface.
+	assert.Contains(t, srcStr, "RegisterListener(ctx context.Context, provider string, listenerId string) error")
 
 	// The proxy method signature should omit identity params but keep
 	// regular params. Check the proxy func declaration specifically.
@@ -248,8 +248,8 @@ func TestGenerateInterface_IdentityParamIntType(t *testing.T) {
 	// The proxy method signature should only have the regular param.
 	assert.Contains(t, srcStr, "func (p *ServiceProxy) DoWork(\n\tctx context.Context,\n\tname string,\n) error {")
 
-	// The interface should still declare all params.
-	assert.Contains(t, srcStr, "DoWork(ctx context.Context, name string, callingUid int32, callingPid int32) error")
+	// The interface should omit identity params, matching the proxy.
+	assert.Contains(t, srcStr, "DoWork(ctx context.Context, name string) error")
 
 	// Identity fields should be written via _identity.
 	assert.Contains(t, srcStr, "_identity.UID")
@@ -334,8 +334,8 @@ func TestGenerateInterface_IdentityParamWithReturn(t *testing.T) {
 	// The proxy signature should omit opPackageName and return (int32, error).
 	assert.Contains(t, srcStr, "func (p *ServiceProxy) GetCount(\n\tctx context.Context,\n\tname string,\n) (int32, error) {")
 
-	// The interface should still declare all params.
-	assert.Contains(t, srcStr, "GetCount(ctx context.Context, opPackageName string, name string) (int32, error)")
+	// The interface should omit identity params, matching the proxy.
+	assert.Contains(t, srcStr, "GetCount(ctx context.Context, name string) (int32, error)")
 
 	// opPackageName should be auto-filled from identity.
 	assert.Contains(t, srcStr, "_identity.PackageName")

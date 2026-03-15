@@ -76,34 +76,34 @@ const (
 
 type ILockSettings interface {
 	AsBinder() binder.IBinder
-	SetBoolean(ctx context.Context, key string, value bool, userId int32) error
-	SetLong(ctx context.Context, key string, value int64, userId int32) error
-	SetString(ctx context.Context, key string, value string, userId int32) error
-	GetBoolean(ctx context.Context, key string, defaultValue bool, userId int32) (bool, error)
-	GetLong(ctx context.Context, key string, defaultValue int64, userId int32) (int64, error)
-	GetString(ctx context.Context, key string, defaultValue string, userId int32) (string, error)
-	SetLockCredential(ctx context.Context, credential LockscreenCredential, savedCredential LockscreenCredential, userId int32) (bool, error)
-	ResetKeyStore(ctx context.Context, userId int32) error
-	CheckCredential(ctx context.Context, credential LockscreenCredential, userId int32, progressCallback ICheckCredentialProgressCallback) (VerifyCredentialResponse, error)
-	VerifyCredential(ctx context.Context, credential LockscreenCredential, userId int32, flags int32) (VerifyCredentialResponse, error)
-	VerifyTiedProfileChallenge(ctx context.Context, credential LockscreenCredential, userId int32, flags int32) (VerifyCredentialResponse, error)
-	VerifyGatekeeperPasswordHandle(ctx context.Context, gatekeeperPasswordHandle int64, challenge int64, userId int32) (VerifyCredentialResponse, error)
+	SetBoolean(ctx context.Context, key string, value bool) error
+	SetLong(ctx context.Context, key string, value int64) error
+	SetString(ctx context.Context, key string, value string) error
+	GetBoolean(ctx context.Context, key string, defaultValue bool) (bool, error)
+	GetLong(ctx context.Context, key string, defaultValue int64) (int64, error)
+	GetString(ctx context.Context, key string, defaultValue string) (string, error)
+	SetLockCredential(ctx context.Context, credential LockscreenCredential, savedCredential LockscreenCredential) (bool, error)
+	ResetKeyStore(ctx context.Context) error
+	CheckCredential(ctx context.Context, credential LockscreenCredential, progressCallback ICheckCredentialProgressCallback) (VerifyCredentialResponse, error)
+	VerifyCredential(ctx context.Context, credential LockscreenCredential, flags int32) (VerifyCredentialResponse, error)
+	VerifyTiedProfileChallenge(ctx context.Context, credential LockscreenCredential, flags int32) (VerifyCredentialResponse, error)
+	VerifyGatekeeperPasswordHandle(ctx context.Context, gatekeeperPasswordHandle int64, challenge int64) (VerifyCredentialResponse, error)
 	RemoveGatekeeperPasswordHandle(ctx context.Context, gatekeeperPasswordHandle int64) error
-	GetCredentialType(ctx context.Context, userId int32) (int32, error)
-	GetPinLength(ctx context.Context, userId int32) (int32, error)
-	RefreshStoredPinLength(ctx context.Context, userId int32) (bool, error)
-	GetHashFactor(ctx context.Context, currentCredential LockscreenCredential, userId int32) ([]byte, error)
-	SetSeparateProfileChallengeEnabled(ctx context.Context, userId int32, enabled bool, managedUserPassword LockscreenCredential) error
-	GetSeparateProfileChallengeEnabled(ctx context.Context, userId int32) (bool, error)
+	GetCredentialType(ctx context.Context) (int32, error)
+	GetPinLength(ctx context.Context) (int32, error)
+	RefreshStoredPinLength(ctx context.Context) (bool, error)
+	GetHashFactor(ctx context.Context, currentCredential LockscreenCredential) ([]byte, error)
+	SetSeparateProfileChallengeEnabled(ctx context.Context, enabled bool, managedUserPassword LockscreenCredential) error
+	GetSeparateProfileChallengeEnabled(ctx context.Context) (bool, error)
 	RegisterStrongAuthTracker(ctx context.Context, tracker trust.IStrongAuthTracker) error
 	UnregisterStrongAuthTracker(ctx context.Context, tracker trust.IStrongAuthTracker) error
-	RequireStrongAuth(ctx context.Context, strongAuthReason int32, userId int32) error
-	ReportSuccessfulBiometricUnlock(ctx context.Context, isStrongBiometric bool, userId int32) error
-	ScheduleNonStrongBiometricIdleTimeout(ctx context.Context, userId int32) error
+	RequireStrongAuth(ctx context.Context, strongAuthReason int32) error
+	ReportSuccessfulBiometricUnlock(ctx context.Context, isStrongBiometric bool) error
+	ScheduleNonStrongBiometricIdleTimeout(ctx context.Context) error
 	SystemReady(ctx context.Context) error
-	UserPresent(ctx context.Context, userId int32) error
-	GetStrongAuthForUser(ctx context.Context, userId int32) (int32, error)
-	HasPendingEscrowToken(ctx context.Context, userId int32) (bool, error)
+	UserPresent(ctx context.Context) error
+	GetStrongAuthForUser(ctx context.Context) (int32, error)
+	HasPendingEscrowToken(ctx context.Context) (bool, error)
 	InitRecoveryServiceWithSigFile(ctx context.Context, rootCertificateAlias string, recoveryServiceCertFile []byte, recoveryServiceSigFile []byte) error
 	GetKeyChainSnapshot(ctx context.Context) (recovery.KeyChainSnapshot, error)
 	GenerateKey(ctx context.Context, alias string) (string, error)
@@ -124,16 +124,16 @@ type ILockSettings interface {
 	StartRemoteLockscreenValidation(ctx context.Context) (app.RemoteLockscreenValidationSession, error)
 	ValidateRemoteLockscreen(ctx context.Context, encryptedCredential []byte) (app.RemoteLockscreenValidationResult, error)
 	HasSecureLockScreen(ctx context.Context) (bool, error)
-	TryUnlockWithCachedUnifiedChallenge(ctx context.Context, userId int32) (bool, error)
-	RemoveCachedUnifiedChallenge(ctx context.Context, userId int32) error
+	TryUnlockWithCachedUnifiedChallenge(ctx context.Context) (bool, error)
+	RemoveCachedUnifiedChallenge(ctx context.Context) error
 	RegisterWeakEscrowTokenRemovedListener(ctx context.Context, listener IWeakEscrowTokenRemovedListener) (bool, error)
 	UnregisterWeakEscrowTokenRemovedListener(ctx context.Context, listener IWeakEscrowTokenRemovedListener) (bool, error)
-	AddWeakEscrowToken(ctx context.Context, token []byte, userId int32, callback IWeakEscrowTokenActivatedListener) (int64, error)
-	RemoveWeakEscrowToken(ctx context.Context, handle int64, userId int32) (bool, error)
-	IsWeakEscrowTokenActive(ctx context.Context, handle int64, userId int32) (bool, error)
-	IsWeakEscrowTokenValid(ctx context.Context, handle int64, token []byte, userId int32) (bool, error)
-	UnlockUserKeyIfUnsecured(ctx context.Context, userId int32) error
-	WriteRepairModeCredential(ctx context.Context, userId int32) (bool, error)
+	AddWeakEscrowToken(ctx context.Context, token []byte, callback IWeakEscrowTokenActivatedListener) (int64, error)
+	RemoveWeakEscrowToken(ctx context.Context, handle int64) (bool, error)
+	IsWeakEscrowTokenActive(ctx context.Context, handle int64) (bool, error)
+	IsWeakEscrowTokenValid(ctx context.Context, handle int64, token []byte) (bool, error)
+	UnlockUserKeyIfUnsecured(ctx context.Context) error
+	WriteRepairModeCredential(ctx context.Context) (bool, error)
 }
 
 type LockSettingsProxy struct {

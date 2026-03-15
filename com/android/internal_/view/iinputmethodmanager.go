@@ -57,25 +57,25 @@ const (
 type IInputMethodManager interface {
 	AsBinder() binder.IBinder
 	AddClient(ctx context.Context, client inputmethod.IInputMethodClient, inputmethod inputmethod.IRemoteInputConnection, untrustedDisplayId int32) error
-	GetCurrentInputMethodInfoAsUser(ctx context.Context, userId int32) (viewInputmethod.InputMethodInfo, error)
-	GetInputMethodList(ctx context.Context, userId int32, directBootAwareness int32) (inputmethod.InputMethodInfoSafeList, error)
-	GetEnabledInputMethodList(ctx context.Context, userId int32) (inputmethod.InputMethodInfoSafeList, error)
-	GetInputMethodListLegacy(ctx context.Context, userId int32, directBootAwareness int32) ([]viewInputmethod.InputMethodInfo, error)
-	GetEnabledInputMethodListLegacy(ctx context.Context, userId int32) ([]viewInputmethod.InputMethodInfo, error)
-	GetEnabledInputMethodSubtypeList(ctx context.Context, imiId string, allowsImplicitlyEnabledSubtypes bool, userId int32) ([]viewInputmethod.InputMethodSubtype, error)
-	GetLastInputMethodSubtype(ctx context.Context, userId int32) (viewInputmethod.InputMethodSubtype, error)
+	GetCurrentInputMethodInfoAsUser(ctx context.Context) (viewInputmethod.InputMethodInfo, error)
+	GetInputMethodList(ctx context.Context, directBootAwareness int32) (inputmethod.InputMethodInfoSafeList, error)
+	GetEnabledInputMethodList(ctx context.Context) (inputmethod.InputMethodInfoSafeList, error)
+	GetInputMethodListLegacy(ctx context.Context, directBootAwareness int32) ([]viewInputmethod.InputMethodInfo, error)
+	GetEnabledInputMethodListLegacy(ctx context.Context) ([]viewInputmethod.InputMethodInfo, error)
+	GetEnabledInputMethodSubtypeList(ctx context.Context, imiId string, allowsImplicitlyEnabledSubtypes bool) ([]viewInputmethod.InputMethodSubtype, error)
+	GetLastInputMethodSubtype(ctx context.Context) (viewInputmethod.InputMethodSubtype, error)
 	ShowSoftInput(ctx context.Context, client inputmethod.IInputMethodClient, windowToken binder.IBinder, statsToken viewInputmethod.ImeTrackerToken, flags int32, lastClickToolType int32, resultReceiver *os.ResultReceiver, reason int32, async bool) (bool, error)
 	HideSoftInput(ctx context.Context, client inputmethod.IInputMethodClient, windowToken binder.IBinder, statsToken viewInputmethod.ImeTrackerToken, flags int32, resultReceiver *os.ResultReceiver, reason int32, async bool) (bool, error)
 	HideSoftInputFromServerForTest(ctx context.Context) error
-	StartInputOrWindowGainedFocus(ctx context.Context, startInputReason int32, client inputmethod.IInputMethodClient, windowToken *binder.IBinder, startInputFlags int32, softInputMode int32, windowFlags int32, editorInfo *viewInputmethod.EditorInfo, inputConnection *inputmethod.IRemoteInputConnection, remoteAccessibilityInputConnection *inputmethod.IRemoteAccessibilityInputConnection, unverifiedTargetSdkVersion int32, userId int32, imeDispatcher window.ImeOnBackInvokedDispatcher) (inputmethod.InputBindResult, error)
-	StartInputOrWindowGainedFocusAsync(ctx context.Context, startInputReason int32, client inputmethod.IInputMethodClient, windowToken *binder.IBinder, startInputFlags int32, softInputMode int32, windowFlags int32, editorInfo *viewInputmethod.EditorInfo, inputConnection *inputmethod.IRemoteInputConnection, remoteAccessibilityInputConnection *inputmethod.IRemoteAccessibilityInputConnection, unverifiedTargetSdkVersion int32, userId int32, imeDispatcher window.ImeOnBackInvokedDispatcher, startInputSeq int32, useAsyncShowHideMethod bool) error
+	StartInputOrWindowGainedFocus(ctx context.Context, startInputReason int32, client inputmethod.IInputMethodClient, windowToken *binder.IBinder, startInputFlags int32, softInputMode int32, windowFlags int32, editorInfo *viewInputmethod.EditorInfo, inputConnection *inputmethod.IRemoteInputConnection, remoteAccessibilityInputConnection *inputmethod.IRemoteAccessibilityInputConnection, unverifiedTargetSdkVersion int32, imeDispatcher window.ImeOnBackInvokedDispatcher) (inputmethod.InputBindResult, error)
+	StartInputOrWindowGainedFocusAsync(ctx context.Context, startInputReason int32, client inputmethod.IInputMethodClient, windowToken *binder.IBinder, startInputFlags int32, softInputMode int32, windowFlags int32, editorInfo *viewInputmethod.EditorInfo, inputConnection *inputmethod.IRemoteInputConnection, remoteAccessibilityInputConnection *inputmethod.IRemoteAccessibilityInputConnection, unverifiedTargetSdkVersion int32, imeDispatcher window.ImeOnBackInvokedDispatcher, startInputSeq int32, useAsyncShowHideMethod bool) error
 	ShowInputMethodPickerFromClient(ctx context.Context, client inputmethod.IInputMethodClient, auxiliarySubtypeMode int32) error
 	ShowInputMethodPickerFromSystem(ctx context.Context, auxiliarySubtypeMode int32, displayId int32) error
 	IsInputMethodPickerShownForTest(ctx context.Context) (bool, error)
 	OnImeSwitchButtonClickFromSystem(ctx context.Context, displayId int32) error
-	GetCurrentInputMethodSubtype(ctx context.Context, userId int32) (viewInputmethod.InputMethodSubtype, error)
-	SetAdditionalInputMethodSubtypes(ctx context.Context, id string, subtypes []viewInputmethod.InputMethodSubtype, userId int32) error
-	SetExplicitlyEnabledInputMethodSubtypes(ctx context.Context, imeId string, subtypeHashCodes []int32, userId int32) error
+	GetCurrentInputMethodSubtype(ctx context.Context) (viewInputmethod.InputMethodSubtype, error)
+	SetAdditionalInputMethodSubtypes(ctx context.Context, id string, subtypes []viewInputmethod.InputMethodSubtype) error
+	SetExplicitlyEnabledInputMethodSubtypes(ctx context.Context, imeId string, subtypeHashCodes []int32) error
 	GetInputMethodWindowVisibleHeight(ctx context.Context, client inputmethod.IInputMethodClient) (int32, error)
 	ReportPerceptibleAsync(ctx context.Context, windowToken binder.IBinder, perceptible bool) error
 	RemoveImeSurface(ctx context.Context, displayId int32) error
@@ -85,11 +85,11 @@ type IInputMethodManager interface {
 	StartImeTrace(ctx context.Context) error
 	StopImeTrace(ctx context.Context) error
 	StartStylusHandwriting(ctx context.Context, client inputmethod.IInputMethodClient) error
-	StartConnectionlessStylusHandwriting(ctx context.Context, client inputmethod.IInputMethodClient, userId int32, cursorAnchorInfo viewInputmethod.CursorAnchorInfo, delegatePackageName string, delegatorPackageName string, callback inputmethod.IConnectionlessHandwritingCallback) error
-	PrepareStylusHandwritingDelegation(ctx context.Context, client inputmethod.IInputMethodClient, userId int32, delegatePackageName string, delegatorPackageName string) error
-	AcceptStylusHandwritingDelegation(ctx context.Context, client inputmethod.IInputMethodClient, userId int32, delegatePackageName string, delegatorPackageName string, flags int32) (bool, error)
-	AcceptStylusHandwritingDelegationAsync(ctx context.Context, client inputmethod.IInputMethodClient, userId int32, delegatePackageName string, delegatorPackageName string, flags int32, callback inputmethod.IBooleanListener) error
-	IsStylusHandwritingAvailableAsUser(ctx context.Context, userId int32, connectionless bool) (bool, error)
+	StartConnectionlessStylusHandwriting(ctx context.Context, client inputmethod.IInputMethodClient, cursorAnchorInfo viewInputmethod.CursorAnchorInfo, delegatePackageName string, delegatorPackageName string, callback inputmethod.IConnectionlessHandwritingCallback) error
+	PrepareStylusHandwritingDelegation(ctx context.Context, client inputmethod.IInputMethodClient, delegatePackageName string, delegatorPackageName string) error
+	AcceptStylusHandwritingDelegation(ctx context.Context, client inputmethod.IInputMethodClient, delegatePackageName string, delegatorPackageName string, flags int32) (bool, error)
+	AcceptStylusHandwritingDelegationAsync(ctx context.Context, client inputmethod.IInputMethodClient, delegatePackageName string, delegatorPackageName string, flags int32, callback inputmethod.IBooleanListener) error
+	IsStylusHandwritingAvailableAsUser(ctx context.Context, connectionless bool) (bool, error)
 	AddVirtualStylusIdForTestSession(ctx context.Context, client inputmethod.IInputMethodClient) error
 	SetStylusWindowIdleTimeoutForTest(ctx context.Context, client inputmethod.IInputMethodClient, timeout int64) error
 	GetImeTrackerService(ctx context.Context) (inputmethod.IImeTracker, error)

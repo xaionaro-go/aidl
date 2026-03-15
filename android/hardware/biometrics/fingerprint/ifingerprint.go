@@ -18,7 +18,7 @@ const (
 type IFingerprint interface {
 	AsBinder() binder.IBinder
 	GetSensorProps(ctx context.Context) ([]SensorProps, error)
-	CreateSession(ctx context.Context, sensorId int32, userId int32, cb ISessionCallback) (ISession, error)
+	CreateSession(ctx context.Context, sensorId int32, cb ISessionCallback) (ISession, error)
 }
 
 type FingerprintProxy struct {

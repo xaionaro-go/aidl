@@ -20,7 +20,7 @@ const (
 type IAppFunctionManager interface {
 	AsBinder() binder.IBinder
 	ExecuteAppFunction(ctx context.Context, request ExecuteAppFunctionAidlRequest, callback IExecuteAppFunctionCallback) (ondeviceintelligence.ICancellationSignal, error)
-	SetAppFunctionEnabled(ctx context.Context, callingPackage string, functionIdentifier string, userHandle os.UserHandle, enabledState int32, callback IAppFunctionEnabledCallback) error
+	SetAppFunctionEnabled(ctx context.Context, functionIdentifier string, userHandle os.UserHandle, enabledState int32, callback IAppFunctionEnabledCallback) error
 }
 
 type AppFunctionManagerProxy struct {

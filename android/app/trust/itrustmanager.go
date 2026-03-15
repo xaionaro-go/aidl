@@ -35,21 +35,21 @@ const (
 
 type ITrustManager interface {
 	AsBinder() binder.IBinder
-	ReportUnlockAttempt(ctx context.Context, successful bool, userId int32) error
-	ReportUserRequestedUnlock(ctx context.Context, userId int32, dismissKeyguard bool) error
-	ReportUserMayRequestUnlock(ctx context.Context, userId int32) error
-	ReportUnlockLockout(ctx context.Context, timeoutMs int32, userId int32) error
-	ReportEnabledTrustAgentsChanged(ctx context.Context, userId int32) error
+	ReportUnlockAttempt(ctx context.Context, successful bool) error
+	ReportUserRequestedUnlock(ctx context.Context, dismissKeyguard bool) error
+	ReportUserMayRequestUnlock(ctx context.Context) error
+	ReportUnlockLockout(ctx context.Context, timeoutMs int32) error
+	ReportEnabledTrustAgentsChanged(ctx context.Context) error
 	RegisterTrustListener(ctx context.Context, trustListener ITrustListener) error
 	UnregisterTrustListener(ctx context.Context, trustListener ITrustListener) error
 	ReportKeyguardShowingChanged(ctx context.Context) error
-	SetDeviceLockedForUser(ctx context.Context, userId int32, locked bool) error
-	IsDeviceLocked(ctx context.Context, userId int32, deviceId int32) (bool, error)
-	IsDeviceSecure(ctx context.Context, userId int32, deviceId int32) (bool, error)
-	IsTrustUsuallyManaged(ctx context.Context, userId int32) (bool, error)
-	UnlockedByBiometricForUser(ctx context.Context, userId int32, source biometrics.BiometricSourceType) error
+	SetDeviceLockedForUser(ctx context.Context, locked bool) error
+	IsDeviceLocked(ctx context.Context, deviceId int32) (bool, error)
+	IsDeviceSecure(ctx context.Context, deviceId int32) (bool, error)
+	IsTrustUsuallyManaged(ctx context.Context) (bool, error)
+	UnlockedByBiometricForUser(ctx context.Context, source biometrics.BiometricSourceType) error
 	ClearAllBiometricRecognized(ctx context.Context, target biometrics.BiometricSourceType, unlockedUser int32) error
-	IsActiveUnlockRunning(ctx context.Context, userId int32) (bool, error)
+	IsActiveUnlockRunning(ctx context.Context) (bool, error)
 	IsInSignificantPlace(ctx context.Context) (bool, error)
 	RegisterDeviceLockedStateListener(ctx context.Context, listener policy.IDeviceLockedStateListener, deviceId int32) error
 	UnregisterDeviceLockedStateListener(ctx context.Context, listener policy.IDeviceLockedStateListener) error

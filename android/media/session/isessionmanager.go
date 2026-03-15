@@ -45,18 +45,18 @@ const (
 
 type ISessionManager interface {
 	AsBinder() binder.IBinder
-	CreateSession(ctx context.Context, packageName string, sessionCb ISessionCallback, tag string, sessionInfo interface{}, userId int32) (ISession, error)
-	GetSessions(ctx context.Context, compName interface{}, userId int32) ([]MediaSessionToken, error)
+	CreateSession(ctx context.Context, packageName string, sessionCb ISessionCallback, tag string, sessionInfo interface{}) (ISession, error)
+	GetSessions(ctx context.Context, compName interface{}) ([]MediaSessionToken, error)
 	GetMediaKeyEventSession(ctx context.Context, packageName string) (MediaSessionToken, error)
 	GetMediaKeyEventSessionPackageName(ctx context.Context, packageName string) (string, error)
 	DispatchMediaKeyEvent(ctx context.Context, packageName string, asSystemService bool, keyEvent interface{}, needWakeLock bool) error
 	DispatchMediaKeyEventToSessionAsSystemService(ctx context.Context, packageName string, keyEvent interface{}, sessionToken MediaSessionToken) (bool, error)
-	DispatchVolumeKeyEvent(ctx context.Context, packageName string, opPackageName string, asSystemService bool, keyEvent interface{}, stream int32, musicOnly bool) error
-	DispatchVolumeKeyEventToSessionAsSystemService(ctx context.Context, packageName string, opPackageName string, keyEvent interface{}, sessionToken MediaSessionToken) error
-	DispatchAdjustVolume(ctx context.Context, packageName string, opPackageName string, suggestedStream int32, delta int32, flags int32) error
-	AddSessionsListener(ctx context.Context, listener IActiveSessionsListener, compName interface{}, userId int32) error
+	DispatchVolumeKeyEvent(ctx context.Context, packageName string, asSystemService bool, keyEvent interface{}, stream int32, musicOnly bool) error
+	DispatchVolumeKeyEventToSessionAsSystemService(ctx context.Context, packageName string, keyEvent interface{}, sessionToken MediaSessionToken) error
+	DispatchAdjustVolume(ctx context.Context, packageName string, suggestedStream int32, delta int32, flags int32) error
+	AddSessionsListener(ctx context.Context, listener IActiveSessionsListener, compName interface{}) error
 	RemoveSessionsListener(ctx context.Context, listener IActiveSessionsListener) error
-	AddSession2TokensListener(ctx context.Context, listener ISession2TokensListener, userId int32) error
+	AddSession2TokensListener(ctx context.Context, listener ISession2TokensListener) error
 	RemoveSession2TokensListener(ctx context.Context, listener ISession2TokensListener) error
 	RegisterRemoteSessionCallback(ctx context.Context, rvc interface{}) error
 	UnregisterRemoteSessionCallback(ctx context.Context, rvc interface{}) error

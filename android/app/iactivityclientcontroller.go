@@ -114,7 +114,7 @@ type IActivityClientController interface {
 	GetActivityCallerUid(ctx context.Context, activityToken binder.IBinder, callerToken binder.IBinder) (int32, error)
 	GetLaunchedFromPackage(ctx context.Context, token binder.IBinder) (string, error)
 	GetActivityCallerPackage(ctx context.Context, activityToken binder.IBinder, callerToken binder.IBinder) (string, error)
-	CheckActivityCallerContentUriPermission(ctx context.Context, activityToken binder.IBinder, callerToken binder.IBinder, uri interface{}, modeFlags int32, userId int32) (int32, error)
+	CheckActivityCallerContentUriPermission(ctx context.Context, activityToken binder.IBinder, callerToken binder.IBinder, uri interface{}, modeFlags int32) (int32, error)
 	SetRequestedOrientation(ctx context.Context, token binder.IBinder, requestedOrientation int32) error
 	GetRequestedOrientation(ctx context.Context, token binder.IBinder) (int32, error)
 	ConvertFromTranslucent(ctx context.Context, token binder.IBinder) (bool, error)

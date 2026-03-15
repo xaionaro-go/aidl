@@ -24,15 +24,15 @@ const (
 
 type ITranslationManager interface {
 	AsBinder() binder.IBinder
-	OnTranslationCapabilitiesRequest(ctx context.Context, sourceFormat int32, destFormat int32, receiver interface{}, userId int32) error
-	RegisterTranslationCapabilityCallback(ctx context.Context, callback interface{}, userId int32) error
-	UnregisterTranslationCapabilityCallback(ctx context.Context, callback interface{}, userId int32) error
-	OnSessionCreated(ctx context.Context, translationContext TranslationContext, sessionId int32, receiver interface{}, userId int32) error
-	UpdateUiTranslationState(ctx context.Context, state int32, sourceSpec TranslationSpec, targetSpec TranslationSpec, viewIds []interface{}, token binder.IBinder, taskId int32, uiTranslationSpec UiTranslationSpec, userId int32) error
-	RegisterUiTranslationStateCallback(ctx context.Context, callback interface{}, userId int32) error
-	UnregisterUiTranslationStateCallback(ctx context.Context, callback interface{}, userId int32) error
-	GetServiceSettingsActivity(ctx context.Context, result interface{}, userId int32) error
-	OnTranslationFinished(ctx context.Context, activityDestroyed bool, token binder.IBinder, componentName interface{}, userId int32) error
+	OnTranslationCapabilitiesRequest(ctx context.Context, sourceFormat int32, destFormat int32, receiver interface{}) error
+	RegisterTranslationCapabilityCallback(ctx context.Context, callback interface{}) error
+	UnregisterTranslationCapabilityCallback(ctx context.Context, callback interface{}) error
+	OnSessionCreated(ctx context.Context, translationContext TranslationContext, sessionId int32, receiver interface{}) error
+	UpdateUiTranslationState(ctx context.Context, state int32, sourceSpec TranslationSpec, targetSpec TranslationSpec, viewIds []interface{}, token binder.IBinder, taskId int32, uiTranslationSpec UiTranslationSpec) error
+	RegisterUiTranslationStateCallback(ctx context.Context, callback interface{}) error
+	UnregisterUiTranslationStateCallback(ctx context.Context, callback interface{}) error
+	GetServiceSettingsActivity(ctx context.Context, result interface{}) error
+	OnTranslationFinished(ctx context.Context, activityDestroyed bool, token binder.IBinder, componentName interface{}) error
 }
 
 type TranslationManagerProxy struct {

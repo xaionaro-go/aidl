@@ -42,20 +42,20 @@ const (
 
 type IPackageInstaller interface {
 	AsBinder() binder.IBinder
-	CreateSession(ctx context.Context, params PackageInstallerSessionParams, installerPackageName string, installerAttributionTag string, userId int32) (int32, error)
+	CreateSession(ctx context.Context, params PackageInstallerSessionParams, installerPackageName string, installerAttributionTag string) (int32, error)
 	UpdateSessionAppIcon(ctx context.Context, sessionId int32, appIcon graphics.Bitmap) error
 	UpdateSessionAppLabel(ctx context.Context, sessionId int32, appLabel string) error
 	AbandonSession(ctx context.Context, sessionId int32) error
 	OpenSession(ctx context.Context, sessionId int32) (IPackageInstallerSession, error)
 	GetSessionInfo(ctx context.Context, sessionId int32) (PackageInstallerSessionInfo, error)
-	GetAllSessions(ctx context.Context, userId int32) (ParceledListSlice, error)
-	GetMySessions(ctx context.Context, installerPackageName string, userId int32) (ParceledListSlice, error)
+	GetAllSessions(ctx context.Context) (ParceledListSlice, error)
+	GetMySessions(ctx context.Context, installerPackageName string) (ParceledListSlice, error)
 	GetStagedSessions(ctx context.Context) (ParceledListSlice, error)
-	RegisterCallback(ctx context.Context, callback IPackageInstallerCallback, userId int32) error
+	RegisterCallback(ctx context.Context, callback IPackageInstallerCallback) error
 	UnregisterCallback(ctx context.Context, callback IPackageInstallerCallback) error
-	Uninstall(ctx context.Context, versionedPackage VersionedPackage, callerPackageName string, flags int32, statusReceiver interface{}, userId int32) error
-	UninstallExistingPackage(ctx context.Context, versionedPackage VersionedPackage, callerPackageName string, statusReceiver interface{}, userId int32) error
-	InstallExistingPackage(ctx context.Context, packageName string, installFlags int32, installReason int32, statusReceiver interface{}, userId int32, whiteListedPermissions []string) error
+	Uninstall(ctx context.Context, versionedPackage VersionedPackage, callerPackageName string, flags int32, statusReceiver interface{}) error
+	UninstallExistingPackage(ctx context.Context, versionedPackage VersionedPackage, callerPackageName string, statusReceiver interface{}) error
+	InstallExistingPackage(ctx context.Context, packageName string, installFlags int32, installReason int32, statusReceiver interface{}, whiteListedPermissions []string) error
 	SetPermissionsResult(ctx context.Context, sessionId int32, accepted bool) error
 	BypassNextStagedInstallerCheck(ctx context.Context, value bool) error
 	BypassNextAllowedApexUpdateCheck(ctx context.Context, value bool) error

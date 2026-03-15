@@ -41,28 +41,28 @@ const (
 
 type ITvAdManager interface {
 	AsBinder() binder.IBinder
-	GetTvAdServiceList(ctx context.Context, userId int32) ([]TvAdServiceInfo, error)
-	SendAppLinkCommand(ctx context.Context, serviceId string, command os.Bundle, userId int32) error
-	CreateSession(ctx context.Context, client ITvAdClient, serviceId string, type_ string, seq int32, userId int32) error
-	ReleaseSession(ctx context.Context, sessionToken binder.IBinder, userId int32) error
-	StartAdService(ctx context.Context, sessionToken binder.IBinder, userId int32) error
-	StopAdService(ctx context.Context, sessionToken binder.IBinder, userId int32) error
-	ResetAdService(ctx context.Context, sessionToken binder.IBinder, userId int32) error
-	SetSurface(ctx context.Context, sessionToken binder.IBinder, surface interface{}, userId int32) error
-	DispatchSurfaceChanged(ctx context.Context, sessionToken binder.IBinder, format int32, width int32, height int32, userId int32) error
-	SendCurrentVideoBounds(ctx context.Context, sessionToken binder.IBinder, bounds graphics.Rect, userId int32) error
-	SendCurrentChannelUri(ctx context.Context, sessionToken binder.IBinder, channelUri net.Uri, userId int32) error
-	SendTrackInfoList(ctx context.Context, sessionToken binder.IBinder, tracks []tv.TvTrackInfo, userId int32) error
-	SendCurrentTvInputId(ctx context.Context, sessionToken binder.IBinder, inputId string, userId int32) error
-	SendSigningResult(ctx context.Context, sessionToken binder.IBinder, signingId string, result []byte, userId int32) error
-	NotifyError(ctx context.Context, sessionToken binder.IBinder, errMsg string, params os.Bundle, userId int32) error
-	NotifyTvMessage(ctx context.Context, sessionToken binder.IBinder, type_ int32, data os.Bundle, userId int32) error
-	RegisterCallback(ctx context.Context, callback ITvAdManagerCallback, userId int32) error
-	UnregisterCallback(ctx context.Context, callback ITvAdManagerCallback, userId int32) error
-	CreateMediaView(ctx context.Context, sessionToken binder.IBinder, windowToken binder.IBinder, frame graphics.Rect, userId int32) error
-	RelayoutMediaView(ctx context.Context, sessionToken binder.IBinder, frame graphics.Rect, userId int32) error
-	RemoveMediaView(ctx context.Context, sessionToken binder.IBinder, userId int32) error
-	NotifyTvInputSessionData(ctx context.Context, sessionToken binder.IBinder, type_ string, data os.Bundle, userId int32) error
+	GetTvAdServiceList(ctx context.Context) ([]TvAdServiceInfo, error)
+	SendAppLinkCommand(ctx context.Context, serviceId string, command os.Bundle) error
+	CreateSession(ctx context.Context, client ITvAdClient, serviceId string, type_ string, seq int32) error
+	ReleaseSession(ctx context.Context, sessionToken binder.IBinder) error
+	StartAdService(ctx context.Context, sessionToken binder.IBinder) error
+	StopAdService(ctx context.Context, sessionToken binder.IBinder) error
+	ResetAdService(ctx context.Context, sessionToken binder.IBinder) error
+	SetSurface(ctx context.Context, sessionToken binder.IBinder, surface interface{}) error
+	DispatchSurfaceChanged(ctx context.Context, sessionToken binder.IBinder, format int32, width int32, height int32) error
+	SendCurrentVideoBounds(ctx context.Context, sessionToken binder.IBinder, bounds graphics.Rect) error
+	SendCurrentChannelUri(ctx context.Context, sessionToken binder.IBinder, channelUri net.Uri) error
+	SendTrackInfoList(ctx context.Context, sessionToken binder.IBinder, tracks []tv.TvTrackInfo) error
+	SendCurrentTvInputId(ctx context.Context, sessionToken binder.IBinder, inputId string) error
+	SendSigningResult(ctx context.Context, sessionToken binder.IBinder, signingId string, result []byte) error
+	NotifyError(ctx context.Context, sessionToken binder.IBinder, errMsg string, params os.Bundle) error
+	NotifyTvMessage(ctx context.Context, sessionToken binder.IBinder, type_ int32, data os.Bundle) error
+	RegisterCallback(ctx context.Context, callback ITvAdManagerCallback) error
+	UnregisterCallback(ctx context.Context, callback ITvAdManagerCallback) error
+	CreateMediaView(ctx context.Context, sessionToken binder.IBinder, windowToken binder.IBinder, frame graphics.Rect) error
+	RelayoutMediaView(ctx context.Context, sessionToken binder.IBinder, frame graphics.Rect) error
+	RemoveMediaView(ctx context.Context, sessionToken binder.IBinder) error
+	NotifyTvInputSessionData(ctx context.Context, sessionToken binder.IBinder, type_ string, data os.Bundle) error
 }
 
 type TvAdManagerProxy struct {

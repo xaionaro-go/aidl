@@ -54,38 +54,38 @@ const (
 
 type IAppWidgetService interface {
 	AsBinder() binder.IBinder
-	StartListening(ctx context.Context, host IAppWidgetHost, callingPackage string, hostId int32, appWidgetIds []int32) (pm.ParceledListSlice, error)
-	StopListening(ctx context.Context, callingPackage string, hostId int32) error
-	AllocateAppWidgetId(ctx context.Context, callingPackage string, hostId int32) (int32, error)
-	DeleteAppWidgetId(ctx context.Context, callingPackage string, appWidgetId int32) error
+	StartListening(ctx context.Context, host IAppWidgetHost, hostId int32, appWidgetIds []int32) (pm.ParceledListSlice, error)
+	StopListening(ctx context.Context, hostId int32) error
+	AllocateAppWidgetId(ctx context.Context, hostId int32) (int32, error)
+	DeleteAppWidgetId(ctx context.Context, appWidgetId int32) error
 	DeleteHost(ctx context.Context, packageName string, hostId int32) error
 	DeleteAllHosts(ctx context.Context) error
-	GetAppWidgetViews(ctx context.Context, callingPackage string, appWidgetId int32) (widget.RemoteViews, error)
-	GetAppWidgetIdsForHost(ctx context.Context, callingPackage string, hostId int32) ([]int32, error)
-	SetAppWidgetHidden(ctx context.Context, callingPackage string, hostId int32) error
-	CreateAppWidgetConfigIntentSender(ctx context.Context, callingPackage string, appWidgetId int32, intentFlags int32) (content.IntentSender, error)
-	UpdateAppWidgetIds(ctx context.Context, callingPackage string, appWidgetIds []int32, views widget.RemoteViews) error
-	UpdateAppWidgetOptions(ctx context.Context, callingPackage string, appWidgetId int32, extras os.Bundle) error
-	GetAppWidgetOptions(ctx context.Context, callingPackage string, appWidgetId int32) (os.Bundle, error)
-	PartiallyUpdateAppWidgetIds(ctx context.Context, callingPackage string, appWidgetIds []int32, views widget.RemoteViews) error
+	GetAppWidgetViews(ctx context.Context, appWidgetId int32) (widget.RemoteViews, error)
+	GetAppWidgetIdsForHost(ctx context.Context, hostId int32) ([]int32, error)
+	SetAppWidgetHidden(ctx context.Context, hostId int32) error
+	CreateAppWidgetConfigIntentSender(ctx context.Context, appWidgetId int32, intentFlags int32) (content.IntentSender, error)
+	UpdateAppWidgetIds(ctx context.Context, appWidgetIds []int32, views widget.RemoteViews) error
+	UpdateAppWidgetOptions(ctx context.Context, appWidgetId int32, extras os.Bundle) error
+	GetAppWidgetOptions(ctx context.Context, appWidgetId int32) (os.Bundle, error)
+	PartiallyUpdateAppWidgetIds(ctx context.Context, appWidgetIds []int32, views widget.RemoteViews) error
 	UpdateAppWidgetProvider(ctx context.Context, provider content.ComponentName, views widget.RemoteViews) error
 	UpdateAppWidgetProviderInfo(ctx context.Context, provider content.ComponentName, metadataKey string) error
 	NotifyAppWidgetViewDataChanged(ctx context.Context, packageName string, appWidgetIds []int32, viewId int32) error
 	GetInstalledProvidersForProfile(ctx context.Context, categoryFilter int32, profileId int32, packageName string) (pm.ParceledListSlice, error)
-	GetAppWidgetInfo(ctx context.Context, callingPackage string, appWidgetId int32) (androidAppwidget.AppWidgetProviderInfo, error)
-	HasBindAppWidgetPermission(ctx context.Context, packageName string, userId int32) (bool, error)
-	SetBindAppWidgetPermission(ctx context.Context, packageName string, userId int32, permission bool) error
-	BindAppWidgetId(ctx context.Context, callingPackage string, appWidgetId int32, providerProfileId int32, providerComponent content.ComponentName, options os.Bundle) (bool, error)
-	BindRemoteViewsService(ctx context.Context, callingPackage string, appWidgetId int32, intent content.Intent, caller app.IApplicationThread, token binder.IBinder, connection app.IServiceConnection, flags int64) (bool, error)
+	GetAppWidgetInfo(ctx context.Context, appWidgetId int32) (androidAppwidget.AppWidgetProviderInfo, error)
+	HasBindAppWidgetPermission(ctx context.Context, packageName string) (bool, error)
+	SetBindAppWidgetPermission(ctx context.Context, packageName string, permission bool) error
+	BindAppWidgetId(ctx context.Context, appWidgetId int32, providerProfileId int32, providerComponent content.ComponentName, options os.Bundle) (bool, error)
+	BindRemoteViewsService(ctx context.Context, appWidgetId int32, intent content.Intent, caller app.IApplicationThread, token binder.IBinder, connection app.IServiceConnection, flags int64) (bool, error)
 	NotifyProviderInheritance(ctx context.Context, componentNames []content.ComponentName) error
 	GetMaxBitmapMemory(ctx context.Context) (int32, error)
 	GetAppWidgetIds(ctx context.Context, providerComponent content.ComponentName) ([]int32, error)
-	IsBoundWidgetPackage(ctx context.Context, packageName string, userId int32) (bool, error)
+	IsBoundWidgetPackage(ctx context.Context, packageName string) (bool, error)
 	RequestPinAppWidget(ctx context.Context, packageName string, providerComponent content.ComponentName, extras os.Bundle, resultIntent content.IntentSender) (bool, error)
 	IsRequestPinAppWidgetSupported(ctx context.Context) (bool, error)
-	NoteAppWidgetTapped(ctx context.Context, callingPackage string, appWidgetId int32) error
+	NoteAppWidgetTapped(ctx context.Context, appWidgetId int32) error
 	SetWidgetPreview(ctx context.Context, providerComponent content.ComponentName, widgetCategories int32, preview widget.RemoteViews) (bool, error)
-	GetWidgetPreview(ctx context.Context, callingPackage string, providerComponent content.ComponentName, profileId int32, widgetCategory int32) (widget.RemoteViews, error)
+	GetWidgetPreview(ctx context.Context, providerComponent content.ComponentName, profileId int32, widgetCategory int32) (widget.RemoteViews, error)
 	RemoveWidgetPreview(ctx context.Context, providerComponent content.ComponentName, widgetCategories int32) error
 }
 

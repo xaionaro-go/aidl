@@ -54,7 +54,7 @@ const (
 
 type IMediaRouterService interface {
 	AsBinder() binder.IBinder
-	RegisterClientAsUser(ctx context.Context, client IMediaRouterClient, packageName string, userId int32) error
+	RegisterClientAsUser(ctx context.Context, client IMediaRouterClient, packageName string) error
 	UnregisterClient(ctx context.Context, client IMediaRouterClient) error
 	RegisterClientGroupId(ctx context.Context, client IMediaRouterClient, groupId string) error
 	GetState(ctx context.Context, client IMediaRouterClient) (MediaRouterClientState, error)

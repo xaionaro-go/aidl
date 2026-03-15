@@ -24,7 +24,7 @@ type IDropBoxManagerService interface {
 	AddFile(ctx context.Context, tag string, fd int32, flags int32) error
 	IsTagEnabled(ctx context.Context, tag string) (bool, error)
 	GetNextEntry(ctx context.Context, tag string, millis int64, packageName string) (interface{}, error)
-	GetNextEntryWithAttribution(ctx context.Context, tag string, millis int64, packageName string, attributionTag string) (interface{}, error)
+	GetNextEntryWithAttribution(ctx context.Context, tag string, millis int64, packageName string) (interface{}, error)
 }
 
 type DropBoxManagerServiceProxy struct {

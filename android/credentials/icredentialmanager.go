@@ -27,16 +27,16 @@ const (
 
 type ICredentialManager interface {
 	AsBinder() binder.IBinder
-	ExecuteGetCredential(ctx context.Context, request GetCredentialRequest, callback IGetCredentialCallback, callingPackage string) (interface{}, error)
-	ExecutePrepareGetCredential(ctx context.Context, request GetCredentialRequest, prepareGetCredentialCallback IPrepareGetCredentialCallback, getCredentialCallback IGetCredentialCallback, callingPackage string) (interface{}, error)
-	ExecuteCreateCredential(ctx context.Context, request CreateCredentialRequest, callback ICreateCredentialCallback, callingPackage string) (interface{}, error)
-	GetCandidateCredentials(ctx context.Context, request GetCredentialRequest, callback IGetCandidateCredentialsCallback, clientCallback binder.IBinder, callingPackage string) (interface{}, error)
-	ClearCredentialState(ctx context.Context, request ClearCredentialStateRequest, callback IClearCredentialStateCallback, callingPackage string) (interface{}, error)
-	SetEnabledProviders(ctx context.Context, primaryProviders []string, providers []string, userId int32, callback ISetEnabledProvidersCallback) error
-	RegisterCredentialDescription(ctx context.Context, request RegisterCredentialDescriptionRequest, callingPackage string) error
-	UnregisterCredentialDescription(ctx context.Context, request UnregisterCredentialDescriptionRequest, callingPackage string) error
-	IsEnabledCredentialProviderService(ctx context.Context, componentName interface{}, callingPackage string) (bool, error)
-	GetCredentialProviderServices(ctx context.Context, userId int32, providerFilter int32) ([]CredentialProviderInfo, error)
+	ExecuteGetCredential(ctx context.Context, request GetCredentialRequest, callback IGetCredentialCallback) (interface{}, error)
+	ExecutePrepareGetCredential(ctx context.Context, request GetCredentialRequest, prepareGetCredentialCallback IPrepareGetCredentialCallback, getCredentialCallback IGetCredentialCallback) (interface{}, error)
+	ExecuteCreateCredential(ctx context.Context, request CreateCredentialRequest, callback ICreateCredentialCallback) (interface{}, error)
+	GetCandidateCredentials(ctx context.Context, request GetCredentialRequest, callback IGetCandidateCredentialsCallback, clientCallback binder.IBinder) (interface{}, error)
+	ClearCredentialState(ctx context.Context, request ClearCredentialStateRequest, callback IClearCredentialStateCallback) (interface{}, error)
+	SetEnabledProviders(ctx context.Context, primaryProviders []string, providers []string, callback ISetEnabledProvidersCallback) error
+	RegisterCredentialDescription(ctx context.Context, request RegisterCredentialDescriptionRequest) error
+	UnregisterCredentialDescription(ctx context.Context, request UnregisterCredentialDescriptionRequest) error
+	IsEnabledCredentialProviderService(ctx context.Context, componentName interface{}) (bool, error)
+	GetCredentialProviderServices(ctx context.Context, providerFilter int32) ([]CredentialProviderInfo, error)
 	GetCredentialProviderServicesForTesting(ctx context.Context, providerFilter int32) ([]CredentialProviderInfo, error)
 	IsServiceEnabled(ctx context.Context) (bool, error)
 }

@@ -45,21 +45,21 @@ const (
 
 type IAutoFillManager interface {
 	AsBinder() binder.IBinder
-	AddClient(ctx context.Context, client IAutoFillManagerClient, componentName interface{}, userId int32, result interface{}, credmanRequested bool) error
-	RemoveClient(ctx context.Context, client IAutoFillManagerClient, userId int32) error
-	StartSession(ctx context.Context, activityToken binder.IBinder, appCallback binder.IBinder, autoFillId AutofillId, bounds graphics.Rect, value AutofillValue, userId int32, hasCallback bool, flags int32, componentName interface{}, compatMode bool, result interface{}) error
+	AddClient(ctx context.Context, client IAutoFillManagerClient, componentName interface{}, result interface{}, credmanRequested bool) error
+	RemoveClient(ctx context.Context, client IAutoFillManagerClient) error
+	StartSession(ctx context.Context, activityToken binder.IBinder, appCallback binder.IBinder, autoFillId AutofillId, bounds graphics.Rect, value AutofillValue, hasCallback bool, flags int32, componentName interface{}, compatMode bool, result interface{}) error
 	GetFillEventHistory(ctx context.Context, result interface{}) error
 	RestoreSession(ctx context.Context, sessionId int32, activityToken binder.IBinder, appCallback binder.IBinder, result interface{}) error
-	UpdateSession(ctx context.Context, sessionId int32, id AutofillId, bounds graphics.Rect, value AutofillValue, action int32, flags int32, userId int32) error
-	SetAutofillFailure(ctx context.Context, sessionId int32, ids []AutofillId, isRefill bool, userId int32) error
-	SetViewAutofilled(ctx context.Context, sessionId int32, id AutofillId, userId int32) error
-	FinishSession(ctx context.Context, sessionId int32, userId int32, commitReason int32) error
-	CancelSession(ctx context.Context, sessionId int32, userId int32) error
-	SetAuthenticationResult(ctx context.Context, data interface{}, sessionId int32, authenticationId int32, userId int32) error
-	SetHasCallback(ctx context.Context, sessionId int32, userId int32, hasIt bool) error
-	DisableOwnedAutofillServices(ctx context.Context, userId int32) error
-	IsServiceSupported(ctx context.Context, userId int32, result interface{}) error
-	IsServiceEnabled(ctx context.Context, userId int32, packageName string, result interface{}) error
+	UpdateSession(ctx context.Context, sessionId int32, id AutofillId, bounds graphics.Rect, value AutofillValue, action int32, flags int32) error
+	SetAutofillFailure(ctx context.Context, sessionId int32, ids []AutofillId, isRefill bool) error
+	SetViewAutofilled(ctx context.Context, sessionId int32, id AutofillId) error
+	FinishSession(ctx context.Context, sessionId int32, commitReason int32) error
+	CancelSession(ctx context.Context, sessionId int32) error
+	SetAuthenticationResult(ctx context.Context, data interface{}, sessionId int32, authenticationId int32) error
+	SetHasCallback(ctx context.Context, sessionId int32, hasIt bool) error
+	DisableOwnedAutofillServices(ctx context.Context) error
+	IsServiceSupported(ctx context.Context, result interface{}) error
+	IsServiceEnabled(ctx context.Context, packageName string, result interface{}) error
 	OnPendingSaveUi(ctx context.Context, operation int32, token binder.IBinder) error
 	GetUserData(ctx context.Context, result interface{}) error
 	GetUserDataId(ctx context.Context, result interface{}) error
@@ -69,11 +69,11 @@ type IAutoFillManager interface {
 	GetAvailableFieldClassificationAlgorithms(ctx context.Context, result interface{}) error
 	GetDefaultFieldClassificationAlgorithm(ctx context.Context, result interface{}) error
 	SetAugmentedAutofillWhitelist(ctx context.Context, packages []string, activities []interface{}, result interface{}) error
-	NotifyNotExpiringResponseDuringAuth(ctx context.Context, sessionId int32, userId int32) error
-	NotifyViewEnteredIgnoredDuringAuthCount(ctx context.Context, sessionId int32, userId int32) error
-	SetAutofillIdsAttemptedForRefill(ctx context.Context, sessionId int32, ids []AutofillId, userId int32) error
-	NotifyImeAnimationStart(ctx context.Context, sessionId int32, startTimeMs int64, userId int32) error
-	NotifyImeAnimationEnd(ctx context.Context, sessionId int32, endTimeMs int64, userId int32) error
+	NotifyNotExpiringResponseDuringAuth(ctx context.Context, sessionId int32) error
+	NotifyViewEnteredIgnoredDuringAuthCount(ctx context.Context, sessionId int32) error
+	SetAutofillIdsAttemptedForRefill(ctx context.Context, sessionId int32, ids []AutofillId) error
+	NotifyImeAnimationStart(ctx context.Context, sessionId int32, startTimeMs int64) error
+	NotifyImeAnimationEnd(ctx context.Context, sessionId int32, endTimeMs int64) error
 }
 
 type AutoFillManagerProxy struct {

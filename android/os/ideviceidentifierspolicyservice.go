@@ -18,7 +18,7 @@ const (
 type IDeviceIdentifiersPolicyService interface {
 	AsBinder() binder.IBinder
 	GetSerial(ctx context.Context) (string, error)
-	GetSerialForPackage(ctx context.Context, callingPackage string, callingFeatureId string) (string, error)
+	GetSerialForPackage(ctx context.Context) (string, error)
 }
 
 type DeviceIdentifiersPolicyServiceProxy struct {

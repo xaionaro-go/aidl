@@ -440,44 +440,44 @@ const (
 type IDevicePolicyManager interface {
 	AsBinder() binder.IBinder
 	SetPasswordQuality(ctx context.Context, who content.ComponentName, quality int32, parent bool) error
-	GetPasswordQuality(ctx context.Context, who content.ComponentName, userHandle int32, parent bool) (int32, error)
+	GetPasswordQuality(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
 	SetPasswordMinimumLength(ctx context.Context, who content.ComponentName, length int32, parent bool) error
-	GetPasswordMinimumLength(ctx context.Context, who content.ComponentName, userHandle int32, parent bool) (int32, error)
+	GetPasswordMinimumLength(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
 	SetPasswordMinimumUpperCase(ctx context.Context, who content.ComponentName, length int32, parent bool) error
-	GetPasswordMinimumUpperCase(ctx context.Context, who content.ComponentName, userHandle int32, parent bool) (int32, error)
+	GetPasswordMinimumUpperCase(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
 	SetPasswordMinimumLowerCase(ctx context.Context, who content.ComponentName, length int32, parent bool) error
-	GetPasswordMinimumLowerCase(ctx context.Context, who content.ComponentName, userHandle int32, parent bool) (int32, error)
+	GetPasswordMinimumLowerCase(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
 	SetPasswordMinimumLetters(ctx context.Context, who content.ComponentName, length int32, parent bool) error
-	GetPasswordMinimumLetters(ctx context.Context, who content.ComponentName, userHandle int32, parent bool) (int32, error)
+	GetPasswordMinimumLetters(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
 	SetPasswordMinimumNumeric(ctx context.Context, who content.ComponentName, length int32, parent bool) error
-	GetPasswordMinimumNumeric(ctx context.Context, who content.ComponentName, userHandle int32, parent bool) (int32, error)
+	GetPasswordMinimumNumeric(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
 	SetPasswordMinimumSymbols(ctx context.Context, who content.ComponentName, length int32, parent bool) error
-	GetPasswordMinimumSymbols(ctx context.Context, who content.ComponentName, userHandle int32, parent bool) (int32, error)
+	GetPasswordMinimumSymbols(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
 	SetPasswordMinimumNonLetter(ctx context.Context, who content.ComponentName, length int32, parent bool) error
-	GetPasswordMinimumNonLetter(ctx context.Context, who content.ComponentName, userHandle int32, parent bool) (int32, error)
-	GetPasswordMinimumMetrics(ctx context.Context, userHandle int32, deviceWideOnly bool) (PasswordMetrics, error)
+	GetPasswordMinimumNonLetter(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
+	GetPasswordMinimumMetrics(ctx context.Context, deviceWideOnly bool) (PasswordMetrics, error)
 	SetPasswordHistoryLength(ctx context.Context, who content.ComponentName, length int32, parent bool) error
-	GetPasswordHistoryLength(ctx context.Context, who content.ComponentName, userHandle int32, parent bool) (int32, error)
+	GetPasswordHistoryLength(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
 	SetPasswordExpirationTimeout(ctx context.Context, who content.ComponentName, callerPackageName string, expiration int64, parent bool) error
-	GetPasswordExpirationTimeout(ctx context.Context, who content.ComponentName, userHandle int32, parent bool) (int64, error)
-	GetPasswordExpiration(ctx context.Context, who content.ComponentName, userHandle int32, parent bool) (int64, error)
-	IsActivePasswordSufficient(ctx context.Context, callerPackageName string, userHandle int32, parent bool) (bool, error)
+	GetPasswordExpirationTimeout(ctx context.Context, who content.ComponentName, parent bool) (int64, error)
+	GetPasswordExpiration(ctx context.Context, who content.ComponentName, parent bool) (int64, error)
+	IsActivePasswordSufficient(ctx context.Context, callerPackageName string, parent bool) (bool, error)
 	IsActivePasswordSufficientForDeviceRequirement(ctx context.Context) (bool, error)
-	IsPasswordSufficientAfterProfileUnification(ctx context.Context, userHandle int32, profileUser int32) (bool, error)
+	IsPasswordSufficientAfterProfileUnification(ctx context.Context, profileUser int32) (bool, error)
 	GetPasswordComplexity(ctx context.Context, parent bool) (int32, error)
 	SetRequiredPasswordComplexity(ctx context.Context, callerPackageName string, passwordComplexity int32, parent bool) error
 	GetRequiredPasswordComplexity(ctx context.Context, callerPackageName string, parent bool) (int32, error)
-	GetAggregatedPasswordComplexityForUser(ctx context.Context, userId int32, deviceWideOnly bool) (int32, error)
+	GetAggregatedPasswordComplexityForUser(ctx context.Context, deviceWideOnly bool) (int32, error)
 	IsUsingUnifiedPassword(ctx context.Context, admin content.ComponentName) (bool, error)
-	GetCurrentFailedPasswordAttempts(ctx context.Context, callerPackageName string, userHandle int32, parent bool) (int32, error)
-	GetProfileWithMinimumFailedPasswordsForWipe(ctx context.Context, userHandle int32, parent bool) (int32, error)
+	GetCurrentFailedPasswordAttempts(ctx context.Context, callerPackageName string, parent bool) (int32, error)
+	GetProfileWithMinimumFailedPasswordsForWipe(ctx context.Context, parent bool) (int32, error)
 	SetMaximumFailedPasswordsForWipe(ctx context.Context, admin content.ComponentName, callerPackageName string, num int32, parent bool) error
-	GetMaximumFailedPasswordsForWipe(ctx context.Context, admin content.ComponentName, userHandle int32, parent bool) (int32, error)
+	GetMaximumFailedPasswordsForWipe(ctx context.Context, admin content.ComponentName, parent bool) (int32, error)
 	ResetPassword(ctx context.Context, password string, flags int32) (bool, error)
 	SetMaximumTimeToLock(ctx context.Context, who content.ComponentName, callerPackageName string, timeMs int64, parent bool) error
-	GetMaximumTimeToLock(ctx context.Context, who content.ComponentName, userHandle int32, parent bool) (int64, error)
+	GetMaximumTimeToLock(ctx context.Context, who content.ComponentName, parent bool) (int64, error)
 	SetRequiredStrongAuthTimeout(ctx context.Context, who content.ComponentName, callerPackageName string, timeMs int64, parent bool) error
-	GetRequiredStrongAuthTimeout(ctx context.Context, who content.ComponentName, userId int32, parent bool) (int64, error)
+	GetRequiredStrongAuthTimeout(ctx context.Context, who content.ComponentName, parent bool) (int64, error)
 	LockNow(ctx context.Context, flags int32, callerPackageName string, parent bool) error
 	WipeDataWithReason(ctx context.Context, callerPackageName string, flags int32, wipeReasonForUser string, parent bool, factoryReset bool) error
 	SetFactoryResetProtectionPolicy(ctx context.Context, who content.ComponentName, callerPackageName string, policy FactoryResetProtectionPolicy) error
@@ -485,49 +485,49 @@ type IDevicePolicyManager interface {
 	IsFactoryResetProtectionPolicySupported(ctx context.Context) (bool, error)
 	SendLostModeLocationUpdate(ctx context.Context, future infra.AndroidFuture) error
 	SetGlobalProxy(ctx context.Context, admin content.ComponentName, proxySpec string, exclusionList string) (content.ComponentName, error)
-	GetGlobalProxyAdmin(ctx context.Context, userHandle int32) (content.ComponentName, error)
+	GetGlobalProxyAdmin(ctx context.Context) (content.ComponentName, error)
 	SetRecommendedGlobalProxy(ctx context.Context, admin content.ComponentName, proxyInfo interface{}) error
 	SetStorageEncryption(ctx context.Context, who content.ComponentName, encrypt bool) (int32, error)
-	GetStorageEncryption(ctx context.Context, who content.ComponentName, userHandle int32) (bool, error)
-	GetStorageEncryptionStatus(ctx context.Context, callerPackage string, userHandle int32) (int32, error)
+	GetStorageEncryption(ctx context.Context, who content.ComponentName) (bool, error)
+	GetStorageEncryptionStatus(ctx context.Context, callerPackage string) (int32, error)
 	RequestBugreport(ctx context.Context, who content.ComponentName) (bool, error)
 	SetCameraDisabled(ctx context.Context, who content.ComponentName, callerPackageName string, disabled bool, parent bool) error
-	GetCameraDisabled(ctx context.Context, who content.ComponentName, callerPackageName string, userHandle int32, parent bool) (bool, error)
+	GetCameraDisabled(ctx context.Context, who content.ComponentName, callerPackageName string, parent bool) (bool, error)
 	SetScreenCaptureDisabled(ctx context.Context, who content.ComponentName, callerPackageName string, disabled bool, parent bool) error
-	GetScreenCaptureDisabled(ctx context.Context, who content.ComponentName, userHandle int32, parent bool) (bool, error)
+	GetScreenCaptureDisabled(ctx context.Context, who content.ComponentName, parent bool) (bool, error)
 	SetNearbyNotificationStreamingPolicy(ctx context.Context, policy int32) error
-	GetNearbyNotificationStreamingPolicy(ctx context.Context, userId int32) (int32, error)
+	GetNearbyNotificationStreamingPolicy(ctx context.Context) (int32, error)
 	SetNearbyAppStreamingPolicy(ctx context.Context, policy int32) error
-	GetNearbyAppStreamingPolicy(ctx context.Context, userId int32) (int32, error)
+	GetNearbyAppStreamingPolicy(ctx context.Context) (int32, error)
 	SetKeyguardDisabledFeatures(ctx context.Context, who content.ComponentName, callerPackageName string, which int32, parent bool) error
-	GetKeyguardDisabledFeatures(ctx context.Context, who content.ComponentName, userHandle int32, parent bool) (int32, error)
-	SetActiveAdmin(ctx context.Context, policyReceiver content.ComponentName, refreshing bool, userHandle int32, provisioningContext string) error
-	IsAdminActive(ctx context.Context, policyReceiver content.ComponentName, userHandle int32) (bool, error)
-	GetActiveAdmins(ctx context.Context, userHandle int32) ([]content.ComponentName, error)
-	PackageHasActiveAdmins(ctx context.Context, packageName string, userHandle int32) (bool, error)
-	GetRemoveWarning(ctx context.Context, policyReceiver content.ComponentName, result os.RemoteCallback, userHandle int32) error
-	RemoveActiveAdmin(ctx context.Context, policyReceiver content.ComponentName, userHandle int32) error
-	ForceRemoveActiveAdmin(ctx context.Context, policyReceiver content.ComponentName, userHandle int32) error
-	HasGrantedPolicy(ctx context.Context, policyReceiver content.ComponentName, usesPolicy int32, userHandle int32) (bool, error)
-	ReportPasswordChanged(ctx context.Context, metrics PasswordMetrics, userId int32) error
-	ReportFailedPasswordAttempt(ctx context.Context, userHandle int32, parent bool) error
-	ReportSuccessfulPasswordAttempt(ctx context.Context, userHandle int32) error
-	ReportFailedBiometricAttempt(ctx context.Context, userHandle int32) error
-	ReportSuccessfulBiometricAttempt(ctx context.Context, userHandle int32) error
-	ReportKeyguardDismissed(ctx context.Context, userHandle int32) error
-	ReportKeyguardSecured(ctx context.Context, userHandle int32) error
-	SetDeviceOwner(ctx context.Context, who content.ComponentName, userId int32, setProfileOwnerOnCurrentUserIfNecessary bool) (bool, error)
+	GetKeyguardDisabledFeatures(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
+	SetActiveAdmin(ctx context.Context, policyReceiver content.ComponentName, refreshing bool, provisioningContext string) error
+	IsAdminActive(ctx context.Context, policyReceiver content.ComponentName) (bool, error)
+	GetActiveAdmins(ctx context.Context) ([]content.ComponentName, error)
+	PackageHasActiveAdmins(ctx context.Context, packageName string) (bool, error)
+	GetRemoveWarning(ctx context.Context, policyReceiver content.ComponentName, result os.RemoteCallback) error
+	RemoveActiveAdmin(ctx context.Context, policyReceiver content.ComponentName) error
+	ForceRemoveActiveAdmin(ctx context.Context, policyReceiver content.ComponentName) error
+	HasGrantedPolicy(ctx context.Context, policyReceiver content.ComponentName, usesPolicy int32) (bool, error)
+	ReportPasswordChanged(ctx context.Context, metrics PasswordMetrics) error
+	ReportFailedPasswordAttempt(ctx context.Context, parent bool) error
+	ReportSuccessfulPasswordAttempt(ctx context.Context) error
+	ReportFailedBiometricAttempt(ctx context.Context) error
+	ReportSuccessfulBiometricAttempt(ctx context.Context) error
+	ReportKeyguardDismissed(ctx context.Context) error
+	ReportKeyguardSecured(ctx context.Context) error
+	SetDeviceOwner(ctx context.Context, who content.ComponentName, setProfileOwnerOnCurrentUserIfNecessary bool) (bool, error)
 	GetDeviceOwnerComponent(ctx context.Context, callingUserOnly bool) (content.ComponentName, error)
-	GetDeviceOwnerComponentOnUser(ctx context.Context, userId int32) (content.ComponentName, error)
+	GetDeviceOwnerComponentOnUser(ctx context.Context) (content.ComponentName, error)
 	HasDeviceOwner(ctx context.Context) (bool, error)
 	GetDeviceOwnerName(ctx context.Context) (string, error)
 	ClearDeviceOwner(ctx context.Context, packageName string) error
 	GetDeviceOwnerUserId(ctx context.Context) (int32, error)
-	SetProfileOwner(ctx context.Context, who content.ComponentName, userHandle int32) (bool, error)
-	GetProfileOwnerAsUser(ctx context.Context, userHandle int32) (content.ComponentName, error)
+	SetProfileOwner(ctx context.Context, who content.ComponentName) (bool, error)
+	GetProfileOwnerAsUser(ctx context.Context) (content.ComponentName, error)
 	GetProfileOwnerOrDeviceOwnerSupervisionComponent(ctx context.Context, userHandle os.UserHandle) (content.ComponentName, error)
 	IsSupervisionComponent(ctx context.Context, who content.ComponentName) (bool, error)
-	GetProfileOwnerName(ctx context.Context, userHandle int32) (string, error)
+	GetProfileOwnerName(ctx context.Context) (string, error)
 	SetProfileEnabled(ctx context.Context, who content.ComponentName) error
 	SetProfileName(ctx context.Context, who content.ComponentName, profileName string) error
 	ClearProfileOwner(ctx context.Context, who content.ComponentName) error
@@ -542,8 +542,8 @@ type IDevicePolicyManager interface {
 	InstallCaCert(ctx context.Context, admin content.ComponentName, callerPackage string, certBuffer []byte) (bool, error)
 	UninstallCaCerts(ctx context.Context, admin content.ComponentName, callerPackage string, aliases []string) error
 	EnforceCanManageCaCerts(ctx context.Context, admin content.ComponentName, callerPackage string) error
-	ApproveCaCert(ctx context.Context, alias string, userHandle int32, approval bool) (bool, error)
-	IsCaCertApproved(ctx context.Context, alias string, userHandle int32) (bool, error)
+	ApproveCaCert(ctx context.Context, alias string, approval bool) (bool, error)
+	IsCaCertApproved(ctx context.Context, alias string) (bool, error)
 	InstallKeyPair(ctx context.Context, who content.ComponentName, callerPackage string, privKeyBuffer []byte, certBuffer []byte, certChainBuffer []byte, alias string, requestAccess bool, isUserSelectable bool) (bool, error)
 	RemoveKeyPair(ctx context.Context, who content.ComponentName, callerPackage string, alias string) (bool, error)
 	HasKeyPair(ctx context.Context, callerPackage string, alias string) (bool, error)
@@ -557,9 +557,9 @@ type IDevicePolicyManager interface {
 	GetCertInstallerPackage(ctx context.Context, who content.ComponentName) (string, error)
 	SetAlwaysOnVpnPackage(ctx context.Context, who content.ComponentName, vpnPackage string, lockdown bool, lockdownAllowlist []string) (bool, error)
 	GetAlwaysOnVpnPackage(ctx context.Context, who content.ComponentName) (string, error)
-	GetAlwaysOnVpnPackageForUser(ctx context.Context, userHandle int32) (string, error)
+	GetAlwaysOnVpnPackageForUser(ctx context.Context) (string, error)
 	IsAlwaysOnVpnLockdownEnabled(ctx context.Context, who content.ComponentName) (bool, error)
-	IsAlwaysOnVpnLockdownEnabledForUser(ctx context.Context, userHandle int32) (bool, error)
+	IsAlwaysOnVpnLockdownEnabledForUser(ctx context.Context) (bool, error)
 	GetAlwaysOnVpnLockdownAllowlist(ctx context.Context, who content.ComponentName) ([]string, error)
 	AddPersistentPreferredActivity(ctx context.Context, admin content.ComponentName, callerPackageName string, filter content.IntentFilter, activity content.ComponentName) error
 	ClearPackagePersistentPreferredActivities(ctx context.Context, admin content.ComponentName, callerPackageName string, packageName string) error
@@ -571,7 +571,7 @@ type IDevicePolicyManager interface {
 	GetApplicationRestrictionsManagingPackage(ctx context.Context, admin content.ComponentName) (string, error)
 	IsCallerApplicationRestrictionsManagingPackage(ctx context.Context, callerPackage string) (bool, error)
 	SetRestrictionsProvider(ctx context.Context, who content.ComponentName, provider content.ComponentName) error
-	GetRestrictionsProvider(ctx context.Context, userHandle int32) (content.ComponentName, error)
+	GetRestrictionsProvider(ctx context.Context) (content.ComponentName, error)
 	SetUserRestriction(ctx context.Context, who content.ComponentName, callerPackage string, key string, enable bool, parent bool) error
 	SetUserRestrictionForUser(ctx context.Context, systemEntity string, key string, enable bool, targetUser int32) error
 	SetUserRestrictionGlobally(ctx context.Context, callerPackage string, key string) error
@@ -582,19 +582,19 @@ type IDevicePolicyManager interface {
 	ClearCrossProfileIntentFilters(ctx context.Context, admin content.ComponentName, callerPackageName string) error
 	SetPermittedAccessibilityServices(ctx context.Context, admin content.ComponentName, packageList []string) (bool, error)
 	GetPermittedAccessibilityServices(ctx context.Context, admin content.ComponentName) ([]string, error)
-	GetPermittedAccessibilityServicesForUser(ctx context.Context, userId int32) ([]string, error)
-	IsAccessibilityServicePermittedByAdmin(ctx context.Context, admin content.ComponentName, packageName string, userId int32) (bool, error)
+	GetPermittedAccessibilityServicesForUser(ctx context.Context) ([]string, error)
+	IsAccessibilityServicePermittedByAdmin(ctx context.Context, admin content.ComponentName, packageName string) (bool, error)
 	SetPermittedInputMethods(ctx context.Context, admin content.ComponentName, callerPackageName string, packageList []string, parent bool) (bool, error)
 	GetPermittedInputMethods(ctx context.Context, admin content.ComponentName, callerPackageName string, parent bool) ([]string, error)
-	GetPermittedInputMethodsAsUser(ctx context.Context, userId int32) ([]string, error)
-	IsInputMethodPermittedByAdmin(ctx context.Context, admin content.ComponentName, packageName string, userId int32, parent bool) (bool, error)
+	GetPermittedInputMethodsAsUser(ctx context.Context) ([]string, error)
+	IsInputMethodPermittedByAdmin(ctx context.Context, admin content.ComponentName, packageName string, parent bool) (bool, error)
 	SetPermittedCrossProfileNotificationListeners(ctx context.Context, admin content.ComponentName, packageList []string) (bool, error)
 	GetPermittedCrossProfileNotificationListeners(ctx context.Context, admin content.ComponentName) ([]string, error)
-	IsNotificationListenerServicePermitted(ctx context.Context, packageName string, userId int32) (bool, error)
+	IsNotificationListenerServicePermitted(ctx context.Context, packageName string) (bool, error)
 	CreateAdminSupportIntent(ctx context.Context, restriction string) (content.Intent, error)
-	GetEnforcingAdminAndUserDetails(ctx context.Context, userId int32, restriction string) (os.Bundle, error)
-	GetEnforcingAdmin(ctx context.Context, userId int32, identifier string) (EnforcingAdmin, error)
-	GetEnforcingAdminsForRestriction(ctx context.Context, userId int32, restriction string) ([]EnforcingAdmin, error)
+	GetEnforcingAdminAndUserDetails(ctx context.Context, restriction string) (os.Bundle, error)
+	GetEnforcingAdmin(ctx context.Context, identifier string) (EnforcingAdmin, error)
+	GetEnforcingAdminsForRestriction(ctx context.Context, restriction string) ([]EnforcingAdmin, error)
 	SetApplicationHidden(ctx context.Context, admin content.ComponentName, callerPackage string, packageName string, hidden bool, parent bool) (bool, error)
 	IsApplicationHidden(ctx context.Context, admin content.ComponentName, callerPackage string, packageName string, parent bool) (bool, error)
 	CreateAndManageUser(ctx context.Context, who content.ComponentName, name string, profileOwner content.ComponentName, adminExtras interface{}, flags int32) (os.UserHandle, error)
@@ -606,14 +606,14 @@ type IDevicePolicyManager interface {
 	LogoutUserInternal(ctx context.Context) (int32, error)
 	GetLogoutUserId(ctx context.Context) (int32, error)
 	GetSecondaryUsers(ctx context.Context, who content.ComponentName) ([]os.UserHandle, error)
-	AcknowledgeNewUserDisclaimer(ctx context.Context, userId int32) error
-	IsNewUserDisclaimerAcknowledged(ctx context.Context, userId int32) (bool, error)
+	AcknowledgeNewUserDisclaimer(ctx context.Context) error
+	IsNewUserDisclaimerAcknowledged(ctx context.Context) (bool, error)
 	EnableSystemApp(ctx context.Context, admin content.ComponentName, callerPackage string, packageName string) error
 	EnableSystemAppWithIntent(ctx context.Context, admin content.ComponentName, callerPackage string, intent content.Intent) (int32, error)
 	InstallExistingPackage(ctx context.Context, admin content.ComponentName, callerPackage string, packageName string) (bool, error)
 	SetAccountManagementDisabled(ctx context.Context, who content.ComponentName, callerPackageName string, accountType string, disabled bool, parent bool) error
 	GetAccountTypesWithManagementDisabled(ctx context.Context, callerPackageName string) ([]string, error)
-	GetAccountTypesWithManagementDisabledAsUser(ctx context.Context, userId int32, callerPackageName string, parent bool) ([]string, error)
+	GetAccountTypesWithManagementDisabledAsUser(ctx context.Context, callerPackageName string, parent bool) ([]string, error)
 	SetSecondaryLockscreenEnabled(ctx context.Context, who content.ComponentName, enabled bool, options interface{}) error
 	IsSecondaryLockscreenEnabled(ctx context.Context, userHandle os.UserHandle) (bool, error)
 	SetPreferentialNetworkServiceConfigs(ctx context.Context, preferentialNetworkServiceConfigs []PreferentialNetworkServiceConfig) error
@@ -633,29 +633,29 @@ type IDevicePolicyManager interface {
 	SetTimeZone(ctx context.Context, who content.ComponentName, callerPackageName string, timeZone string) (bool, error)
 	SetMasterVolumeMuted(ctx context.Context, admin content.ComponentName, on bool) error
 	IsMasterVolumeMuted(ctx context.Context, admin content.ComponentName) (bool, error)
-	NotifyLockTaskModeChanged(ctx context.Context, isEnabled bool, pkg string, userId int32) error
+	NotifyLockTaskModeChanged(ctx context.Context, isEnabled bool, pkg string) error
 	SetUninstallBlocked(ctx context.Context, admin content.ComponentName, callerPackage string, packageName string, uninstallBlocked bool) error
 	IsUninstallBlocked(ctx context.Context, packageName string) (bool, error)
 	SetCrossProfileCallerIdDisabled(ctx context.Context, who content.ComponentName, disabled bool) error
 	GetCrossProfileCallerIdDisabled(ctx context.Context, who content.ComponentName) (bool, error)
-	GetCrossProfileCallerIdDisabledForUser(ctx context.Context, userId int32) (bool, error)
+	GetCrossProfileCallerIdDisabledForUser(ctx context.Context) (bool, error)
 	SetCrossProfileContactsSearchDisabled(ctx context.Context, who content.ComponentName, disabled bool) error
 	GetCrossProfileContactsSearchDisabled(ctx context.Context, who content.ComponentName) (bool, error)
-	GetCrossProfileContactsSearchDisabledForUser(ctx context.Context, userId int32) (bool, error)
+	GetCrossProfileContactsSearchDisabledForUser(ctx context.Context) (bool, error)
 	StartManagedQuickContact(ctx context.Context, lookupKey string, contactId int64, isContactIdIgnored bool, directoryId int64, originalIntent content.Intent) error
 	SetManagedProfileCallerIdAccessPolicy(ctx context.Context, policy PackagePolicy) error
 	GetManagedProfileCallerIdAccessPolicy(ctx context.Context) (PackagePolicy, error)
-	HasManagedProfileCallerIdAccess(ctx context.Context, userId int32, packageName string) (bool, error)
+	HasManagedProfileCallerIdAccess(ctx context.Context, packageName string) (bool, error)
 	SetCredentialManagerPolicy(ctx context.Context, policy PackagePolicy) error
-	GetCredentialManagerPolicy(ctx context.Context, userId int32) (PackagePolicy, error)
+	GetCredentialManagerPolicy(ctx context.Context) (PackagePolicy, error)
 	SetManagedProfileContactsAccessPolicy(ctx context.Context, policy PackagePolicy) error
 	GetManagedProfileContactsAccessPolicy(ctx context.Context) (PackagePolicy, error)
-	HasManagedProfileContactsAccess(ctx context.Context, userId int32, packageName string) (bool, error)
+	HasManagedProfileContactsAccess(ctx context.Context, packageName string) (bool, error)
 	SetBluetoothContactSharingDisabled(ctx context.Context, who content.ComponentName, disabled bool) error
 	GetBluetoothContactSharingDisabled(ctx context.Context, who content.ComponentName) (bool, error)
-	GetBluetoothContactSharingDisabledForUser(ctx context.Context, userId int32) (bool, error)
+	GetBluetoothContactSharingDisabledForUser(ctx context.Context) (bool, error)
 	SetTrustAgentConfiguration(ctx context.Context, admin content.ComponentName, callerPackageName string, agent content.ComponentName, args interface{}, parent bool) error
-	GetTrustAgentConfiguration(ctx context.Context, admin content.ComponentName, agent content.ComponentName, userId int32, parent bool) ([]interface{}, error)
+	GetTrustAgentConfiguration(ctx context.Context, admin content.ComponentName, agent content.ComponentName, parent bool) ([]interface{}, error)
 	AddCrossProfileWidgetProvider(ctx context.Context, admin content.ComponentName, callerPackageName string, packageName string) (bool, error)
 	RemoveCrossProfileWidgetProvider(ctx context.Context, admin content.ComponentName, callerPackageName string, packageName string) (bool, error)
 	GetCrossProfileWidgetProviders(ctx context.Context, admin content.ComponentName, callerPackageName string) ([]string, error)
@@ -671,7 +671,7 @@ type IDevicePolicyManager interface {
 	GetAutoTimeZonePolicy(ctx context.Context, callerPackageName string) (int32, error)
 	SetForceEphemeralUsers(ctx context.Context, who content.ComponentName, forceEpehemeralUsers bool) error
 	GetForceEphemeralUsers(ctx context.Context, who content.ComponentName) (bool, error)
-	IsRemovingAdmin(ctx context.Context, adminReceiver content.ComponentName, userHandle int32) (bool, error)
+	IsRemovingAdmin(ctx context.Context, adminReceiver content.ComponentName) (bool, error)
 	SetUserIcon(ctx context.Context, admin content.ComponentName, icon graphics.Bitmap) error
 	SetSystemUpdatePolicy(ctx context.Context, who content.ComponentName, callerPackageName string, policy SystemUpdatePolicy) error
 	GetSystemUpdatePolicy(ctx context.Context) (SystemUpdatePolicy, error)
@@ -697,23 +697,23 @@ type IDevicePolicyManager interface {
 	GetShortSupportMessage(ctx context.Context, admin content.ComponentName, callerPackageName string) (interface{}, error)
 	SetLongSupportMessage(ctx context.Context, admin content.ComponentName, message interface{}) error
 	GetLongSupportMessage(ctx context.Context, admin content.ComponentName) (interface{}, error)
-	GetShortSupportMessageForUser(ctx context.Context, admin content.ComponentName, userHandle int32) (interface{}, error)
-	GetLongSupportMessageForUser(ctx context.Context, admin content.ComponentName, userHandle int32) (interface{}, error)
+	GetShortSupportMessageForUser(ctx context.Context, admin content.ComponentName) (interface{}, error)
+	GetLongSupportMessageForUser(ctx context.Context, admin content.ComponentName) (interface{}, error)
 	SetOrganizationColor(ctx context.Context, admin content.ComponentName, color int32) error
-	SetOrganizationColorForUser(ctx context.Context, color int32, userId int32) error
-	ClearOrganizationIdForUser(ctx context.Context, userHandle int32) error
+	SetOrganizationColorForUser(ctx context.Context, color int32) error
+	ClearOrganizationIdForUser(ctx context.Context) error
 	GetOrganizationColor(ctx context.Context, admin content.ComponentName) (int32, error)
-	GetOrganizationColorForUser(ctx context.Context, userHandle int32) (int32, error)
+	GetOrganizationColorForUser(ctx context.Context) (int32, error)
 	SetOrganizationName(ctx context.Context, admin content.ComponentName, callerPackageName string, title interface{}) error
 	GetOrganizationName(ctx context.Context, admin content.ComponentName, callerPackageName string) (interface{}, error)
 	GetDeviceOwnerOrganizationName(ctx context.Context) (interface{}, error)
-	GetOrganizationNameForUser(ctx context.Context, userHandle int32) (interface{}, error)
-	GetUserProvisioningState(ctx context.Context, userHandle int32) (int32, error)
-	SetUserProvisioningState(ctx context.Context, state int32, userHandle int32) error
+	GetOrganizationNameForUser(ctx context.Context) (interface{}, error)
+	GetUserProvisioningState(ctx context.Context) (int32, error)
+	SetUserProvisioningState(ctx context.Context, state int32) error
 	SetAffiliationIds(ctx context.Context, admin content.ComponentName, ids []string) error
 	GetAffiliationIds(ctx context.Context, admin content.ComponentName) ([]string, error)
 	IsCallingUserAffiliated(ctx context.Context) (bool, error)
-	IsAffiliatedUser(ctx context.Context, userId int32) (bool, error)
+	IsAffiliatedUser(ctx context.Context) (bool, error)
 	SetSecurityLoggingEnabled(ctx context.Context, admin content.ComponentName, packageName string, enabled bool) error
 	IsSecurityLoggingEnabled(ctx context.Context, admin content.ComponentName, packageName string) (bool, error)
 	RetrieveSecurityLogs(ctx context.Context, admin content.ComponentName, packageName string) (pm.ParceledListSlice, error)
@@ -728,7 +728,7 @@ type IDevicePolicyManager interface {
 	IsDeviceProvisioned(ctx context.Context) (bool, error)
 	IsDeviceProvisioningConfigApplied(ctx context.Context) (bool, error)
 	SetDeviceProvisioningConfigApplied(ctx context.Context) error
-	ForceUpdateUserSetupComplete(ctx context.Context, userId int32) error
+	ForceUpdateUserSetupComplete(ctx context.Context) error
 	SetBackupServiceEnabled(ctx context.Context, admin content.ComponentName, enabled bool) error
 	IsBackupServiceEnabled(ctx context.Context, admin content.ComponentName) (bool, error)
 	SetNetworkLoggingEnabled(ctx context.Context, admin content.ComponentName, packageName string, enabled bool) error
@@ -749,7 +749,7 @@ type IDevicePolicyManager interface {
 	ClearApplicationUserData(ctx context.Context, admin content.ComponentName, packageName string, callback pm.IPackageDataObserver) error
 	SetLogoutEnabled(ctx context.Context, admin content.ComponentName, enabled bool) error
 	IsLogoutEnabled(ctx context.Context) (bool, error)
-	GetDisallowedSystemApps(ctx context.Context, admin content.ComponentName, userId int32, provisioningAction string) ([]string, error)
+	GetDisallowedSystemApps(ctx context.Context, admin content.ComponentName, provisioningAction string) ([]string, error)
 	TransferOwnership(ctx context.Context, admin content.ComponentName, target content.ComponentName, bundle interface{}) error
 	GetTransferOwnershipBundle(ctx context.Context) (interface{}, error)
 	SetStartUserSessionMessage(ctx context.Context, admin content.ComponentName, startUserSessionMessage interface{}) error
@@ -764,19 +764,19 @@ type IDevicePolicyManager interface {
 	GetOverrideApns(ctx context.Context, admin content.ComponentName) ([]data.ApnSetting, error)
 	SetOverrideApnsEnabled(ctx context.Context, admin content.ComponentName, enabled bool) error
 	IsOverrideApnEnabled(ctx context.Context, admin content.ComponentName) (bool, error)
-	IsMeteredDataDisabledPackageForUser(ctx context.Context, admin content.ComponentName, packageName string, userId int32) (bool, error)
+	IsMeteredDataDisabledPackageForUser(ctx context.Context, admin content.ComponentName, packageName string) (bool, error)
 	SetGlobalPrivateDns(ctx context.Context, admin content.ComponentName, mode int32, privateDnsHost string) (int32, error)
 	GetGlobalPrivateDnsMode(ctx context.Context, admin content.ComponentName) (int32, error)
 	GetGlobalPrivateDnsHost(ctx context.Context, admin content.ComponentName) (string, error)
-	SetProfileOwnerOnOrganizationOwnedDevice(ctx context.Context, who content.ComponentName, userId int32, isProfileOwnerOnOrganizationOwnedDevice bool) error
+	SetProfileOwnerOnOrganizationOwnedDevice(ctx context.Context, who content.ComponentName, isProfileOwnerOnOrganizationOwnedDevice bool) error
 	InstallUpdateFromFile(ctx context.Context, admin content.ComponentName, callerPackageName string, updateFileDescriptor int32, listener StartInstallingUpdateCallback) error
 	SetCrossProfileCalendarPackages(ctx context.Context, admin content.ComponentName, packageNames []string) error
 	GetCrossProfileCalendarPackages(ctx context.Context, admin content.ComponentName) ([]string, error)
-	IsPackageAllowedToAccessCalendarForUser(ctx context.Context, packageName string, userHandle int32) (bool, error)
-	GetCrossProfileCalendarPackagesForUser(ctx context.Context, userHandle int32) ([]string, error)
+	IsPackageAllowedToAccessCalendarForUser(ctx context.Context, packageName string) (bool, error)
+	GetCrossProfileCalendarPackagesForUser(ctx context.Context) ([]string, error)
 	SetCrossProfilePackages(ctx context.Context, admin content.ComponentName, packageNames []string) error
 	GetCrossProfilePackages(ctx context.Context, admin content.ComponentName) ([]string, error)
-	GetAllCrossProfilePackages(ctx context.Context, userId int32) ([]string, error)
+	GetAllCrossProfilePackages(ctx context.Context) ([]string, error)
 	GetDefaultCrossProfilePackages(ctx context.Context) ([]string, error)
 	IsManagedKiosk(ctx context.Context) (bool, error)
 	IsUnattendedManagedKiosk(ctx context.Context) (bool, error)
@@ -795,20 +795,20 @@ type IDevicePolicyManager interface {
 	SetManagedProfileMaximumTimeOff(ctx context.Context, admin content.ComponentName, timeoutMs int64) error
 	AcknowledgeDeviceCompliant(ctx context.Context) error
 	IsComplianceAcknowledgementRequired(ctx context.Context) (bool, error)
-	CanProfileOwnerResetPasswordWhenLocked(ctx context.Context, userId int32) (bool, error)
+	CanProfileOwnerResetPasswordWhenLocked(ctx context.Context) (bool, error)
 	SetNextOperationSafety(ctx context.Context, operation int32, reason int32) error
 	IsSafeOperation(ctx context.Context, reason int32) (bool, error)
 	GetEnrollmentSpecificId(ctx context.Context, callerPackage string) (string, error)
-	SetOrganizationIdForUser(ctx context.Context, callerPackage string, enterpriseId string, userId int32) error
+	SetOrganizationIdForUser(ctx context.Context, callerPackage string, enterpriseId string) error
 	CreateAndProvisionManagedProfile(ctx context.Context, provisioningParams ManagedProfileProvisioningParams, callerPackage string) (os.UserHandle, error)
 	CreateManagedProfile(ctx context.Context, provisioningParams ManagedProfileProvisioningParams, callerPackage string) (os.UserHandle, error)
 	FinalizeCreateManagedProfile(ctx context.Context, provisioningParams ManagedProfileProvisioningParams, managedProfileUser os.UserHandle) error
 	ProvisionFullyManagedDevice(ctx context.Context, provisioningParams FullyManagedDeviceProvisioningParams, callerPackage string) error
 	FinalizeWorkProfileProvisioning(ctx context.Context, managedProfileUser os.UserHandle, migratedAccount accounts.Account) error
-	RemoveManagedProfile(ctx context.Context, userId int32) (bool, error)
+	RemoveManagedProfile(ctx context.Context) (bool, error)
 	SetDeviceOwnerType(ctx context.Context, admin content.ComponentName, deviceOwnerType int32) error
 	GetDeviceOwnerType(ctx context.Context, admin content.ComponentName) (int32, error)
-	ResetDefaultCrossProfileIntentFilters(ctx context.Context, userId int32) error
+	ResetDefaultCrossProfileIntentFilters(ctx context.Context) error
 	CanAdminGrantSensorsPermissions(ctx context.Context) (bool, error)
 	SetUsbDataSignalingEnabled(ctx context.Context, callerPackage string, enabled bool) error
 	IsUsbDataSignalingEnabled(ctx context.Context, callerPackage string) (bool, error)
@@ -843,7 +843,7 @@ type IDevicePolicyManager interface {
 	GetFinancedDeviceKioskRoleHolder(ctx context.Context, callerPackageName string) (string, error)
 	CalculateHasIncompatibleAccounts(ctx context.Context) error
 	SetContentProtectionPolicy(ctx context.Context, who content.ComponentName, callerPackageName string, policy int32) error
-	GetContentProtectionPolicy(ctx context.Context, who content.ComponentName, callerPackageName string, userId int32) (int32, error)
+	GetContentProtectionPolicy(ctx context.Context, who content.ComponentName, callerPackageName string) (int32, error)
 	GetSubscriptionIds(ctx context.Context, callerPackageName string) ([]int32, error)
 	SetMaxPolicyStorageLimit(ctx context.Context, callerPackageName string, storageLimit int32) error
 	ForceSetMaxPolicyStorageLimit(ctx context.Context, callerPackageName string, storageLimit int32) error
@@ -851,7 +851,7 @@ type IDevicePolicyManager interface {
 	GetPolicySizeForAdmin(ctx context.Context, callerPackageName string, admin EnforcingAdmin) (int32, error)
 	GetHeadlessDeviceOwnerMode(ctx context.Context, callerPackageName string) (int32, error)
 	SetAppFunctionsPolicy(ctx context.Context, callerPackageName string, policy int32) error
-	GetAppFunctionsPolicy(ctx context.Context, callerPackageName string, userId int32) (int32, error)
+	GetAppFunctionsPolicy(ctx context.Context, callerPackageName string) (int32, error)
 }
 
 type DevicePolicyManagerProxy struct {

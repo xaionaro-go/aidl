@@ -17,8 +17,8 @@ const (
 
 type IContentObserver interface {
 	AsBinder() binder.IBinder
-	OnChange(ctx context.Context, selfUpdate bool, uri interface{}, userId int32) error
-	OnChangeEtc(ctx context.Context, selfUpdate bool, uri []interface{}, flags int32, userId int32) error
+	OnChange(ctx context.Context, selfUpdate bool, uri interface{}) error
+	OnChangeEtc(ctx context.Context, selfUpdate bool, uri []interface{}, flags int32) error
 }
 
 type ContentObserverProxy struct {

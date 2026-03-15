@@ -54,36 +54,36 @@ const (
 
 type IWallpaperManager interface {
 	AsBinder() binder.IBinder
-	SetWallpaper(ctx context.Context, name string, callingPackage string, screenOrientations []int32, crops []graphics.Rect, allowBackup bool, extras interface{}, which int32, completion IWallpaperManagerCallback, userId int32) (int32, error)
-	SetWallpaperComponentChecked(ctx context.Context, description wallpaper.WallpaperDescription, callingPackage string, which int32, userId int32) error
+	SetWallpaper(ctx context.Context, name string, screenOrientations []int32, crops []graphics.Rect, allowBackup bool, extras interface{}, which int32, completion IWallpaperManagerCallback) (int32, error)
+	SetWallpaperComponentChecked(ctx context.Context, description wallpaper.WallpaperDescription, which int32) error
 	SetWallpaperComponent(ctx context.Context, name interface{}) error
-	GetWallpaper(ctx context.Context, callingPkg string, cb IWallpaperManagerCallback, which int32, outParams interface{}, userId int32) (int32, error)
-	GetWallpaperWithFeature(ctx context.Context, callingPkg string, callingFeatureId string, cb IWallpaperManagerCallback, which int32, outParams interface{}, userId int32, getCropped bool) (int32, error)
-	GetBitmapCrops(ctx context.Context, displaySizes []graphics.Point, which int32, originalBitmap bool, userId int32) ([]interface{}, error)
-	GetCurrentBitmapCrops(ctx context.Context, which int32, userId int32) (interface{}, error)
+	GetWallpaper(ctx context.Context, callingPkg string, cb IWallpaperManagerCallback, which int32, outParams interface{}) (int32, error)
+	GetWallpaperWithFeature(ctx context.Context, callingPkg string, cb IWallpaperManagerCallback, which int32, outParams interface{}, getCropped bool) (int32, error)
+	GetBitmapCrops(ctx context.Context, displaySizes []graphics.Point, which int32, originalBitmap bool) ([]interface{}, error)
+	GetCurrentBitmapCrops(ctx context.Context, which int32) (interface{}, error)
 	GetFutureBitmapCrops(ctx context.Context, bitmapSize graphics.Point, displaySizes []graphics.Point, screenOrientations []int32, crops []graphics.Rect) ([]interface{}, error)
 	GetBitmapCrop(ctx context.Context, bitmapSize graphics.Point, screenOrientations []int32, crops []graphics.Rect) (graphics.Rect, error)
-	GetWallpaperIdForUser(ctx context.Context, which int32, userId int32) (int32, error)
-	GetWallpaperInfo(ctx context.Context, userId int32) (WallpaperInfo, error)
-	GetWallpaperInfoWithFlags(ctx context.Context, which int32, userId int32) (WallpaperInfo, error)
-	GetWallpaperInstance(ctx context.Context, which int32, userId int32) (wallpaper.WallpaperInstance, error)
-	GetWallpaperInfoFile(ctx context.Context, userId int32) (int32, error)
-	ClearWallpaper(ctx context.Context, callingPackage string, which int32, userId int32) error
+	GetWallpaperIdForUser(ctx context.Context, which int32) (int32, error)
+	GetWallpaperInfo(ctx context.Context) (WallpaperInfo, error)
+	GetWallpaperInfoWithFlags(ctx context.Context, which int32) (WallpaperInfo, error)
+	GetWallpaperInstance(ctx context.Context, which int32) (wallpaper.WallpaperInstance, error)
+	GetWallpaperInfoFile(ctx context.Context) (int32, error)
+	ClearWallpaper(ctx context.Context, which int32) error
 	HasNamedWallpaper(ctx context.Context, name string) (bool, error)
-	SetDimensionHints(ctx context.Context, width int32, height int32, callingPackage string, displayId int32) error
+	SetDimensionHints(ctx context.Context, width int32, height int32, displayId int32) error
 	GetWidthHint(ctx context.Context, displayId int32) (int32, error)
 	GetHeightHint(ctx context.Context, displayId int32) (int32, error)
-	SetDisplayPadding(ctx context.Context, padding graphics.Rect, callingPackage string, displayId int32) error
+	SetDisplayPadding(ctx context.Context, padding graphics.Rect, displayId int32) error
 	GetName(ctx context.Context) (string, error)
 	SettingsRestored(ctx context.Context) error
-	IsWallpaperSupported(ctx context.Context, callingPackage string) (bool, error)
-	IsSetWallpaperAllowed(ctx context.Context, callingPackage string) (bool, error)
-	IsWallpaperBackupEligible(ctx context.Context, which int32, userId int32) (bool, error)
-	GetWallpaperColors(ctx context.Context, which int32, userId int32, displayId int32) (WallpaperColors, error)
-	RemoveOnLocalColorsChangedListener(ctx context.Context, callback ILocalWallpaperColorConsumer, area []graphics.RectF, which int32, userId int32, displayId int32) error
-	AddOnLocalColorsChangedListener(ctx context.Context, callback ILocalWallpaperColorConsumer, regions []graphics.RectF, which int32, userId int32, displayId int32) error
-	RegisterWallpaperColorsCallback(ctx context.Context, cb IWallpaperManagerCallback, userId int32, displayId int32) error
-	UnregisterWallpaperColorsCallback(ctx context.Context, cb IWallpaperManagerCallback, userId int32, displayId int32) error
+	IsWallpaperSupported(ctx context.Context) (bool, error)
+	IsSetWallpaperAllowed(ctx context.Context) (bool, error)
+	IsWallpaperBackupEligible(ctx context.Context, which int32) (bool, error)
+	GetWallpaperColors(ctx context.Context, which int32, displayId int32) (WallpaperColors, error)
+	RemoveOnLocalColorsChangedListener(ctx context.Context, callback ILocalWallpaperColorConsumer, area []graphics.RectF, which int32, displayId int32) error
+	AddOnLocalColorsChangedListener(ctx context.Context, callback ILocalWallpaperColorConsumer, regions []graphics.RectF, which int32, displayId int32) error
+	RegisterWallpaperColorsCallback(ctx context.Context, cb IWallpaperManagerCallback, displayId int32) error
+	UnregisterWallpaperColorsCallback(ctx context.Context, cb IWallpaperManagerCallback, displayId int32) error
 	SetInAmbientMode(ctx context.Context, inAmbientMode bool, animationDuration int64) error
 	NotifyWakingUp(ctx context.Context, x int32, y int32, extras interface{}) error
 	NotifyGoingToSleep(ctx context.Context, x int32, y int32, extras interface{}) error

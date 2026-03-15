@@ -20,11 +20,11 @@ const (
 
 type ILocaleManager interface {
 	AsBinder() binder.IBinder
-	SetApplicationLocales(ctx context.Context, packageName string, userId int32, locales interface{}, fromDelegate bool) error
-	GetApplicationLocales(ctx context.Context, packageName string, userId int32) (interface{}, error)
+	SetApplicationLocales(ctx context.Context, packageName string, locales interface{}, fromDelegate bool) error
+	GetApplicationLocales(ctx context.Context, packageName string) (interface{}, error)
 	GetSystemLocales(ctx context.Context) (interface{}, error)
-	SetOverrideLocaleConfig(ctx context.Context, packageName string, userId int32, localeConfig LocaleConfig) error
-	GetOverrideLocaleConfig(ctx context.Context, packageName string, userId int32) (LocaleConfig, error)
+	SetOverrideLocaleConfig(ctx context.Context, packageName string, localeConfig LocaleConfig) error
+	GetOverrideLocaleConfig(ctx context.Context, packageName string) (LocaleConfig, error)
 }
 
 type LocaleManagerProxy struct {

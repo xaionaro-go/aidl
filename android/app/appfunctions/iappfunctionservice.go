@@ -16,7 +16,7 @@ const (
 
 type IAppFunctionService interface {
 	AsBinder() binder.IBinder
-	ExecuteAppFunction(ctx context.Context, request ExecuteAppFunctionRequest, callingPackage string, cancellationCallback ICancellationCallback, callback IExecuteAppFunctionCallback) error
+	ExecuteAppFunction(ctx context.Context, request ExecuteAppFunctionRequest, cancellationCallback ICancellationCallback, callback IExecuteAppFunctionCallback) error
 }
 
 type AppFunctionServiceProxy struct {

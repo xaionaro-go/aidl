@@ -32,8 +32,8 @@ const (
 
 type IMms interface {
 	AsBinder() binder.IBinder
-	SendMessage(ctx context.Context, subId int32, callingUser int32, callingPkg string, contentUri net.Uri, locationUrl string, configOverrides os.Bundle, sentIntent app.PendingIntent, messageId int64, attributionTag string) error
-	DownloadMessage(ctx context.Context, subId int32, callingUser int32, callingPkg string, locationUrl string, contentUri net.Uri, configOverrides os.Bundle, downloadedIntent app.PendingIntent, messageId int64, attributionTag string) error
+	SendMessage(ctx context.Context, subId int32, callingUser int32, callingPkg string, contentUri net.Uri, locationUrl string, configOverrides os.Bundle, sentIntent app.PendingIntent, messageId int64) error
+	DownloadMessage(ctx context.Context, subId int32, callingUser int32, callingPkg string, locationUrl string, contentUri net.Uri, configOverrides os.Bundle, downloadedIntent app.PendingIntent, messageId int64) error
 	ImportTextMessage(ctx context.Context, callingPkg string, address string, type_ int32, text string, timestampMillis int64, seen bool, read bool) (net.Uri, error)
 	ImportMultimediaMessage(ctx context.Context, callingUser int32, callingPkg string, contentUri net.Uri, messageId string, timestampSecs int64, seen bool, read bool) (net.Uri, error)
 	DeleteStoredMessage(ctx context.Context, callingPkg string, messageUri net.Uri) (bool, error)

@@ -184,8 +184,8 @@ type IWindowManager interface {
 	GetInitialDisplayDensity(ctx context.Context, displayId int32) (int32, error)
 	GetBaseDisplayDensity(ctx context.Context, displayId int32) (int32, error)
 	GetDisplayIdByUniqueId(ctx context.Context, uniqueId string) (int32, error)
-	SetForcedDisplayDensityForUser(ctx context.Context, displayId int32, density int32, userId int32) error
-	ClearForcedDisplayDensityForUser(ctx context.Context, displayId int32, userId int32) error
+	SetForcedDisplayDensityForUser(ctx context.Context, displayId int32, density int32) error
+	ClearForcedDisplayDensityForUser(ctx context.Context, displayId int32) error
 	SetForcedDisplayScalingMode(ctx context.Context, displayId int32, mode int32) error
 	SetEventDispatching(ctx context.Context, enabled bool) error
 	IsWindowToken(ctx context.Context, binder_ binder.IBinder) (bool, error)
@@ -199,11 +199,11 @@ type IWindowManager interface {
 	EndProlongedAnimations(ctx context.Context) error
 	StartFreezingScreen(ctx context.Context, exitAnim int32, enterAnim int32) error
 	StopFreezingScreen(ctx context.Context) error
-	DisableKeyguard(ctx context.Context, token binder.IBinder, tag string, userId int32) error
-	ReenableKeyguard(ctx context.Context, token binder.IBinder, userId int32) error
+	DisableKeyguard(ctx context.Context, token binder.IBinder, tag string) error
+	ReenableKeyguard(ctx context.Context, token binder.IBinder) error
 	ExitKeyguardSecurely(ctx context.Context, callback IOnKeyguardExitResult) error
 	IsKeyguardLocked(ctx context.Context) (bool, error)
-	IsKeyguardSecure(ctx context.Context, userId int32) (bool, error)
+	IsKeyguardSecure(ctx context.Context) (bool, error)
 	DismissKeyguard(ctx context.Context, callback interface{}, message interface{}) error
 	AddKeyguardLockedStateListener(ctx context.Context, listener interface{}) error
 	RemoveKeyguardLockedStateListener(ctx context.Context, listener interface{}) error

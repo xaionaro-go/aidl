@@ -16,7 +16,7 @@ const (
 
 type IMusicRecognitionAttributionTagCallback interface {
 	AsBinder() binder.IBinder
-	OnAttributionTag(ctx context.Context, attributionTag string) error
+	OnAttributionTag(ctx context.Context) error
 }
 
 type MusicRecognitionAttributionTagCallbackProxy struct {

@@ -18,7 +18,7 @@ const (
 type IWallpaperManagerCallback interface {
 	AsBinder() binder.IBinder
 	OnWallpaperChanged(ctx context.Context) error
-	OnWallpaperColorsChanged(ctx context.Context, colors WallpaperColors, which int32, userId int32) error
+	OnWallpaperColorsChanged(ctx context.Context, colors WallpaperColors, which int32) error
 }
 
 type WallpaperManagerCallbackProxy struct {

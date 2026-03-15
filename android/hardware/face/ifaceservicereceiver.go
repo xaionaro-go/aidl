@@ -29,14 +29,14 @@ type IFaceServiceReceiver interface {
 	AsBinder() binder.IBinder
 	OnEnrollResult(ctx context.Context, face Face, remaining int32) error
 	OnAcquired(ctx context.Context, acquiredInfo int32, vendorCode int32) error
-	OnAuthenticationSucceeded(ctx context.Context, face Face, userId int32, isStrongBiometric bool) error
-	OnFaceDetected(ctx context.Context, sensorId int32, userId int32, isStrongBiometric bool) error
+	OnAuthenticationSucceeded(ctx context.Context, face Face, isStrongBiometric bool) error
+	OnFaceDetected(ctx context.Context, sensorId int32, isStrongBiometric bool) error
 	OnAuthenticationFailed(ctx context.Context) error
 	OnError(ctx context.Context, error_ int32, vendorCode int32) error
 	OnRemoved(ctx context.Context, face Face, remaining int32) error
 	OnFeatureSet(ctx context.Context, success bool, feature int32) error
 	OnFeatureGet(ctx context.Context, success bool, features []int32, featureState []bool) error
-	OnChallengeGenerated(ctx context.Context, sensorId int32, userId int32, challenge int64) error
+	OnChallengeGenerated(ctx context.Context, sensorId int32, challenge int64) error
 	OnAuthenticationFrame(ctx context.Context, frame FaceAuthenticationFrame) error
 	OnEnrollmentFrame(ctx context.Context, frame FaceEnrollFrame) error
 }

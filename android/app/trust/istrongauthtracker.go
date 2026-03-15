@@ -17,8 +17,8 @@ const (
 
 type IStrongAuthTracker interface {
 	AsBinder() binder.IBinder
-	OnStrongAuthRequiredChanged(ctx context.Context, strongAuthRequired int32, userId int32) error
-	OnIsNonStrongBiometricAllowedChanged(ctx context.Context, allowed bool, userId int32) error
+	OnStrongAuthRequiredChanged(ctx context.Context, strongAuthRequired int32) error
+	OnIsNonStrongBiometricAllowedChanged(ctx context.Context, allowed bool) error
 }
 
 type StrongAuthTrackerProxy struct {

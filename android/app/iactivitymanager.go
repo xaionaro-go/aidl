@@ -284,50 +284,50 @@ const (
 type IActivityManager interface {
 	AsBinder() binder.IBinder
 	OpenContentUri(ctx context.Context, uriString string) (int32, error)
-	RegisterUidObserver(ctx context.Context, observer IUidObserver, which int32, cutpoint int32, callingPackage string) error
+	RegisterUidObserver(ctx context.Context, observer IUidObserver, which int32, cutpoint int32) error
 	UnregisterUidObserver(ctx context.Context, observer IUidObserver) error
-	RegisterUidObserverForUids(ctx context.Context, observer IUidObserver, which int32, cutpoint int32, callingPackage string, uids []int32) (binder.IBinder, error)
-	AddUidToObserver(ctx context.Context, observerToken binder.IBinder, callingPackage string, uid int32) error
-	RemoveUidFromObserver(ctx context.Context, observerToken binder.IBinder, callingPackage string, uid int32) error
-	IsUidActive(ctx context.Context, uid int32, callingPackage string) (bool, error)
-	GetUidProcessState(ctx context.Context, uid int32, callingPackage string) (int32, error)
+	RegisterUidObserverForUids(ctx context.Context, observer IUidObserver, which int32, cutpoint int32, uids []int32) (binder.IBinder, error)
+	AddUidToObserver(ctx context.Context, observerToken binder.IBinder, uid int32) error
+	RemoveUidFromObserver(ctx context.Context, observerToken binder.IBinder, uid int32) error
+	IsUidActive(ctx context.Context, uid int32) (bool, error)
+	GetUidProcessState(ctx context.Context, uid int32) (int32, error)
 	CheckPermission(ctx context.Context, permission string, pid int32, uid int32) (int32, error)
-	LogFgsApiBegin(ctx context.Context, apiType int32, appUid int32, appPid int32) error
-	LogFgsApiEnd(ctx context.Context, apiType int32, appUid int32, appPid int32) error
-	LogFgsApiStateChanged(ctx context.Context, apiType int32, state int32, appUid int32, appPid int32) error
+	LogFgsApiBegin(ctx context.Context, apiType int32) error
+	LogFgsApiEnd(ctx context.Context, apiType int32) error
+	LogFgsApiStateChanged(ctx context.Context, apiType int32, state int32) error
 	HandleApplicationCrash(ctx context.Context, app binder.IBinder, crashInfo ApplicationErrorReportParcelableCrashInfo) error
-	StartActivity(ctx context.Context, caller IApplicationThread, callingPackage string, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
-	StartActivityWithFeature(ctx context.Context, caller IApplicationThread, callingPackage string, callingFeatureId string, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
+	StartActivity(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
+	StartActivityWithFeature(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
 	UnhandledBack(ctx context.Context) error
 	FinishActivity(ctx context.Context, token binder.IBinder, code int32, data interface{}, finishTask int32) (bool, error)
-	RegisterReceiver(ctx context.Context, caller IApplicationThread, callerPackage string, receiver interface{}, filter interface{}, requiredPermission string, userId int32, flags int32) (interface{}, error)
-	RegisterReceiverWithFeature(ctx context.Context, caller IApplicationThread, callerPackage string, callingFeatureId string, receiverId string, receiver interface{}, filter interface{}, requiredPermission string, userId int32, flags int32) (interface{}, error)
+	RegisterReceiver(ctx context.Context, caller IApplicationThread, callerPackage string, receiver interface{}, filter interface{}, requiredPermission string, flags int32) (interface{}, error)
+	RegisterReceiverWithFeature(ctx context.Context, caller IApplicationThread, callerPackage string, receiverId string, receiver interface{}, filter interface{}, requiredPermission string, flags int32) (interface{}, error)
 	UnregisterReceiver(ctx context.Context, receiver interface{}) error
 	GetRegisteredIntentFilters(ctx context.Context, receiver interface{}) ([]interface{}, error)
-	BroadcastIntent(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo interface{}, resultCode int32, resultData string, map_ interface{}, requiredPermissions []string, appOp int32, options interface{}, serialized bool, sticky bool, userId int32) (int32, error)
-	BroadcastIntentWithFeature(ctx context.Context, caller IApplicationThread, callingFeatureId string, intent interface{}, resolvedType string, resultTo interface{}, resultCode int32, resultData string, map_ interface{}, requiredPermissions []string, excludePermissions []string, excludePackages []string, appOp int32, options interface{}, serialized bool, sticky bool, userId int32) (int32, error)
-	UnbroadcastIntent(ctx context.Context, caller IApplicationThread, intent interface{}, userId int32) error
+	BroadcastIntent(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo interface{}, resultCode int32, resultData string, map_ interface{}, requiredPermissions []string, appOp int32, options interface{}, serialized bool, sticky bool) (int32, error)
+	BroadcastIntentWithFeature(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo interface{}, resultCode int32, resultData string, map_ interface{}, requiredPermissions []string, excludePermissions []string, excludePackages []string, appOp int32, options interface{}, serialized bool, sticky bool) (int32, error)
+	UnbroadcastIntent(ctx context.Context, caller IApplicationThread, intent interface{}) error
 	FinishReceiver(ctx context.Context, who binder.IBinder, resultCode int32, resultData string, map_ interface{}, abortBroadcast bool, flags int32) error
 	AttachApplication(ctx context.Context, app IApplicationThread, startSeq int64) error
 	FinishAttachApplication(ctx context.Context, startSeq int64, timestampApplicationOnCreateNs int64) error
 	GetTasks(ctx context.Context, maxNum int32) ([]ActivityManagerRunningTaskInfo, error)
-	MoveTaskToFront(ctx context.Context, caller IApplicationThread, callingPackage string, task int32, flags int32, options interface{}) error
+	MoveTaskToFront(ctx context.Context, caller IApplicationThread, task int32, flags int32, options interface{}) error
 	GetTaskForActivity(ctx context.Context, token binder.IBinder, onlyRoot bool) (int32, error)
-	GetContentProvider(ctx context.Context, caller IApplicationThread, callingPackage string, name string, userId int32, stable bool) (ContentProviderHolder, error)
+	GetContentProvider(ctx context.Context, caller IApplicationThread, name string, stable bool) (ContentProviderHolder, error)
 	PublishContentProviders(ctx context.Context, caller IApplicationThread, providers []ContentProviderHolder) error
 	RefContentProvider(ctx context.Context, connection binder.IBinder, stableDelta int32, unstableDelta int32) (bool, error)
 	GetRunningServiceControlPanel(ctx context.Context, service interface{}) (PendingIntent, error)
-	StartService(ctx context.Context, caller IApplicationThread, service interface{}, resolvedType string, requireForeground bool, callingPackage string, callingFeatureId string, userId int32) (interface{}, error)
-	StopService(ctx context.Context, caller IApplicationThread, service interface{}, resolvedType string, userId int32) (int32, error)
-	BindService(ctx context.Context, caller IApplicationThread, token binder.IBinder, service interface{}, resolvedType string, connection IServiceConnection, flags int64, callingPackage string, userId int32) (int32, error)
-	BindServiceInstance(ctx context.Context, caller IApplicationThread, token binder.IBinder, service interface{}, resolvedType string, connection IServiceConnection, flags int64, instanceName string, callingPackage string, userId int32) (int32, error)
+	StartService(ctx context.Context, caller IApplicationThread, service interface{}, resolvedType string, requireForeground bool) (interface{}, error)
+	StopService(ctx context.Context, caller IApplicationThread, service interface{}, resolvedType string) (int32, error)
+	BindService(ctx context.Context, caller IApplicationThread, token binder.IBinder, service interface{}, resolvedType string, connection IServiceConnection, flags int64) (int32, error)
+	BindServiceInstance(ctx context.Context, caller IApplicationThread, token binder.IBinder, service interface{}, resolvedType string, connection IServiceConnection, flags int64, instanceName string) (int32, error)
 	UpdateServiceGroup(ctx context.Context, connection IServiceConnection, group int32, importance int32) error
 	UnbindService(ctx context.Context, connection IServiceConnection) (bool, error)
 	PublishService(ctx context.Context, token binder.IBinder, intent interface{}, service binder.IBinder) error
 	SetDebugApp(ctx context.Context, packageName string, waitForDebugger bool, persistent bool) error
 	SetAgentApp(ctx context.Context, packageName string, agent string) error
 	SetAlwaysFinish(ctx context.Context, enabled bool) error
-	StartInstrumentation(ctx context.Context, className interface{}, profileFile string, flags int32, arguments interface{}, watcher IInstrumentationWatcher, connection IUiAutomationConnection, userId int32, abiOverride string) (bool, error)
+	StartInstrumentation(ctx context.Context, className interface{}, profileFile string, flags int32, arguments interface{}, watcher IInstrumentationWatcher, connection IUiAutomationConnection, abiOverride string) (bool, error)
 	AddInstrumentationResults(ctx context.Context, target IApplicationThread, results interface{}) error
 	FinishInstrumentation(ctx context.Context, target IApplicationThread, resultCode int32, results interface{}) error
 	GetConfiguration(ctx context.Context) (interface{}, error)
@@ -336,18 +336,18 @@ type IActivityManager interface {
 	StopServiceToken(ctx context.Context, className interface{}, token binder.IBinder, startId int32) (bool, error)
 	SetProcessLimit(ctx context.Context, max int32) error
 	GetProcessLimit(ctx context.Context) (int32, error)
-	CheckUriPermission(ctx context.Context, uri interface{}, pid int32, uid int32, mode int32, userId int32, callerToken binder.IBinder) (int32, error)
-	CheckContentUriPermissionFull(ctx context.Context, uri interface{}, pid int32, uid int32, mode int32, userId int32) (int32, error)
-	CheckUriPermissions(ctx context.Context, uris []interface{}, pid int32, uid int32, mode int32, userId int32, callerToken binder.IBinder) ([]int32, error)
-	GrantUriPermission(ctx context.Context, caller IApplicationThread, targetPkg string, uri interface{}, mode int32, userId int32) error
-	RevokeUriPermission(ctx context.Context, caller IApplicationThread, targetPkg string, uri interface{}, mode int32, userId int32) error
+	CheckUriPermission(ctx context.Context, uri interface{}, pid int32, uid int32, mode int32, callerToken binder.IBinder) (int32, error)
+	CheckContentUriPermissionFull(ctx context.Context, uri interface{}, pid int32, uid int32, mode int32) (int32, error)
+	CheckUriPermissions(ctx context.Context, uris []interface{}, pid int32, uid int32, mode int32, callerToken binder.IBinder) ([]int32, error)
+	GrantUriPermission(ctx context.Context, caller IApplicationThread, targetPkg string, uri interface{}, mode int32) error
+	RevokeUriPermission(ctx context.Context, caller IApplicationThread, targetPkg string, uri interface{}, mode int32) error
 	SetActivityController(ctx context.Context, watcher IActivityController, imAMonkey bool) error
 	ShowWaitingForDebugger(ctx context.Context, who IApplicationThread, waiting bool) error
 	SignalPersistentProcesses(ctx context.Context, signal int32) error
-	GetRecentTasks(ctx context.Context, maxNum int32, flags int32, userId int32) (interface{}, error)
+	GetRecentTasks(ctx context.Context, maxNum int32, flags int32) (interface{}, error)
 	ServiceDoneExecuting(ctx context.Context, token binder.IBinder, type_ int32, startId int32, res int32, intent interface{}) error
-	GetIntentSender(ctx context.Context, type_ int32, packageName string, token binder.IBinder, resultWho string, requestCode int32, intents []interface{}, resolvedTypes []string, flags int32, options interface{}, userId int32) (interface{}, error)
-	GetIntentSenderWithFeature(ctx context.Context, type_ int32, packageName string, featureId string, token binder.IBinder, resultWho string, requestCode int32, intents []interface{}, resolvedTypes []string, flags int32, options interface{}, userId int32) (interface{}, error)
+	GetIntentSender(ctx context.Context, type_ int32, packageName string, token binder.IBinder, resultWho string, requestCode int32, intents []interface{}, resolvedTypes []string, flags int32, options interface{}) (interface{}, error)
+	GetIntentSenderWithFeature(ctx context.Context, type_ int32, packageName string, featureId string, token binder.IBinder, resultWho string, requestCode int32, intents []interface{}, resolvedTypes []string, flags int32, options interface{}) (interface{}, error)
 	CancelIntentSender(ctx context.Context, sender interface{}) error
 	GetInfoForIntentSender(ctx context.Context, sender interface{}) (ActivityManagerPendingIntentInfo, error)
 	RegisterIntentSenderCancelListenerEx(ctx context.Context, sender interface{}, receiver interface{}) (bool, error)
@@ -363,40 +363,40 @@ type IActivityManager interface {
 	MoveActivityTaskToBack(ctx context.Context, token binder.IBinder, nonRoot bool) (bool, error)
 	GetMemoryInfo(ctx context.Context, outInfo ActivityManagerMemoryInfo) error
 	GetProcessesInErrorState(ctx context.Context) ([]ActivityManagerProcessErrorStateInfo, error)
-	ClearApplicationUserData(ctx context.Context, packageName string, keepState bool, observer interface{}, userId int32) (bool, error)
-	StopAppForUser(ctx context.Context, packageName string, userId int32) error
+	ClearApplicationUserData(ctx context.Context, packageName string, keepState bool, observer interface{}) (bool, error)
+	StopAppForUser(ctx context.Context, packageName string) error
 	RegisterForegroundServiceObserver(ctx context.Context, callback IForegroundServiceObserver) (bool, error)
-	ForceStopPackage(ctx context.Context, packageName string, userId int32) error
-	ForceStopPackageEvenWhenStopping(ctx context.Context, packageName string, userId int32) error
+	ForceStopPackage(ctx context.Context, packageName string) error
+	ForceStopPackageEvenWhenStopping(ctx context.Context, packageName string) error
 	KillPids(ctx context.Context, pids []int32, reason string, secure bool) (bool, error)
 	GetServices(ctx context.Context, maxNum int32, flags int32) ([]ActivityManagerRunningServiceInfo, error)
 	GetRunningAppProcesses(ctx context.Context) ([]ActivityManagerRunningAppProcessInfo, error)
-	PeekService(ctx context.Context, service interface{}, resolvedType string, callingPackage string) (binder.IBinder, error)
-	ProfileControl(ctx context.Context, process string, userId int32, start bool, profilerInfo ProfilerInfo, profileType int32) (bool, error)
+	PeekService(ctx context.Context, service interface{}, resolvedType string) (binder.IBinder, error)
+	ProfileControl(ctx context.Context, process string, start bool, profilerInfo ProfilerInfo, profileType int32) (bool, error)
 	Shutdown(ctx context.Context, timeout int32) (bool, error)
 	StopAppSwitches(ctx context.Context) error
 	ResumeAppSwitches(ctx context.Context) error
 	BindBackupAgent(ctx context.Context, packageName string, backupRestoreMode int32, targetUserId int32, backupDestination int32, useRestrictedMode bool) (bool, error)
-	BackupAgentCreated(ctx context.Context, packageName string, agent binder.IBinder, userId int32) error
+	BackupAgentCreated(ctx context.Context, packageName string, agent binder.IBinder) error
 	UnbindBackupAgent(ctx context.Context, appInfo interface{}) error
-	HandleIncomingUser(ctx context.Context, callingPid int32, callingUid int32, userId int32, allowAll bool, requireFull bool, name string, callerPackage string) (int32, error)
+	HandleIncomingUser(ctx context.Context, allowAll bool, requireFull bool, name string, callerPackage string) (int32, error)
 	AddPackageDependency(ctx context.Context, packageName string) error
-	KillApplication(ctx context.Context, pkg string, appId int32, userId int32, reason string, exitInfoReason int32) error
+	KillApplication(ctx context.Context, pkg string, appId int32, reason string, exitInfoReason int32) error
 	CloseSystemDialogs(ctx context.Context, reason string) error
 	GetProcessMemoryInfo(ctx context.Context, pids []int32) ([]interface{}, error)
 	KillApplicationProcess(ctx context.Context, processName string, uid int32) error
 	HandleApplicationWtf(ctx context.Context, app binder.IBinder, tag string, system bool, crashInfo ApplicationErrorReportParcelableCrashInfo, immediateCallerPid int32) (bool, error)
-	KillBackgroundProcesses(ctx context.Context, packageName string, userId int32) error
+	KillBackgroundProcesses(ctx context.Context, packageName string) error
 	IsUserAMonkey(ctx context.Context) (bool, error)
 	GetRunningExternalApplications(ctx context.Context) ([]interface{}, error)
 	FinishHeavyWeightApp(ctx context.Context) error
 	HandleApplicationStrictModeViolation(ctx context.Context, app binder.IBinder, penaltyMask int32, crashInfo interface{}) error
 	RegisterStrictModeCallback(ctx context.Context, binder_ binder.IBinder) error
 	IsTopActivityImmersive(ctx context.Context) (bool, error)
-	CrashApplicationWithType(ctx context.Context, uid int32, initialPid int32, packageName string, userId int32, message string, force bool, exceptionTypeId int32) error
-	CrashApplicationWithTypeWithExtras(ctx context.Context, uid int32, initialPid int32, packageName string, userId int32, message string, force bool, exceptionTypeId int32, extras interface{}) error
-	GetMimeTypeFilterAsync(ctx context.Context, uri interface{}, userId int32, resultCallback interface{}) error
-	DumpHeap(ctx context.Context, process string, userId int32, managed bool, mallocInfo bool, runGc bool, dumpBitmaps string, path string, fd int32, finishCallback interface{}) (bool, error)
+	CrashApplicationWithType(ctx context.Context, uid int32, initialPid int32, packageName string, message string, force bool, exceptionTypeId int32) error
+	CrashApplicationWithTypeWithExtras(ctx context.Context, uid int32, initialPid int32, packageName string, message string, force bool, exceptionTypeId int32, extras interface{}) error
+	GetMimeTypeFilterAsync(ctx context.Context, uri interface{}, resultCallback interface{}) error
+	DumpHeap(ctx context.Context, process string, managed bool, mallocInfo bool, runGc bool, dumpBitmaps string, path string, fd int32, finishCallback interface{}) (bool, error)
 	IsUserRunning(ctx context.Context, userid int32, flags int32) (bool, error)
 	SetPackageScreenCompatMode(ctx context.Context, packageName string, mode int32) error
 	SwitchUser(ctx context.Context, userid int32) (bool, error)
@@ -412,9 +412,9 @@ type IActivityManager interface {
 	GetProcessPss(ctx context.Context, pids []int32) ([]int64, error)
 	ShowBootMessage(ctx context.Context, msg interface{}, always bool) error
 	KillAllBackgroundProcesses(ctx context.Context) error
-	GetContentProviderExternal(ctx context.Context, name string, userId int32, token binder.IBinder, tag string) (ContentProviderHolder, error)
+	GetContentProviderExternal(ctx context.Context, name string, token binder.IBinder, tag string) (ContentProviderHolder, error)
 	RemoveContentProviderExternal(ctx context.Context, name string, token binder.IBinder) error
-	RemoveContentProviderExternalAsUser(ctx context.Context, name string, token binder.IBinder, userId int32) error
+	RemoveContentProviderExternalAsUser(ctx context.Context, name string, token binder.IBinder) error
 	GetMyMemoryState(ctx context.Context, outInfo ActivityManagerRunningAppProcessInfo) error
 	KillProcessesBelowForeground(ctx context.Context, reason string) (bool, error)
 	GetCurrentUser(ctx context.Context) (interface{}, error)
@@ -422,8 +422,8 @@ type IActivityManager interface {
 	GetLaunchedFromUid(ctx context.Context, activityToken binder.IBinder) (int32, error)
 	UnstableProviderDied(ctx context.Context, connection binder.IBinder) error
 	IsIntentSenderAnActivity(ctx context.Context, sender interface{}) (bool, error)
-	StartActivityAsUser(ctx context.Context, caller IApplicationThread, callingPackage string, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}, userId int32) (int32, error)
-	StartActivityAsUserWithFeature(ctx context.Context, caller IApplicationThread, callingPackage string, callingFeatureId string, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}, userId int32) (int32, error)
+	StartActivityAsUser(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
+	StartActivityAsUserWithFeature(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
 	StopUser(ctx context.Context, userid int32, stopProfileRegardlessOfParent bool, callback IStopUserCallback) (int32, error)
 	StopUserWithCallback(ctx context.Context, userid int32, callback IStopUserCallback) (int32, error)
 	StopUserExceptCertainProfiles(ctx context.Context, userid int32, stopProfileRegardlessOfParent bool, callback IStopUserCallback) (int32, error)
@@ -445,7 +445,7 @@ type IActivityManager interface {
 	GetBugreportWhitelistedPackages(ctx context.Context) ([]string, error)
 	GetIntentForIntentSender(ctx context.Context, sender interface{}) (interface{}, error)
 	GetLaunchedFromPackage(ctx context.Context, activityToken binder.IBinder) (string, error)
-	KillUid(ctx context.Context, appId int32, userId int32, reason string) error
+	KillUid(ctx context.Context, appId int32, reason string) error
 	SetUserIsMonkey(ctx context.Context, monkey bool) error
 	Hang(ctx context.Context, who binder.IBinder, allowRestart bool) error
 	GetAllRootTaskInfos(ctx context.Context) ([]ActivityTaskManagerRootTaskInfo, error)
@@ -456,7 +456,7 @@ type IActivityManager interface {
 	PerformIdleMaintenance(ctx context.Context) error
 	AppNotRespondingViaProvider(ctx context.Context, connection binder.IBinder) error
 	GetTaskBounds(ctx context.Context, taskId int32) (graphics.Rect, error)
-	SetProcessMemoryTrimLevel(ctx context.Context, process string, userId int32, level int32) (bool, error)
+	SetProcessMemoryTrimLevel(ctx context.Context, process string, level int32) (bool, error)
 	GetTagForIntentSender(ctx context.Context, sender interface{}, prefix string) (string, error)
 	StartUserInBackground(ctx context.Context, userid int32) (bool, error)
 	IsInLockTaskMode(ctx context.Context) (bool, error)
@@ -464,7 +464,7 @@ type IActivityManager interface {
 	StartSystemLockTaskMode(ctx context.Context, taskId int32) error
 	IsTopOfTask(ctx context.Context, token binder.IBinder) (bool, error)
 	BootAnimationComplete(ctx context.Context) error
-	SetThemeOverlayReady(ctx context.Context, userId int32) error
+	SetThemeOverlayReady(ctx context.Context) error
 	RegisterTaskStackListener(ctx context.Context, listener ITaskStackListener) error
 	UnregisterTaskStackListener(ctx context.Context, listener ITaskStackListener) error
 	NotifyCleartextNetwork(ctx context.Context, uid int32, firstPacket []byte) error
@@ -473,21 +473,21 @@ type IActivityManager interface {
 	GetLockTaskModeState(ctx context.Context) (int32, error)
 	SetDumpHeapDebugLimit(ctx context.Context, processName string, uid int32, maxMemSize int64, reportPackage string) error
 	DumpHeapFinished(ctx context.Context, path string) error
-	UpdateLockTaskPackages(ctx context.Context, userId int32, packages []string) error
+	UpdateLockTaskPackages(ctx context.Context, packages []string) error
 	NoteAlarmStart(ctx context.Context, sender interface{}, workSource interface{}, sourceUid int32, tag string) error
 	NoteAlarmFinish(ctx context.Context, sender interface{}, workSource interface{}, sourceUid int32, tag string) error
-	GetPackageProcessState(ctx context.Context, packageName string, callingPackage string) (int32, error)
+	GetPackageProcessState(ctx context.Context, packageName string) (int32, error)
 	StartBinderTracking(ctx context.Context) (bool, error)
 	StopBinderTrackingAndDump(ctx context.Context, fd int32) (bool, error)
 	SuppressResizeConfigChanges(ctx context.Context, suppress bool) error
 	UnlockUser(ctx context.Context, userid int32, token []byte, secret []byte, listener interface{}) (bool, error)
-	UnlockUser2(ctx context.Context, userId int32, listener interface{}) (bool, error)
-	KillPackageDependents(ctx context.Context, packageName string, userId int32) error
-	MakePackageIdle(ctx context.Context, packageName string, userId int32) error
+	UnlockUser2(ctx context.Context, listener interface{}) (bool, error)
+	KillPackageDependents(ctx context.Context, packageName string) error
+	MakePackageIdle(ctx context.Context, packageName string) error
 	SetDeterministicUidIdle(ctx context.Context, deterministic bool) error
 	GetMemoryTrimLevel(ctx context.Context) (int32, error)
 	IsVrModePackageEnabled(ctx context.Context, packageName interface{}) (bool, error)
-	NotifyLockedProfile(ctx context.Context, userId int32) error
+	NotifyLockedProfile(ctx context.Context) error
 	StartConfirmDeviceCredentialIntent(ctx context.Context, intent interface{}, options interface{}) error
 	SendIdleJobTrigger(ctx context.Context) error
 	SendIntentSender(ctx context.Context, caller IApplicationThread, target interface{}, whitelistToken binder.IBinder, code int32, intent interface{}, resolvedType string, finishedReceiver interface{}, requiredPermission string, options interface{}) (int32, error)
@@ -495,7 +495,7 @@ type IActivityManager interface {
 	SetRenderThread(ctx context.Context, tid int32) error
 	SetHasTopUi(ctx context.Context, hasTopUi bool) error
 	CancelTaskWindowTransition(ctx context.Context, taskId int32) error
-	ScheduleApplicationInfoChanged(ctx context.Context, packageNames []string, userId int32) error
+	ScheduleApplicationInfoChanged(ctx context.Context, packageNames []string) error
 	SetPersistentVrThread(ctx context.Context, tid int32) error
 	WaitForNetworkStateUpdate(ctx context.Context, procStateSeq int64) error
 	BackgroundAllowlistUid(ctx context.Context, uid int32) error
@@ -506,26 +506,26 @@ type IActivityManager interface {
 	GetLifeMonitor(ctx context.Context) (int32, error)
 	StartUserInForegroundWithListener(ctx context.Context, userid int32, unlockProgressListener interface{}) (bool, error)
 	AppNotResponding(ctx context.Context, reason string) error
-	GetHistoricalProcessStartReasons(ctx context.Context, packageName string, maxNum int32, userId int32) (interface{}, error)
-	AddApplicationStartInfoCompleteListener(ctx context.Context, listener IApplicationStartInfoCompleteListener, userId int32) error
-	RemoveApplicationStartInfoCompleteListener(ctx context.Context, listener IApplicationStartInfoCompleteListener, userId int32) error
-	AddStartInfoTimestamp(ctx context.Context, key int32, timestampNs int64, userId int32) error
+	GetHistoricalProcessStartReasons(ctx context.Context, packageName string, maxNum int32) (interface{}, error)
+	AddApplicationStartInfoCompleteListener(ctx context.Context, listener IApplicationStartInfoCompleteListener) error
+	RemoveApplicationStartInfoCompleteListener(ctx context.Context, listener IApplicationStartInfoCompleteListener) error
+	AddStartInfoTimestamp(ctx context.Context, key int32, timestampNs int64) error
 	ReportStartInfoViewTimestamps(ctx context.Context, renderThreadDrawStartTimeNs int64, framePresentedTimeNs int64) error
-	GetHistoricalProcessExitReasons(ctx context.Context, packageName string, pid int32, maxNum int32, userId int32) (interface{}, error)
+	GetHistoricalProcessExitReasons(ctx context.Context, packageName string, pid int32, maxNum int32) (interface{}, error)
 	KillProcessesWhenImperceptible(ctx context.Context, pids []int32, reason string) error
 	SetActivityLocusContext(ctx context.Context, activity interface{}, locusId interface{}, appToken binder.IBinder) error
 	SetProcessStateSummary(ctx context.Context, state []byte) error
 	IsAppFreezerSupported(ctx context.Context) (bool, error)
 	IsAppFreezerEnabled(ctx context.Context) (bool, error)
-	KillUidForPermissionChange(ctx context.Context, appId int32, userId int32, reason string) error
+	KillUidForPermissionChange(ctx context.Context, appId int32, reason string) error
 	ResetAppErrors(ctx context.Context) error
 	EnableAppFreezer(ctx context.Context, enable bool) (bool, error)
 	EnableFgsNotificationRateLimit(ctx context.Context, enable bool) (bool, error)
 	HoldLock(ctx context.Context, token binder.IBinder, durationMs int32) error
-	StartProfile(ctx context.Context, userId int32) (bool, error)
-	StopProfile(ctx context.Context, userId int32) (bool, error)
+	StartProfile(ctx context.Context) (bool, error)
+	StopProfile(ctx context.Context) (bool, error)
 	QueryIntentComponentsForIntentSender(ctx context.Context, sender interface{}, matchFlags int32) (interface{}, error)
-	GetUidProcessCapabilities(ctx context.Context, uid int32, callingPackage string) (int32, error)
+	GetUidProcessCapabilities(ctx context.Context, uid int32) (int32, error)
 	WaitForBroadcastIdle(ctx context.Context) error
 	WaitForBroadcastBarrier(ctx context.Context) error
 	ForceDelayBroadcastDelivery(ctx context.Context, targetPackage string, delayedDurationMs int64) error
@@ -533,7 +533,7 @@ type IActivityManager interface {
 	GetBackgroundRestrictionExemptionReason(ctx context.Context, uid int32) (int32, error)
 	StartUserInBackgroundVisibleOnDisplay(ctx context.Context, userid int32, displayId int32, unlockProgressListener interface{}) (bool, error)
 	StartProfileWithListener(ctx context.Context, userid int32, unlockProgressListener interface{}) (bool, error)
-	RestartUserInBackground(ctx context.Context, userId int32, userStartMode int32) (int32, error)
+	RestartUserInBackground(ctx context.Context, userStartMode int32) (int32, error)
 	GetDisplayIdsForStartingVisibleBackgroundUsers(ctx context.Context) ([]int32, error)
 	ShouldServiceTimeOut(ctx context.Context, className interface{}, token binder.IBinder) (bool, error)
 	HasServiceTimeLimitExceeded(ctx context.Context, className interface{}, token binder.IBinder) (bool, error)
@@ -542,8 +542,8 @@ type IActivityManager interface {
 	GetUidFrozenState(ctx context.Context, uids []int32) ([]int32, error)
 	CheckPermissionForDevice(ctx context.Context, permission string, pid int32, uid int32, deviceId int32) (int32, error)
 	FrozenBinderTransactionDetected(ctx context.Context, debugPid int32, code int32, flags int32, err int32) error
-	GetBindingUidProcessState(ctx context.Context, uid int32, callingPackage string) (int32, error)
-	GetUidLastIdleElapsedTime(ctx context.Context, uid int32, callingPackage string) (int64, error)
+	GetBindingUidProcessState(ctx context.Context, uid int32) (int32, error)
+	GetUidLastIdleElapsedTime(ctx context.Context, uid int32) (int64, error)
 	AddOverridePermissionState(ctx context.Context, originatingUid int32, uid int32, permission string, result int32) error
 	RemoveOverridePermissionState(ctx context.Context, originatingUid int32, uid int32, permission string) error
 	ClearOverridePermissionStates(ctx context.Context, originatingUid int32, uid int32) error

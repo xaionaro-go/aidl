@@ -38,7 +38,7 @@ type IBlobStoreManager interface {
 	ReleaseAllLeases(ctx context.Context, packageName string) error
 	GetRemainingLeaseQuotaBytes(ctx context.Context, packageName string) (int64, error)
 	WaitForIdle(ctx context.Context, callback os.RemoteCallback) error
-	QueryBlobsForUser(ctx context.Context, userId int32) ([]BlobInfo, error)
+	QueryBlobsForUser(ctx context.Context) ([]BlobInfo, error)
 	DeleteBlob(ctx context.Context, blobId int64) error
 	GetLeasedBlobs(ctx context.Context, packageName string) ([]BlobHandle, error)
 	GetLeaseInfo(ctx context.Context, blobHandle BlobHandle, packageName string) (LeaseInfo, error)

@@ -300,28 +300,28 @@ type IAudioService interface {
 	PlayerSessionId(ctx context.Context, piid int32, sessionId int32) error
 	PortEvent(ctx context.Context, portId int32, event int32, extras *interface{}) error
 	PermissionUpdateBarrier(ctx context.Context) error
-	AdjustStreamVolume(ctx context.Context, streamType int32, direction int32, flags int32, callingPackage string) error
-	AdjustStreamVolumeWithAttribution(ctx context.Context, streamType int32, direction int32, flags int32, callingPackage string, attributionTag string) error
-	SetStreamVolume(ctx context.Context, streamType int32, index int32, flags int32, callingPackage string) error
-	SetStreamVolumeWithAttribution(ctx context.Context, streamType int32, index int32, flags int32, callingPackage string, attributionTag string) error
-	SetDeviceVolume(ctx context.Context, vi VolumeInfo, ada AudioDeviceAttributes, callingPackage string) error
-	GetDeviceVolume(ctx context.Context, vi VolumeInfo, ada AudioDeviceAttributes, callingPackage string) (VolumeInfo, error)
-	HandleVolumeKey(ctx context.Context, event interface{}, isOnTv bool, callingPackage string, caller string) error
+	AdjustStreamVolume(ctx context.Context, streamType int32, direction int32, flags int32) error
+	AdjustStreamVolumeWithAttribution(ctx context.Context, streamType int32, direction int32, flags int32) error
+	SetStreamVolume(ctx context.Context, streamType int32, index int32, flags int32) error
+	SetStreamVolumeWithAttribution(ctx context.Context, streamType int32, index int32, flags int32) error
+	SetDeviceVolume(ctx context.Context, vi VolumeInfo, ada AudioDeviceAttributes) error
+	GetDeviceVolume(ctx context.Context, vi VolumeInfo, ada AudioDeviceAttributes) (VolumeInfo, error)
+	HandleVolumeKey(ctx context.Context, event interface{}, isOnTv bool, caller string) error
 	IsStreamMute(ctx context.Context, streamType int32) (bool, error)
 	ForceRemoteSubmixFullVolume(ctx context.Context, startForcing bool, cb binder.IBinder) error
 	IsMasterMute(ctx context.Context) (bool, error)
-	SetMasterMute(ctx context.Context, mute bool, flags int32, callingPackage string, userId int32, attributionTag string) error
+	SetMasterMute(ctx context.Context, mute bool, flags int32) error
 	GetStreamVolume(ctx context.Context, streamType int32) (int32, error)
 	GetStreamMinVolume(ctx context.Context, streamType int32) (int32, error)
 	GetStreamMaxVolume(ctx context.Context, streamType int32) (int32, error)
 	GetAudioVolumeGroups(ctx context.Context) ([]interface{}, error)
-	SetVolumeGroupVolumeIndex(ctx context.Context, groupId int32, index int32, flags int32, callingPackage string, attributionTag string) error
+	SetVolumeGroupVolumeIndex(ctx context.Context, groupId int32, index int32, flags int32) error
 	GetVolumeGroupVolumeIndex(ctx context.Context, groupId int32) (int32, error)
 	GetVolumeGroupMaxVolumeIndex(ctx context.Context, groupId int32) (int32, error)
 	GetVolumeGroupMinVolumeIndex(ctx context.Context, groupId int32) (int32, error)
 	GetLastAudibleVolumeForVolumeGroup(ctx context.Context, groupId int32) (int32, error)
 	IsVolumeGroupMuted(ctx context.Context, groupId int32) (bool, error)
-	AdjustVolumeGroupVolume(ctx context.Context, groupId int32, direction int32, flags int32, callingPackage string) error
+	AdjustVolumeGroupVolume(ctx context.Context, groupId int32, direction int32, flags int32) error
 	GetLastAudibleStreamVolume(ctx context.Context, streamType int32) (int32, error)
 	SetSupportedSystemUsages(ctx context.Context, systemUsages []int32) error
 	GetSupportedSystemUsages(ctx context.Context) ([]int32, error)
@@ -329,7 +329,7 @@ type IAudioService interface {
 	IsMicrophoneMuted(ctx context.Context) (bool, error)
 	IsUltrasoundSupported(ctx context.Context) (bool, error)
 	IsHotwordStreamSupported(ctx context.Context, lookbackAudio bool) (bool, error)
-	SetMicrophoneMute(ctx context.Context, on bool, callingPackage string, userId int32, attributionTag string) error
+	SetMicrophoneMute(ctx context.Context, on bool) error
 	SetInputGainIndex(ctx context.Context, ada AudioDeviceAttributes, index int32) error
 	GetInputGainIndex(ctx context.Context, ada AudioDeviceAttributes) (int32, error)
 	GetMaxInputGainIndex(ctx context.Context) (int32, error)
@@ -344,9 +344,9 @@ type IAudioService interface {
 	SetVibrateSetting(ctx context.Context, vibrateType int32, vibrateSetting int32) error
 	GetVibrateSetting(ctx context.Context, vibrateType int32) (int32, error)
 	ShouldVibrate(ctx context.Context, vibrateType int32) (bool, error)
-	SetMode(ctx context.Context, mode int32, cb binder.IBinder, callingPackage string) error
+	SetMode(ctx context.Context, mode int32, cb binder.IBinder) error
 	GetMode(ctx context.Context) (int32, error)
-	PlaySoundEffect(ctx context.Context, effectType int32, userId int32) error
+	PlaySoundEffect(ctx context.Context, effectType int32) error
 	PlaySoundEffectVolume(ctx context.Context, effectType int32, volume float32) error
 	LoadSoundEffects(ctx context.Context) (bool, error)
 	UnloadSoundEffects(ctx context.Context) error
@@ -365,7 +365,7 @@ type IAudioService interface {
 	IsBluetoothScoOn(ctx context.Context) (bool, error)
 	SetBluetoothA2dpOn(ctx context.Context, on bool) error
 	IsBluetoothA2dpOn(ctx context.Context) (bool, error)
-	RequestAudioFocus(ctx context.Context, aa AudioAttributes, focusReqType int32, cb binder.IBinder, fd IAudioFocusDispatcher, clientId string, callingPackageName string, attributionTag string, flags int32, pcb interface{}, sdk int32) (int32, error)
+	RequestAudioFocus(ctx context.Context, aa AudioAttributes, focusReqType int32, cb binder.IBinder, fd IAudioFocusDispatcher, clientId string, callingPackageName string, flags int32, pcb interface{}, sdk int32) (int32, error)
 	AbandonAudioFocus(ctx context.Context, fd IAudioFocusDispatcher, clientId string, aa AudioAttributes, callingPackageName string) (int32, error)
 	UnregisterAudioFocusClient(ctx context.Context, clientId string) error
 	GetCurrentAudioFocus(ctx context.Context) (int32, error)
@@ -391,8 +391,8 @@ type IAudioService interface {
 	IsStreamAffectedByRingerMode(ctx context.Context, streamType int32) (bool, error)
 	IsStreamAffectedByMute(ctx context.Context, streamType int32) (bool, error)
 	IsStreamMutableByUi(ctx context.Context, streamType int32) (bool, error)
-	DisableSafeMediaVolume(ctx context.Context, callingPackage string) error
-	LowerVolumeToRs1(ctx context.Context, callingPackage string) error
+	DisableSafeMediaVolume(ctx context.Context) error
+	LowerVolumeToRs1(ctx context.Context) error
 	GetOutputRs2UpperBound(ctx context.Context) (float32, error)
 	SetOutputRs2UpperBound(ctx context.Context, rs2Value float32) error
 	GetCsd(ctx context.Context) (float32, error)
@@ -438,8 +438,8 @@ type IAudioService interface {
 	IsAudioServerRunning(ctx context.Context) (bool, error)
 	SetUidDeviceAffinity(ctx context.Context, pcb interface{}, uid int32, deviceTypes []int32, deviceAddresses []string) (int32, error)
 	RemoveUidDeviceAffinity(ctx context.Context, pcb interface{}, uid int32) (int32, error)
-	SetUserIdDeviceAffinity(ctx context.Context, pcb interface{}, userId int32, deviceTypes []int32, deviceAddresses []string) (int32, error)
-	RemoveUserIdDeviceAffinity(ctx context.Context, pcb interface{}, userId int32) (int32, error)
+	SetUserIdDeviceAffinity(ctx context.Context, pcb interface{}, deviceTypes []int32, deviceAddresses []string) (int32, error)
+	RemoveUserIdDeviceAffinity(ctx context.Context, pcb interface{}) (int32, error)
 	HasHapticChannels(ctx context.Context, uri interface{}) (bool, error)
 	IsCallScreeningModeSupported(ctx context.Context) (bool, error)
 	SetPreferredDevicesForStrategy(ctx context.Context, strategy int32, devices []AudioDeviceAttributes) (int32, error)

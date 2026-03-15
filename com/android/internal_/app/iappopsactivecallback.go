@@ -16,7 +16,7 @@ const (
 
 type IAppOpsActiveCallback interface {
 	AsBinder() binder.IBinder
-	OpActiveChanged(ctx context.Context, op int32, uid int32, packageName string, attributionTag string, virtualDeviceId int32, active bool, attributionFlags int32, attributionChainId int32) error
+	OpActiveChanged(ctx context.Context, op int32, uid int32, packageName string, virtualDeviceId int32, active bool, attributionFlags int32, attributionChainId int32) error
 }
 
 type AppOpsActiveCallbackProxy struct {

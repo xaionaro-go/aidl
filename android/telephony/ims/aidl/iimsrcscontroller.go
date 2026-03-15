@@ -50,10 +50,10 @@ type IImsRcsController interface {
 	UnregisterRcsAvailabilityCallback(ctx context.Context, subId int32, c IImsCapabilityCallback) error
 	IsCapable(ctx context.Context, subId int32, capability int32, radioTech int32) (bool, error)
 	IsAvailable(ctx context.Context, subId int32, capability int32, radioTech int32) (bool, error)
-	RequestCapabilities(ctx context.Context, subId int32, callingPackage string, callingFeatureId string, contactNumbers []net.Uri, c IRcsUceControllerCallback) error
-	RequestAvailability(ctx context.Context, subId int32, callingPackage string, callingFeatureId string, contactNumber net.Uri, c IRcsUceControllerCallback) error
+	RequestCapabilities(ctx context.Context, subId int32, contactNumbers []net.Uri, c IRcsUceControllerCallback) error
+	RequestAvailability(ctx context.Context, subId int32, contactNumber net.Uri, c IRcsUceControllerCallback) error
 	GetUcePublishState(ctx context.Context, subId int32) (int32, error)
-	IsUceSettingEnabled(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (bool, error)
+	IsUceSettingEnabled(ctx context.Context, subId int32) (bool, error)
 	SetUceSettingEnabled(ctx context.Context, subId int32, isEnabled bool) error
 	RegisterUcePublishStateCallback(ctx context.Context, subId int32, c IRcsUcePublishStateCallback) error
 	UnregisterUcePublishStateCallback(ctx context.Context, subId int32, c IRcsUcePublishStateCallback) error

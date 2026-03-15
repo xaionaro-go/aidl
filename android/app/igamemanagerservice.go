@@ -31,17 +31,17 @@ const (
 
 type IGameManagerService interface {
 	AsBinder() binder.IBinder
-	GetGameMode(ctx context.Context, packageName string, userId int32) (int32, error)
-	SetGameMode(ctx context.Context, packageName string, gameMode int32, userId int32) error
-	GetAvailableGameModes(ctx context.Context, packageName string, userId int32) ([]int32, error)
-	IsAngleEnabled(ctx context.Context, packageName string, userId int32) (bool, error)
-	NotifyGraphicsEnvironmentSetup(ctx context.Context, packageName string, userId int32) error
-	SetGameState(ctx context.Context, packageName string, gameState GameState, userId int32) error
-	GetGameModeInfo(ctx context.Context, packageName string, userId int32) (GameModeInfo, error)
+	GetGameMode(ctx context.Context, packageName string) (int32, error)
+	SetGameMode(ctx context.Context, packageName string, gameMode int32) error
+	GetAvailableGameModes(ctx context.Context, packageName string) ([]int32, error)
+	IsAngleEnabled(ctx context.Context, packageName string) (bool, error)
+	NotifyGraphicsEnvironmentSetup(ctx context.Context, packageName string) error
+	SetGameState(ctx context.Context, packageName string, gameState GameState) error
+	GetGameModeInfo(ctx context.Context, packageName string) (GameModeInfo, error)
 	SetGameServiceProvider(ctx context.Context, packageName string) error
-	UpdateResolutionScalingFactor(ctx context.Context, packageName string, gameMode int32, scalingFactor float32, userId int32) error
-	GetResolutionScalingFactor(ctx context.Context, packageName string, gameMode int32, userId int32) (float32, error)
-	UpdateCustomGameModeConfiguration(ctx context.Context, packageName string, gameModeConfig GameModeConfiguration, userId int32) error
+	UpdateResolutionScalingFactor(ctx context.Context, packageName string, gameMode int32, scalingFactor float32) error
+	GetResolutionScalingFactor(ctx context.Context, packageName string, gameMode int32) (float32, error)
+	UpdateCustomGameModeConfiguration(ctx context.Context, packageName string, gameModeConfig GameModeConfiguration) error
 	AddGameModeListener(ctx context.Context, gameModeListener IGameModeListener) error
 	RemoveGameModeListener(ctx context.Context, gameModeListener IGameModeListener) error
 	AddGameStateListener(ctx context.Context, gameStateListener IGameStateListener) error

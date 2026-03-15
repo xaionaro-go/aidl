@@ -48,8 +48,8 @@ type IContextHubService interface {
 	GetNanoAppInstanceInfo(ctx context.Context, nanoAppHandle int32) (NanoAppInstanceInfo, error)
 	FindNanoAppOnHub(ctx context.Context, contextHubHandle int32, filter NanoAppFilter) ([]int32, error)
 	SendMessage(ctx context.Context, contextHubHandle int32, nanoAppHandle int32, msg ContextHubMessage) (int32, error)
-	CreateClient(ctx context.Context, contextHubId int32, client IContextHubClientCallback, attributionTag string, packageName string) (IContextHubClient, error)
-	CreatePendingIntentClient(ctx context.Context, contextHubId int32, pendingIntent interface{}, nanoAppId int64, attributionTag string) (IContextHubClient, error)
+	CreateClient(ctx context.Context, contextHubId int32, client IContextHubClientCallback, packageName string) (IContextHubClient, error)
+	CreatePendingIntentClient(ctx context.Context, contextHubId int32, pendingIntent interface{}, nanoAppId int64) (IContextHubClient, error)
 	GetContextHubs(ctx context.Context) ([]ContextHubInfo, error)
 	GetHubs(ctx context.Context) ([]HubInfo, error)
 	LoadNanoAppOnHub(ctx context.Context, contextHubId int32, transactionCallback IContextHubTransactionCallback, nanoAppBinary NanoAppBinary) error

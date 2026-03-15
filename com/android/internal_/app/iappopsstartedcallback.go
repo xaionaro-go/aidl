@@ -16,7 +16,7 @@ const (
 
 type IAppOpsStartedCallback interface {
 	AsBinder() binder.IBinder
-	OpStarted(ctx context.Context, op int32, uid int32, packageName string, attributionTag string, virtualDeviceId int32, flags int32, mode int32, startedType int32, attributionFlags int32, attributionChainId int32) error
+	OpStarted(ctx context.Context, op int32, uid int32, packageName string, virtualDeviceId int32, flags int32, mode int32, startedType int32, attributionFlags int32, attributionChainId int32) error
 }
 
 type AppOpsStartedCallbackProxy struct {

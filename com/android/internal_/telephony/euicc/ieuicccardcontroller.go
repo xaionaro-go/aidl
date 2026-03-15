@@ -38,29 +38,29 @@ const (
 
 type IEuiccCardController interface {
 	AsBinder() binder.IBinder
-	GetAllProfiles(ctx context.Context, callingPackage string, cardId string, callback IGetAllProfilesCallback) error
-	GetProfile(ctx context.Context, callingPackage string, cardId string, iccid string, callback IGetProfileCallback) error
-	GetEnabledProfile(ctx context.Context, callingPackage string, cardId string, portIndex int32, callback IGetProfileCallback) error
-	DisableProfile(ctx context.Context, callingPackage string, cardId string, iccid string, refresh bool, callback IDisableProfileCallback) error
-	SwitchToProfile(ctx context.Context, callingPackage string, cardId string, iccid string, portIndex int32, refresh bool, callback ISwitchToProfileCallback) error
-	SetNickname(ctx context.Context, callingPackage string, cardId string, iccid string, nickname string, callback ISetNicknameCallback) error
-	DeleteProfile(ctx context.Context, callingPackage string, cardId string, iccid string, callback IDeleteProfileCallback) error
-	ResetMemory(ctx context.Context, callingPackage string, cardId string, options int32, callback IResetMemoryCallback) error
-	GetDefaultSmdpAddress(ctx context.Context, callingPackage string, cardId string, callback IGetDefaultSmdpAddressCallback) error
-	GetSmdsAddress(ctx context.Context, callingPackage string, cardId string, callback IGetSmdsAddressCallback) error
-	SetDefaultSmdpAddress(ctx context.Context, callingPackage string, cardId string, address string, callback ISetDefaultSmdpAddressCallback) error
-	GetRulesAuthTable(ctx context.Context, callingPackage string, cardId string, callback IGetRulesAuthTableCallback) error
-	GetEuiccChallenge(ctx context.Context, callingPackage string, cardId string, callback IGetEuiccChallengeCallback) error
-	GetEuiccInfo1(ctx context.Context, callingPackage string, cardId string, callback IGetEuiccInfo1Callback) error
-	GetEuiccInfo2(ctx context.Context, callingPackage string, cardId string, callback IGetEuiccInfo2Callback) error
-	AuthenticateServer(ctx context.Context, callingPackage string, cardId string, matchingId string, serverSigned1 []byte, serverSignature1 []byte, euiccCiPkIdToBeUsed []byte, serverCertificatein []byte, callback IAuthenticateServerCallback) error
-	PrepareDownload(ctx context.Context, callingPackage string, cardId string, hashCc []byte, smdpSigned2 []byte, smdpSignature2 []byte, smdpCertificate []byte, callback IPrepareDownloadCallback) error
-	LoadBoundProfilePackage(ctx context.Context, callingPackage string, cardId string, boundProfilePackage []byte, callback ILoadBoundProfilePackageCallback) error
-	CancelSession(ctx context.Context, callingPackage string, cardId string, transactionId []byte, reason int32, callback ICancelSessionCallback) error
-	ListNotifications(ctx context.Context, callingPackage string, cardId string, events int32, callback IListNotificationsCallback) error
-	RetrieveNotificationList(ctx context.Context, callingPackage string, cardId string, events int32, callback IRetrieveNotificationListCallback) error
-	RetrieveNotification(ctx context.Context, callingPackage string, cardId string, seqNumber int32, callback IRetrieveNotificationCallback) error
-	RemoveNotificationFromList(ctx context.Context, callingPackage string, cardId string, seqNumber int32, callback IRemoveNotificationFromListCallback) error
+	GetAllProfiles(ctx context.Context, cardId string, callback IGetAllProfilesCallback) error
+	GetProfile(ctx context.Context, cardId string, iccid string, callback IGetProfileCallback) error
+	GetEnabledProfile(ctx context.Context, cardId string, portIndex int32, callback IGetProfileCallback) error
+	DisableProfile(ctx context.Context, cardId string, iccid string, refresh bool, callback IDisableProfileCallback) error
+	SwitchToProfile(ctx context.Context, cardId string, iccid string, portIndex int32, refresh bool, callback ISwitchToProfileCallback) error
+	SetNickname(ctx context.Context, cardId string, iccid string, nickname string, callback ISetNicknameCallback) error
+	DeleteProfile(ctx context.Context, cardId string, iccid string, callback IDeleteProfileCallback) error
+	ResetMemory(ctx context.Context, cardId string, options int32, callback IResetMemoryCallback) error
+	GetDefaultSmdpAddress(ctx context.Context, cardId string, callback IGetDefaultSmdpAddressCallback) error
+	GetSmdsAddress(ctx context.Context, cardId string, callback IGetSmdsAddressCallback) error
+	SetDefaultSmdpAddress(ctx context.Context, cardId string, address string, callback ISetDefaultSmdpAddressCallback) error
+	GetRulesAuthTable(ctx context.Context, cardId string, callback IGetRulesAuthTableCallback) error
+	GetEuiccChallenge(ctx context.Context, cardId string, callback IGetEuiccChallengeCallback) error
+	GetEuiccInfo1(ctx context.Context, cardId string, callback IGetEuiccInfo1Callback) error
+	GetEuiccInfo2(ctx context.Context, cardId string, callback IGetEuiccInfo2Callback) error
+	AuthenticateServer(ctx context.Context, cardId string, matchingId string, serverSigned1 []byte, serverSignature1 []byte, euiccCiPkIdToBeUsed []byte, serverCertificatein []byte, callback IAuthenticateServerCallback) error
+	PrepareDownload(ctx context.Context, cardId string, hashCc []byte, smdpSigned2 []byte, smdpSignature2 []byte, smdpCertificate []byte, callback IPrepareDownloadCallback) error
+	LoadBoundProfilePackage(ctx context.Context, cardId string, boundProfilePackage []byte, callback ILoadBoundProfilePackageCallback) error
+	CancelSession(ctx context.Context, cardId string, transactionId []byte, reason int32, callback ICancelSessionCallback) error
+	ListNotifications(ctx context.Context, cardId string, events int32, callback IListNotificationsCallback) error
+	RetrieveNotificationList(ctx context.Context, cardId string, events int32, callback IRetrieveNotificationListCallback) error
+	RetrieveNotification(ctx context.Context, cardId string, seqNumber int32, callback IRetrieveNotificationCallback) error
+	RemoveNotificationFromList(ctx context.Context, cardId string, seqNumber int32, callback IRemoveNotificationFromListCallback) error
 }
 
 type EuiccCardControllerProxy struct {

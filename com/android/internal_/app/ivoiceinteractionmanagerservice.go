@@ -70,12 +70,12 @@ const (
 
 type IVoiceInteractionManagerService interface {
 	AsBinder() binder.IBinder
-	ShowSession(ctx context.Context, sessionArgs interface{}, flags int32, attributionTag string) error
+	ShowSession(ctx context.Context, sessionArgs interface{}, flags int32) error
 	DeliverNewSession(ctx context.Context, token binder.IBinder, session interface{}, interactor IVoiceInteractor) (bool, error)
-	ShowSessionFromSession(ctx context.Context, token binder.IBinder, sessionArgs interface{}, flags int32, attributionTag string) (bool, error)
+	ShowSessionFromSession(ctx context.Context, token binder.IBinder, sessionArgs interface{}, flags int32) (bool, error)
 	HideSessionFromSession(ctx context.Context, token binder.IBinder) (bool, error)
-	StartVoiceActivity(ctx context.Context, token binder.IBinder, intent interface{}, resolvedType string, attributionTag string) (int32, error)
-	StartAssistantActivity(ctx context.Context, token binder.IBinder, intent interface{}, resolvedType string, attributionTag string, bundle interface{}) (int32, error)
+	StartVoiceActivity(ctx context.Context, token binder.IBinder, intent interface{}, resolvedType string) (int32, error)
+	StartAssistantActivity(ctx context.Context, token binder.IBinder, intent interface{}, resolvedType string, bundle interface{}) (int32, error)
 	SetKeepAwake(ctx context.Context, token binder.IBinder, keepAwake bool) error
 	CloseSystemDialogs(ctx context.Context, token binder.IBinder) error
 	Finish(ctx context.Context, token binder.IBinder) error
@@ -89,7 +89,7 @@ type IVoiceInteractionManagerService interface {
 	IsEnrolledForKeyphrase(ctx context.Context, keyphraseId int32, bcp47Locale string) (bool, error)
 	GetEnrolledKeyphraseMetadata(ctx context.Context, keyphrase string, bcp47Locale string) (soundtrigger.KeyphraseMetadata, error)
 	GetActiveServiceComponentName(ctx context.Context) (interface{}, error)
-	ShowSessionForActiveService(ctx context.Context, args interface{}, sourceFlags int32, attributionTag string, showCallback IVoiceInteractionSessionShowCallback, activityToken binder.IBinder) (bool, error)
+	ShowSessionForActiveService(ctx context.Context, args interface{}, sourceFlags int32, showCallback IVoiceInteractionSessionShowCallback, activityToken binder.IBinder) (bool, error)
 	HideCurrentSession(ctx context.Context) error
 	LaunchVoiceAssistFromKeyguard(ctx context.Context) error
 	IsSessionRunning(ctx context.Context) (bool, error)

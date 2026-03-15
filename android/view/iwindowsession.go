@@ -60,7 +60,7 @@ const (
 type IWindowSession interface {
 	AsBinder() binder.IBinder
 	AddToDisplay(ctx context.Context, window IWindow, attrs WindowManagerLayoutParams, viewVisibility int32, layerStackId int32, requestedVisibleTypes int32, outInputChannel InputChannel, insetsState InsetsState, activeControls InsetsSourceControlArray, attachedFrame graphics.Rect, sizeCompatScale []float32) (int32, error)
-	AddToDisplayAsUser(ctx context.Context, window IWindow, attrs WindowManagerLayoutParams, viewVisibility int32, layerStackId int32, userId int32, requestedVisibleTypes int32, outInputChannel InputChannel, insetsState InsetsState, activeControls InsetsSourceControlArray, attachedFrame graphics.Rect, sizeCompatScale []float32) (int32, error)
+	AddToDisplayAsUser(ctx context.Context, window IWindow, attrs WindowManagerLayoutParams, viewVisibility int32, layerStackId int32, requestedVisibleTypes int32, outInputChannel InputChannel, insetsState InsetsState, activeControls InsetsSourceControlArray, attachedFrame graphics.Rect, sizeCompatScale []float32) (int32, error)
 	AddToDisplayWithoutInputChannel(ctx context.Context, window IWindow, attrs WindowManagerLayoutParams, viewVisibility int32, layerStackId int32, insetsState InsetsState, attachedFrame graphics.Rect, sizeCompatScale []float32) (int32, error)
 	Remove(ctx context.Context, clientToken binder.IBinder) error
 	Relayout(ctx context.Context, window IWindow, attrs WindowManagerLayoutParams, requestedWidth int32, requestedHeight int32, viewVisibility int32, flags int32, seq int32, lastSyncSeqId int32, outRelayoutResult *WindowRelayoutResult) (int32, error)

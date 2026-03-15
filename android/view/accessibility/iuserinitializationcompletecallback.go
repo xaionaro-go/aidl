@@ -16,7 +16,7 @@ const (
 
 type IUserInitializationCompleteCallback interface {
 	AsBinder() binder.IBinder
-	OnUserInitializationComplete(ctx context.Context, userId int32) error
+	OnUserInitializationComplete(ctx context.Context) error
 }
 
 type UserInitializationCompleteCallbackProxy struct {

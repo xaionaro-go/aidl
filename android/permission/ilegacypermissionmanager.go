@@ -24,15 +24,15 @@ const (
 
 type ILegacyPermissionManager interface {
 	AsBinder() binder.IBinder
-	CheckDeviceIdentifierAccess(ctx context.Context, packageName string, message string, callingFeatureId string, pid int32, uid int32) (int32, error)
-	CheckPhoneNumberAccess(ctx context.Context, packageName string, message string, callingFeatureId string, pid int32, uid int32) (int32, error)
-	GrantDefaultPermissionsToEnabledCarrierApps(ctx context.Context, packageNames []string, userId int32) error
-	GrantDefaultPermissionsToEnabledImsServices(ctx context.Context, packageNames []string, userId int32) error
-	GrantDefaultPermissionsToEnabledTelephonyDataServices(ctx context.Context, packageNames []string, userId int32) error
-	RevokeDefaultPermissionsFromDisabledTelephonyDataServices(ctx context.Context, packageNames []string, userId int32) error
-	GrantDefaultPermissionsToActiveLuiApp(ctx context.Context, packageName string, userId int32) error
-	RevokeDefaultPermissionsFromLuiApps(ctx context.Context, packageNames []string, userId int32) error
-	GrantDefaultPermissionsToCarrierServiceApp(ctx context.Context, packageName string, userId int32) error
+	CheckDeviceIdentifierAccess(ctx context.Context, packageName string, message string, pid int32, uid int32) (int32, error)
+	CheckPhoneNumberAccess(ctx context.Context, packageName string, message string, pid int32, uid int32) (int32, error)
+	GrantDefaultPermissionsToEnabledCarrierApps(ctx context.Context, packageNames []string) error
+	GrantDefaultPermissionsToEnabledImsServices(ctx context.Context, packageNames []string) error
+	GrantDefaultPermissionsToEnabledTelephonyDataServices(ctx context.Context, packageNames []string) error
+	RevokeDefaultPermissionsFromDisabledTelephonyDataServices(ctx context.Context, packageNames []string) error
+	GrantDefaultPermissionsToActiveLuiApp(ctx context.Context, packageName string) error
+	RevokeDefaultPermissionsFromLuiApps(ctx context.Context, packageNames []string) error
+	GrantDefaultPermissionsToCarrierServiceApp(ctx context.Context, packageName string) error
 }
 
 type LegacyPermissionManagerProxy struct {

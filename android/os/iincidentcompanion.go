@@ -25,7 +25,7 @@ const (
 
 type IIncidentCompanion interface {
 	AsBinder() binder.IBinder
-	AuthorizeReport(ctx context.Context, callingUid int32, callingPackage string, receiverClass string, reportId string, flags int32, callback IIncidentAuthListener) error
+	AuthorizeReport(ctx context.Context, receiverClass string, reportId string, flags int32, callback IIncidentAuthListener) error
 	CancelAuthorization(ctx context.Context, callback IIncidentAuthListener) error
 	SendReportReadyBroadcast(ctx context.Context, pkg string, cls string) error
 	GetPendingReports(ctx context.Context) ([]string, error)

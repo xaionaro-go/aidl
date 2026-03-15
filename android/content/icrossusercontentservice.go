@@ -18,7 +18,7 @@ const (
 type ICrossUserContentService interface {
 	AsBinder() binder.IBinder
 	UpdateContent(ctx context.Context, uri interface{}, key string, value int32) error
-	NotifyForUriAsUser(ctx context.Context, uri interface{}, userId int32) error
+	NotifyForUriAsUser(ctx context.Context, uri interface{}) error
 }
 
 type CrossUserContentServiceProxy struct {

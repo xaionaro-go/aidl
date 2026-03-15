@@ -60,34 +60,34 @@ const (
 
 type IFingerprintService interface {
 	AsBinder() binder.IBinder
-	CreateTestSession(ctx context.Context, sensorId int32, callback biometrics.ITestSessionCallback, opPackageName string) (biometrics.ITestSession, error)
+	CreateTestSession(ctx context.Context, sensorId int32, callback biometrics.ITestSessionCallback) (biometrics.ITestSession, error)
 	DumpSensorServiceStateProto(ctx context.Context, sensorId int32, clearSchedulerBuffer bool) ([]byte, error)
-	GetSensorPropertiesInternal(ctx context.Context, opPackageName string) ([]FingerprintSensorPropertiesInternal, error)
-	GetSensorProperties(ctx context.Context, sensorId int32, opPackageName string) (FingerprintSensorPropertiesInternal, error)
+	GetSensorPropertiesInternal(ctx context.Context) ([]FingerprintSensorPropertiesInternal, error)
+	GetSensorProperties(ctx context.Context, sensorId int32) (FingerprintSensorPropertiesInternal, error)
 	Authenticate(ctx context.Context, token binder.IBinder, operationId int64, receiver IFingerprintServiceReceiver, options FingerprintAuthenticateOptions) (int64, error)
 	DetectFingerprint(ctx context.Context, token binder.IBinder, receiver IFingerprintServiceReceiver, options FingerprintAuthenticateOptions) (int64, error)
 	PrepareForAuthentication(ctx context.Context, token binder.IBinder, operationId int64, sensorReceiver biometrics.IBiometricSensorReceiver, options FingerprintAuthenticateOptions, requestId int64, cookie int32, allowBackgroundAuthentication bool, isForLegacyFingerprintManager bool) error
 	StartPreparedClient(ctx context.Context, sensorId int32, cookie int32) error
-	CancelAuthentication(ctx context.Context, token binder.IBinder, opPackageName string, attributionTag string, requestId int64) error
-	CancelFingerprintDetect(ctx context.Context, token binder.IBinder, opPackageName string, requestId int64) error
-	CancelAuthenticationFromService(ctx context.Context, sensorId int32, token binder.IBinder, opPackageName string, requestId int64) error
-	Enroll(ctx context.Context, token binder.IBinder, hardwareAuthToken []byte, userId int32, receiver IFingerprintServiceReceiver, opPackageName string, enrollReason int32, options FingerprintEnrollOptions) (int64, error)
+	CancelAuthentication(ctx context.Context, token binder.IBinder, requestId int64) error
+	CancelFingerprintDetect(ctx context.Context, token binder.IBinder, requestId int64) error
+	CancelAuthenticationFromService(ctx context.Context, sensorId int32, token binder.IBinder, requestId int64) error
+	Enroll(ctx context.Context, token binder.IBinder, hardwareAuthToken []byte, receiver IFingerprintServiceReceiver, enrollReason int32, options FingerprintEnrollOptions) (int64, error)
 	CancelEnrollment(ctx context.Context, token binder.IBinder, requestId int64) error
-	Remove(ctx context.Context, token binder.IBinder, fingerId int32, userId int32, receiver IFingerprintServiceReceiver, opPackageName string) error
-	RemoveAll(ctx context.Context, token binder.IBinder, userId int32, receiver IFingerprintServiceReceiver, opPackageName string) error
-	Rename(ctx context.Context, fingerId int32, userId int32, name string) error
-	GetEnrolledFingerprints(ctx context.Context, userId int32, opPackageName string, attributionTag string) ([]Fingerprint, error)
-	IsHardwareDetectedDeprecated(ctx context.Context, opPackageName string, attributionTag string) (bool, error)
-	IsHardwareDetected(ctx context.Context, sensorId int32, opPackageName string) (bool, error)
-	GenerateChallenge(ctx context.Context, token binder.IBinder, sensorId int32, userId int32, receiver IFingerprintServiceReceiver, opPackageName string) error
-	RevokeChallenge(ctx context.Context, token binder.IBinder, sensorId int32, userId int32, opPackageName string, challenge int64) error
-	HasEnrolledFingerprintsDeprecated(ctx context.Context, userId int32, opPackageName string, attributionTag string) (bool, error)
-	HasEnrolledFingerprints(ctx context.Context, sensorId int32, userId int32, opPackageName string) (bool, error)
-	GetLockoutModeForUser(ctx context.Context, sensorId int32, userId int32) (int32, error)
-	InvalidateAuthenticatorId(ctx context.Context, sensorId int32, userId int32, callback biometrics.IInvalidationCallback) error
-	GetAuthenticatorId(ctx context.Context, sensorId int32, callingUserId int32) (int64, error)
-	ResetLockout(ctx context.Context, token binder.IBinder, sensorId int32, userId int32, hardwareAuthToken []byte, opPackageNAame string) error
-	AddLockoutResetCallback(ctx context.Context, callback biometrics.IBiometricServiceLockoutResetCallback, opPackageName string) error
+	Remove(ctx context.Context, token binder.IBinder, fingerId int32, receiver IFingerprintServiceReceiver) error
+	RemoveAll(ctx context.Context, token binder.IBinder, receiver IFingerprintServiceReceiver) error
+	Rename(ctx context.Context, fingerId int32, name string) error
+	GetEnrolledFingerprints(ctx context.Context) ([]Fingerprint, error)
+	IsHardwareDetectedDeprecated(ctx context.Context) (bool, error)
+	IsHardwareDetected(ctx context.Context, sensorId int32) (bool, error)
+	GenerateChallenge(ctx context.Context, token binder.IBinder, sensorId int32, receiver IFingerprintServiceReceiver) error
+	RevokeChallenge(ctx context.Context, token binder.IBinder, sensorId int32, challenge int64) error
+	HasEnrolledFingerprintsDeprecated(ctx context.Context) (bool, error)
+	HasEnrolledFingerprints(ctx context.Context, sensorId int32) (bool, error)
+	GetLockoutModeForUser(ctx context.Context, sensorId int32) (int32, error)
+	InvalidateAuthenticatorId(ctx context.Context, sensorId int32, callback biometrics.IInvalidationCallback) error
+	GetAuthenticatorId(ctx context.Context, sensorId int32) (int64, error)
+	ResetLockout(ctx context.Context, token binder.IBinder, sensorId int32, hardwareAuthToken []byte, opPackageNAame string) error
+	AddLockoutResetCallback(ctx context.Context, callback biometrics.IBiometricServiceLockoutResetCallback) error
 	IsClientActive(ctx context.Context) (bool, error)
 	AddClientActiveCallback(ctx context.Context, callback IFingerprintClientActiveCallback) error
 	RemoveClientActiveCallback(ctx context.Context, callback IFingerprintClientActiveCallback) error

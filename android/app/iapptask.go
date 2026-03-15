@@ -22,8 +22,8 @@ type IAppTask interface {
 	AsBinder() binder.IBinder
 	FinishAndRemoveTask(ctx context.Context) error
 	GetTaskInfo(ctx context.Context) (ActivityManagerRecentTaskInfo, error)
-	MoveToFront(ctx context.Context, appThread IApplicationThread, callingPackage string) error
-	StartActivity(ctx context.Context, whoThread binder.IBinder, callingPackage string, callingFeatureId string, intent interface{}, resolvedType string, options interface{}) (int32, error)
+	MoveToFront(ctx context.Context, appThread IApplicationThread) error
+	StartActivity(ctx context.Context, whoThread binder.IBinder, intent interface{}, resolvedType string, options interface{}) (int32, error)
 	SetExcludeFromRecents(ctx context.Context, exclude bool) error
 }
 

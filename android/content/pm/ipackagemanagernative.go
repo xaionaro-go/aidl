@@ -30,7 +30,7 @@ const (
 type IPackageManagerNative interface {
 	AsBinder() binder.IBinder
 	GetNamesForUids(ctx context.Context, uids []int32) ([]string, error)
-	GetPackageUid(ctx context.Context, packageName string, flags int64, userId int32) (int32, error)
+	GetPackageUid(ctx context.Context, packageName string, flags int64) (int32, error)
 	GetInstallerForPackage(ctx context.Context, packageName string) (string, error)
 	GetVersionCodeForPackage(ctx context.Context, packageName string) (int64, error)
 	IsAudioPlaybackCaptureAllowed(ctx context.Context, packageNames []string) ([]bool, error)

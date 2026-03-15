@@ -29,19 +29,19 @@ const (
 
 type IStorageStatsManager interface {
 	AsBinder() binder.IBinder
-	IsQuotaSupported(ctx context.Context, volumeUuid string, callingPackage string) (bool, error)
-	IsReservedSupported(ctx context.Context, volumeUuid string, callingPackage string) (bool, error)
-	GetTotalBytes(ctx context.Context, volumeUuid string, callingPackage string) (int64, error)
-	GetFreeBytes(ctx context.Context, volumeUuid string, callingPackage string) (int64, error)
-	GetCacheBytes(ctx context.Context, volumeUuid string, callingPackage string) (int64, error)
-	GetCacheQuotaBytes(ctx context.Context, volumeUuid string, uid int32, callingPackage string) (int64, error)
-	QueryStatsForPackage(ctx context.Context, volumeUuid string, packageName string, userId int32, callingPackage string) (StorageStats, error)
-	QueryStatsForUid(ctx context.Context, volumeUuid string, uid int32, callingPackage string) (StorageStats, error)
-	QueryStatsForUser(ctx context.Context, volumeUuid string, userId int32, callingPackage string) (StorageStats, error)
-	QueryExternalStatsForUser(ctx context.Context, volumeUuid string, userId int32, callingPackage string) (ExternalStorageStats, error)
-	QueryCratesForPackage(ctx context.Context, volumeUuid string, packageName string, userId int32, callingPackage string) (pm.ParceledListSlice, error)
-	QueryCratesForUid(ctx context.Context, volumeUuid string, uid int32, callingPackage string) (pm.ParceledListSlice, error)
-	QueryCratesForUser(ctx context.Context, volumeUuid string, userId int32, callingPackage string) (pm.ParceledListSlice, error)
+	IsQuotaSupported(ctx context.Context, volumeUuid string) (bool, error)
+	IsReservedSupported(ctx context.Context, volumeUuid string) (bool, error)
+	GetTotalBytes(ctx context.Context, volumeUuid string) (int64, error)
+	GetFreeBytes(ctx context.Context, volumeUuid string) (int64, error)
+	GetCacheBytes(ctx context.Context, volumeUuid string) (int64, error)
+	GetCacheQuotaBytes(ctx context.Context, volumeUuid string, uid int32) (int64, error)
+	QueryStatsForPackage(ctx context.Context, volumeUuid string, packageName string) (StorageStats, error)
+	QueryStatsForUid(ctx context.Context, volumeUuid string, uid int32) (StorageStats, error)
+	QueryStatsForUser(ctx context.Context, volumeUuid string) (StorageStats, error)
+	QueryExternalStatsForUser(ctx context.Context, volumeUuid string) (ExternalStorageStats, error)
+	QueryCratesForPackage(ctx context.Context, volumeUuid string, packageName string) (pm.ParceledListSlice, error)
+	QueryCratesForUid(ctx context.Context, volumeUuid string, uid int32) (pm.ParceledListSlice, error)
+	QueryCratesForUser(ctx context.Context, volumeUuid string) (pm.ParceledListSlice, error)
 }
 
 type StorageStatsManagerProxy struct {

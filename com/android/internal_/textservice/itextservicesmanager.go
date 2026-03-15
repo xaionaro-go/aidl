@@ -23,12 +23,12 @@ const (
 
 type ITextServicesManager interface {
 	AsBinder() binder.IBinder
-	GetCurrentSpellChecker(ctx context.Context, userId int32, locale string) (viewTextservice.SpellCheckerInfo, error)
-	GetCurrentSpellCheckerSubtype(ctx context.Context, userId int32, allowImplicitlySelectedSubtype bool) (viewTextservice.SpellCheckerSubtype, error)
-	GetSpellCheckerService(ctx context.Context, userId int32, sciId string, locale string, tsListener ITextServicesSessionListener, scListener ISpellCheckerSessionListener, bundle os.Bundle, supportedAttributes int32) error
-	FinishSpellCheckerService(ctx context.Context, userId int32, listener ISpellCheckerSessionListener) error
-	IsSpellCheckerEnabled(ctx context.Context, userId int32) (bool, error)
-	GetEnabledSpellCheckers(ctx context.Context, userId int32) ([]viewTextservice.SpellCheckerInfo, error)
+	GetCurrentSpellChecker(ctx context.Context, locale string) (viewTextservice.SpellCheckerInfo, error)
+	GetCurrentSpellCheckerSubtype(ctx context.Context, allowImplicitlySelectedSubtype bool) (viewTextservice.SpellCheckerSubtype, error)
+	GetSpellCheckerService(ctx context.Context, sciId string, locale string, tsListener ITextServicesSessionListener, scListener ISpellCheckerSessionListener, bundle os.Bundle, supportedAttributes int32) error
+	FinishSpellCheckerService(ctx context.Context, listener ISpellCheckerSessionListener) error
+	IsSpellCheckerEnabled(ctx context.Context) (bool, error)
+	GetEnabledSpellCheckers(ctx context.Context) ([]viewTextservice.SpellCheckerInfo, error)
 }
 
 type TextServicesManagerProxy struct {

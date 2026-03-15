@@ -463,11 +463,11 @@ const (
 type ITelephony interface {
 	AsBinder() binder.IBinder
 	Dial(ctx context.Context, number string) error
-	Call(ctx context.Context, callingPackage string, number string) error
-	IsRadioOn(ctx context.Context, callingPackage string) (bool, error)
-	IsRadioOnWithFeature(ctx context.Context, callingPackage string, callingFeatureId string) (bool, error)
-	IsRadioOnForSubscriber(ctx context.Context, subId int32, callingPackage string) (bool, error)
-	IsRadioOnForSubscriberWithFeature(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (bool, error)
+	Call(ctx context.Context, number string) error
+	IsRadioOn(ctx context.Context) (bool, error)
+	IsRadioOnWithFeature(ctx context.Context) (bool, error)
+	IsRadioOnForSubscriber(ctx context.Context, subId int32) (bool, error)
+	IsRadioOnForSubscriberWithFeature(ctx context.Context, subId int32) (bool, error)
 	SetCallComposerStatus(ctx context.Context, subId int32, status int32) error
 	GetCallComposerStatus(ctx context.Context, subId int32) (int32, error)
 	SupplyPinForSubscriber(ctx context.Context, subId int32, pin string) (bool, error)
@@ -484,65 +484,65 @@ type ITelephony interface {
 	SetRadioPower(ctx context.Context, turnOn bool) (bool, error)
 	RequestRadioPowerOffForReason(ctx context.Context, subId int32, reason int32) (bool, error)
 	ClearRadioPowerOffForReason(ctx context.Context, subId int32, reason int32) (bool, error)
-	GetRadioPowerOffReasons(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) ([]interface{}, error)
+	GetRadioPowerOffReasons(ctx context.Context, subId int32) ([]interface{}, error)
 	UpdateServiceLocation(ctx context.Context) error
 	UpdateServiceLocationWithPackageName(ctx context.Context, callingPkg string) error
 	EnableLocationUpdates(ctx context.Context) error
 	DisableLocationUpdates(ctx context.Context) error
-	EnableDataConnectivity(ctx context.Context, callingPackage string) (bool, error)
-	DisableDataConnectivity(ctx context.Context, callingPackage string) (bool, error)
+	EnableDataConnectivity(ctx context.Context) (bool, error)
+	DisableDataConnectivity(ctx context.Context) (bool, error)
 	IsDataConnectivityPossible(ctx context.Context, subId int32) (bool, error)
-	GetCellLocation(ctx context.Context, callingPkg string, callingFeatureId string) (network.CellIdentity, error)
+	GetCellLocation(ctx context.Context, callingPkg string) (network.CellIdentity, error)
 	GetNetworkCountryIsoForPhone(ctx context.Context, phoneId int32) (string, error)
-	GetNeighboringCellInfo(ctx context.Context, callingPkg string, callingFeatureId string) ([]androidTelephony.NeighboringCellInfo, error)
+	GetNeighboringCellInfo(ctx context.Context, callingPkg string) ([]androidTelephony.NeighboringCellInfo, error)
 	GetCallState(ctx context.Context) (int32, error)
-	GetCallStateForSubscription(ctx context.Context, subId int32, callingPackage string, featureId string) (int32, error)
+	GetCallStateForSubscription(ctx context.Context, subId int32, featureId string) (int32, error)
 	GetDataActivity(ctx context.Context) (int32, error)
 	GetDataActivityForSubId(ctx context.Context, subId int32) (int32, error)
 	GetDataState(ctx context.Context) (int32, error)
 	GetDataStateForSubId(ctx context.Context, subId int32) (int32, error)
 	GetActivePhoneType(ctx context.Context) (int32, error)
 	GetActivePhoneTypeForSlot(ctx context.Context, slotIndex int32) (int32, error)
-	GetCdmaEriIconIndex(ctx context.Context, callingPackage string, callingFeatureId string) (int32, error)
-	GetCdmaEriIconIndexForSubscriber(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (int32, error)
-	GetCdmaEriIconMode(ctx context.Context, callingPackage string, callingFeatureId string) (int32, error)
-	GetCdmaEriIconModeForSubscriber(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (int32, error)
-	GetCdmaEriText(ctx context.Context, callingPackage string, callingFeatureId string) (string, error)
-	GetCdmaEriTextForSubscriber(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (string, error)
+	GetCdmaEriIconIndex(ctx context.Context) (int32, error)
+	GetCdmaEriIconIndexForSubscriber(ctx context.Context, subId int32) (int32, error)
+	GetCdmaEriIconMode(ctx context.Context) (int32, error)
+	GetCdmaEriIconModeForSubscriber(ctx context.Context, subId int32) (int32, error)
+	GetCdmaEriText(ctx context.Context) (string, error)
+	GetCdmaEriTextForSubscriber(ctx context.Context, subId int32) (string, error)
 	NeedsOtaServiceProvisioning(ctx context.Context) (bool, error)
 	SetVoiceMailNumber(ctx context.Context, subId int32, alphaTag string, number string) (bool, error)
 	SetVoiceActivationState(ctx context.Context, subId int32, activationState int32) error
 	SetDataActivationState(ctx context.Context, subId int32, activationState int32) error
-	GetVoiceActivationState(ctx context.Context, subId int32, callingPackage string) (int32, error)
-	GetDataActivationState(ctx context.Context, subId int32, callingPackage string) (int32, error)
-	GetVoiceMessageCountForSubscriber(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (int32, error)
+	GetVoiceActivationState(ctx context.Context, subId int32) (int32, error)
+	GetDataActivationState(ctx context.Context, subId int32) (int32, error)
+	GetVoiceMessageCountForSubscriber(ctx context.Context, subId int32) (int32, error)
 	IsConcurrentVoiceAndDataAllowed(ctx context.Context, subId int32) (bool, error)
-	GetVisualVoicemailSettings(ctx context.Context, callingPackage string, subId int32) (os.Bundle, error)
-	GetVisualVoicemailPackageName(ctx context.Context, callingPackage string, callingFeatureId string, subId int32) (string, error)
-	EnableVisualVoicemailSmsFilter(ctx context.Context, callingPackage string, subId int32, settings androidTelephony.VisualVoicemailSmsFilterSettings) error
-	DisableVisualVoicemailSmsFilter(ctx context.Context, callingPackage string, subId int32) error
-	GetVisualVoicemailSmsFilterSettings(ctx context.Context, callingPackage string, subId int32) (androidTelephony.VisualVoicemailSmsFilterSettings, error)
+	GetVisualVoicemailSettings(ctx context.Context, subId int32) (os.Bundle, error)
+	GetVisualVoicemailPackageName(ctx context.Context, subId int32) (string, error)
+	EnableVisualVoicemailSmsFilter(ctx context.Context, subId int32, settings androidTelephony.VisualVoicemailSmsFilterSettings) error
+	DisableVisualVoicemailSmsFilter(ctx context.Context, subId int32) error
+	GetVisualVoicemailSmsFilterSettings(ctx context.Context, subId int32) (androidTelephony.VisualVoicemailSmsFilterSettings, error)
 	GetActiveVisualVoicemailSmsFilterSettings(ctx context.Context, subId int32) (androidTelephony.VisualVoicemailSmsFilterSettings, error)
-	SendVisualVoicemailSmsForSubscriber(ctx context.Context, callingPackage string, callingAttributeTag string, subId int32, number string, port int32, text string, sentIntent app.PendingIntent) error
+	SendVisualVoicemailSmsForSubscriber(ctx context.Context, callingAttributeTag string, subId int32, number string, port int32, text string, sentIntent app.PendingIntent) error
 	SendDialerSpecialCode(ctx context.Context, callingPackageName string, inputCode string) error
-	GetNetworkTypeForSubscriber(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (int32, error)
-	GetDataNetworkType(ctx context.Context, callingPackage string, callingFeatureId string) (int32, error)
-	GetDataNetworkTypeForSubscriber(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (int32, error)
-	GetVoiceNetworkTypeForSubscriber(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (int32, error)
+	GetNetworkTypeForSubscriber(ctx context.Context, subId int32) (int32, error)
+	GetDataNetworkType(ctx context.Context) (int32, error)
+	GetDataNetworkTypeForSubscriber(ctx context.Context, subId int32) (int32, error)
+	GetVoiceNetworkTypeForSubscriber(ctx context.Context, subId int32) (int32, error)
 	HasIccCard(ctx context.Context) (bool, error)
 	HasIccCardUsingSlotIndex(ctx context.Context, slotIndex int32) (bool, error)
-	GetLteOnCdmaMode(ctx context.Context, callingPackage string, callingFeatureId string) (int32, error)
-	GetLteOnCdmaModeForSubscriber(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (int32, error)
-	GetAllCellInfo(ctx context.Context, callingPkg string, callingFeatureId string) ([]network.CellInfo, error)
-	RequestCellInfoUpdate(ctx context.Context, subId int32, cb androidTelephony.ICellInfoCallback, callingPkg string, callingFeatureId string) error
-	RequestCellInfoUpdateWithWorkSource(ctx context.Context, subId int32, cb androidTelephony.ICellInfoCallback, callingPkg string, callingFeatureId string, ws interface{}) error
+	GetLteOnCdmaMode(ctx context.Context) (int32, error)
+	GetLteOnCdmaModeForSubscriber(ctx context.Context, subId int32) (int32, error)
+	GetAllCellInfo(ctx context.Context, callingPkg string) ([]network.CellInfo, error)
+	RequestCellInfoUpdate(ctx context.Context, subId int32, cb androidTelephony.ICellInfoCallback, callingPkg string) error
+	RequestCellInfoUpdateWithWorkSource(ctx context.Context, subId int32, cb androidTelephony.ICellInfoCallback, callingPkg string, ws interface{}) error
 	SetCellInfoListRate(ctx context.Context, rateInMillis int32, subId int32) error
 	IccOpenLogicalChannel(ctx context.Context, request IccLogicalChannelRequest) (androidTelephony.IccOpenLogicalChannelResponse, error)
 	IccCloseLogicalChannel(ctx context.Context, request IccLogicalChannelRequest) (bool, error)
 	IccTransmitApduLogicalChannelByPort(ctx context.Context, slotIndex int32, portIndex int32, channel int32, cla int32, instruction int32, p1 int32, p2 int32, p3 int32, data string) (string, error)
 	IccTransmitApduLogicalChannel(ctx context.Context, subId int32, channel int32, cla int32, instruction int32, p1 int32, p2 int32, p3 int32, data string) (string, error)
-	IccTransmitApduBasicChannelByPort(ctx context.Context, slotIndex int32, portIndex int32, callingPackage string, cla int32, instruction int32, p1 int32, p2 int32, p3 int32, data string) (string, error)
-	IccTransmitApduBasicChannel(ctx context.Context, subId int32, callingPackage string, cla int32, instruction int32, p1 int32, p2 int32, p3 int32, data string) (string, error)
+	IccTransmitApduBasicChannelByPort(ctx context.Context, slotIndex int32, portIndex int32, cla int32, instruction int32, p1 int32, p2 int32, p3 int32, data string) (string, error)
+	IccTransmitApduBasicChannel(ctx context.Context, subId int32, cla int32, instruction int32, p1 int32, p2 int32, p3 int32, data string) (string, error)
 	IccExchangeSimIO(ctx context.Context, subId int32, fileID int32, command int32, p1 int32, p2 int32, p3 int32, filePath string) ([]byte, error)
 	SendEnvelopeWithStatus(ctx context.Context, subId int32, content string) (string, error)
 	NvReadItem(ctx context.Context, itemID int32) (string, error)
@@ -559,13 +559,13 @@ type ITelephony interface {
 	UnregisterImsFeatureCallback(ctx context.Context, callback internal.IImsServiceFeatureCallback) error
 	GetImsRegistration(ctx context.Context, slotId int32, feature int32) (interface{}, error)
 	GetImsConfig(ctx context.Context, slotId int32, feature int32) (interface{}, error)
-	SetBoundImsServiceOverride(ctx context.Context, slotIndex int32, userId int32, isCarrierService bool, featureTypes []int32, packageName string) (bool, error)
+	SetBoundImsServiceOverride(ctx context.Context, slotIndex int32, isCarrierService bool, featureTypes []int32, packageName string) (bool, error)
 	ClearCarrierImsServiceOverride(ctx context.Context, slotIndex int32) (bool, error)
 	GetBoundImsServicePackage(ctx context.Context, slotIndex int32, isCarrierImsService bool, featureType int32) (string, error)
 	GetImsMmTelFeatureState(ctx context.Context, subId int32, callback IIntegerConsumer) error
 	SetNetworkSelectionModeAutomatic(ctx context.Context, subId int32) error
-	GetCellNetworkScanResults(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (CellNetworkScanResult, error)
-	RequestNetworkScan(ctx context.Context, subId int32, renounceFineLocationAccess bool, request network.NetworkScanRequest, messenger os.Messenger, binder_ binder.IBinder, callingPackage string, callingFeatureId string) (int32, error)
+	GetCellNetworkScanResults(ctx context.Context, subId int32) (CellNetworkScanResult, error)
+	RequestNetworkScan(ctx context.Context, subId int32, renounceFineLocationAccess bool, request network.NetworkScanRequest, messenger os.Messenger, binder_ binder.IBinder) (int32, error)
 	StopNetworkScan(ctx context.Context, subId int32, scanId int32) error
 	SetNetworkSelectionModeManual(ctx context.Context, subId int32, operatorInfo OperatorInfo, persisSelection bool) (bool, error)
 	GetAllowedNetworkTypesForReason(ctx context.Context, subId int32, reason int32) (int64, error)
@@ -573,33 +573,33 @@ type ITelephony interface {
 	GetDataEnabled(ctx context.Context, subId int32) (bool, error)
 	IsUserDataEnabled(ctx context.Context, subId int32) (bool, error)
 	IsDataEnabled(ctx context.Context, subId int32) (bool, error)
-	SetDataEnabledForReason(ctx context.Context, subId int32, reason int32, enable bool, callingPackage string) error
+	SetDataEnabledForReason(ctx context.Context, subId int32, reason int32, enable bool) error
 	IsDataEnabledForReason(ctx context.Context, subId int32, reason int32) (bool, error)
 	IsManualNetworkSelectionAllowed(ctx context.Context, subId int32) (bool, error)
 	SetImsRegistrationState(ctx context.Context, registered bool) error
 	GetCdmaMdn(ctx context.Context, subId int32) (string, error)
 	GetCdmaMin(ctx context.Context, subId int32) (string, error)
-	RequestNumberVerification(ctx context.Context, range_ androidTelephony.PhoneNumberRange, timeoutMillis int64, callback INumberVerificationCallback, callingPackage string) error
+	RequestNumberVerification(ctx context.Context, range_ androidTelephony.PhoneNumberRange, timeoutMillis int64, callback INumberVerificationCallback) error
 	GetCarrierPrivilegeStatus(ctx context.Context, subId int32) (int32, error)
 	GetCarrierPrivilegeStatusForUid(ctx context.Context, subId int32, uid int32) (int32, error)
 	CheckCarrierPrivilegesForPackage(ctx context.Context, subId int32, pkgName string) (int32, error)
 	CheckCarrierPrivilegesForPackageAnyPhone(ctx context.Context, pkgName string) (int32, error)
 	GetCarrierPackageNamesForIntentAndPhone(ctx context.Context, intent content.Intent, phoneId int32) ([]string, error)
 	SetLine1NumberForDisplayForSubscriber(ctx context.Context, subId int32, alphaTag string, number string) (bool, error)
-	GetLine1NumberForDisplay(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (string, error)
-	GetLine1AlphaTagForDisplay(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (string, error)
-	GetMergedSubscriberIds(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) ([]string, error)
-	GetMergedImsisFromGroup(ctx context.Context, subId int32, callingPackage string) ([]string, error)
+	GetLine1NumberForDisplay(ctx context.Context, subId int32) (string, error)
+	GetLine1AlphaTagForDisplay(ctx context.Context, subId int32) (string, error)
+	GetMergedSubscriberIds(ctx context.Context, subId int32) ([]string, error)
+	GetMergedImsisFromGroup(ctx context.Context, subId int32) ([]string, error)
 	SetOperatorBrandOverride(ctx context.Context, subId int32, brand string) (bool, error)
 	SetRoamingOverride(ctx context.Context, subId int32, gsmRoamingList []string, gsmNonRoamingList []string, cdmaRoamingList []string, cdmaNonRoamingList []string) (bool, error)
 	NeedMobileRadioShutdown(ctx context.Context) (bool, error)
 	ShutdownMobileRadios(ctx context.Context) error
-	GetRadioAccessFamily(ctx context.Context, phoneId int32, callingPackage string) (int32, error)
-	UploadCallComposerPicture(ctx context.Context, subscriptionId int32, callingPackage string, contentType string, fd int32, callback os.ResultReceiver) error
+	GetRadioAccessFamily(ctx context.Context, phoneId int32) (int32, error)
+	UploadCallComposerPicture(ctx context.Context, subscriptionId int32, contentType string, fd int32, callback os.ResultReceiver) error
 	EnableVideoCalling(ctx context.Context, enable bool) error
-	IsVideoCallingEnabled(ctx context.Context, callingPackage string, callingFeatureId string) (bool, error)
-	CanChangeDtmfToneLength(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (bool, error)
-	IsWorldPhone(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (bool, error)
+	IsVideoCallingEnabled(ctx context.Context) (bool, error)
+	CanChangeDtmfToneLength(ctx context.Context, subId int32) (bool, error)
+	IsWorldPhone(ctx context.Context, subId int32) (bool, error)
 	IsTtyModeSupported(ctx context.Context) (bool, error)
 	IsRttSupported(ctx context.Context, subscriptionId int32) (bool, error)
 	IsHearingAidCompatibilitySupported(ctx context.Context) (bool, error)
@@ -607,24 +607,24 @@ type ITelephony interface {
 	IsWifiCallingAvailable(ctx context.Context, subId int32) (bool, error)
 	IsVideoTelephonyAvailable(ctx context.Context, subId int32) (bool, error)
 	GetImsRegTechnologyForMmTel(ctx context.Context, subId int32) (int32, error)
-	GetDeviceId(ctx context.Context, callingPackage string) (string, error)
-	GetDeviceIdWithFeature(ctx context.Context, callingPackage string, callingFeatureId string) (string, error)
-	GetImeiForSlot(ctx context.Context, slotIndex int32, callingPackage string, callingFeatureId string) (string, error)
-	GetPrimaryImei(ctx context.Context, callingPackage string, callingFeatureId string) (string, error)
+	GetDeviceId(ctx context.Context) (string, error)
+	GetDeviceIdWithFeature(ctx context.Context) (string, error)
+	GetImeiForSlot(ctx context.Context, slotIndex int32) (string, error)
+	GetPrimaryImei(ctx context.Context) (string, error)
 	GetTypeAllocationCodeForSlot(ctx context.Context, slotIndex int32) (string, error)
-	GetMeidForSlot(ctx context.Context, slotIndex int32, callingPackage string, callingFeatureId string) (string, error)
+	GetMeidForSlot(ctx context.Context, slotIndex int32) (string, error)
 	GetManufacturerCodeForSlot(ctx context.Context, slotIndex int32) (string, error)
-	GetDeviceSoftwareVersionForSlot(ctx context.Context, slotIndex int32, callingPackage string, callingFeatureId string) (string, error)
-	GetSubIdForPhoneAccountHandle(ctx context.Context, phoneAccountHandle telecom.PhoneAccountHandle, callingPackage string, callingFeatureId string) (int32, error)
+	GetDeviceSoftwareVersionForSlot(ctx context.Context, slotIndex int32) (string, error)
+	GetSubIdForPhoneAccountHandle(ctx context.Context, phoneAccountHandle telecom.PhoneAccountHandle) (int32, error)
 	GetPhoneAccountHandleForSubscriptionId(ctx context.Context, subscriptionId int32) (telecom.PhoneAccountHandle, error)
-	FactoryReset(ctx context.Context, subId int32, callingPackage string) error
+	FactoryReset(ctx context.Context, subId int32) error
 	GetSimLocaleForSubscriber(ctx context.Context, subId int32) (string, error)
 	RequestModemActivityInfo(ctx context.Context, result os.ResultReceiver) error
-	GetServiceStateForSlot(ctx context.Context, slotIndex int32, renounceFineLocationAccess bool, renounceCoarseLocationAccess bool, callingPackage string, callingFeatureId string) (androidTelephony.ServiceState, error)
+	GetServiceStateForSlot(ctx context.Context, slotIndex int32, renounceFineLocationAccess bool, renounceCoarseLocationAccess bool) (androidTelephony.ServiceState, error)
 	GetVoicemailRingtoneUri(ctx context.Context, accountHandle telecom.PhoneAccountHandle) (net.Uri, error)
-	SetVoicemailRingtoneUri(ctx context.Context, callingPackage string, phoneAccountHandle telecom.PhoneAccountHandle, uri net.Uri) error
+	SetVoicemailRingtoneUri(ctx context.Context, phoneAccountHandle telecom.PhoneAccountHandle, uri net.Uri) error
 	IsVoicemailVibrationEnabled(ctx context.Context, accountHandle telecom.PhoneAccountHandle) (bool, error)
-	SetVoicemailVibrationEnabled(ctx context.Context, callingPackage string, phoneAccountHandle telecom.PhoneAccountHandle, enabled bool) error
+	SetVoicemailVibrationEnabled(ctx context.Context, phoneAccountHandle telecom.PhoneAccountHandle, enabled bool) error
 	GetPackagesWithCarrierPrivileges(ctx context.Context, phoneId int32) ([]string, error)
 	GetPackagesWithCarrierPrivilegesForAllPhones(ctx context.Context) ([]string, error)
 	GetAidForAppType(ctx context.Context, subId int32, appType int32) (string, error)
@@ -645,16 +645,16 @@ type ITelephony interface {
 	SetCallForwarding(ctx context.Context, subId int32, callForwardingInfo androidTelephony.CallForwardingInfo, callback IIntegerConsumer) error
 	GetCallWaitingStatus(ctx context.Context, subId int32, callback IIntegerConsumer) error
 	SetCallWaitingStatus(ctx context.Context, subId int32, enabled bool, callback IIntegerConsumer) error
-	GetClientRequestStats(ctx context.Context, callingPackage string, callingFeatureId string, subid int32) ([]androidTelephony.ClientRequestStats, error)
+	GetClientRequestStats(ctx context.Context, subid int32) ([]androidTelephony.ClientRequestStats, error)
 	SetSimPowerStateForSlot(ctx context.Context, slotIndex int32, state int32) error
 	SetSimPowerStateForSlotWithCallback(ctx context.Context, slotIndex int32, state int32, callback IIntegerConsumer) error
-	GetForbiddenPlmns(ctx context.Context, subId int32, appType int32, callingPackage string, callingFeatureId string) ([]string, error)
-	SetForbiddenPlmns(ctx context.Context, subId int32, appType int32, fplmns []string, callingPackage string, callingFeatureId string) (int32, error)
+	GetForbiddenPlmns(ctx context.Context, subId int32, appType int32) ([]string, error)
+	SetForbiddenPlmns(ctx context.Context, subId int32, appType int32, fplmns []string) (int32, error)
 	GetEmergencyCallbackMode(ctx context.Context, subId int32) (bool, error)
 	GetSignalStrength(ctx context.Context, subId int32) (network.SignalStrength, error)
-	GetCardIdForDefaultEuicc(ctx context.Context, subId int32, callingPackage string) (int32, error)
-	GetUiccCardsInfo(ctx context.Context, callingPackage string) ([]androidTelephony.UiccCardInfo, error)
-	GetUiccSlotsInfo(ctx context.Context, callingPackage string) ([]androidTelephony.UiccSlotInfo, error)
+	GetCardIdForDefaultEuicc(ctx context.Context, subId int32) (int32, error)
+	GetUiccCardsInfo(ctx context.Context) ([]androidTelephony.UiccCardInfo, error)
+	GetUiccSlotsInfo(ctx context.Context) ([]androidTelephony.UiccSlotInfo, error)
 	SwitchSlots(ctx context.Context, physicalSlots []int32) (bool, error)
 	SetSimSlotMapping(ctx context.Context, slotMapping []androidTelephony.UiccSlotMapping) (bool, error)
 	IsDataRoamingEnabled(ctx context.Context, subId int32) (bool, error)
@@ -664,13 +664,13 @@ type ITelephony interface {
 	GetCdmaSubscriptionMode(ctx context.Context, subId int32) (int32, error)
 	SetCdmaSubscriptionMode(ctx context.Context, subId int32, mode int32) (bool, error)
 	SetCarrierTestOverride(ctx context.Context, subId int32, mccmnc string, imsi string, iccid string, gid1 string, gid2 string, plmn string, spn string, carrierPrivilegeRules string, apn string) error
-	SetCarrierServicePackageOverride(ctx context.Context, subId int32, carrierServicePackage string, callingPackage string) error
+	SetCarrierServicePackageOverride(ctx context.Context, subId int32, carrierServicePackage string) error
 	GetCarrierIdListVersion(ctx context.Context, subId int32) (int32, error)
 	RefreshUiccProfile(ctx context.Context, subId int32) error
-	GetNumberOfModemsWithSimultaneousDataConnections(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (int32, error)
+	GetNumberOfModemsWithSimultaneousDataConnections(ctx context.Context, subId int32) (int32, error)
 	GetNetworkSelectionMode(ctx context.Context, subId int32) (int32, error)
 	IsInEmergencySmsMode(ctx context.Context) (bool, error)
-	GetRadioPowerState(ctx context.Context, slotIndex int32, callingPackage string, callingFeatureId string) (int32, error)
+	GetRadioPowerState(ctx context.Context, slotIndex int32) (int32, error)
 	RegisterImsRegistrationCallback(ctx context.Context, subId int32, c interface{}) error
 	UnregisterImsRegistrationCallback(ctx context.Context, subId int32, c interface{}) error
 	RegisterImsEmergencyRegistrationCallback(ctx context.Context, subId int32, c interface{}) error
@@ -699,7 +699,7 @@ type ITelephony interface {
 	SetVoWiFiRoamingModeSetting(ctx context.Context, subId int32, mode int32) error
 	SetRttCapabilitySetting(ctx context.Context, subId int32, isEnabled bool) error
 	IsTtyOverVolteEnabled(ctx context.Context, subId int32) (bool, error)
-	GetEmergencyNumberList(ctx context.Context, callingPackage string, callingFeatureId string) (map[interface{}]interface{}, error)
+	GetEmergencyNumberList(ctx context.Context) (map[interface{}]interface{}, error)
 	IsEmergencyNumber(ctx context.Context, number string, exactMatch bool) (bool, error)
 	GetCertsFromCarrierPrivilegeAccessRules(ctx context.Context, subId int32) ([]string, error)
 	RegisterImsProvisioningChangedCallback(ctx context.Context, subId int32, callback interface{}) error
@@ -723,21 +723,21 @@ type ITelephony interface {
 	ResetOtaEmergencyNumberDbFilePath(ctx context.Context) error
 	EnableModemForSlot(ctx context.Context, slotIndex int32, enable bool) (bool, error)
 	SetMultiSimCarrierRestriction(ctx context.Context, isMultiSimCarrierRestricted bool) error
-	IsMultiSimSupported(ctx context.Context, callingPackage string, callingFeatureId string) (int32, error)
+	IsMultiSimSupported(ctx context.Context) (int32, error)
 	SwitchMultiSimConfig(ctx context.Context, numOfSims int32) error
-	DoesSwitchMultiSimConfigTriggerReboot(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (bool, error)
-	GetSlotsMapping(ctx context.Context, callingPackage string) ([]androidTelephony.UiccSlotMapping, error)
+	DoesSwitchMultiSimConfigTriggerReboot(ctx context.Context, subId int32) (bool, error)
+	GetSlotsMapping(ctx context.Context) ([]androidTelephony.UiccSlotMapping, error)
 	GetRadioHalVersion(ctx context.Context) (int32, error)
 	GetHalVersion(ctx context.Context, service int32) (int32, error)
 	GetCurrentPackageName(ctx context.Context) (string, error)
 	IsApplicationOnUicc(ctx context.Context, subId int32, appType int32) (bool, error)
-	IsModemEnabledForSlot(ctx context.Context, slotIndex int32, callingPackage string, callingFeatureId string) (bool, error)
-	IsDataEnabledForApn(ctx context.Context, apnType int32, subId int32, callingPackage string) (bool, error)
+	IsModemEnabledForSlot(ctx context.Context, slotIndex int32) (bool, error)
+	IsDataEnabledForApn(ctx context.Context, apnType int32, subId int32) (bool, error)
 	IsApnMetered(ctx context.Context, apnType int32, subId int32) (bool, error)
 	SetSystemSelectionChannels(ctx context.Context, specifiers []network.RadioAccessSpecifier, subId int32, resultCallback IBooleanConsumer) error
 	GetSystemSelectionChannels(ctx context.Context, subId int32) ([]network.RadioAccessSpecifier, error)
 	IsMvnoMatched(ctx context.Context, slotIndex int32, mvnoType int32, mvnoMatchData string) (bool, error)
-	EnqueueSmsPickResult(ctx context.Context, callingPackage string, callingAttributeTag string, subIdResult IIntegerConsumer) error
+	EnqueueSmsPickResult(ctx context.Context, callingAttributeTag string, subIdResult IIntegerConsumer) error
 	ShowSwitchToManagedProfileDialog(ctx context.Context) error
 	GetMmsUserAgent(ctx context.Context, subId int32) (string, error)
 	GetMmsUAProfUrl(ctx context.Context, subId int32) (string, error)
@@ -752,13 +752,13 @@ type ITelephony interface {
 	UserActivity(ctx context.Context) error
 	GetManualNetworkSelectionPlmn(ctx context.Context, subId int32) (string, error)
 	CanConnectTo5GInDsdsMode(ctx context.Context) (bool, error)
-	GetEquivalentHomePlmns(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) ([]string, error)
+	GetEquivalentHomePlmns(ctx context.Context, subId int32) ([]string, error)
 	SetVoNrEnabled(ctx context.Context, subId int32, enabled bool) (int32, error)
 	IsVoNrEnabled(ctx context.Context, subId int32) (bool, error)
 	SetNrDualConnectivityState(ctx context.Context, subId int32, nrDualConnectivityState int32) (int32, error)
 	IsNrDualConnectivityEnabled(ctx context.Context, subId int32) (bool, error)
 	IsRadioInterfaceCapabilitySupported(ctx context.Context, capability string) (bool, error)
-	SendThermalMitigationRequest(ctx context.Context, subId int32, thermalMitigationRequest androidTelephony.ThermalMitigationRequest, callingPackage string) (int32, error)
+	SendThermalMitigationRequest(ctx context.Context, subId int32, thermalMitigationRequest androidTelephony.ThermalMitigationRequest) (int32, error)
 	BootstrapAuthenticationRequest(ctx context.Context, subId int32, appType int32, nafUrl net.Uri, securityProtocol gba.UaSecurityProtocolIdentifier, forceBootStrapping bool, callback androidTelephony.IBootstrapAuthenticationCallback) error
 	SetBoundGbaServiceOverride(ctx context.Context, subId int32, packageName string) (bool, error)
 	GetBoundGbaService(ctx context.Context, subId int32) (string, error)
@@ -793,24 +793,24 @@ type ITelephony interface {
 	GetLastUcePidfXmlShell(ctx context.Context, subId int32) (string, error)
 	RemoveUceRequestDisallowedStatus(ctx context.Context, subId int32) (bool, error)
 	SetCapabilitiesRequestTimeout(ctx context.Context, subId int32, timeoutAfterMs int64) (bool, error)
-	SetSignalStrengthUpdateRequest(ctx context.Context, subId int32, request androidTelephony.SignalStrengthUpdateRequest, callingPackage string) error
-	ClearSignalStrengthUpdateRequest(ctx context.Context, subId int32, request androidTelephony.SignalStrengthUpdateRequest, callingPackage string) error
+	SetSignalStrengthUpdateRequest(ctx context.Context, subId int32, request androidTelephony.SignalStrengthUpdateRequest) error
+	ClearSignalStrengthUpdateRequest(ctx context.Context, subId int32, request androidTelephony.SignalStrengthUpdateRequest) error
 	GetPhoneCapability(ctx context.Context) (config.PhoneCapability, error)
 	PrepareForUnattendedReboot(ctx context.Context) (int32, error)
 	GetSlicingConfig(ctx context.Context, callback os.ResultReceiver) error
 	IsPremiumCapabilityAvailableForPurchase(ctx context.Context, capability int32, subId int32) (bool, error)
 	PurchasePremiumCapability(ctx context.Context, capability int32, callback IIntegerConsumer, subId int32) error
-	RegisterImsStateCallback(ctx context.Context, subId int32, feature int32, cb IImsStateCallback, callingPackage string) error
+	RegisterImsStateCallback(ctx context.Context, subId int32, feature int32, cb IImsStateCallback) error
 	UnregisterImsStateCallback(ctx context.Context, cb IImsStateCallback) error
-	GetLastKnownCellIdentity(ctx context.Context, subId int32, callingPackage string, callingFeatureId string) (network.CellIdentity, error)
+	GetLastKnownCellIdentity(ctx context.Context, subId int32) (network.CellIdentity, error)
 	SetModemService(ctx context.Context, serviceName string) (bool, error)
 	GetModemService(ctx context.Context) (string, error)
 	IsProvisioningRequiredForCapability(ctx context.Context, subId int32, capability int32, tech int32) (bool, error)
 	IsRcsProvisioningRequiredForCapability(ctx context.Context, subId int32, capability int32, tech int32) (bool, error)
-	SetVoiceServiceStateOverride(ctx context.Context, subId int32, hasService bool, callingPackage string) error
+	SetVoiceServiceStateOverride(ctx context.Context, subId int32, hasService bool) error
 	GetCarrierServicePackageNameForLogicalSlot(ctx context.Context, logicalSlotIndex int32) (string, error)
-	SetRemovableEsimAsDefaultEuicc(ctx context.Context, isDefault bool, callingPackage string) error
-	IsRemovableEsimDefaultEuicc(ctx context.Context, callingPackage string) (bool, error)
+	SetRemovableEsimAsDefaultEuicc(ctx context.Context, isDefault bool) error
+	IsRemovableEsimDefaultEuicc(ctx context.Context) (bool, error)
 	GetDefaultRespondViaMessageApplication(ctx context.Context, subId int32, updateIfNeeded bool) (content.ComponentName, error)
 	GetSimStateForSlotIndex(ctx context.Context, slotIndex int32) (int32, error)
 	PersistEmergencyCallDiagnosticData(ctx context.Context, dropboxTag string, enableLogcat bool, logcatStartTimestampMillis int64, enableTelecomDump bool, enableTelephonyDump bool) error

@@ -54,10 +54,10 @@ type IDeviceIdleController interface {
 	GetAppIdTempWhitelist(ctx context.Context) ([]int32, error)
 	IsPowerSaveWhitelistExceptIdleApp(ctx context.Context, name string) (bool, error)
 	IsPowerSaveWhitelistApp(ctx context.Context, name string) (bool, error)
-	AddPowerSaveTempWhitelistApp(ctx context.Context, name string, duration int64, userId int32, reasonCode int32, reason string) error
-	AddPowerSaveTempWhitelistAppForMms(ctx context.Context, name string, userId int32, reasonCode int32, reason string) (int64, error)
-	AddPowerSaveTempWhitelistAppForSms(ctx context.Context, name string, userId int32, reasonCode int32, reason string) (int64, error)
-	WhitelistAppTemporarily(ctx context.Context, name string, userId int32, reasonCode int32, reason string) (int64, error)
+	AddPowerSaveTempWhitelistApp(ctx context.Context, name string, duration int64, reasonCode int32, reason string) error
+	AddPowerSaveTempWhitelistAppForMms(ctx context.Context, name string, reasonCode int32, reason string) (int64, error)
+	AddPowerSaveTempWhitelistAppForSms(ctx context.Context, name string, reasonCode int32, reason string) (int64, error)
+	WhitelistAppTemporarily(ctx context.Context, name string, reasonCode int32, reason string) (int64, error)
 	ExitIdle(ctx context.Context, reason string) error
 }
 

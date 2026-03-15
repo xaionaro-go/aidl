@@ -19,9 +19,9 @@ const (
 
 type IPlatformCompatNative interface {
 	AsBinder() binder.IBinder
-	ReportChangeByPackageName(ctx context.Context, changeId int64, packageName string, userId int32) error
+	ReportChangeByPackageName(ctx context.Context, changeId int64, packageName string) error
 	ReportChangeByUid(ctx context.Context, changeId int64, uid int32) error
-	IsChangeEnabledByPackageName(ctx context.Context, changeId int64, packageName string, userId int32) (bool, error)
+	IsChangeEnabledByPackageName(ctx context.Context, changeId int64, packageName string) (bool, error)
 	IsChangeEnabledByUid(ctx context.Context, changeId int64, uid int32) (bool, error)
 }
 

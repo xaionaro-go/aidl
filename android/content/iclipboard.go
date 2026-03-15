@@ -27,18 +27,18 @@ const (
 
 type IClipboard interface {
 	AsBinder() binder.IBinder
-	SetPrimaryClip(ctx context.Context, clip ClipData, callingPackage string, attributionTag string, userId int32, deviceId int32) error
-	SetPrimaryClipAsPackage(ctx context.Context, clip ClipData, callingPackage string, attributionTag string, userId int32, deviceId int32, sourcePackage string) error
-	ClearPrimaryClip(ctx context.Context, callingPackage string, attributionTag string, userId int32, deviceId int32) error
-	GetPrimaryClip(ctx context.Context, pkg string, attributionTag string, userId int32, deviceId int32) (ClipData, error)
-	GetPrimaryClipDescription(ctx context.Context, callingPackage string, attributionTag string, userId int32, deviceId int32) (ClipDescription, error)
-	HasPrimaryClip(ctx context.Context, callingPackage string, attributionTag string, userId int32, deviceId int32) (bool, error)
-	AddPrimaryClipChangedListener(ctx context.Context, listener IOnPrimaryClipChangedListener, callingPackage string, attributionTag string, userId int32, deviceId int32) error
-	RemovePrimaryClipChangedListener(ctx context.Context, listener IOnPrimaryClipChangedListener, callingPackage string, attributionTag string, userId int32, deviceId int32) error
-	HasClipboardText(ctx context.Context, callingPackage string, attributionTag string, userId int32, deviceId int32) (bool, error)
-	GetPrimaryClipSource(ctx context.Context, callingPackage string, attributionTag string, userId int32, deviceId int32) (string, error)
-	AreClipboardAccessNotificationsEnabledForUser(ctx context.Context, userId int32) (bool, error)
-	SetClipboardAccessNotificationsEnabledForUser(ctx context.Context, enable bool, userId int32) error
+	SetPrimaryClip(ctx context.Context, clip ClipData, deviceId int32) error
+	SetPrimaryClipAsPackage(ctx context.Context, clip ClipData, deviceId int32, sourcePackage string) error
+	ClearPrimaryClip(ctx context.Context, deviceId int32) error
+	GetPrimaryClip(ctx context.Context, pkg string, deviceId int32) (ClipData, error)
+	GetPrimaryClipDescription(ctx context.Context, deviceId int32) (ClipDescription, error)
+	HasPrimaryClip(ctx context.Context, deviceId int32) (bool, error)
+	AddPrimaryClipChangedListener(ctx context.Context, listener IOnPrimaryClipChangedListener, deviceId int32) error
+	RemovePrimaryClipChangedListener(ctx context.Context, listener IOnPrimaryClipChangedListener, deviceId int32) error
+	HasClipboardText(ctx context.Context, deviceId int32) (bool, error)
+	GetPrimaryClipSource(ctx context.Context, deviceId int32) (string, error)
+	AreClipboardAccessNotificationsEnabledForUser(ctx context.Context) (bool, error)
+	SetClipboardAccessNotificationsEnabledForUser(ctx context.Context, enable bool) error
 }
 
 type ClipboardProxy struct {

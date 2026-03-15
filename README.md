@@ -30,7 +30,7 @@ sm := servicemanager.New(transport)
 
 mgr, _ := location.GetLocationManager(ctx, sm)
 loc, _ := mgr.GetLastLocation(ctx, string(location.ProviderFused),
-    location.LastLocationRequest{}, "com.android.shell", "")
+    location.LastLocationRequest{}, "com.android.shell")
 fmt.Printf("Lat: %.6f, Lon: %.6f\n", loc.LatitudeDegrees, loc.LongitudeDegrees)
 ```
 
@@ -131,7 +131,7 @@ import (
     }
 
     loc, err := mgr.GetLastLocation(ctx, string(location.ProviderFused),
-        location.LastLocationRequest{}, "com.android.shell", "")
+        location.LastLocationRequest{}, "com.android.shell")
     if err != nil {
         log.Fatal(err)
     }

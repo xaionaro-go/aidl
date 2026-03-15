@@ -17,8 +17,8 @@ const (
 
 type IArtManager interface {
 	AsBinder() binder.IBinder
-	SnapshotRuntimeProfile(ctx context.Context, profileType int32, packageName string, codePath string, callback ISnapshotRuntimeProfileCallback, callingPackage string) error
-	IsRuntimeProfilingEnabled(ctx context.Context, profileType int32, callingPackage string) (bool, error)
+	SnapshotRuntimeProfile(ctx context.Context, profileType int32, packageName string, codePath string, callback ISnapshotRuntimeProfileCallback) error
+	IsRuntimeProfilingEnabled(ctx context.Context, profileType int32) (bool, error)
 }
 
 type ArtManagerProxy struct {

@@ -25,10 +25,10 @@ const (
 
 type IIdmap2 interface {
 	AsBinder() binder.IBinder
-	GetIdmapPath(ctx context.Context, overlayApkPath string, userId int32) (string, error)
-	RemoveIdmap(ctx context.Context, overlayApkPath string, userId int32) (bool, error)
-	VerifyIdmap(ctx context.Context, targetApkPath string, overlayApkPath string, overlayName string, fulfilledPolicies int32, enforceOverlayable bool, userId int32) (bool, error)
-	CreateIdmap(ctx context.Context, targetApkPath string, overlayApkPath string, overlayName string, fulfilledPolicies int32, enforceOverlayable bool, userId int32) (string, error)
+	GetIdmapPath(ctx context.Context, overlayApkPath string) (string, error)
+	RemoveIdmap(ctx context.Context, overlayApkPath string) (bool, error)
+	VerifyIdmap(ctx context.Context, targetApkPath string, overlayApkPath string, overlayName string, fulfilledPolicies int32, enforceOverlayable bool) (bool, error)
+	CreateIdmap(ctx context.Context, targetApkPath string, overlayApkPath string, overlayName string, fulfilledPolicies int32, enforceOverlayable bool) (string, error)
 	CreateFabricatedOverlay(ctx context.Context, overlay FabricatedOverlayInternal) (FabricatedOverlayInfo, error)
 	DeleteFabricatedOverlay(ctx context.Context, path string) (bool, error)
 	AcquireFabricatedOverlayIterator(ctx context.Context) (int32, error)

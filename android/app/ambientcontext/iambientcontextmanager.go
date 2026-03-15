@@ -24,9 +24,9 @@ type IAmbientContextManager interface {
 	AsBinder() binder.IBinder
 	RegisterObserver(ctx context.Context, request AmbientContextEventRequest, resultPendingIntent app.PendingIntent, statusCallback os.RemoteCallback) error
 	RegisterObserverWithCallback(ctx context.Context, request AmbientContextEventRequest, packageName string, observer IAmbientContextObserver) error
-	UnregisterObserver(ctx context.Context, callingPackage string) error
-	QueryServiceStatus(ctx context.Context, eventTypes []int32, callingPackage string, statusCallback os.RemoteCallback) error
-	StartConsentActivity(ctx context.Context, eventTypes []int32, callingPackage string) error
+	UnregisterObserver(ctx context.Context) error
+	QueryServiceStatus(ctx context.Context, eventTypes []int32, statusCallback os.RemoteCallback) error
+	StartConsentActivity(ctx context.Context, eventTypes []int32) error
 }
 
 type AmbientContextManagerProxy struct {

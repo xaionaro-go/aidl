@@ -27,18 +27,18 @@ const (
 
 type IBiometricAuthenticator interface {
 	AsBinder() binder.IBinder
-	CreateTestSession(ctx context.Context, callback ITestSessionCallback, opPackageName string) (ITestSession, error)
-	GetSensorProperties(ctx context.Context, opPackageName string) (SensorPropertiesInternal, error)
+	CreateTestSession(ctx context.Context, callback ITestSessionCallback) (ITestSession, error)
+	GetSensorProperties(ctx context.Context) (SensorPropertiesInternal, error)
 	DumpSensorServiceStateProto(ctx context.Context, clearSchedulerBuffer bool) ([]byte, error)
-	PrepareForAuthentication(ctx context.Context, requireConfirmation bool, token binder.IBinder, operationId int64, userId int32, sensorReceiver IBiometricSensorReceiver, opPackageName string, requestId int64, cookie int32, allowBackgroundAuthentication bool, isForLegacyFingerprintManager bool, isMandatoryBiometrics bool) error
+	PrepareForAuthentication(ctx context.Context, requireConfirmation bool, token binder.IBinder, operationId int64, sensorReceiver IBiometricSensorReceiver, requestId int64, cookie int32, allowBackgroundAuthentication bool, isForLegacyFingerprintManager bool, isMandatoryBiometrics bool) error
 	StartPreparedClient(ctx context.Context, cookie int32) error
-	CancelAuthenticationFromService(ctx context.Context, token binder.IBinder, opPackageName string, requestId int64) error
-	IsHardwareDetected(ctx context.Context, opPackageName string) (bool, error)
-	HasEnrolledTemplates(ctx context.Context, userId int32, opPackageName string) (bool, error)
-	GetLockoutModeForUser(ctx context.Context, userId int32) (int32, error)
-	InvalidateAuthenticatorId(ctx context.Context, userId int32, callback IInvalidationCallback) error
-	GetAuthenticatorId(ctx context.Context, callingUserId int32) (int64, error)
-	ResetLockout(ctx context.Context, token binder.IBinder, opPackageName string, userId int32, hardwareAuthToken []byte) error
+	CancelAuthenticationFromService(ctx context.Context, token binder.IBinder, requestId int64) error
+	IsHardwareDetected(ctx context.Context) (bool, error)
+	HasEnrolledTemplates(ctx context.Context) (bool, error)
+	GetLockoutModeForUser(ctx context.Context) (int32, error)
+	InvalidateAuthenticatorId(ctx context.Context, callback IInvalidationCallback) error
+	GetAuthenticatorId(ctx context.Context) (int64, error)
+	ResetLockout(ctx context.Context, token binder.IBinder, hardwareAuthToken []byte) error
 }
 
 type BiometricAuthenticatorProxy struct {

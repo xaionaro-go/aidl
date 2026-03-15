@@ -43,7 +43,7 @@ type ISplitScreen interface {
 	ExitSplitScreenOnHide(ctx context.Context, exitSplitScreenOnHide bool) error
 	StartTask(ctx context.Context, taskId int32, position int32, options os.Bundle) error
 	StartShortcut(ctx context.Context, packageName string, shortcutId string, position int32, options os.Bundle, user os.UserHandle, instanceId logging.InstanceId) error
-	StartIntent(ctx context.Context, intent app.PendingIntent, userId int32, fillInIntent content.Intent, position int32, options os.Bundle, instanceId logging.InstanceId) error
+	StartIntent(ctx context.Context, intent app.PendingIntent, fillInIntent content.Intent, position int32, options os.Bundle, instanceId logging.InstanceId) error
 	StartTasks(ctx context.Context, taskId1 int32, options1 os.Bundle, taskId2 int32, options2 os.Bundle, splitPosition int32, snapPosition int32, remoteTransition window.RemoteTransition, instanceId logging.InstanceId) error
 	StartIntentAndTask(ctx context.Context, pendingIntent app.PendingIntent, userId1 int32, options1 os.Bundle, taskId int32, options2 os.Bundle, sidePosition int32, snapPosition int32, remoteTransition window.RemoteTransition, instanceId logging.InstanceId) error
 	StartShortcutAndTask(ctx context.Context, shortcutInfo pm.ShortcutInfo, options1 os.Bundle, taskId int32, options2 os.Bundle, splitPosition int32, snapPosition int32, remoteTransition window.RemoteTransition, instanceId logging.InstanceId) error
