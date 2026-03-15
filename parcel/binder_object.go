@@ -22,6 +22,30 @@ const (
 	flatBinderObjectSize = 24
 )
 
+// WriteLocalBinder writes a local binder object to the parcel.
+// The cookie identifies the object for incoming BR_TRANSACTION dispatch.
+// The kernel converts this to a handle in the remote process.
+func (p *Parcel) WriteLocalBinder(
+	cookie uintptr,
+) {
+	offset := uint64(p.Len())
+	p.objects = append(p.objects, offset)
+
+	buf := p.grow(flatBinderObjectSize)
+
+	// type (uint32, offset 0)
+	binary.LittleEndian.PutUint32(buf[0:], binderTypeBinder)
+
+	// flags (uint32, offset 4)
+	binary.LittleEndian.PutUint32(buf[4:], binderFlagsAcceptFDs)
+
+	// binder (binder_uintptr_t, offset 8)
+	binary.LittleEndian.PutUint64(buf[8:], uint64(cookie))
+
+	// cookie (binder_uintptr_t, offset 16)
+	binary.LittleEndian.PutUint64(buf[16:], uint64(cookie))
+}
+
 // WriteStrongBinder writes a flat_binder_object with the given handle.
 // Records the offset in the parcel's objects array.
 func (p *Parcel) WriteStrongBinder(
