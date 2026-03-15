@@ -1,5 +1,5 @@
 .PHONY: generate genversions test e2e e2e-bindercli vet build build-examples lint clean readme smoke \
-       bindercli genbindercli genservicemap genaccessors genparcelspec genparcelgo list-commands check-generated release
+       bindercli genbindercli genservicemap genaccessors genparcelspec genparcelgo genconstants list-commands check-generated release
 
 # Generated top-level directories.
 GENERATED_DIRS := android com fuzztest libgui_test_server parcelables src
@@ -86,6 +86,10 @@ genparcelgo:
 		-specs parcelspecs/ \
 		-output .
 
+# Generate typed Go constants from Java source files.
+genconstants:
+	go run ./tools/cmd/genconstants
+
 # Regenerate bindercli registry and command dispatch code.
 genbindercli:
 	go run ./tools/cmd/genbindercli
@@ -107,6 +111,7 @@ check-generated:
 	make genparcelgo
 	make genservicemap
 	make genaccessors
+	make genconstants
 	make smoke
 	make readme
 	git diff --exit-code

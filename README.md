@@ -28,7 +28,7 @@ defer driver.Close(ctx)
 transport, _ := versionaware.NewTransport(ctx, driver, 0)
 sm := servicemanager.New(transport)
 
-loc, _ := location.GetLastKnownLocation(ctx, sm, "fused")
+loc, _ := location.GetLastKnownLocation(ctx, sm, location.ProviderFused)
 fmt.Printf("Lat: %.6f, Lon: %.6f\n", loc.LatitudeDegrees, loc.LongitudeDegrees)
 ```
 
@@ -123,7 +123,7 @@ import (
     }
     sm := servicemanager.New(transport)
 
-    loc, err := location.GetLastKnownLocation(ctx, sm, "fused")
+    loc, err := location.GetLastKnownLocation(ctx, sm, location.ProviderFused)
     if err != nil {
         log.Fatal(err)
     }
@@ -238,7 +238,7 @@ See the full [bindercli reference](#bindercli) for all subcommands and more exam
 
 <!-- BEGIN GENERATED PACKAGES -->
 
-601 packages, 5493 generated Go files.
+601 packages, 5494 generated Go files.
 
 <details>
 <summary><strong>android/accessibilityservice</strong> (1 packages)</summary>
@@ -720,7 +720,7 @@ See the full [bindercli reference](#bindercli) for all subcommands and more exam
 
 | Package | Files | Import Path |
 |---|---|---|
-| [`android/location`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/location) | 72 | `github.com/xaionaro-go/binder/android/location` |
+| [`android/location`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/location) | 73 | `github.com/xaionaro-go/binder/android/location` |
 | [`android/location/provider`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/location/provider) | 12 | `github.com/xaionaro-go/binder/android/location/provider` |
 
 </details>
