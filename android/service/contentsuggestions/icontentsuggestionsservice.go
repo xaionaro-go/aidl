@@ -60,7 +60,12 @@ func (p *ContentSuggestionsServiceProxy) ProvideContextImage(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentSuggestionsService, "provideContextImage"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsService, "provideContextImage")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -76,7 +81,12 @@ func (p *ContentSuggestionsServiceProxy) SuggestContentSelections(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentSuggestionsService, "suggestContentSelections"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsService, "suggestContentSelections")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -92,7 +102,12 @@ func (p *ContentSuggestionsServiceProxy) ClassifyContentSelections(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentSuggestionsService, "classifyContentSelections"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsService, "classifyContentSelections")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -108,6 +123,11 @@ func (p *ContentSuggestionsServiceProxy) NotifyInteraction(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentSuggestionsService, "notifyInteraction"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsService, "notifyInteraction")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

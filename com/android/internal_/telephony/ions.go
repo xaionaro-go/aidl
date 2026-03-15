@@ -55,7 +55,12 @@ func (p *OnsProxy) SetEnable(
 	_data.WriteBool(enable)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOns, "setEnable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOns, "setEnable")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -81,7 +86,12 @@ func (p *OnsProxy) IsEnabled(
 	_data.WriteInterfaceToken(DescriptorIOns)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOns, "isEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOns, "isEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -112,7 +122,12 @@ func (p *OnsProxy) SetPreferredDataSubscriptionId(
 	_data.WriteStrongBinder(callbackStub.AsBinder().Handle())
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOns, "setPreferredDataSubscriptionId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOns, "setPreferredDataSubscriptionId")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -136,7 +151,12 @@ func (p *OnsProxy) GetPreferredDataSubscriptionId(
 	_data.WriteString16(callingPackage)
 	_data.WriteString16(callingFeatureId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOns, "getPreferredDataSubscriptionId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOns, "getPreferredDataSubscriptionId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -174,7 +194,12 @@ func (p *OnsProxy) UpdateAvailableNetworks(
 	_data.WriteStrongBinder(callbackStub.AsBinder().Handle())
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOns, "updateAvailableNetworks"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOns, "updateAvailableNetworks")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

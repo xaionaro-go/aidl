@@ -51,7 +51,12 @@ func (p *NetworkServiceProxy) CreateNetworkServiceProvider(
 	_data.WriteInterfaceToken(DescriptorINetworkService)
 	_data.WriteInt32(slotId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkService, "createNetworkServiceProvider"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkService, "createNetworkServiceProvider")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -63,7 +68,12 @@ func (p *NetworkServiceProxy) RemoveNetworkServiceProvider(
 	_data.WriteInterfaceToken(DescriptorINetworkService)
 	_data.WriteInt32(slotId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkService, "removeNetworkServiceProvider"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkService, "removeNetworkServiceProvider")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -79,7 +89,12 @@ func (p *NetworkServiceProxy) RequestNetworkRegistrationInfo(
 	_data.WriteInt32(domain)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkService, "requestNetworkRegistrationInfo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkService, "requestNetworkRegistrationInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -93,7 +108,12 @@ func (p *NetworkServiceProxy) RegisterForNetworkRegistrationInfoChanged(
 	_data.WriteInt32(slotId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkService, "registerForNetworkRegistrationInfoChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkService, "registerForNetworkRegistrationInfoChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -107,6 +127,11 @@ func (p *NetworkServiceProxy) UnregisterForNetworkRegistrationInfoChanged(
 	_data.WriteInt32(slotId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkService, "unregisterForNetworkRegistrationInfoChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkService, "unregisterForNetworkRegistrationInfoChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

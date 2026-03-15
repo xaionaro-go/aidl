@@ -8,22 +8,21 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/xaionaro-go/aidl/binder"
 	"github.com/xaionaro-go/aidl/tools/pkg/parser"
 )
 
-// apiLevelTag maps Android API levels to the AOSP git tags used for
-// checking out the corresponding source code.
-// apiLevelTag maps Android API levels to the AOSP git tags.
-// Use the latest patch release for each major version to match
-// shipping device firmware (e.g., Pixel 8a ships r4, not r1).
-var apiLevelTag = map[int]string{
-	34: "android-14.0.0_r75",
-	35: "android-15.0.0_r25",
-	36: "android-16.0.0_r4",
+// apiLevelMajorVersion maps Android API levels to the major.minor.patch
+// prefix used in AOSP tag names (e.g. "android-16.0.0_r4").
+var apiLevelMajorVersion = map[int]string{
+	34: "14.0.0",
+	35: "15.0.0",
+	36: "16.0.0",
 }
 
 // submoduleNames lists the 3rdparty submodule directory basenames.
@@ -44,6 +43,18 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
 	}
+}
+
+// revisionTag represents a single AOSP revision tag.
+type revisionTag struct {
+	APILevel int
+	Revision int    // e.g., 4 for "android-16.0.0_r4"
+	Tag      string // e.g., "android-16.0.0_r4"
+}
+
+// versionID returns the version string like "36.r4".
+func (r revisionTag) versionID() string {
+	return fmt.Sprintf("%d.r%d", r.APILevel, r.Revision)
 }
 
 func run(
@@ -74,33 +85,74 @@ func run(
 	// Ensure submodules are restored regardless of how we exit.
 	defer restoreCommits(submoduleDirs, originalCommits)
 
-	// Collect sorted API levels for deterministic iteration.
+	// Discover all revision tags for each API level.
 	apiLevels := sortedAPILevels()
+	allRevTags, err := discoverRevisionTags(submoduleDirs[0], apiLevels)
+	if err != nil {
+		return fmt.Errorf("discovering revision tags: %w", err)
+	}
 
-	// Parse each API level's AIDL files into a version table.
-	allTables := make(map[int]map[string]map[string]binder.TransactionCode, len(apiLevels))
+	// For each API level, iterate revisions in order and deduplicate.
+	// allTables maps version ID -> VersionTable.
+	allTables := map[string]map[string]map[string]binder.TransactionCode{}
+	// apiRevisions maps API level -> ordered list of distinct version IDs (latest first).
+	apiRevisions := map[int][]string{}
+
 	for _, level := range apiLevels {
-		tag := apiLevelTag[level]
-		fmt.Fprintf(os.Stderr, "Fetching API %d (tag %s)...\n", level, tag)
-
-		if err := checkoutTag(submoduleDirs, tag); err != nil {
-			return fmt.Errorf("checking out tag %s for API %d: %w", tag, level, err)
+		tags := allRevTags[level]
+		if len(tags) == 0 {
+			return fmt.Errorf("no revision tags found for API %d", level)
 		}
 
-		table, err := parseVersionTable(absThirdparty)
-		if err != nil {
-			return fmt.Errorf("parsing API %d: %w", level, err)
-		}
-		allTables[level] = table
+		// Process revisions in ascending order.
+		sort.Slice(tags, func(i, j int) bool {
+			return tags[i].Revision < tags[j].Revision
+		})
 
-		fmt.Fprintf(os.Stderr, "API %d: %d interfaces\n", level, len(table))
+		var prevTable map[string]map[string]binder.TransactionCode
+		var prevVersionID string
+		var distinctVersions []string
+
+		for _, rt := range tags {
+			fmt.Fprintf(os.Stderr, "Fetching API %d revision r%d (tag %s)...\n", level, rt.Revision, rt.Tag)
+
+			if err := checkoutTag(submoduleDirs, rt.Tag); err != nil {
+				return fmt.Errorf("checking out tag %s for API %d r%d: %w", rt.Tag, level, rt.Revision, err)
+			}
+
+			table, err := parseVersionTable(absThirdparty)
+			if err != nil {
+				return fmt.Errorf("parsing API %d r%d: %w", level, rt.Revision, err)
+			}
+
+			vid := rt.versionID()
+
+			if prevTable != nil && tablesEqual(prevTable, table) {
+				fmt.Fprintf(os.Stderr, "  -> same as %s, skipping\n", prevVersionID)
+				continue
+			}
+
+			allTables[vid] = table
+			distinctVersions = append(distinctVersions, vid)
+			prevTable = table
+			prevVersionID = vid
+
+			fmt.Fprintf(os.Stderr, "API %d r%d: %d interfaces (distinct)\n", level, rt.Revision, len(table))
+		}
+
+		// Store revisions latest-first for probing (most likely match).
+		reversed := make([]string, len(distinctVersions))
+		for i, v := range distinctVersions {
+			reversed[len(distinctVersions)-1-i] = v
+		}
+		apiRevisions[level] = reversed
 	}
 
 	// Restore submodules before writing output (the defer also covers panics).
 	restoreCommits(submoduleDirs, originalCommits)
 
 	// Generate and write the output file.
-	src, err := generateSource(defaultAPI, apiLevels, allTables)
+	src, err := generateSource(defaultAPI, allTables, apiRevisions, apiLevels)
 	if err != nil {
 		return fmt.Errorf("generating source: %w", err)
 	}
@@ -118,12 +170,86 @@ func run(
 
 // sortedAPILevels returns the API level keys in ascending order.
 func sortedAPILevels() []int {
-	levels := make([]int, 0, len(apiLevelTag))
-	for level := range apiLevelTag {
+	levels := make([]int, 0, len(apiLevelMajorVersion))
+	for level := range apiLevelMajorVersion {
 		levels = append(levels, level)
 	}
 	sort.Ints(levels)
 	return levels
+}
+
+// discoverRevisionTags queries git ls-remote for all android-X.Y.Z_rN tags
+// for each API level and returns them grouped.
+func discoverRevisionTags(
+	repoDir string,
+	apiLevels []int,
+) (map[int][]revisionTag, error) {
+	result := make(map[int][]revisionTag, len(apiLevels))
+	tagRe := regexp.MustCompile(`refs/tags/(android-[\d.]+_r(\d+))$`)
+
+	for _, level := range apiLevels {
+		majorVersion, ok := apiLevelMajorVersion[level]
+		if !ok {
+			return nil, fmt.Errorf("no major version mapping for API %d", level)
+		}
+
+		pattern := fmt.Sprintf("android-%s_r*", majorVersion)
+		out, err := exec.Command("git", "-C", repoDir, "ls-remote", "--tags", "origin", pattern).Output()
+		if err != nil {
+			return nil, fmt.Errorf("ls-remote for API %d: %w", level, err)
+		}
+
+		var tags []revisionTag
+		for _, line := range strings.Split(string(out), "\n") {
+			matches := tagRe.FindStringSubmatch(line)
+			if matches == nil {
+				continue
+			}
+			tag := matches[1]
+			rev, err := strconv.Atoi(matches[2])
+			if err != nil {
+				continue
+			}
+			tags = append(tags, revisionTag{
+				APILevel: level,
+				Revision: rev,
+				Tag:      tag,
+			})
+		}
+
+		if len(tags) == 0 {
+			return nil, fmt.Errorf("no tags found for API %d (pattern %s)", level, pattern)
+		}
+
+		result[level] = tags
+		fmt.Fprintf(os.Stderr, "API %d: found %d revision tags\n", level, len(tags))
+	}
+
+	return result, nil
+}
+
+// tablesEqual checks if two version tables have identical content.
+func tablesEqual(
+	a, b map[string]map[string]binder.TransactionCode,
+) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for desc, aMethods := range a {
+		bMethods, ok := b[desc]
+		if !ok {
+			return false
+		}
+		if len(aMethods) != len(bMethods) {
+			return false
+		}
+		for name, aCode := range aMethods {
+			if bMethods[name] != aCode {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 // saveCurrentCommits records HEAD for each submodule directory.
@@ -281,8 +407,9 @@ func discoverAIDLFiles(
 // generateSource produces the Go source for codes_gen.go.
 func generateSource(
 	defaultAPI int,
+	allTables map[string]map[string]map[string]binder.TransactionCode,
+	apiRevisions map[int][]string,
 	apiLevels []int,
-	allTables map[int]map[string]map[string]binder.TransactionCode,
 ) ([]byte, error) {
 	var buf bytes.Buffer
 
@@ -292,11 +419,14 @@ func generateSource(
 
 	fmt.Fprintf(&buf, "func init() {\n")
 	fmt.Fprintf(&buf, "\tDefaultAPILevel = %d\n", defaultAPI)
+
+	// Emit Tables (sorted by version ID for deterministic output).
+	versionIDs := sortedKeys(allTables)
 	buf.WriteString("\tTables = MultiVersionTable{\n")
 
-	for _, level := range apiLevels {
-		table := allTables[level]
-		fmt.Fprintf(&buf, "\t\t%d: VersionTable{\n", level)
+	for _, vid := range versionIDs {
+		table := allTables[vid]
+		fmt.Fprintf(&buf, "\t\t%q: VersionTable{\n", vid)
 
 		descriptors := sortedKeys(table)
 		for _, desc := range descriptors {
@@ -321,6 +451,25 @@ func generateSource(
 	}
 
 	buf.WriteString("\t}\n")
+
+	// Emit Revisions (sorted by API level for deterministic output).
+	buf.WriteString("\tRevisions = APIRevisions{\n")
+	for _, level := range apiLevels {
+		revs := apiRevisions[level]
+		if len(revs) == 0 {
+			continue
+		}
+		fmt.Fprintf(&buf, "\t\t%d: {", level)
+		for i, rev := range revs {
+			if i > 0 {
+				buf.WriteString(", ")
+			}
+			fmt.Fprintf(&buf, "%q", rev)
+		}
+		buf.WriteString("},\n")
+	}
+	buf.WriteString("\t}\n")
+
 	buf.WriteString("}\n")
 
 	formatted, err := format.Source(buf.Bytes())

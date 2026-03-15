@@ -60,7 +60,12 @@ func (p *GeofenceHardwareProxy) SetGpsGeofenceHardware(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGeofenceHardware)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGeofenceHardware, "setGpsGeofenceHardware"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardware, "setGpsGeofenceHardware")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -80,7 +85,12 @@ func (p *GeofenceHardwareProxy) SetFusedGeofenceHardware(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGeofenceHardware)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGeofenceHardware, "setFusedGeofenceHardware"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardware, "setFusedGeofenceHardware")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -100,7 +110,12 @@ func (p *GeofenceHardwareProxy) GetMonitoringTypes(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGeofenceHardware)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGeofenceHardware, "getMonitoringTypes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardware, "getMonitoringTypes")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -136,7 +151,12 @@ func (p *GeofenceHardwareProxy) GetStatusOfMonitoringType(
 	_data.WriteInterfaceToken(DescriptorIGeofenceHardware)
 	_data.WriteInt32(monitoringType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGeofenceHardware, "getStatusOfMonitoringType"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardware, "getStatusOfMonitoringType")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -168,7 +188,12 @@ func (p *GeofenceHardwareProxy) AddCircularFence(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGeofenceHardware, "addCircularFence"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardware, "addCircularFence")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -196,7 +221,12 @@ func (p *GeofenceHardwareProxy) RemoveGeofence(
 	_data.WriteInt32(id)
 	_data.WriteInt32(monitoringType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGeofenceHardware, "removeGeofence"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardware, "removeGeofence")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -224,7 +254,12 @@ func (p *GeofenceHardwareProxy) PauseGeofence(
 	_data.WriteInt32(id)
 	_data.WriteInt32(monitoringType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGeofenceHardware, "pauseGeofence"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardware, "pauseGeofence")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -254,7 +289,12 @@ func (p *GeofenceHardwareProxy) ResumeGeofence(
 	_data.WriteInt32(monitoringType)
 	_data.WriteInt32(monitorTransitions)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGeofenceHardware, "resumeGeofence"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardware, "resumeGeofence")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -282,7 +322,12 @@ func (p *GeofenceHardwareProxy) RegisterForMonitorStateChangeCallback(
 	_data.WriteInt32(monitoringType)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGeofenceHardware, "registerForMonitorStateChangeCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardware, "registerForMonitorStateChangeCallback")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -310,7 +355,12 @@ func (p *GeofenceHardwareProxy) UnregisterForMonitorStateChangeCallback(
 	_data.WriteInt32(monitoringType)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGeofenceHardware, "unregisterForMonitorStateChangeCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardware, "unregisterForMonitorStateChangeCallback")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

@@ -47,7 +47,12 @@ func (p *UdfpsRefreshRateRequestCallbackProxy) OnRequestEnabled(
 	_data.WriteInterfaceToken(DescriptorIUdfpsRefreshRateRequestCallback)
 	_data.WriteInt32(displayId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUdfpsRefreshRateRequestCallback, "onRequestEnabled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUdfpsRefreshRateRequestCallback, "onRequestEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -59,7 +64,12 @@ func (p *UdfpsRefreshRateRequestCallbackProxy) OnRequestDisabled(
 	_data.WriteInterfaceToken(DescriptorIUdfpsRefreshRateRequestCallback)
 	_data.WriteInt32(displayId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUdfpsRefreshRateRequestCallback, "onRequestDisabled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUdfpsRefreshRateRequestCallback, "onRequestDisabled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -73,6 +83,11 @@ func (p *UdfpsRefreshRateRequestCallbackProxy) OnAuthenticationPossible(
 	_data.WriteInt32(displayId)
 	_data.WriteBool(isPossible)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUdfpsRefreshRateRequestCallback, "onAuthenticationPossible"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUdfpsRefreshRateRequestCallback, "onAuthenticationPossible")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

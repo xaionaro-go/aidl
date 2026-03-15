@@ -53,7 +53,12 @@ func (p *JobServiceProxy) StartJob(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIJobService, "startJob"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIJobService, "startJob")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -67,7 +72,12 @@ func (p *JobServiceProxy) StopJob(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIJobService, "stopJob"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIJobService, "stopJob")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -81,7 +91,12 @@ func (p *JobServiceProxy) OnNetworkChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIJobService, "onNetworkChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIJobService, "onNetworkChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -99,7 +114,12 @@ func (p *JobServiceProxy) GetTransferredDownloadBytes(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIJobService, "getTransferredDownloadBytes"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIJobService, "getTransferredDownloadBytes")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -117,6 +137,11 @@ func (p *JobServiceProxy) GetTransferredUploadBytes(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIJobService, "getTransferredUploadBytes"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIJobService, "getTransferredUploadBytes")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

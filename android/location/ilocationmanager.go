@@ -174,7 +174,12 @@ func (p *LocationManagerProxy) GetLastLocation(
 	_data.WriteString16(packageName)
 	_data.WriteString16(attributionTag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "getLastLocation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getLastLocation")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -211,7 +216,12 @@ func (p *LocationManagerProxy) GetCurrentLocation(
 	_data.WriteString16(attributionTag)
 	_data.WriteString16(listenerId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "getCurrentLocation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getCurrentLocation")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -244,7 +254,12 @@ func (p *LocationManagerProxy) RegisterLocationListener(
 	_data.WriteString16(attributionTag)
 	_data.WriteString16(listenerId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "registerLocationListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "registerLocationListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -265,7 +280,12 @@ func (p *LocationManagerProxy) UnregisterLocationListener(
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "unregisterLocationListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "unregisterLocationListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -295,7 +315,12 @@ func (p *LocationManagerProxy) RegisterLocationPendingIntent(
 	_data.WriteString16(packageName)
 	_data.WriteString16(attributionTag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "registerLocationPendingIntent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "registerLocationPendingIntent")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -315,7 +340,12 @@ func (p *LocationManagerProxy) UnregisterLocationPendingIntent(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "unregisterLocationPendingIntent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "unregisterLocationPendingIntent")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -338,7 +368,12 @@ func (p *LocationManagerProxy) InjectLocation(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "injectLocation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "injectLocation")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -363,7 +398,12 @@ func (p *LocationManagerProxy) RequestListenerFlush(
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteInt32(requestCode)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "requestListenerFlush"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "requestListenerFlush")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -387,7 +427,12 @@ func (p *LocationManagerProxy) RequestPendingIntentFlush(
 	_data.WriteString16(provider)
 	_data.WriteInt32(requestCode)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "requestPendingIntentFlush"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "requestPendingIntentFlush")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -415,7 +460,12 @@ func (p *LocationManagerProxy) RequestGeofence(
 	_data.WriteString16(packageName)
 	_data.WriteString16(attributionTag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "requestGeofence"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "requestGeofence")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -435,7 +485,12 @@ func (p *LocationManagerProxy) RemoveGeofence(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "removeGeofence"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "removeGeofence")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -455,7 +510,12 @@ func (p *LocationManagerProxy) IsGeocodeAvailable(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "isGeocodeAvailable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "isGeocodeAvailable")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -480,7 +540,12 @@ func (p *LocationManagerProxy) ReverseGeocode(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "reverseGeocode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "reverseGeocode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -501,7 +566,12 @@ func (p *LocationManagerProxy) ForwardGeocode(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "forwardGeocode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "forwardGeocode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -521,7 +591,12 @@ func (p *LocationManagerProxy) GetGnssCapabilities(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "getGnssCapabilities"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getGnssCapabilities")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -544,7 +619,12 @@ func (p *LocationManagerProxy) GetGnssYearOfHardware(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "getGnssYearOfHardware"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getGnssYearOfHardware")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -568,7 +648,12 @@ func (p *LocationManagerProxy) GetGnssHardwareModelName(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "getGnssHardwareModelName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getGnssHardwareModelName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -592,7 +677,12 @@ func (p *LocationManagerProxy) GetGnssAntennaInfos(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "getGnssAntennaInfos"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getGnssAntennaInfos")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -632,7 +722,12 @@ func (p *LocationManagerProxy) RegisterGnssStatusCallback(
 	_data.WriteString16(attributionTag)
 	_data.WriteString16(listenerId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "registerGnssStatusCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "registerGnssStatusCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -653,7 +748,12 @@ func (p *LocationManagerProxy) UnregisterGnssStatusCallback(
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "unregisterGnssStatusCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "unregisterGnssStatusCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -680,7 +780,12 @@ func (p *LocationManagerProxy) RegisterGnssNmeaCallback(
 	_data.WriteString16(attributionTag)
 	_data.WriteString16(listenerId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "registerGnssNmeaCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "registerGnssNmeaCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -701,7 +806,12 @@ func (p *LocationManagerProxy) UnregisterGnssNmeaCallback(
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "unregisterGnssNmeaCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "unregisterGnssNmeaCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -732,7 +842,12 @@ func (p *LocationManagerProxy) AddGnssMeasurementsListener(
 	_data.WriteString16(attributionTag)
 	_data.WriteString16(listenerId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "addGnssMeasurementsListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "addGnssMeasurementsListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -753,7 +868,12 @@ func (p *LocationManagerProxy) RemoveGnssMeasurementsListener(
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "removeGnssMeasurementsListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "removeGnssMeasurementsListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -776,7 +896,12 @@ func (p *LocationManagerProxy) InjectGnssMeasurementCorrections(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "injectGnssMeasurementCorrections"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "injectGnssMeasurementCorrections")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -803,7 +928,12 @@ func (p *LocationManagerProxy) AddGnssNavigationMessageListener(
 	_data.WriteString16(attributionTag)
 	_data.WriteString16(listenerId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "addGnssNavigationMessageListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "addGnssNavigationMessageListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -824,7 +954,12 @@ func (p *LocationManagerProxy) RemoveGnssNavigationMessageListener(
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "removeGnssNavigationMessageListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "removeGnssNavigationMessageListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -851,7 +986,12 @@ func (p *LocationManagerProxy) AddGnssAntennaInfoListener(
 	_data.WriteString16(attributionTag)
 	_data.WriteString16(listenerId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "addGnssAntennaInfoListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "addGnssAntennaInfoListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -872,7 +1012,12 @@ func (p *LocationManagerProxy) RemoveGnssAntennaInfoListener(
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "removeGnssAntennaInfoListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "removeGnssAntennaInfoListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -892,7 +1037,12 @@ func (p *LocationManagerProxy) AddProviderRequestListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "addProviderRequestListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "addProviderRequestListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -912,7 +1062,12 @@ func (p *LocationManagerProxy) RemoveProviderRequestListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "removeProviderRequestListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "removeProviderRequestListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -932,7 +1087,12 @@ func (p *LocationManagerProxy) GetGnssBatchSize(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "getGnssBatchSize"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getGnssBatchSize")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -965,7 +1125,12 @@ func (p *LocationManagerProxy) StartGnssBatch(
 	_data.WriteString16(attributionTag)
 	_data.WriteString16(listenerId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "startGnssBatch"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "startGnssBatch")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -984,7 +1149,12 @@ func (p *LocationManagerProxy) FlushGnssBatch(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "flushGnssBatch"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "flushGnssBatch")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1003,7 +1173,12 @@ func (p *LocationManagerProxy) StopGnssBatch(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "stopGnssBatch"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "stopGnssBatch")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1025,7 +1200,12 @@ func (p *LocationManagerProxy) HasProvider(
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteString16(provider)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "hasProvider"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "hasProvider")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1049,7 +1229,12 @@ func (p *LocationManagerProxy) GetAllProviders(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "getAllProviders"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getAllProviders")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1089,7 +1274,12 @@ func (p *LocationManagerProxy) GetProviders(
 	}
 	_data.WriteBool(enabledOnly)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "getProviders"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getProviders")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1129,7 +1319,12 @@ func (p *LocationManagerProxy) GetBestProvider(
 	}
 	_data.WriteBool(enabledOnly)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "getBestProvider"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getBestProvider")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1155,7 +1350,12 @@ func (p *LocationManagerProxy) GetProviderProperties(
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteString16(provider)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "getProviderProperties"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getProviderProperties")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1181,7 +1381,12 @@ func (p *LocationManagerProxy) IsProviderPackage(
 	_data.WriteString16(packageName)
 	_data.WriteString16(attributionTag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "isProviderPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "isProviderPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1207,7 +1412,12 @@ func (p *LocationManagerProxy) GetProviderPackages(
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteString16(provider)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "getProviderPackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getProviderPackages")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1242,7 +1452,12 @@ func (p *LocationManagerProxy) SetExtraLocationControllerPackage(
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "setExtraLocationControllerPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "setExtraLocationControllerPackage")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1262,7 +1477,12 @@ func (p *LocationManagerProxy) GetExtraLocationControllerPackage(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "getExtraLocationControllerPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getExtraLocationControllerPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1287,7 +1507,12 @@ func (p *LocationManagerProxy) SetExtraLocationControllerPackageEnabled(
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "setExtraLocationControllerPackageEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "setExtraLocationControllerPackageEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1307,7 +1532,12 @@ func (p *LocationManagerProxy) IsExtraLocationControllerPackageEnabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "isExtraLocationControllerPackageEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "isExtraLocationControllerPackageEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1335,7 +1565,12 @@ func (p *LocationManagerProxy) IsProviderEnabledForUser(
 	_data.WriteString16(provider)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "isProviderEnabledForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "isProviderEnabledForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1361,7 +1596,12 @@ func (p *LocationManagerProxy) IsLocationEnabledForUser(
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "isLocationEnabledForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "isLocationEnabledForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1388,7 +1628,12 @@ func (p *LocationManagerProxy) SetLocationEnabledForUser(
 	_data.WriteBool(enabled)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "setLocationEnabledForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "setLocationEnabledForUser")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1410,7 +1655,12 @@ func (p *LocationManagerProxy) IsAdasGnssLocationEnabledForUser(
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "isAdasGnssLocationEnabledForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "isAdasGnssLocationEnabledForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1437,7 +1687,12 @@ func (p *LocationManagerProxy) SetAdasGnssLocationEnabledForUser(
 	_data.WriteBool(enabled)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "setAdasGnssLocationEnabledForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "setAdasGnssLocationEnabledForUser")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1457,7 +1712,12 @@ func (p *LocationManagerProxy) IsAutomotiveGnssSuspended(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "isAutomotiveGnssSuspended"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "isAutomotiveGnssSuspended")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1482,7 +1742,12 @@ func (p *LocationManagerProxy) SetAutomotiveGnssSuspended(
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteBool(suspended)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "setAutomotiveGnssSuspended"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "setAutomotiveGnssSuspended")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1517,7 +1782,12 @@ func (p *LocationManagerProxy) AddTestProvider(
 	_data.WriteString16(packageName)
 	_data.WriteString16(attributionTag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "addTestProvider"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "addTestProvider")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1542,7 +1812,12 @@ func (p *LocationManagerProxy) RemoveTestProvider(
 	_data.WriteString16(packageName)
 	_data.WriteString16(attributionTag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "removeTestProvider"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "removeTestProvider")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1571,7 +1846,12 @@ func (p *LocationManagerProxy) SetTestProviderLocation(
 	_data.WriteString16(packageName)
 	_data.WriteString16(attributionTag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "setTestProviderLocation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "setTestProviderLocation")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1598,7 +1878,12 @@ func (p *LocationManagerProxy) SetTestProviderEnabled(
 	_data.WriteString16(packageName)
 	_data.WriteString16(attributionTag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "setTestProviderEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "setTestProviderEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1618,7 +1903,12 @@ func (p *LocationManagerProxy) GetGnssTimeMillis(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "getGnssTimeMillis"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getGnssTimeMillis")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1645,7 +1935,12 @@ func (p *LocationManagerProxy) SendExtraCommand(
 	_data.WriteString16(provider)
 	_data.WriteString16(command)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "sendExtraCommand"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "sendExtraCommand")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1665,7 +1960,12 @@ func (p *LocationManagerProxy) GetBackgroundThrottlingWhitelist(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "getBackgroundThrottlingWhitelist"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getBackgroundThrottlingWhitelist")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1699,7 +1999,12 @@ func (p *LocationManagerProxy) GetIgnoreSettingsAllowlist(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "getIgnoreSettingsAllowlist"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getIgnoreSettingsAllowlist")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1719,7 +2024,12 @@ func (p *LocationManagerProxy) GetAdasAllowlist(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationManager, "getAdasAllowlist"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getAdasAllowlist")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

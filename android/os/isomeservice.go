@@ -43,7 +43,12 @@ func (p *SomeServiceProxy) ReadDisk(
 	_data.WriteInterfaceToken(DescriptorISomeService)
 	_data.WriteInt32(times)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISomeService, "readDisk"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISomeService, "readDisk")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

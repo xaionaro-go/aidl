@@ -43,7 +43,12 @@ func (p *TvInputHardwareCallbackProxy) OnReleased(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputHardwareCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputHardwareCallback, "onReleased"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputHardwareCallback, "onReleased")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -64,6 +69,11 @@ func (p *TvInputHardwareCallbackProxy) OnStreamConfigChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputHardwareCallback, "onStreamConfigChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputHardwareCallback, "onStreamConfigChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -53,7 +53,12 @@ func (p *LnbProxy) SetCallback(
 	_data.WriteInterfaceToken(DescriptorILnb)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILnb, "setCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILnb, "setCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -74,7 +79,12 @@ func (p *LnbProxy) SetVoltage(
 	_data.WriteInterfaceToken(DescriptorILnb)
 	_data.WriteInt32(int32(voltage))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILnb, "setVoltage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILnb, "setVoltage")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -95,7 +105,12 @@ func (p *LnbProxy) SetTone(
 	_data.WriteInterfaceToken(DescriptorILnb)
 	_data.WriteInt32(int32(tone))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILnb, "setTone"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILnb, "setTone")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -116,7 +131,12 @@ func (p *LnbProxy) SetSatellitePosition(
 	_data.WriteInterfaceToken(DescriptorILnb)
 	_data.WriteInt32(int32(position))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILnb, "setSatellitePosition"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILnb, "setSatellitePosition")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -144,7 +164,12 @@ func (p *LnbProxy) SendDiseqcMessage(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILnb, "sendDiseqcMessage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILnb, "sendDiseqcMessage")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -163,7 +188,12 @@ func (p *LnbProxy) Close(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILnb)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILnb, "close"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILnb, "close")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

@@ -58,7 +58,12 @@ func (p *VirtualSensorCallbackProxy) OnConfigurationChanged(
 	_data.WriteInt32(samplingPeriodMicros)
 	_data.WriteInt32(batchReportLatencyMicros)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualSensorCallback, "onConfigurationChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualSensorCallback, "onConfigurationChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -74,7 +79,12 @@ func (p *VirtualSensorCallbackProxy) OnDirectChannelCreated(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualSensorCallback, "onDirectChannelCreated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualSensorCallback, "onDirectChannelCreated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -86,7 +96,12 @@ func (p *VirtualSensorCallbackProxy) OnDirectChannelDestroyed(
 	_data.WriteInterfaceToken(DescriptorIVirtualSensorCallback)
 	_data.WriteInt32(channelHandle)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualSensorCallback, "onDirectChannelDestroyed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualSensorCallback, "onDirectChannelDestroyed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -106,6 +121,11 @@ func (p *VirtualSensorCallbackProxy) OnDirectChannelConfigured(
 	_data.WriteInt32(rateLevel)
 	_data.WriteInt32(reportToken)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualSensorCallback, "onDirectChannelConfigured"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualSensorCallback, "onDirectChannelConfigured")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

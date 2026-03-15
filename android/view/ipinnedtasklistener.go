@@ -45,7 +45,12 @@ func (p *PinnedTaskListenerProxy) OnMovementBoundsChanged(
 	_data.WriteInterfaceToken(DescriptorIPinnedTaskListener)
 	_data.WriteBool(fromImeAdjustment)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPinnedTaskListener, "onMovementBoundsChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPinnedTaskListener, "onMovementBoundsChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -59,6 +64,11 @@ func (p *PinnedTaskListenerProxy) OnImeVisibilityChanged(
 	_data.WriteBool(imeVisible)
 	_data.WriteInt32(imeHeight)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPinnedTaskListener, "onImeVisibilityChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPinnedTaskListener, "onImeVisibilityChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -50,7 +50,12 @@ func (p *DisplayAreaOrganizerProxy) OnDisplayAreaAppeared(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDisplayAreaOrganizer, "onDisplayAreaAppeared"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDisplayAreaOrganizer, "onDisplayAreaAppeared")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -64,7 +69,12 @@ func (p *DisplayAreaOrganizerProxy) OnDisplayAreaVanished(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDisplayAreaOrganizer, "onDisplayAreaVanished"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDisplayAreaOrganizer, "onDisplayAreaVanished")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -78,6 +88,11 @@ func (p *DisplayAreaOrganizerProxy) OnDisplayAreaInfoChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDisplayAreaOrganizer, "onDisplayAreaInfoChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDisplayAreaOrganizer, "onDisplayAreaInfoChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

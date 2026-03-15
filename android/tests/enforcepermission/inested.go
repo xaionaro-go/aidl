@@ -43,7 +43,12 @@ func (p *NestedProxy) ProtectedByAccessNetworkState(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINested)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINested, "ProtectedByAccessNetworkState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINested, "ProtectedByAccessNetworkState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -62,7 +67,12 @@ func (p *NestedProxy) ProtectedByReadSyncSettings(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINested)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINested, "ProtectedByReadSyncSettings"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINested, "ProtectedByReadSyncSettings")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

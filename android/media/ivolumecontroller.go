@@ -55,7 +55,12 @@ func (p *VolumeControllerProxy) DisplaySafeVolumeWarning(
 	_data.WriteInterfaceToken(DescriptorIVolumeController)
 	_data.WriteInt32(flags)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVolumeController, "displaySafeVolumeWarning"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVolumeController, "displaySafeVolumeWarning")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -69,7 +74,12 @@ func (p *VolumeControllerProxy) VolumeChanged(
 	_data.WriteInt32(streamType)
 	_data.WriteInt32(flags)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVolumeController, "volumeChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVolumeController, "volumeChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -81,7 +91,12 @@ func (p *VolumeControllerProxy) MasterMuteChanged(
 	_data.WriteInterfaceToken(DescriptorIVolumeController)
 	_data.WriteInt32(flags)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVolumeController, "masterMuteChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVolumeController, "masterMuteChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -93,7 +108,12 @@ func (p *VolumeControllerProxy) SetLayoutDirection(
 	_data.WriteInterfaceToken(DescriptorIVolumeController)
 	_data.WriteInt32(layoutDirection)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVolumeController, "setLayoutDirection"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVolumeController, "setLayoutDirection")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -103,7 +123,12 @@ func (p *VolumeControllerProxy) Dismiss(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVolumeController)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVolumeController, "dismiss"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVolumeController, "dismiss")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -115,7 +140,12 @@ func (p *VolumeControllerProxy) SetA11yMode(
 	_data.WriteInterfaceToken(DescriptorIVolumeController)
 	_data.WriteInt32(mode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVolumeController, "setA11yMode"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVolumeController, "setA11yMode")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -129,6 +159,11 @@ func (p *VolumeControllerProxy) DisplayCsdWarning(
 	_data.WriteInt32(warning)
 	_data.WriteInt32(displayDurationMs)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVolumeController, "displayCsdWarning"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVolumeController, "displayCsdWarning")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -41,6 +41,11 @@ func (p *CancellationSignalProxy) Cancel(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICancellationSignal)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICancellationSignal, "cancel"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICancellationSignal, "cancel")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

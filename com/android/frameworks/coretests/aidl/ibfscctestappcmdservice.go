@@ -45,7 +45,12 @@ func (p *BfsccTestAppCmdServiceProxy) ListenTo(
 	_data.WriteInterfaceToken(DescriptorIBfsccTestAppCmdService)
 	_data.WriteStrongBinder(binder_.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBfsccTestAppCmdService, "listenTo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBfsccTestAppCmdService, "listenTo")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -65,7 +70,12 @@ func (p *BfsccTestAppCmdServiceProxy) WaitAndConsumeNotifications(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBfsccTestAppCmdService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBfsccTestAppCmdService, "waitAndConsumeNotifications"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBfsccTestAppCmdService, "waitAndConsumeNotifications")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

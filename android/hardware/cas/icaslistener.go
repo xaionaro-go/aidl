@@ -58,7 +58,12 @@ func (p *CasListenerProxy) OnEvent(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICasListener, "onEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICasListener, "onEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -99,7 +104,12 @@ func (p *CasListenerProxy) OnSessionEvent(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICasListener, "onSessionEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICasListener, "onSessionEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -122,7 +132,12 @@ func (p *CasListenerProxy) OnStatusUpdate(
 	_data.WritePaddedByte(byte(event))
 	_data.WriteInt32(number)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICasListener, "onStatusUpdate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICasListener, "onStatusUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

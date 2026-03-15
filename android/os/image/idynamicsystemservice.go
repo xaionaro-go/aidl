@@ -74,7 +74,12 @@ func (p *DynamicSystemServiceProxy) StartInstallation(
 	_data.WriteInterfaceToken(DescriptorIDynamicSystemService)
 	_data.WriteString16(dsuSlot)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDynamicSystemService, "startInstallation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDynamicSystemService, "startInstallation")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -104,7 +109,12 @@ func (p *DynamicSystemServiceProxy) CreatePartition(
 	_data.WriteInt64(size)
 	_data.WriteBool(readOnly)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDynamicSystemService, "createPartition"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDynamicSystemService, "createPartition")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -128,7 +138,12 @@ func (p *DynamicSystemServiceProxy) ClosePartition(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDynamicSystemService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDynamicSystemService, "closePartition"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDynamicSystemService, "closePartition")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -152,7 +167,12 @@ func (p *DynamicSystemServiceProxy) FinishInstallation(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDynamicSystemService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDynamicSystemService, "finishInstallation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDynamicSystemService, "finishInstallation")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -176,7 +196,12 @@ func (p *DynamicSystemServiceProxy) GetInstallationProgress(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDynamicSystemService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDynamicSystemService, "getInstallationProgress"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDynamicSystemService, "getInstallationProgress")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -196,7 +221,12 @@ func (p *DynamicSystemServiceProxy) Abort(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDynamicSystemService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDynamicSystemService, "abort"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDynamicSystemService, "abort")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -220,7 +250,12 @@ func (p *DynamicSystemServiceProxy) IsInUse(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDynamicSystemService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDynamicSystemService, "isInUse"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDynamicSystemService, "isInUse")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -244,7 +279,12 @@ func (p *DynamicSystemServiceProxy) IsInstalled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDynamicSystemService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDynamicSystemService, "isInstalled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDynamicSystemService, "isInstalled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -268,7 +308,12 @@ func (p *DynamicSystemServiceProxy) IsEnabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDynamicSystemService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDynamicSystemService, "isEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDynamicSystemService, "isEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -292,7 +337,12 @@ func (p *DynamicSystemServiceProxy) Remove(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDynamicSystemService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDynamicSystemService, "remove"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDynamicSystemService, "remove")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -320,7 +370,12 @@ func (p *DynamicSystemServiceProxy) SetEnable(
 	_data.WriteBool(enable)
 	_data.WriteBool(oneShot)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDynamicSystemService, "setEnable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDynamicSystemService, "setEnable")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -348,7 +403,12 @@ func (p *DynamicSystemServiceProxy) SetAshmem(
 	_data.WriteFileDescriptor(fd)
 	_data.WriteInt64(size)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDynamicSystemService, "setAshmem"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDynamicSystemService, "setAshmem")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -374,7 +434,12 @@ func (p *DynamicSystemServiceProxy) SubmitFromAshmem(
 	_data.WriteInterfaceToken(DescriptorIDynamicSystemService)
 	_data.WriteInt64(bytes)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDynamicSystemService, "submitFromAshmem"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDynamicSystemService, "submitFromAshmem")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -399,7 +464,12 @@ func (p *DynamicSystemServiceProxy) GetAvbPublicKey(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDynamicSystemService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDynamicSystemService, "getAvbPublicKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDynamicSystemService, "getAvbPublicKey")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -423,7 +493,12 @@ func (p *DynamicSystemServiceProxy) SuggestScratchSize(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDynamicSystemService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDynamicSystemService, "suggestScratchSize"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDynamicSystemService, "suggestScratchSize")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -447,7 +522,12 @@ func (p *DynamicSystemServiceProxy) GetActiveDsuSlot(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDynamicSystemService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDynamicSystemService, "getActiveDsuSlot"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDynamicSystemService, "getActiveDsuSlot")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

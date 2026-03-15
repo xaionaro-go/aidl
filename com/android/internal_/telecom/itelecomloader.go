@@ -46,7 +46,12 @@ func (p *TelecomLoaderProxy) CreateTelecomService(
 	_data.WriteStrongBinder(retriever.AsBinder().Handle())
 	_data.WriteString16(sysUiName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelecomLoader, "createTelecomService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelecomLoader, "createTelecomService")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

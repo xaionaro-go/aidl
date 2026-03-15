@@ -54,7 +54,12 @@ func (p *TkgsInfoListenerProxy) OnServiceList(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITkgsInfoListener, "onServiceList"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITkgsInfoListener, "onServiceList")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -66,7 +71,12 @@ func (p *TkgsInfoListenerProxy) OnTableVersionUpdate(
 	_data.WriteInterfaceToken(DescriptorITkgsInfoListener)
 	_data.WriteInt32(tableVersion)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITkgsInfoListener, "onTableVersionUpdate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITkgsInfoListener, "onTableVersionUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -78,6 +88,11 @@ func (p *TkgsInfoListenerProxy) OnUserMessage(
 	_data.WriteInterfaceToken(DescriptorITkgsInfoListener)
 	_data.WriteString16(strMessage)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITkgsInfoListener, "onUserMessage"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITkgsInfoListener, "onUserMessage")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

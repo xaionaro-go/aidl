@@ -51,7 +51,12 @@ func (p *PictureProfileAdjustmentListenerProxy) OnPictureProfileAdjusted(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPictureProfileAdjustmentListener, "onPictureProfileAdjusted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPictureProfileAdjustmentListener, "onPictureProfileAdjusted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -74,7 +79,12 @@ func (p *PictureProfileAdjustmentListenerProxy) OnParamCapabilityChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPictureProfileAdjustmentListener, "onParamCapabilityChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPictureProfileAdjustmentListener, "onParamCapabilityChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -97,7 +107,12 @@ func (p *PictureProfileAdjustmentListenerProxy) OnVendorParamCapabilityChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPictureProfileAdjustmentListener, "onVendorParamCapabilityChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPictureProfileAdjustmentListener, "onVendorParamCapabilityChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -109,6 +124,11 @@ func (p *PictureProfileAdjustmentListenerProxy) OnRequestPictureParameters(
 	_data.WriteInterfaceToken(DescriptorIPictureProfileAdjustmentListener)
 	_data.WriteInt64(pictureProfileId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPictureProfileAdjustmentListener, "onRequestPictureParameters"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPictureProfileAdjustmentListener, "onRequestPictureParameters")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

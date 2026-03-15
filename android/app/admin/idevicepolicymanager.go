@@ -884,7 +884,12 @@ func (p *DevicePolicyManagerProxy) SetPasswordQuality(
 	_data.WriteInt32(quality)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordQuality"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordQuality")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -912,7 +917,12 @@ func (p *DevicePolicyManagerProxy) GetPasswordQuality(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordQuality"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordQuality")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -943,7 +953,12 @@ func (p *DevicePolicyManagerProxy) SetPasswordMinimumLength(
 	_data.WriteInt32(length)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordMinimumLength"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordMinimumLength")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -971,7 +986,12 @@ func (p *DevicePolicyManagerProxy) GetPasswordMinimumLength(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumLength"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumLength")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1002,7 +1022,12 @@ func (p *DevicePolicyManagerProxy) SetPasswordMinimumUpperCase(
 	_data.WriteInt32(length)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordMinimumUpperCase"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordMinimumUpperCase")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1030,7 +1055,12 @@ func (p *DevicePolicyManagerProxy) GetPasswordMinimumUpperCase(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumUpperCase"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumUpperCase")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1061,7 +1091,12 @@ func (p *DevicePolicyManagerProxy) SetPasswordMinimumLowerCase(
 	_data.WriteInt32(length)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordMinimumLowerCase"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordMinimumLowerCase")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1089,7 +1124,12 @@ func (p *DevicePolicyManagerProxy) GetPasswordMinimumLowerCase(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumLowerCase"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumLowerCase")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1120,7 +1160,12 @@ func (p *DevicePolicyManagerProxy) SetPasswordMinimumLetters(
 	_data.WriteInt32(length)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordMinimumLetters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordMinimumLetters")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1148,7 +1193,12 @@ func (p *DevicePolicyManagerProxy) GetPasswordMinimumLetters(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumLetters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumLetters")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1179,7 +1229,12 @@ func (p *DevicePolicyManagerProxy) SetPasswordMinimumNumeric(
 	_data.WriteInt32(length)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordMinimumNumeric"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordMinimumNumeric")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1207,7 +1262,12 @@ func (p *DevicePolicyManagerProxy) GetPasswordMinimumNumeric(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumNumeric"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumNumeric")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1238,7 +1298,12 @@ func (p *DevicePolicyManagerProxy) SetPasswordMinimumSymbols(
 	_data.WriteInt32(length)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordMinimumSymbols"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordMinimumSymbols")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1266,7 +1331,12 @@ func (p *DevicePolicyManagerProxy) GetPasswordMinimumSymbols(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumSymbols"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumSymbols")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1297,7 +1367,12 @@ func (p *DevicePolicyManagerProxy) SetPasswordMinimumNonLetter(
 	_data.WriteInt32(length)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordMinimumNonLetter"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordMinimumNonLetter")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1325,7 +1400,12 @@ func (p *DevicePolicyManagerProxy) GetPasswordMinimumNonLetter(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumNonLetter"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumNonLetter")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1353,7 +1433,12 @@ func (p *DevicePolicyManagerProxy) GetPasswordMinimumMetrics(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(deviceWideOnly)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumMetrics"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumMetrics")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1383,7 +1468,12 @@ func (p *DevicePolicyManagerProxy) SetPasswordHistoryLength(
 	_data.WriteInt32(length)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordHistoryLength"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordHistoryLength")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1411,7 +1501,12 @@ func (p *DevicePolicyManagerProxy) GetPasswordHistoryLength(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordHistoryLength"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordHistoryLength")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1444,7 +1539,12 @@ func (p *DevicePolicyManagerProxy) SetPasswordExpirationTimeout(
 	_data.WriteInt64(expiration)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordExpirationTimeout"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPasswordExpirationTimeout")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1472,7 +1572,12 @@ func (p *DevicePolicyManagerProxy) GetPasswordExpirationTimeout(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordExpirationTimeout"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordExpirationTimeout")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1504,7 +1609,12 @@ func (p *DevicePolicyManagerProxy) GetPasswordExpiration(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordExpiration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordExpiration")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1534,7 +1644,12 @@ func (p *DevicePolicyManagerProxy) IsActivePasswordSufficient(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isActivePasswordSufficient"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isActivePasswordSufficient")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1558,7 +1673,12 @@ func (p *DevicePolicyManagerProxy) IsActivePasswordSufficientForDeviceRequiremen
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isActivePasswordSufficientForDeviceRequirement"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isActivePasswordSufficientForDeviceRequirement")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1586,7 +1706,12 @@ func (p *DevicePolicyManagerProxy) IsPasswordSufficientAfterProfileUnification(
 	_data.WriteInt32(userHandle)
 	_data.WriteInt32(profileUser)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isPasswordSufficientAfterProfileUnification"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isPasswordSufficientAfterProfileUnification")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1612,7 +1737,12 @@ func (p *DevicePolicyManagerProxy) GetPasswordComplexity(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordComplexity"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordComplexity")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1641,7 +1771,12 @@ func (p *DevicePolicyManagerProxy) SetRequiredPasswordComplexity(
 	_data.WriteInt32(passwordComplexity)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setRequiredPasswordComplexity"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setRequiredPasswordComplexity")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1665,7 +1800,12 @@ func (p *DevicePolicyManagerProxy) GetRequiredPasswordComplexity(
 	_data.WriteString16(callerPackageName)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getRequiredPasswordComplexity"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getRequiredPasswordComplexity")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1693,7 +1833,12 @@ func (p *DevicePolicyManagerProxy) GetAggregatedPasswordComplexityForUser(
 	_data.WriteInt32(userId)
 	_data.WriteBool(deviceWideOnly)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAggregatedPasswordComplexityForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAggregatedPasswordComplexityForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1721,7 +1866,12 @@ func (p *DevicePolicyManagerProxy) IsUsingUnifiedPassword(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isUsingUnifiedPassword"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isUsingUnifiedPassword")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1751,7 +1901,12 @@ func (p *DevicePolicyManagerProxy) GetCurrentFailedPasswordAttempts(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCurrentFailedPasswordAttempts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCurrentFailedPasswordAttempts")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1779,7 +1934,12 @@ func (p *DevicePolicyManagerProxy) GetProfileWithMinimumFailedPasswordsForWipe(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getProfileWithMinimumFailedPasswordsForWipe"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getProfileWithMinimumFailedPasswordsForWipe")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1812,7 +1972,12 @@ func (p *DevicePolicyManagerProxy) SetMaximumFailedPasswordsForWipe(
 	_data.WriteInt32(num)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setMaximumFailedPasswordsForWipe"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setMaximumFailedPasswordsForWipe")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1840,7 +2005,12 @@ func (p *DevicePolicyManagerProxy) GetMaximumFailedPasswordsForWipe(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getMaximumFailedPasswordsForWipe"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getMaximumFailedPasswordsForWipe")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1868,7 +2038,12 @@ func (p *DevicePolicyManagerProxy) ResetPassword(
 	_data.WriteString16(password)
 	_data.WriteInt32(flags)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "resetPassword"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "resetPassword")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1901,7 +2076,12 @@ func (p *DevicePolicyManagerProxy) SetMaximumTimeToLock(
 	_data.WriteInt64(timeMs)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setMaximumTimeToLock"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setMaximumTimeToLock")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1929,7 +2109,12 @@ func (p *DevicePolicyManagerProxy) GetMaximumTimeToLock(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getMaximumTimeToLock"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getMaximumTimeToLock")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1962,7 +2147,12 @@ func (p *DevicePolicyManagerProxy) SetRequiredStrongAuthTimeout(
 	_data.WriteInt64(timeMs)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setRequiredStrongAuthTimeout"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setRequiredStrongAuthTimeout")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1990,7 +2180,12 @@ func (p *DevicePolicyManagerProxy) GetRequiredStrongAuthTimeout(
 	_data.WriteInt32(userId)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getRequiredStrongAuthTimeout"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getRequiredStrongAuthTimeout")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2019,7 +2214,12 @@ func (p *DevicePolicyManagerProxy) LockNow(
 	_data.WriteString16(callerPackageName)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "lockNow"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "lockNow")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2048,7 +2248,12 @@ func (p *DevicePolicyManagerProxy) WipeDataWithReason(
 	_data.WriteBool(parent)
 	_data.WriteBool(factoryReset)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "wipeDataWithReason"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "wipeDataWithReason")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2077,7 +2282,12 @@ func (p *DevicePolicyManagerProxy) SetFactoryResetProtectionPolicy(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setFactoryResetProtectionPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setFactoryResetProtectionPolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2101,7 +2311,12 @@ func (p *DevicePolicyManagerProxy) GetFactoryResetProtectionPolicy(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getFactoryResetProtectionPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getFactoryResetProtectionPolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2124,7 +2339,12 @@ func (p *DevicePolicyManagerProxy) IsFactoryResetProtectionPolicySupported(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isFactoryResetProtectionPolicySupported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isFactoryResetProtectionPolicySupported")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2151,7 +2371,12 @@ func (p *DevicePolicyManagerProxy) SendLostModeLocationUpdate(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "sendLostModeLocationUpdate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "sendLostModeLocationUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2179,7 +2404,12 @@ func (p *DevicePolicyManagerProxy) SetGlobalProxy(
 	_data.WriteString16(proxySpec)
 	_data.WriteString16(exclusionList)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setGlobalProxy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setGlobalProxy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2204,7 +2434,12 @@ func (p *DevicePolicyManagerProxy) GetGlobalProxyAdmin(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getGlobalProxyAdmin"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getGlobalProxyAdmin")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2231,7 +2466,12 @@ func (p *DevicePolicyManagerProxy) SetRecommendedGlobalProxy(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setRecommendedGlobalProxy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setRecommendedGlobalProxy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2257,7 +2497,12 @@ func (p *DevicePolicyManagerProxy) SetStorageEncryption(
 	}
 	_data.WriteBool(encrypt)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setStorageEncryption"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setStorageEncryption")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2287,7 +2532,12 @@ func (p *DevicePolicyManagerProxy) GetStorageEncryption(
 	}
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getStorageEncryption"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getStorageEncryption")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2315,7 +2565,12 @@ func (p *DevicePolicyManagerProxy) GetStorageEncryptionStatus(
 	_data.WriteString16(callerPackage)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getStorageEncryptionStatus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getStorageEncryptionStatus")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2343,7 +2598,12 @@ func (p *DevicePolicyManagerProxy) RequestBugreport(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "requestBugreport"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "requestBugreport")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2376,7 +2636,12 @@ func (p *DevicePolicyManagerProxy) SetCameraDisabled(
 	_data.WriteBool(disabled)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setCameraDisabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setCameraDisabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2406,7 +2671,12 @@ func (p *DevicePolicyManagerProxy) GetCameraDisabled(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCameraDisabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCameraDisabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2439,7 +2709,12 @@ func (p *DevicePolicyManagerProxy) SetScreenCaptureDisabled(
 	_data.WriteBool(disabled)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setScreenCaptureDisabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setScreenCaptureDisabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2467,7 +2742,12 @@ func (p *DevicePolicyManagerProxy) GetScreenCaptureDisabled(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getScreenCaptureDisabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getScreenCaptureDisabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2492,7 +2772,12 @@ func (p *DevicePolicyManagerProxy) SetNearbyNotificationStreamingPolicy(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(policy)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setNearbyNotificationStreamingPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setNearbyNotificationStreamingPolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2514,7 +2799,12 @@ func (p *DevicePolicyManagerProxy) GetNearbyNotificationStreamingPolicy(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getNearbyNotificationStreamingPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getNearbyNotificationStreamingPolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2539,7 +2829,12 @@ func (p *DevicePolicyManagerProxy) SetNearbyAppStreamingPolicy(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(policy)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setNearbyAppStreamingPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setNearbyAppStreamingPolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2561,7 +2856,12 @@ func (p *DevicePolicyManagerProxy) GetNearbyAppStreamingPolicy(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getNearbyAppStreamingPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getNearbyAppStreamingPolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2594,7 +2894,12 @@ func (p *DevicePolicyManagerProxy) SetKeyguardDisabledFeatures(
 	_data.WriteInt32(which)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setKeyguardDisabledFeatures"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setKeyguardDisabledFeatures")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2622,7 +2927,12 @@ func (p *DevicePolicyManagerProxy) GetKeyguardDisabledFeatures(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getKeyguardDisabledFeatures"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getKeyguardDisabledFeatures")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2655,7 +2965,12 @@ func (p *DevicePolicyManagerProxy) SetActiveAdmin(
 	_data.WriteInt32(userHandle)
 	_data.WriteString16(provisioningContext)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setActiveAdmin"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setActiveAdmin")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2681,7 +2996,12 @@ func (p *DevicePolicyManagerProxy) IsAdminActive(
 	}
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isAdminActive"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isAdminActive")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2707,7 +3027,12 @@ func (p *DevicePolicyManagerProxy) GetActiveAdmins(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getActiveAdmins"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getActiveAdmins")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2744,7 +3069,12 @@ func (p *DevicePolicyManagerProxy) PackageHasActiveAdmins(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "packageHasActiveAdmins"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "packageHasActiveAdmins")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2777,7 +3107,12 @@ func (p *DevicePolicyManagerProxy) GetRemoveWarning(
 	}
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getRemoveWarning"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getRemoveWarning")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2802,7 +3137,12 @@ func (p *DevicePolicyManagerProxy) RemoveActiveAdmin(
 	}
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "removeActiveAdmin"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "removeActiveAdmin")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2827,7 +3167,12 @@ func (p *DevicePolicyManagerProxy) ForceRemoveActiveAdmin(
 	}
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "forceRemoveActiveAdmin"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "forceRemoveActiveAdmin")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2855,7 +3200,12 @@ func (p *DevicePolicyManagerProxy) HasGrantedPolicy(
 	_data.WriteInt32(usesPolicy)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "hasGrantedPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "hasGrantedPolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2884,7 +3234,12 @@ func (p *DevicePolicyManagerProxy) ReportPasswordChanged(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportPasswordChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportPasswordChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2907,7 +3262,12 @@ func (p *DevicePolicyManagerProxy) ReportFailedPasswordAttempt(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportFailedPasswordAttempt"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportFailedPasswordAttempt")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2928,7 +3288,12 @@ func (p *DevicePolicyManagerProxy) ReportSuccessfulPasswordAttempt(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportSuccessfulPasswordAttempt"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportSuccessfulPasswordAttempt")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2949,7 +3314,12 @@ func (p *DevicePolicyManagerProxy) ReportFailedBiometricAttempt(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportFailedBiometricAttempt"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportFailedBiometricAttempt")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2970,7 +3340,12 @@ func (p *DevicePolicyManagerProxy) ReportSuccessfulBiometricAttempt(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportSuccessfulBiometricAttempt"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportSuccessfulBiometricAttempt")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2991,7 +3366,12 @@ func (p *DevicePolicyManagerProxy) ReportKeyguardDismissed(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportKeyguardDismissed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportKeyguardDismissed")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -3012,7 +3392,12 @@ func (p *DevicePolicyManagerProxy) ReportKeyguardSecured(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportKeyguardSecured"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportKeyguardSecured")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -3040,7 +3425,12 @@ func (p *DevicePolicyManagerProxy) SetDeviceOwner(
 	_data.WriteInt32(userId)
 	_data.WriteBool(setProfileOwnerOnCurrentUserIfNecessary)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDeviceOwner"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDeviceOwner")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3066,7 +3456,12 @@ func (p *DevicePolicyManagerProxy) GetDeviceOwnerComponent(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteBool(callingUserOnly)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDeviceOwnerComponent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDeviceOwnerComponent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3091,7 +3486,12 @@ func (p *DevicePolicyManagerProxy) GetDeviceOwnerComponentOnUser(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDeviceOwnerComponentOnUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDeviceOwnerComponentOnUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3114,7 +3514,12 @@ func (p *DevicePolicyManagerProxy) HasDeviceOwner(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "hasDeviceOwner"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "hasDeviceOwner")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3138,7 +3543,12 @@ func (p *DevicePolicyManagerProxy) GetDeviceOwnerName(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDeviceOwnerName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDeviceOwnerName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3163,7 +3573,12 @@ func (p *DevicePolicyManagerProxy) ClearDeviceOwner(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearDeviceOwner"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearDeviceOwner")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -3183,7 +3598,12 @@ func (p *DevicePolicyManagerProxy) GetDeviceOwnerUserId(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDeviceOwnerUserId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDeviceOwnerUserId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3213,7 +3633,12 @@ func (p *DevicePolicyManagerProxy) SetProfileOwner(
 	}
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setProfileOwner"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setProfileOwner")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3239,7 +3664,12 @@ func (p *DevicePolicyManagerProxy) GetProfileOwnerAsUser(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getProfileOwnerAsUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getProfileOwnerAsUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3266,7 +3696,12 @@ func (p *DevicePolicyManagerProxy) GetProfileOwnerOrDeviceOwnerSupervisionCompon
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getProfileOwnerOrDeviceOwnerSupervisionComponent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getProfileOwnerOrDeviceOwnerSupervisionComponent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3293,7 +3728,12 @@ func (p *DevicePolicyManagerProxy) IsSupervisionComponent(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isSupervisionComponent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isSupervisionComponent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3319,7 +3759,12 @@ func (p *DevicePolicyManagerProxy) GetProfileOwnerName(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getProfileOwnerName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getProfileOwnerName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3346,7 +3791,12 @@ func (p *DevicePolicyManagerProxy) SetProfileEnabled(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setProfileEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setProfileEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -3371,7 +3821,12 @@ func (p *DevicePolicyManagerProxy) SetProfileName(
 	}
 	_data.WriteString16(profileName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setProfileName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setProfileName")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -3394,7 +3849,12 @@ func (p *DevicePolicyManagerProxy) ClearProfileOwner(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearProfileOwner"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearProfileOwner")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -3414,7 +3874,12 @@ func (p *DevicePolicyManagerProxy) HasUserSetupCompleted(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "hasUserSetupCompleted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "hasUserSetupCompleted")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3438,7 +3903,12 @@ func (p *DevicePolicyManagerProxy) IsOrganizationOwnedDeviceWithManagedProfile(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isOrganizationOwnedDeviceWithManagedProfile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isOrganizationOwnedDeviceWithManagedProfile")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3468,7 +3938,12 @@ func (p *DevicePolicyManagerProxy) CheckDeviceIdentifierAccess(
 	_data.WriteInt32(pid)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "checkDeviceIdentifierAccess"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "checkDeviceIdentifierAccess")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3496,7 +3971,12 @@ func (p *DevicePolicyManagerProxy) SetDeviceOwnerLockScreenInfo(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDeviceOwnerLockScreenInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDeviceOwnerLockScreenInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -3516,7 +3996,12 @@ func (p *DevicePolicyManagerProxy) GetDeviceOwnerLockScreenInfo(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDeviceOwnerLockScreenInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDeviceOwnerLockScreenInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3553,7 +4038,12 @@ func (p *DevicePolicyManagerProxy) SetPackagesSuspended(
 	}
 	_data.WriteBool(suspended)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPackagesSuspended"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPackagesSuspended")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3595,7 +4085,12 @@ func (p *DevicePolicyManagerProxy) IsPackageSuspended(
 	_data.WriteString16(callerPackage)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isPackageSuspended"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isPackageSuspended")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3619,7 +4114,12 @@ func (p *DevicePolicyManagerProxy) ListPolicyExemptApps(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "listPolicyExemptApps"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "listPolicyExemptApps")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3668,7 +4168,12 @@ func (p *DevicePolicyManagerProxy) InstallCaCert(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "installCaCert"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "installCaCert")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3706,7 +4211,12 @@ func (p *DevicePolicyManagerProxy) UninstallCaCerts(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "uninstallCaCerts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "uninstallCaCerts")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -3731,7 +4241,12 @@ func (p *DevicePolicyManagerProxy) EnforceCanManageCaCerts(
 	}
 	_data.WriteString16(callerPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "enforceCanManageCaCerts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "enforceCanManageCaCerts")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -3757,7 +4272,12 @@ func (p *DevicePolicyManagerProxy) ApproveCaCert(
 	_data.WriteInt32(userHandle)
 	_data.WriteBool(approval)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "approveCaCert"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "approveCaCert")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3785,7 +4305,12 @@ func (p *DevicePolicyManagerProxy) IsCaCertApproved(
 	_data.WriteString16(alias)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isCaCertApproved"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isCaCertApproved")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3848,7 +4373,12 @@ func (p *DevicePolicyManagerProxy) InstallKeyPair(
 	_data.WriteBool(requestAccess)
 	_data.WriteBool(isUserSelectable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "installKeyPair"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "installKeyPair")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3880,7 +4410,12 @@ func (p *DevicePolicyManagerProxy) RemoveKeyPair(
 	_data.WriteString16(callerPackage)
 	_data.WriteString16(alias)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "removeKeyPair"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "removeKeyPair")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3908,7 +4443,12 @@ func (p *DevicePolicyManagerProxy) HasKeyPair(
 	_data.WriteString16(callerPackage)
 	_data.WriteString16(alias)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "hasKeyPair"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "hasKeyPair")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -3947,7 +4487,12 @@ func (p *DevicePolicyManagerProxy) GenerateKeyPair(
 	}
 	_data.WriteInt32(idAttestationFlags)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "generateKeyPair"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "generateKeyPair")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4002,7 +4547,12 @@ func (p *DevicePolicyManagerProxy) SetKeyPairCertificate(
 	}
 	_data.WriteBool(isUserSelectable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setKeyPairCertificate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setKeyPairCertificate")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4035,7 +4585,12 @@ func (p *DevicePolicyManagerProxy) ChoosePrivateKeyAlias(
 	_data.WriteString16(alias)
 	_data.WriteStrongBinder(aliasCallback.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "choosePrivateKeyAlias"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "choosePrivateKeyAlias")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -4069,7 +4624,12 @@ func (p *DevicePolicyManagerProxy) SetDelegatedScopes(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDelegatedScopes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDelegatedScopes")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -4095,7 +4655,12 @@ func (p *DevicePolicyManagerProxy) GetDelegatedScopes(
 	}
 	_data.WriteString16(delegatePackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDelegatedScopes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDelegatedScopes")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4135,7 +4700,12 @@ func (p *DevicePolicyManagerProxy) GetDelegatePackages(
 	}
 	_data.WriteString16(scope)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDelegatePackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDelegatePackages")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4174,7 +4744,12 @@ func (p *DevicePolicyManagerProxy) SetCertInstallerPackage(
 	}
 	_data.WriteString16(installerPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setCertInstallerPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setCertInstallerPackage")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -4198,7 +4773,12 @@ func (p *DevicePolicyManagerProxy) GetCertInstallerPackage(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCertInstallerPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCertInstallerPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4239,7 +4819,12 @@ func (p *DevicePolicyManagerProxy) SetAlwaysOnVpnPackage(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAlwaysOnVpnPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAlwaysOnVpnPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4267,7 +4852,12 @@ func (p *DevicePolicyManagerProxy) GetAlwaysOnVpnPackage(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAlwaysOnVpnPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAlwaysOnVpnPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4293,7 +4883,12 @@ func (p *DevicePolicyManagerProxy) GetAlwaysOnVpnPackageForUser(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAlwaysOnVpnPackageForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAlwaysOnVpnPackageForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4321,7 +4916,12 @@ func (p *DevicePolicyManagerProxy) IsAlwaysOnVpnLockdownEnabled(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isAlwaysOnVpnLockdownEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isAlwaysOnVpnLockdownEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4347,7 +4947,12 @@ func (p *DevicePolicyManagerProxy) IsAlwaysOnVpnLockdownEnabledForUser(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isAlwaysOnVpnLockdownEnabledForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isAlwaysOnVpnLockdownEnabledForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4375,7 +4980,12 @@ func (p *DevicePolicyManagerProxy) GetAlwaysOnVpnLockdownAllowlist(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAlwaysOnVpnLockdownAllowlist"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAlwaysOnVpnLockdownAllowlist")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4422,7 +5032,12 @@ func (p *DevicePolicyManagerProxy) AddPersistentPreferredActivity(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "addPersistentPreferredActivity"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "addPersistentPreferredActivity")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -4449,7 +5064,12 @@ func (p *DevicePolicyManagerProxy) ClearPackagePersistentPreferredActivities(
 	_data.WriteString16(callerPackageName)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearPackagePersistentPreferredActivities"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearPackagePersistentPreferredActivities")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -4478,7 +5098,12 @@ func (p *DevicePolicyManagerProxy) SetDefaultSmsApplication(
 	_data.WriteString16(packageName)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDefaultSmsApplication"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDefaultSmsApplication")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -4499,7 +5124,12 @@ func (p *DevicePolicyManagerProxy) SetDefaultDialerApplication(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDefaultDialerApplication"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDefaultDialerApplication")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -4532,7 +5162,12 @@ func (p *DevicePolicyManagerProxy) SetApplicationRestrictions(
 	}
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setApplicationRestrictions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setApplicationRestrictions")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -4562,7 +5197,12 @@ func (p *DevicePolicyManagerProxy) GetApplicationRestrictions(
 	_data.WriteString16(packageName)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getApplicationRestrictions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getApplicationRestrictions")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4591,7 +5231,12 @@ func (p *DevicePolicyManagerProxy) SetApplicationRestrictionsManagingPackage(
 	}
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setApplicationRestrictionsManagingPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setApplicationRestrictionsManagingPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4619,7 +5264,12 @@ func (p *DevicePolicyManagerProxy) GetApplicationRestrictionsManagingPackage(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getApplicationRestrictionsManagingPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getApplicationRestrictionsManagingPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4645,7 +5295,12 @@ func (p *DevicePolicyManagerProxy) IsCallerApplicationRestrictionsManagingPackag
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isCallerApplicationRestrictionsManagingPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isCallerApplicationRestrictionsManagingPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4676,7 +5331,12 @@ func (p *DevicePolicyManagerProxy) SetRestrictionsProvider(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setRestrictionsProvider"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setRestrictionsProvider")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -4698,7 +5358,12 @@ func (p *DevicePolicyManagerProxy) GetRestrictionsProvider(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getRestrictionsProvider"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getRestrictionsProvider")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4732,7 +5397,12 @@ func (p *DevicePolicyManagerProxy) SetUserRestriction(
 	_data.WriteBool(enable)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUserRestriction"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUserRestriction")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -4759,7 +5429,12 @@ func (p *DevicePolicyManagerProxy) SetUserRestrictionForUser(
 	_data.WriteBool(enable)
 	_data.WriteInt32(targetUser)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUserRestrictionForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUserRestrictionForUser")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -4782,7 +5457,12 @@ func (p *DevicePolicyManagerProxy) SetUserRestrictionGlobally(
 	_data.WriteString16(callerPackage)
 	_data.WriteString16(key)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUserRestrictionGlobally"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUserRestrictionGlobally")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -4807,7 +5487,12 @@ func (p *DevicePolicyManagerProxy) SetUserRestrictionGloballyFromSystem(
 	_data.WriteString16(key)
 	_data.WriteBool(enable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUserRestrictionGloballyFromSystem"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUserRestrictionGloballyFromSystem")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -4835,7 +5520,12 @@ func (p *DevicePolicyManagerProxy) GetUserRestrictions(
 	_data.WriteString16(callerPackage)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getUserRestrictions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getUserRestrictions")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4860,7 +5550,12 @@ func (p *DevicePolicyManagerProxy) GetUserRestrictionsGlobally(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getUserRestrictionsGlobally"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getUserRestrictionsGlobally")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4894,7 +5589,12 @@ func (p *DevicePolicyManagerProxy) AddCrossProfileIntentFilter(
 	}
 	_data.WriteInt32(flags)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "addCrossProfileIntentFilter"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "addCrossProfileIntentFilter")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -4919,7 +5619,12 @@ func (p *DevicePolicyManagerProxy) ClearCrossProfileIntentFilters(
 	}
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearCrossProfileIntentFilters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearCrossProfileIntentFilters")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -4952,7 +5657,12 @@ func (p *DevicePolicyManagerProxy) SetPermittedAccessibilityServices(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPermittedAccessibilityServices"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPermittedAccessibilityServices")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -4980,7 +5690,12 @@ func (p *DevicePolicyManagerProxy) GetPermittedAccessibilityServices(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPermittedAccessibilityServices"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPermittedAccessibilityServices")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5016,7 +5731,12 @@ func (p *DevicePolicyManagerProxy) GetPermittedAccessibilityServicesForUser(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPermittedAccessibilityServicesForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPermittedAccessibilityServicesForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5058,7 +5778,12 @@ func (p *DevicePolicyManagerProxy) IsAccessibilityServicePermittedByAdmin(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isAccessibilityServicePermittedByAdmin"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isAccessibilityServicePermittedByAdmin")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5099,7 +5824,12 @@ func (p *DevicePolicyManagerProxy) SetPermittedInputMethods(
 	}
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPermittedInputMethods"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPermittedInputMethods")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5131,7 +5861,12 @@ func (p *DevicePolicyManagerProxy) GetPermittedInputMethods(
 	_data.WriteString16(callerPackageName)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPermittedInputMethods"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPermittedInputMethods")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5167,7 +5902,12 @@ func (p *DevicePolicyManagerProxy) GetPermittedInputMethodsAsUser(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPermittedInputMethodsAsUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPermittedInputMethodsAsUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5211,7 +5951,12 @@ func (p *DevicePolicyManagerProxy) IsInputMethodPermittedByAdmin(
 	_data.WriteInt32(userId)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isInputMethodPermittedByAdmin"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isInputMethodPermittedByAdmin")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5248,7 +5993,12 @@ func (p *DevicePolicyManagerProxy) SetPermittedCrossProfileNotificationListeners
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPermittedCrossProfileNotificationListeners"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPermittedCrossProfileNotificationListeners")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5276,7 +6026,12 @@ func (p *DevicePolicyManagerProxy) GetPermittedCrossProfileNotificationListeners
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPermittedCrossProfileNotificationListeners"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPermittedCrossProfileNotificationListeners")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5314,7 +6069,12 @@ func (p *DevicePolicyManagerProxy) IsNotificationListenerServicePermitted(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isNotificationListenerServicePermitted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isNotificationListenerServicePermitted")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5340,7 +6100,12 @@ func (p *DevicePolicyManagerProxy) CreateAdminSupportIntent(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(restriction)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "createAdminSupportIntent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "createAdminSupportIntent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5367,7 +6132,12 @@ func (p *DevicePolicyManagerProxy) GetEnforcingAdminAndUserDetails(
 	_data.WriteInt32(userId)
 	_data.WriteString16(restriction)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getEnforcingAdminAndUserDetails"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getEnforcingAdminAndUserDetails")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5394,7 +6164,12 @@ func (p *DevicePolicyManagerProxy) GetEnforcingAdmin(
 	_data.WriteInt32(userId)
 	_data.WriteString16(identifier)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getEnforcingAdmin"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getEnforcingAdmin")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5421,7 +6196,12 @@ func (p *DevicePolicyManagerProxy) GetEnforcingAdminsForRestriction(
 	_data.WriteInt32(userId)
 	_data.WriteString16(restriction)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getEnforcingAdminsForRestriction"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getEnforcingAdminsForRestriction")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5466,7 +6246,12 @@ func (p *DevicePolicyManagerProxy) SetApplicationHidden(
 	_data.WriteBool(hidden)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setApplicationHidden"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setApplicationHidden")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5500,7 +6285,12 @@ func (p *DevicePolicyManagerProxy) IsApplicationHidden(
 	_data.WriteString16(packageName)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isApplicationHidden"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isApplicationHidden")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5537,7 +6327,12 @@ func (p *DevicePolicyManagerProxy) CreateAndManageUser(
 	}
 	_data.WriteInt32(flags)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "createAndManageUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "createAndManageUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5568,7 +6363,12 @@ func (p *DevicePolicyManagerProxy) RemoveUser(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "removeUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "removeUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5600,7 +6400,12 @@ func (p *DevicePolicyManagerProxy) SwitchUser(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "switchUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "switchUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5632,7 +6437,12 @@ func (p *DevicePolicyManagerProxy) StartUserInBackground(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "startUserInBackground"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "startUserInBackground")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5664,7 +6474,12 @@ func (p *DevicePolicyManagerProxy) StopUser(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "stopUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "stopUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5692,7 +6507,12 @@ func (p *DevicePolicyManagerProxy) LogoutUser(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "logoutUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "logoutUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5716,7 +6536,12 @@ func (p *DevicePolicyManagerProxy) LogoutUserInternal(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "logoutUserInternal"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "logoutUserInternal")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5740,7 +6565,12 @@ func (p *DevicePolicyManagerProxy) GetLogoutUserId(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getLogoutUserId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getLogoutUserId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5768,7 +6598,12 @@ func (p *DevicePolicyManagerProxy) GetSecondaryUsers(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getSecondaryUsers"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getSecondaryUsers")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5802,7 +6637,12 @@ func (p *DevicePolicyManagerProxy) AcknowledgeNewUserDisclaimer(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "acknowledgeNewUserDisclaimer"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "acknowledgeNewUserDisclaimer")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -5824,7 +6664,12 @@ func (p *DevicePolicyManagerProxy) IsNewUserDisclaimerAcknowledged(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isNewUserDisclaimerAcknowledged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isNewUserDisclaimerAcknowledged")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5855,7 +6700,12 @@ func (p *DevicePolicyManagerProxy) EnableSystemApp(
 	_data.WriteString16(callerPackage)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "enableSystemApp"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "enableSystemApp")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -5885,7 +6735,12 @@ func (p *DevicePolicyManagerProxy) EnableSystemAppWithIntent(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "enableSystemAppWithIntent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "enableSystemAppWithIntent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5917,7 +6772,12 @@ func (p *DevicePolicyManagerProxy) InstallExistingPackage(
 	_data.WriteString16(callerPackage)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "installExistingPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "installExistingPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -5952,7 +6812,12 @@ func (p *DevicePolicyManagerProxy) SetAccountManagementDisabled(
 	_data.WriteBool(disabled)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAccountManagementDisabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAccountManagementDisabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -5974,7 +6839,12 @@ func (p *DevicePolicyManagerProxy) GetAccountTypesWithManagementDisabled(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAccountTypesWithManagementDisabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAccountTypesWithManagementDisabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6014,7 +6884,12 @@ func (p *DevicePolicyManagerProxy) GetAccountTypesWithManagementDisabledAsUser(
 	_data.WriteString16(callerPackageName)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAccountTypesWithManagementDisabledAsUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAccountTypesWithManagementDisabledAsUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6054,7 +6929,12 @@ func (p *DevicePolicyManagerProxy) SetSecondaryLockscreenEnabled(
 	}
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setSecondaryLockscreenEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setSecondaryLockscreenEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -6078,7 +6958,12 @@ func (p *DevicePolicyManagerProxy) IsSecondaryLockscreenEnabled(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isSecondaryLockscreenEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isSecondaryLockscreenEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6112,7 +6997,12 @@ func (p *DevicePolicyManagerProxy) SetPreferentialNetworkServiceConfigs(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPreferentialNetworkServiceConfigs"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPreferentialNetworkServiceConfigs")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -6132,7 +7022,12 @@ func (p *DevicePolicyManagerProxy) GetPreferentialNetworkServiceConfigs(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPreferentialNetworkServiceConfigs"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPreferentialNetworkServiceConfigs")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6179,7 +7074,12 @@ func (p *DevicePolicyManagerProxy) SetLockTaskPackages(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setLockTaskPackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setLockTaskPackages")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -6205,7 +7105,12 @@ func (p *DevicePolicyManagerProxy) GetLockTaskPackages(
 	}
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getLockTaskPackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getLockTaskPackages")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6241,7 +7146,12 @@ func (p *DevicePolicyManagerProxy) IsLockTaskPermitted(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(pkg)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isLockTaskPermitted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isLockTaskPermitted")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6272,7 +7182,12 @@ func (p *DevicePolicyManagerProxy) SetLockTaskFeatures(
 	_data.WriteString16(callerPackageName)
 	_data.WriteInt32(flags)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setLockTaskFeatures"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setLockTaskFeatures")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -6298,7 +7213,12 @@ func (p *DevicePolicyManagerProxy) GetLockTaskFeatures(
 	}
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getLockTaskFeatures"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getLockTaskFeatures")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6329,7 +7249,12 @@ func (p *DevicePolicyManagerProxy) SetGlobalSetting(
 	_data.WriteString16(setting)
 	_data.WriteString16(value)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setGlobalSetting"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setGlobalSetting")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -6358,7 +7283,12 @@ func (p *DevicePolicyManagerProxy) SetSystemSetting(
 	_data.WriteString16(value)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setSystemSetting"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setSystemSetting")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -6385,7 +7315,12 @@ func (p *DevicePolicyManagerProxy) SetSecureSetting(
 	_data.WriteString16(setting)
 	_data.WriteString16(value)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setSecureSetting"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setSecureSetting")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -6412,7 +7347,12 @@ func (p *DevicePolicyManagerProxy) SetConfiguredNetworksLockdownState(
 	_data.WriteString16(callerPackageName)
 	_data.WriteBool(lockdown)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setConfiguredNetworksLockdownState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setConfiguredNetworksLockdownState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -6436,7 +7376,12 @@ func (p *DevicePolicyManagerProxy) HasLockdownAdminConfiguredNetworks(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "hasLockdownAdminConfiguredNetworks"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "hasLockdownAdminConfiguredNetworks")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6465,7 +7410,12 @@ func (p *DevicePolicyManagerProxy) SetLocationEnabled(
 	}
 	_data.WriteBool(locationEnabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setLocationEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setLocationEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -6493,7 +7443,12 @@ func (p *DevicePolicyManagerProxy) SetTime(
 	_data.WriteString16(callerPackageName)
 	_data.WriteInt64(millis)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setTime"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setTime")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6525,7 +7480,12 @@ func (p *DevicePolicyManagerProxy) SetTimeZone(
 	_data.WriteString16(callerPackageName)
 	_data.WriteString16(timeZone)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setTimeZone"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setTimeZone")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6554,7 +7514,12 @@ func (p *DevicePolicyManagerProxy) SetMasterVolumeMuted(
 	}
 	_data.WriteBool(on)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setMasterVolumeMuted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setMasterVolumeMuted")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -6578,7 +7543,12 @@ func (p *DevicePolicyManagerProxy) IsMasterVolumeMuted(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isMasterVolumeMuted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isMasterVolumeMuted")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6607,7 +7577,12 @@ func (p *DevicePolicyManagerProxy) NotifyLockTaskModeChanged(
 	_data.WriteString16(pkg)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "notifyLockTaskModeChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "notifyLockTaskModeChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -6636,7 +7611,12 @@ func (p *DevicePolicyManagerProxy) SetUninstallBlocked(
 	_data.WriteString16(packageName)
 	_data.WriteBool(uninstallBlocked)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUninstallBlocked"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUninstallBlocked")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -6658,7 +7638,12 @@ func (p *DevicePolicyManagerProxy) IsUninstallBlocked(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isUninstallBlocked"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isUninstallBlocked")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6687,7 +7672,12 @@ func (p *DevicePolicyManagerProxy) SetCrossProfileCallerIdDisabled(
 	}
 	_data.WriteBool(disabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setCrossProfileCallerIdDisabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setCrossProfileCallerIdDisabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -6711,7 +7701,12 @@ func (p *DevicePolicyManagerProxy) GetCrossProfileCallerIdDisabled(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfileCallerIdDisabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfileCallerIdDisabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6737,7 +7732,12 @@ func (p *DevicePolicyManagerProxy) GetCrossProfileCallerIdDisabledForUser(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfileCallerIdDisabledForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfileCallerIdDisabledForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6766,7 +7766,12 @@ func (p *DevicePolicyManagerProxy) SetCrossProfileContactsSearchDisabled(
 	}
 	_data.WriteBool(disabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setCrossProfileContactsSearchDisabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setCrossProfileContactsSearchDisabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -6790,7 +7795,12 @@ func (p *DevicePolicyManagerProxy) GetCrossProfileContactsSearchDisabled(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfileContactsSearchDisabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfileContactsSearchDisabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6816,7 +7826,12 @@ func (p *DevicePolicyManagerProxy) GetCrossProfileContactsSearchDisabledForUser(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfileContactsSearchDisabledForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfileContactsSearchDisabledForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6851,7 +7866,12 @@ func (p *DevicePolicyManagerProxy) StartManagedQuickContact(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "startManagedQuickContact"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "startManagedQuickContact")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -6874,7 +7894,12 @@ func (p *DevicePolicyManagerProxy) SetManagedProfileCallerIdAccessPolicy(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setManagedProfileCallerIdAccessPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setManagedProfileCallerIdAccessPolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -6894,7 +7919,12 @@ func (p *DevicePolicyManagerProxy) GetManagedProfileCallerIdAccessPolicy(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getManagedProfileCallerIdAccessPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getManagedProfileCallerIdAccessPolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6921,7 +7951,12 @@ func (p *DevicePolicyManagerProxy) HasManagedProfileCallerIdAccess(
 	_data.WriteInt32(userId)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "hasManagedProfileCallerIdAccess"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "hasManagedProfileCallerIdAccess")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6948,7 +7983,12 @@ func (p *DevicePolicyManagerProxy) SetCredentialManagerPolicy(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setCredentialManagerPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setCredentialManagerPolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -6970,7 +8010,12 @@ func (p *DevicePolicyManagerProxy) GetCredentialManagerPolicy(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCredentialManagerPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCredentialManagerPolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -6996,7 +8041,12 @@ func (p *DevicePolicyManagerProxy) SetManagedProfileContactsAccessPolicy(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setManagedProfileContactsAccessPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setManagedProfileContactsAccessPolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -7016,7 +8066,12 @@ func (p *DevicePolicyManagerProxy) GetManagedProfileContactsAccessPolicy(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getManagedProfileContactsAccessPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getManagedProfileContactsAccessPolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7043,7 +8098,12 @@ func (p *DevicePolicyManagerProxy) HasManagedProfileContactsAccess(
 	_data.WriteInt32(userId)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "hasManagedProfileContactsAccess"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "hasManagedProfileContactsAccess")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7072,7 +8132,12 @@ func (p *DevicePolicyManagerProxy) SetBluetoothContactSharingDisabled(
 	}
 	_data.WriteBool(disabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setBluetoothContactSharingDisabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setBluetoothContactSharingDisabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -7096,7 +8161,12 @@ func (p *DevicePolicyManagerProxy) GetBluetoothContactSharingDisabled(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getBluetoothContactSharingDisabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getBluetoothContactSharingDisabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7122,7 +8192,12 @@ func (p *DevicePolicyManagerProxy) GetBluetoothContactSharingDisabledForUser(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getBluetoothContactSharingDisabledForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getBluetoothContactSharingDisabledForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7158,7 +8233,12 @@ func (p *DevicePolicyManagerProxy) SetTrustAgentConfiguration(
 	}
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setTrustAgentConfiguration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setTrustAgentConfiguration")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -7190,7 +8270,12 @@ func (p *DevicePolicyManagerProxy) GetTrustAgentConfiguration(
 	_data.WriteInt32(userId)
 	_data.WriteBool(parent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getTrustAgentConfiguration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getTrustAgentConfiguration")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7228,7 +8313,12 @@ func (p *DevicePolicyManagerProxy) AddCrossProfileWidgetProvider(
 	_data.WriteString16(callerPackageName)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "addCrossProfileWidgetProvider"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "addCrossProfileWidgetProvider")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7260,7 +8350,12 @@ func (p *DevicePolicyManagerProxy) RemoveCrossProfileWidgetProvider(
 	_data.WriteString16(callerPackageName)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "removeCrossProfileWidgetProvider"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "removeCrossProfileWidgetProvider")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7290,7 +8385,12 @@ func (p *DevicePolicyManagerProxy) GetCrossProfileWidgetProviders(
 	}
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfileWidgetProviders"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfileWidgetProviders")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7329,7 +8429,12 @@ func (p *DevicePolicyManagerProxy) SetAutoTimeRequired(
 	}
 	_data.WriteBool(required)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAutoTimeRequired"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAutoTimeRequired")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -7349,7 +8454,12 @@ func (p *DevicePolicyManagerProxy) GetAutoTimeRequired(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAutoTimeRequired"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAutoTimeRequired")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7380,7 +8490,12 @@ func (p *DevicePolicyManagerProxy) SetAutoTimeEnabled(
 	_data.WriteString16(callerPackageName)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAutoTimeEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAutoTimeEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -7406,7 +8521,12 @@ func (p *DevicePolicyManagerProxy) GetAutoTimeEnabled(
 	}
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAutoTimeEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAutoTimeEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7433,7 +8553,12 @@ func (p *DevicePolicyManagerProxy) SetAutoTimePolicy(
 	_data.WriteString16(callerPackageName)
 	_data.WriteInt32(policy)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAutoTimePolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAutoTimePolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -7455,7 +8580,12 @@ func (p *DevicePolicyManagerProxy) GetAutoTimePolicy(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAutoTimePolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAutoTimePolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7486,7 +8616,12 @@ func (p *DevicePolicyManagerProxy) SetAutoTimeZoneEnabled(
 	_data.WriteString16(callerPackageName)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAutoTimeZoneEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAutoTimeZoneEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -7512,7 +8647,12 @@ func (p *DevicePolicyManagerProxy) GetAutoTimeZoneEnabled(
 	}
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAutoTimeZoneEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAutoTimeZoneEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7539,7 +8679,12 @@ func (p *DevicePolicyManagerProxy) SetAutoTimeZonePolicy(
 	_data.WriteString16(callerPackageName)
 	_data.WriteInt32(policy)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAutoTimeZonePolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAutoTimeZonePolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -7561,7 +8706,12 @@ func (p *DevicePolicyManagerProxy) GetAutoTimeZonePolicy(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAutoTimeZonePolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAutoTimeZonePolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7590,7 +8740,12 @@ func (p *DevicePolicyManagerProxy) SetForceEphemeralUsers(
 	}
 	_data.WriteBool(forceEpehemeralUsers)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setForceEphemeralUsers"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setForceEphemeralUsers")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -7614,7 +8769,12 @@ func (p *DevicePolicyManagerProxy) GetForceEphemeralUsers(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getForceEphemeralUsers"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getForceEphemeralUsers")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7644,7 +8804,12 @@ func (p *DevicePolicyManagerProxy) IsRemovingAdmin(
 	}
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isRemovingAdmin"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isRemovingAdmin")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7675,7 +8840,12 @@ func (p *DevicePolicyManagerProxy) SetUserIcon(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUserIcon"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUserIcon")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -7704,7 +8874,12 @@ func (p *DevicePolicyManagerProxy) SetSystemUpdatePolicy(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setSystemUpdatePolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setSystemUpdatePolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -7724,7 +8899,12 @@ func (p *DevicePolicyManagerProxy) GetSystemUpdatePolicy(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getSystemUpdatePolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getSystemUpdatePolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7746,7 +8926,12 @@ func (p *DevicePolicyManagerProxy) ClearSystemUpdatePolicyFreezePeriodRecord(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearSystemUpdatePolicyFreezePeriodRecord"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearSystemUpdatePolicyFreezePeriodRecord")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -7772,7 +8957,12 @@ func (p *DevicePolicyManagerProxy) SetKeyguardDisabled(
 	}
 	_data.WriteBool(disabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setKeyguardDisabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setKeyguardDisabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7804,7 +8994,12 @@ func (p *DevicePolicyManagerProxy) SetStatusBarDisabled(
 	_data.WriteString16(callerPackageName)
 	_data.WriteBool(disabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setStatusBarDisabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setStatusBarDisabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7830,7 +9025,12 @@ func (p *DevicePolicyManagerProxy) IsStatusBarDisabled(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isStatusBarDisabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isStatusBarDisabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7854,7 +9054,12 @@ func (p *DevicePolicyManagerProxy) GetDoNotAskCredentialsOnBoot(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDoNotAskCredentialsOnBoot"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDoNotAskCredentialsOnBoot")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7881,7 +9086,12 @@ func (p *DevicePolicyManagerProxy) NotifyPendingSystemUpdate(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "notifyPendingSystemUpdate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "notifyPendingSystemUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -7907,7 +9117,12 @@ func (p *DevicePolicyManagerProxy) GetPendingSystemUpdate(
 	}
 	_data.WriteString16(callerPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPendingSystemUpdate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPendingSystemUpdate")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -7937,7 +9152,12 @@ func (p *DevicePolicyManagerProxy) SetPermissionPolicy(
 	_data.WriteString16(callerPackage)
 	_data.WriteInt32(policy)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPermissionPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPermissionPolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -7961,7 +9181,12 @@ func (p *DevicePolicyManagerProxy) GetPermissionPolicy(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPermissionPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPermissionPolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8000,7 +9225,12 @@ func (p *DevicePolicyManagerProxy) SetPermissionGrantState(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPermissionGrantState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPermissionGrantState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -8030,7 +9260,12 @@ func (p *DevicePolicyManagerProxy) GetPermissionGrantState(
 	_data.WriteString16(packageName)
 	_data.WriteString16(permission)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPermissionGrantState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPermissionGrantState")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8058,7 +9293,12 @@ func (p *DevicePolicyManagerProxy) IsProvisioningAllowed(
 	_data.WriteString16(action)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isProvisioningAllowed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isProvisioningAllowed")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8086,7 +9326,12 @@ func (p *DevicePolicyManagerProxy) CheckProvisioningPrecondition(
 	_data.WriteString16(action)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "checkProvisioningPrecondition"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "checkProvisioningPrecondition")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8124,7 +9369,12 @@ func (p *DevicePolicyManagerProxy) SetKeepUninstalledPackages(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setKeepUninstalledPackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setKeepUninstalledPackages")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -8150,7 +9400,12 @@ func (p *DevicePolicyManagerProxy) GetKeepUninstalledPackages(
 	}
 	_data.WriteString16(callerPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getKeepUninstalledPackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getKeepUninstalledPackages")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8188,7 +9443,12 @@ func (p *DevicePolicyManagerProxy) IsManagedProfile(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isManagedProfile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isManagedProfile")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8218,7 +9478,12 @@ func (p *DevicePolicyManagerProxy) GetWifiMacAddress(
 	}
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getWifiMacAddress"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getWifiMacAddress")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8245,7 +9510,12 @@ func (p *DevicePolicyManagerProxy) Reboot(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reboot"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reboot")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -8271,7 +9541,12 @@ func (p *DevicePolicyManagerProxy) SetShortSupportMessage(
 	}
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setShortSupportMessage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setShortSupportMessage")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -8297,7 +9572,12 @@ func (p *DevicePolicyManagerProxy) GetShortSupportMessage(
 	}
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getShortSupportMessage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getShortSupportMessage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8321,7 +9601,12 @@ func (p *DevicePolicyManagerProxy) SetLongSupportMessage(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setLongSupportMessage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setLongSupportMessage")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -8345,7 +9630,12 @@ func (p *DevicePolicyManagerProxy) GetLongSupportMessage(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getLongSupportMessage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getLongSupportMessage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8371,7 +9661,12 @@ func (p *DevicePolicyManagerProxy) GetShortSupportMessageForUser(
 	}
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getShortSupportMessageForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getShortSupportMessageForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8397,7 +9692,12 @@ func (p *DevicePolicyManagerProxy) GetLongSupportMessageForUser(
 	}
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getLongSupportMessageForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getLongSupportMessageForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8422,7 +9722,12 @@ func (p *DevicePolicyManagerProxy) SetOrganizationColor(
 	}
 	_data.WriteInt32(color)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setOrganizationColor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setOrganizationColor")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -8445,7 +9750,12 @@ func (p *DevicePolicyManagerProxy) SetOrganizationColorForUser(
 	_data.WriteInt32(color)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setOrganizationColorForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setOrganizationColorForUser")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -8466,7 +9776,12 @@ func (p *DevicePolicyManagerProxy) ClearOrganizationIdForUser(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearOrganizationIdForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearOrganizationIdForUser")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -8490,7 +9805,12 @@ func (p *DevicePolicyManagerProxy) GetOrganizationColor(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getOrganizationColor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getOrganizationColor")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8516,7 +9836,12 @@ func (p *DevicePolicyManagerProxy) GetOrganizationColorForUser(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getOrganizationColorForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getOrganizationColorForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8546,7 +9871,12 @@ func (p *DevicePolicyManagerProxy) SetOrganizationName(
 	}
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setOrganizationName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setOrganizationName")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -8572,7 +9902,12 @@ func (p *DevicePolicyManagerProxy) GetOrganizationName(
 	}
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getOrganizationName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getOrganizationName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8592,7 +9927,12 @@ func (p *DevicePolicyManagerProxy) GetDeviceOwnerOrganizationName(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDeviceOwnerOrganizationName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDeviceOwnerOrganizationName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8614,7 +9954,12 @@ func (p *DevicePolicyManagerProxy) GetOrganizationNameForUser(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getOrganizationNameForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getOrganizationNameForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8636,7 +9981,12 @@ func (p *DevicePolicyManagerProxy) GetUserProvisioningState(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getUserProvisioningState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getUserProvisioningState")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8663,7 +10013,12 @@ func (p *DevicePolicyManagerProxy) SetUserProvisioningState(
 	_data.WriteInt32(state)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUserProvisioningState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUserProvisioningState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -8695,7 +10050,12 @@ func (p *DevicePolicyManagerProxy) SetAffiliationIds(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAffiliationIds"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAffiliationIds")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -8719,7 +10079,12 @@ func (p *DevicePolicyManagerProxy) GetAffiliationIds(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAffiliationIds"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAffiliationIds")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8753,7 +10118,12 @@ func (p *DevicePolicyManagerProxy) IsCallingUserAffiliated(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isCallingUserAffiliated"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isCallingUserAffiliated")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8779,7 +10149,12 @@ func (p *DevicePolicyManagerProxy) IsAffiliatedUser(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isAffiliatedUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isAffiliatedUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8810,7 +10185,12 @@ func (p *DevicePolicyManagerProxy) SetSecurityLoggingEnabled(
 	_data.WriteString16(packageName)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setSecurityLoggingEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setSecurityLoggingEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -8836,7 +10216,12 @@ func (p *DevicePolicyManagerProxy) IsSecurityLoggingEnabled(
 	}
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isSecurityLoggingEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isSecurityLoggingEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8866,7 +10251,12 @@ func (p *DevicePolicyManagerProxy) RetrieveSecurityLogs(
 	}
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "retrieveSecurityLogs"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "retrieveSecurityLogs")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8895,7 +10285,12 @@ func (p *DevicePolicyManagerProxy) RetrievePreRebootSecurityLogs(
 	}
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "retrievePreRebootSecurityLogs"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "retrievePreRebootSecurityLogs")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8918,7 +10313,12 @@ func (p *DevicePolicyManagerProxy) ForceNetworkLogs(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "forceNetworkLogs"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "forceNetworkLogs")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8942,7 +10342,12 @@ func (p *DevicePolicyManagerProxy) ForceSecurityLogs(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "forceSecurityLogs"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "forceSecurityLogs")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -8969,7 +10374,12 @@ func (p *DevicePolicyManagerProxy) SetAuditLogEnabled(
 	_data.WriteString16(callerPackage)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAuditLogEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAuditLogEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -8991,7 +10401,12 @@ func (p *DevicePolicyManagerProxy) IsAuditLogEnabled(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isAuditLogEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isAuditLogEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9018,7 +10433,12 @@ func (p *DevicePolicyManagerProxy) SetAuditLogEventsCallback(
 	_data.WriteString16(callerPackage)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAuditLogEventsCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAuditLogEventsCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -9040,7 +10460,12 @@ func (p *DevicePolicyManagerProxy) IsUninstallInQueue(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isUninstallInQueue"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isUninstallInQueue")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9065,7 +10490,12 @@ func (p *DevicePolicyManagerProxy) UninstallPackageWithActiveAdmins(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "uninstallPackageWithActiveAdmins"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "uninstallPackageWithActiveAdmins")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -9085,7 +10515,12 @@ func (p *DevicePolicyManagerProxy) IsDeviceProvisioned(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isDeviceProvisioned"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isDeviceProvisioned")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9109,7 +10544,12 @@ func (p *DevicePolicyManagerProxy) IsDeviceProvisioningConfigApplied(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isDeviceProvisioningConfigApplied"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isDeviceProvisioningConfigApplied")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9132,7 +10572,12 @@ func (p *DevicePolicyManagerProxy) SetDeviceProvisioningConfigApplied(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDeviceProvisioningConfigApplied"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDeviceProvisioningConfigApplied")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -9153,7 +10598,12 @@ func (p *DevicePolicyManagerProxy) ForceUpdateUserSetupComplete(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "forceUpdateUserSetupComplete"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "forceUpdateUserSetupComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -9178,7 +10628,12 @@ func (p *DevicePolicyManagerProxy) SetBackupServiceEnabled(
 	}
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setBackupServiceEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setBackupServiceEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -9202,7 +10657,12 @@ func (p *DevicePolicyManagerProxy) IsBackupServiceEnabled(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isBackupServiceEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isBackupServiceEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9233,7 +10693,12 @@ func (p *DevicePolicyManagerProxy) SetNetworkLoggingEnabled(
 	_data.WriteString16(packageName)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setNetworkLoggingEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setNetworkLoggingEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -9259,7 +10724,12 @@ func (p *DevicePolicyManagerProxy) IsNetworkLoggingEnabled(
 	}
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isNetworkLoggingEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isNetworkLoggingEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9291,7 +10761,12 @@ func (p *DevicePolicyManagerProxy) RetrieveNetworkLogs(
 	_data.WriteString16(packageName)
 	_data.WriteInt64(batchToken)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "retrieveNetworkLogs"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "retrieveNetworkLogs")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9342,7 +10817,12 @@ func (p *DevicePolicyManagerProxy) BindDeviceAdminServiceAsUser(
 	_data.WriteInt64(flags)
 	_data.WriteInt32(targetUserId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "bindDeviceAdminServiceAsUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "bindDeviceAdminServiceAsUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9370,7 +10850,12 @@ func (p *DevicePolicyManagerProxy) GetBindDeviceAdminTargetUsers(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getBindDeviceAdminTargetUsers"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getBindDeviceAdminTargetUsers")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9407,7 +10892,12 @@ func (p *DevicePolicyManagerProxy) IsEphemeralUser(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isEphemeralUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isEphemeralUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9431,7 +10921,12 @@ func (p *DevicePolicyManagerProxy) GetLastSecurityLogRetrievalTime(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getLastSecurityLogRetrievalTime"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getLastSecurityLogRetrievalTime")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9455,7 +10950,12 @@ func (p *DevicePolicyManagerProxy) GetLastBugReportRequestTime(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getLastBugReportRequestTime"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getLastBugReportRequestTime")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9479,7 +10979,12 @@ func (p *DevicePolicyManagerProxy) GetLastNetworkLogRetrievalTime(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getLastNetworkLogRetrievalTime"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getLastNetworkLogRetrievalTime")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9518,7 +11023,12 @@ func (p *DevicePolicyManagerProxy) SetResetPasswordToken(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setResetPasswordToken"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setResetPasswordToken")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9548,7 +11058,12 @@ func (p *DevicePolicyManagerProxy) ClearResetPasswordToken(
 	}
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearResetPasswordToken"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearResetPasswordToken")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9578,7 +11093,12 @@ func (p *DevicePolicyManagerProxy) IsResetPasswordTokenActive(
 	}
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isResetPasswordTokenActive"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isResetPasswordTokenActive")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9621,7 +11141,12 @@ func (p *DevicePolicyManagerProxy) ResetPasswordWithToken(
 	}
 	_data.WriteInt32(flags)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "resetPasswordWithToken"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "resetPasswordWithToken")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9645,7 +11170,12 @@ func (p *DevicePolicyManagerProxy) IsCurrentInputMethodSetByOwner(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isCurrentInputMethodSetByOwner"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isCurrentInputMethodSetByOwner")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9673,7 +11203,12 @@ func (p *DevicePolicyManagerProxy) GetOwnerInstalledCaCerts(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getOwnerInstalledCaCerts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getOwnerInstalledCaCerts")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9703,7 +11238,12 @@ func (p *DevicePolicyManagerProxy) ClearApplicationUserData(
 	_data.WriteString16(packageName)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearApplicationUserData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearApplicationUserData")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -9728,7 +11268,12 @@ func (p *DevicePolicyManagerProxy) SetLogoutEnabled(
 	}
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setLogoutEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setLogoutEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -9748,7 +11293,12 @@ func (p *DevicePolicyManagerProxy) IsLogoutEnabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isLogoutEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isLogoutEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9780,7 +11330,12 @@ func (p *DevicePolicyManagerProxy) GetDisallowedSystemApps(
 	_data.WriteInt32(userId)
 	_data.WriteString16(provisioningAction)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDisallowedSystemApps"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDisallowedSystemApps")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9822,7 +11377,12 @@ func (p *DevicePolicyManagerProxy) TransferOwnership(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "transferOwnership"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "transferOwnership")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -9842,7 +11402,12 @@ func (p *DevicePolicyManagerProxy) GetTransferOwnershipBundle(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getTransferOwnershipBundle"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getTransferOwnershipBundle")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9866,7 +11431,12 @@ func (p *DevicePolicyManagerProxy) SetStartUserSessionMessage(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setStartUserSessionMessage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setStartUserSessionMessage")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -9890,7 +11460,12 @@ func (p *DevicePolicyManagerProxy) SetEndUserSessionMessage(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setEndUserSessionMessage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setEndUserSessionMessage")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -9914,7 +11489,12 @@ func (p *DevicePolicyManagerProxy) GetStartUserSessionMessage(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getStartUserSessionMessage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getStartUserSessionMessage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9938,7 +11518,12 @@ func (p *DevicePolicyManagerProxy) GetEndUserSessionMessage(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getEndUserSessionMessage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getEndUserSessionMessage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -9971,7 +11556,12 @@ func (p *DevicePolicyManagerProxy) SetMeteredDataDisabledPackages(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setMeteredDataDisabledPackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setMeteredDataDisabledPackages")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10009,7 +11599,12 @@ func (p *DevicePolicyManagerProxy) GetMeteredDataDisabledPackages(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getMeteredDataDisabledPackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getMeteredDataDisabledPackages")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10051,7 +11646,12 @@ func (p *DevicePolicyManagerProxy) AddOverrideApn(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "addOverrideApn"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "addOverrideApn")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10085,7 +11685,12 @@ func (p *DevicePolicyManagerProxy) UpdateOverrideApn(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "updateOverrideApn"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "updateOverrideApn")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10115,7 +11720,12 @@ func (p *DevicePolicyManagerProxy) RemoveOverrideApn(
 	}
 	_data.WriteInt32(apnId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "removeOverrideApn"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "removeOverrideApn")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10143,7 +11753,12 @@ func (p *DevicePolicyManagerProxy) GetOverrideApns(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getOverrideApns"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getOverrideApns")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10181,7 +11796,12 @@ func (p *DevicePolicyManagerProxy) SetOverrideApnsEnabled(
 	}
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setOverrideApnsEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setOverrideApnsEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -10205,7 +11825,12 @@ func (p *DevicePolicyManagerProxy) IsOverrideApnEnabled(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isOverrideApnEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isOverrideApnEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10237,7 +11862,12 @@ func (p *DevicePolicyManagerProxy) IsMeteredDataDisabledPackageForUser(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isMeteredDataDisabledPackageForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isMeteredDataDisabledPackageForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10269,7 +11899,12 @@ func (p *DevicePolicyManagerProxy) SetGlobalPrivateDns(
 	_data.WriteInt32(mode)
 	_data.WriteString16(privateDnsHost)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setGlobalPrivateDns"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setGlobalPrivateDns")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10297,7 +11932,12 @@ func (p *DevicePolicyManagerProxy) GetGlobalPrivateDnsMode(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getGlobalPrivateDnsMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getGlobalPrivateDnsMode")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10325,7 +11965,12 @@ func (p *DevicePolicyManagerProxy) GetGlobalPrivateDnsHost(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getGlobalPrivateDnsHost"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getGlobalPrivateDnsHost")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10356,7 +12001,12 @@ func (p *DevicePolicyManagerProxy) SetProfileOwnerOnOrganizationOwnedDevice(
 	_data.WriteInt32(userId)
 	_data.WriteBool(isProfileOwnerOnOrganizationOwnedDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setProfileOwnerOnOrganizationOwnedDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setProfileOwnerOnOrganizationOwnedDevice")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -10385,7 +12035,12 @@ func (p *DevicePolicyManagerProxy) InstallUpdateFromFile(
 	_data.WriteFileDescriptor(updateFileDescriptor)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "installUpdateFromFile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "installUpdateFromFile")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -10417,7 +12072,12 @@ func (p *DevicePolicyManagerProxy) SetCrossProfileCalendarPackages(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setCrossProfileCalendarPackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setCrossProfileCalendarPackages")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -10441,7 +12101,12 @@ func (p *DevicePolicyManagerProxy) GetCrossProfileCalendarPackages(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfileCalendarPackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfileCalendarPackages")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10479,7 +12144,12 @@ func (p *DevicePolicyManagerProxy) IsPackageAllowedToAccessCalendarForUser(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isPackageAllowedToAccessCalendarForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isPackageAllowedToAccessCalendarForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10505,7 +12175,12 @@ func (p *DevicePolicyManagerProxy) GetCrossProfileCalendarPackagesForUser(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfileCalendarPackagesForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfileCalendarPackagesForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10551,7 +12226,12 @@ func (p *DevicePolicyManagerProxy) SetCrossProfilePackages(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setCrossProfilePackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setCrossProfilePackages")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -10575,7 +12255,12 @@ func (p *DevicePolicyManagerProxy) GetCrossProfilePackages(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfilePackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfilePackages")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10611,7 +12296,12 @@ func (p *DevicePolicyManagerProxy) GetAllCrossProfilePackages(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAllCrossProfilePackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAllCrossProfilePackages")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10645,7 +12335,12 @@ func (p *DevicePolicyManagerProxy) GetDefaultCrossProfilePackages(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDefaultCrossProfilePackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDefaultCrossProfilePackages")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10679,7 +12374,12 @@ func (p *DevicePolicyManagerProxy) IsManagedKiosk(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isManagedKiosk"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isManagedKiosk")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10703,7 +12403,12 @@ func (p *DevicePolicyManagerProxy) IsUnattendedManagedKiosk(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isUnattendedManagedKiosk"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isUnattendedManagedKiosk")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10739,7 +12444,12 @@ func (p *DevicePolicyManagerProxy) StartViewCalendarEventInManagedProfile(
 	_data.WriteBool(allDay)
 	_data.WriteInt32(flags)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "startViewCalendarEventInManagedProfile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "startViewCalendarEventInManagedProfile")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10775,7 +12485,12 @@ func (p *DevicePolicyManagerProxy) SetKeyGrantForApp(
 	_data.WriteString16(packageName)
 	_data.WriteBool(hasGrant)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setKeyGrantForApp"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setKeyGrantForApp")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10803,7 +12518,12 @@ func (p *DevicePolicyManagerProxy) GetKeyPairGrants(
 	_data.WriteString16(callerPackage)
 	_data.WriteString16(alias)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getKeyPairGrants"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getKeyPairGrants")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10832,7 +12552,12 @@ func (p *DevicePolicyManagerProxy) SetKeyGrantToWifiAuth(
 	_data.WriteString16(alias)
 	_data.WriteBool(hasGrant)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setKeyGrantToWifiAuth"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setKeyGrantToWifiAuth")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10860,7 +12585,12 @@ func (p *DevicePolicyManagerProxy) IsKeyPairGrantedToWifiAuth(
 	_data.WriteString16(callerPackage)
 	_data.WriteString16(alias)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isKeyPairGrantedToWifiAuth"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isKeyPairGrantedToWifiAuth")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10898,7 +12628,12 @@ func (p *DevicePolicyManagerProxy) SetUserControlDisabledPackages(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUserControlDisabledPackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUserControlDisabledPackages")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -10924,7 +12659,12 @@ func (p *DevicePolicyManagerProxy) GetUserControlDisabledPackages(
 	}
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getUserControlDisabledPackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getUserControlDisabledPackages")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -10965,7 +12705,12 @@ func (p *DevicePolicyManagerProxy) SetCommonCriteriaModeEnabled(
 	_data.WriteString16(callerPackageName)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setCommonCriteriaModeEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setCommonCriteriaModeEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -10989,7 +12734,12 @@ func (p *DevicePolicyManagerProxy) IsCommonCriteriaModeEnabled(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isCommonCriteriaModeEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isCommonCriteriaModeEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11017,7 +12767,12 @@ func (p *DevicePolicyManagerProxy) GetPersonalAppsSuspendedReasons(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPersonalAppsSuspendedReasons"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPersonalAppsSuspendedReasons")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11046,7 +12801,12 @@ func (p *DevicePolicyManagerProxy) SetPersonalAppsSuspended(
 	}
 	_data.WriteBool(suspended)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPersonalAppsSuspended"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setPersonalAppsSuspended")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11070,7 +12830,12 @@ func (p *DevicePolicyManagerProxy) GetManagedProfileMaximumTimeOff(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getManagedProfileMaximumTimeOff"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getManagedProfileMaximumTimeOff")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11099,7 +12864,12 @@ func (p *DevicePolicyManagerProxy) SetManagedProfileMaximumTimeOff(
 	}
 	_data.WriteInt64(timeoutMs)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setManagedProfileMaximumTimeOff"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setManagedProfileMaximumTimeOff")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11118,7 +12888,12 @@ func (p *DevicePolicyManagerProxy) AcknowledgeDeviceCompliant(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "acknowledgeDeviceCompliant"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "acknowledgeDeviceCompliant")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11138,7 +12913,12 @@ func (p *DevicePolicyManagerProxy) IsComplianceAcknowledgementRequired(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isComplianceAcknowledgementRequired"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isComplianceAcknowledgementRequired")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11164,7 +12944,12 @@ func (p *DevicePolicyManagerProxy) CanProfileOwnerResetPasswordWhenLocked(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "canProfileOwnerResetPasswordWhenLocked"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "canProfileOwnerResetPasswordWhenLocked")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11191,7 +12976,12 @@ func (p *DevicePolicyManagerProxy) SetNextOperationSafety(
 	_data.WriteInt32(operation)
 	_data.WriteInt32(reason)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setNextOperationSafety"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setNextOperationSafety")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11213,7 +13003,12 @@ func (p *DevicePolicyManagerProxy) IsSafeOperation(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(reason)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isSafeOperation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isSafeOperation")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11239,7 +13034,12 @@ func (p *DevicePolicyManagerProxy) GetEnrollmentSpecificId(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getEnrollmentSpecificId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getEnrollmentSpecificId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11268,7 +13068,12 @@ func (p *DevicePolicyManagerProxy) SetOrganizationIdForUser(
 	_data.WriteString16(enterpriseId)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setOrganizationIdForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setOrganizationIdForUser")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11294,7 +13099,12 @@ func (p *DevicePolicyManagerProxy) CreateAndProvisionManagedProfile(
 	}
 	_data.WriteString16(callerPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "createAndProvisionManagedProfile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "createAndProvisionManagedProfile")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11323,7 +13133,12 @@ func (p *DevicePolicyManagerProxy) CreateManagedProfile(
 	}
 	_data.WriteString16(callerPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "createManagedProfile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "createManagedProfile")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11353,7 +13168,12 @@ func (p *DevicePolicyManagerProxy) FinalizeCreateManagedProfile(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "finalizeCreateManagedProfile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "finalizeCreateManagedProfile")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11378,7 +13198,12 @@ func (p *DevicePolicyManagerProxy) ProvisionFullyManagedDevice(
 	}
 	_data.WriteString16(callerPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "provisionFullyManagedDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "provisionFullyManagedDevice")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11405,7 +13230,12 @@ func (p *DevicePolicyManagerProxy) FinalizeWorkProfileProvisioning(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "finalizeWorkProfileProvisioning"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "finalizeWorkProfileProvisioning")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11427,7 +13257,12 @@ func (p *DevicePolicyManagerProxy) RemoveManagedProfile(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "removeManagedProfile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "removeManagedProfile")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11456,7 +13291,12 @@ func (p *DevicePolicyManagerProxy) SetDeviceOwnerType(
 	}
 	_data.WriteInt32(deviceOwnerType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDeviceOwnerType"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDeviceOwnerType")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11480,7 +13320,12 @@ func (p *DevicePolicyManagerProxy) GetDeviceOwnerType(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDeviceOwnerType"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDeviceOwnerType")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11505,7 +13350,12 @@ func (p *DevicePolicyManagerProxy) ResetDefaultCrossProfileIntentFilters(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "resetDefaultCrossProfileIntentFilters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "resetDefaultCrossProfileIntentFilters")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11525,7 +13375,12 @@ func (p *DevicePolicyManagerProxy) CanAdminGrantSensorsPermissions(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "canAdminGrantSensorsPermissions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "canAdminGrantSensorsPermissions")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11552,7 +13407,12 @@ func (p *DevicePolicyManagerProxy) SetUsbDataSignalingEnabled(
 	_data.WriteString16(callerPackage)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUsbDataSignalingEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUsbDataSignalingEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11574,7 +13434,12 @@ func (p *DevicePolicyManagerProxy) IsUsbDataSignalingEnabled(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isUsbDataSignalingEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isUsbDataSignalingEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11598,7 +13463,12 @@ func (p *DevicePolicyManagerProxy) CanUsbDataSignalingBeDisabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "canUsbDataSignalingBeDisabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "canUsbDataSignalingBeDisabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11625,7 +13495,12 @@ func (p *DevicePolicyManagerProxy) SetMinimumRequiredWifiSecurityLevel(
 	_data.WriteString16(callerPackageName)
 	_data.WriteInt32(level)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setMinimumRequiredWifiSecurityLevel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setMinimumRequiredWifiSecurityLevel")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11645,7 +13520,12 @@ func (p *DevicePolicyManagerProxy) GetMinimumRequiredWifiSecurityLevel(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getMinimumRequiredWifiSecurityLevel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getMinimumRequiredWifiSecurityLevel")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11674,7 +13554,12 @@ func (p *DevicePolicyManagerProxy) SetWifiSsidPolicy(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setWifiSsidPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setWifiSsidPolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11696,7 +13581,12 @@ func (p *DevicePolicyManagerProxy) GetWifiSsidPolicy(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getWifiSsidPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getWifiSsidPolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11721,7 +13611,12 @@ func (p *DevicePolicyManagerProxy) IsDevicePotentiallyStolen(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isDevicePotentiallyStolen"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isDevicePotentiallyStolen")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11745,7 +13640,12 @@ func (p *DevicePolicyManagerProxy) ListForegroundAffiliatedUsers(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "listForegroundAffiliatedUsers"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "listForegroundAffiliatedUsers")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11788,7 +13688,12 @@ func (p *DevicePolicyManagerProxy) SetDrawables(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDrawables"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDrawables")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11816,7 +13721,12 @@ func (p *DevicePolicyManagerProxy) ResetDrawables(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "resetDrawables"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "resetDrawables")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11842,7 +13752,12 @@ func (p *DevicePolicyManagerProxy) GetDrawable(
 	_data.WriteString16(drawableStyle)
 	_data.WriteString16(drawableSource)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDrawable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDrawable")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11865,7 +13780,12 @@ func (p *DevicePolicyManagerProxy) IsDpcDownloaded(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isDpcDownloaded"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isDpcDownloaded")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11890,7 +13810,12 @@ func (p *DevicePolicyManagerProxy) SetDpcDownloaded(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteBool(downloaded)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDpcDownloaded"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDpcDownloaded")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11920,7 +13845,12 @@ func (p *DevicePolicyManagerProxy) SetStrings(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setStrings"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setStrings")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11948,7 +13878,12 @@ func (p *DevicePolicyManagerProxy) ResetStrings(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "resetStrings"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "resetStrings")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -11970,7 +13905,12 @@ func (p *DevicePolicyManagerProxy) GetString(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(stringId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getString"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getString")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -11992,7 +13932,12 @@ func (p *DevicePolicyManagerProxy) ResetShouldAllowBypassingDevicePolicyManageme
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "resetShouldAllowBypassingDevicePolicyManagementRoleQualificationState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "resetShouldAllowBypassingDevicePolicyManagementRoleQualificationState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -12012,7 +13957,12 @@ func (p *DevicePolicyManagerProxy) ShouldAllowBypassingDevicePolicyManagementRol
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "shouldAllowBypassingDevicePolicyManagementRoleQualification"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "shouldAllowBypassingDevicePolicyManagementRoleQualification")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -12040,7 +13990,12 @@ func (p *DevicePolicyManagerProxy) GetPolicyManagedProfiles(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPolicyManagedProfiles"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPolicyManagedProfiles")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -12085,7 +14040,12 @@ func (p *DevicePolicyManagerProxy) SetApplicationExemptions(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setApplicationExemptions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setApplicationExemptions")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -12107,7 +14067,12 @@ func (p *DevicePolicyManagerProxy) GetApplicationExemptions(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getApplicationExemptions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getApplicationExemptions")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -12144,7 +14109,12 @@ func (p *DevicePolicyManagerProxy) SetMtePolicy(
 	_data.WriteInt32(flag)
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setMtePolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setMtePolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -12167,7 +14137,12 @@ func (p *DevicePolicyManagerProxy) SetMtePolicyBySystem(
 	_data.WriteString16(systemEntity)
 	_data.WriteInt32(policy)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setMtePolicyBySystem"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setMtePolicyBySystem")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -12189,7 +14164,12 @@ func (p *DevicePolicyManagerProxy) GetMtePolicy(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getMtePolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getMtePolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -12216,7 +14196,12 @@ func (p *DevicePolicyManagerProxy) SetManagedSubscriptionsPolicy(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setManagedSubscriptionsPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setManagedSubscriptionsPolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -12236,7 +14221,12 @@ func (p *DevicePolicyManagerProxy) GetManagedSubscriptionsPolicy(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getManagedSubscriptionsPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getManagedSubscriptionsPolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -12259,7 +14249,12 @@ func (p *DevicePolicyManagerProxy) GetDevicePolicyState(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDevicePolicyState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDevicePolicyState")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -12284,7 +14279,12 @@ func (p *DevicePolicyManagerProxy) TriggerDevicePolicyEngineMigration(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteBool(forceMigration)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "triggerDevicePolicyEngineMigration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "triggerDevicePolicyEngineMigration")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -12310,7 +14310,12 @@ func (p *DevicePolicyManagerProxy) IsDeviceFinanced(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isDeviceFinanced"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isDeviceFinanced")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -12336,7 +14341,12 @@ func (p *DevicePolicyManagerProxy) GetFinancedDeviceKioskRoleHolder(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getFinancedDeviceKioskRoleHolder"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getFinancedDeviceKioskRoleHolder")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -12359,7 +14369,12 @@ func (p *DevicePolicyManagerProxy) CalculateHasIncompatibleAccounts(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "calculateHasIncompatibleAccounts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "calculateHasIncompatibleAccounts")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -12386,7 +14401,12 @@ func (p *DevicePolicyManagerProxy) SetContentProtectionPolicy(
 	_data.WriteString16(callerPackageName)
 	_data.WriteInt32(policy)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setContentProtectionPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setContentProtectionPolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -12414,7 +14434,12 @@ func (p *DevicePolicyManagerProxy) GetContentProtectionPolicy(
 	_data.WriteString16(callerPackageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getContentProtectionPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getContentProtectionPolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -12440,7 +14465,12 @@ func (p *DevicePolicyManagerProxy) GetSubscriptionIds(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getSubscriptionIds"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getSubscriptionIds")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -12477,7 +14507,12 @@ func (p *DevicePolicyManagerProxy) SetMaxPolicyStorageLimit(
 	_data.WriteString16(callerPackageName)
 	_data.WriteInt32(storageLimit)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setMaxPolicyStorageLimit"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setMaxPolicyStorageLimit")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -12500,7 +14535,12 @@ func (p *DevicePolicyManagerProxy) ForceSetMaxPolicyStorageLimit(
 	_data.WriteString16(callerPackageName)
 	_data.WriteInt32(storageLimit)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "forceSetMaxPolicyStorageLimit"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "forceSetMaxPolicyStorageLimit")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -12522,7 +14562,12 @@ func (p *DevicePolicyManagerProxy) GetMaxPolicyStorageLimit(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getMaxPolicyStorageLimit"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getMaxPolicyStorageLimit")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -12552,7 +14597,12 @@ func (p *DevicePolicyManagerProxy) GetPolicySizeForAdmin(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPolicySizeForAdmin"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPolicySizeForAdmin")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -12578,7 +14628,12 @@ func (p *DevicePolicyManagerProxy) GetHeadlessDeviceOwnerMode(
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getHeadlessDeviceOwnerMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getHeadlessDeviceOwnerMode")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -12605,7 +14660,12 @@ func (p *DevicePolicyManagerProxy) SetAppFunctionsPolicy(
 	_data.WriteString16(callerPackageName)
 	_data.WriteInt32(policy)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAppFunctionsPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAppFunctionsPolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -12629,7 +14689,12 @@ func (p *DevicePolicyManagerProxy) GetAppFunctionsPolicy(
 	_data.WriteString16(callerPackageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAppFunctionsPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAppFunctionsPolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

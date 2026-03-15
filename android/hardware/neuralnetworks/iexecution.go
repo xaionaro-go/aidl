@@ -46,7 +46,12 @@ func (p *ExecutionProxy) ExecuteSynchronously(
 	_data.WriteInterfaceToken(DescriptorIExecution)
 	_data.WriteInt64(deadlineNs)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIExecution, "executeSynchronously"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIExecution, "executeSynchronously")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -82,7 +87,12 @@ func (p *ExecutionProxy) ExecuteFenced(
 	_data.WriteInt64(deadlineNs)
 	_data.WriteInt64(durationNs)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIExecution, "executeFenced"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIExecution, "executeFenced")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

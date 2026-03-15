@@ -47,7 +47,12 @@ func (p *VoiceInteractionSessionListenerProxy) OnVoiceSessionShown(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSessionListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSessionListener, "onVoiceSessionShown"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSessionListener, "onVoiceSessionShown")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -57,7 +62,12 @@ func (p *VoiceInteractionSessionListenerProxy) OnVoiceSessionHidden(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSessionListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSessionListener, "onVoiceSessionHidden"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSessionListener, "onVoiceSessionHidden")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -69,7 +79,12 @@ func (p *VoiceInteractionSessionListenerProxy) OnVoiceSessionWindowVisibilityCha
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSessionListener)
 	_data.WriteBool(visible)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSessionListener, "onVoiceSessionWindowVisibilityChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSessionListener, "onVoiceSessionWindowVisibilityChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -80,6 +95,11 @@ func (p *VoiceInteractionSessionListenerProxy) OnSetUiHints(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSessionListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSessionListener, "onSetUiHints"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSessionListener, "onSetUiHints")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

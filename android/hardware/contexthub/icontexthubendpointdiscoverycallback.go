@@ -54,7 +54,12 @@ func (p *ContextHubEndpointDiscoveryCallbackProxy) OnEndpointsStarted(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContextHubEndpointDiscoveryCallback, "onEndpointsStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContextHubEndpointDiscoveryCallback, "onEndpointsStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -77,6 +82,11 @@ func (p *ContextHubEndpointDiscoveryCallbackProxy) OnEndpointsStopped(
 	}
 	_data.WriteInt32(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContextHubEndpointDiscoveryCallback, "onEndpointsStopped"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContextHubEndpointDiscoveryCallback, "onEndpointsStopped")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

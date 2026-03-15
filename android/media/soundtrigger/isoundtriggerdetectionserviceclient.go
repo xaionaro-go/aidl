@@ -43,6 +43,11 @@ func (p *SoundTriggerDetectionServiceClientProxy) OnOpFinished(
 	_data.WriteInterfaceToken(DescriptorISoundTriggerDetectionServiceClient)
 	_data.WriteInt32(opId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerDetectionServiceClient, "onOpFinished"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerDetectionServiceClient, "onOpFinished")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

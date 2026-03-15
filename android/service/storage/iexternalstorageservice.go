@@ -65,7 +65,12 @@ func (p *ExternalStorageServiceProxy) StartSession(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIExternalStorageService, "startSession"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIExternalStorageService, "startSession")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -81,7 +86,12 @@ func (p *ExternalStorageServiceProxy) EndSession(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIExternalStorageService, "endSession"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIExternalStorageService, "endSession")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -101,7 +111,12 @@ func (p *ExternalStorageServiceProxy) NotifyVolumeStateChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIExternalStorageService, "notifyVolumeStateChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIExternalStorageService, "notifyVolumeStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -121,7 +136,12 @@ func (p *ExternalStorageServiceProxy) FreeCache(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIExternalStorageService, "freeCache"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIExternalStorageService, "freeCache")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -139,6 +159,11 @@ func (p *ExternalStorageServiceProxy) NotifyAnrDelayStarted(
 	_data.WriteInt32(tid)
 	_data.WriteInt32(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIExternalStorageService, "notifyAnrDelayStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIExternalStorageService, "notifyAnrDelayStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

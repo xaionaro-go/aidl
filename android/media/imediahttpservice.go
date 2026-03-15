@@ -42,7 +42,12 @@ func (p *MediaHTTPServiceProxy) MakeHTTPConnection(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaHTTPService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaHTTPService, "makeHTTPConnection"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaHTTPService, "makeHTTPConnection")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

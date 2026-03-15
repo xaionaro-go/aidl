@@ -49,7 +49,12 @@ func (p *GroupCallCallbackProxy) OnError(
 	_data.WriteInt32(errorCode)
 	_data.WriteString16(message)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGroupCallCallback, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGroupCallCallback, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -63,7 +68,12 @@ func (p *GroupCallCallbackProxy) OnGroupCallStateChanged(
 	_data.WriteInt32(state)
 	_data.WriteInt32(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGroupCallCallback, "onGroupCallStateChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGroupCallCallback, "onGroupCallStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -75,6 +85,11 @@ func (p *GroupCallCallbackProxy) OnBroadcastSignalStrengthUpdated(
 	_data.WriteInterfaceToken(DescriptorIGroupCallCallback)
 	_data.WriteInt32(signalStrength)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGroupCallCallback, "onBroadcastSignalStrengthUpdated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGroupCallCallback, "onBroadcastSignalStrengthUpdated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

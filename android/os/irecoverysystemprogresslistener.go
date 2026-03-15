@@ -43,6 +43,11 @@ func (p *RecoverySystemProgressListenerProxy) OnProgress(
 	_data.WriteInterfaceToken(DescriptorIRecoverySystemProgressListener)
 	_data.WriteInt32(progress)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecoverySystemProgressListener, "onProgress"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecoverySystemProgressListener, "onProgress")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

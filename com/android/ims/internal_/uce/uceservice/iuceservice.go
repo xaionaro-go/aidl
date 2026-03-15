@@ -73,7 +73,12 @@ func (p *UceServiceProxy) StartService(
 	_data.WriteInterfaceToken(DescriptorIUceService)
 	_data.WriteStrongBinder(uceListener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUceService, "startService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUceService, "startService")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -97,7 +102,12 @@ func (p *UceServiceProxy) StopService(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUceService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUceService, "stopService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUceService, "stopService")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -121,7 +131,12 @@ func (p *UceServiceProxy) IsServiceStarted(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUceService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUceService, "isServiceStarted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUceService, "isServiceStarted")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -151,7 +166,12 @@ func (p *UceServiceProxy) CreateOptionsService(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUceService, "createOptionsService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUceService, "createOptionsService")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -186,7 +206,12 @@ func (p *UceServiceProxy) CreateOptionsServiceForSubscription(
 	}
 	_data.WriteString16(iccId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUceService, "createOptionsServiceForSubscription"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUceService, "createOptionsServiceForSubscription")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -214,7 +239,12 @@ func (p *UceServiceProxy) DestroyOptionsService(
 	_data.WriteInterfaceToken(DescriptorIUceService)
 	_data.WriteInt32(optionsServiceHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUceService, "destroyOptionsService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUceService, "destroyOptionsService")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -240,7 +270,12 @@ func (p *UceServiceProxy) CreatePresenceService(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUceService, "createPresenceService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUceService, "createPresenceService")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -275,7 +310,12 @@ func (p *UceServiceProxy) CreatePresenceServiceForSubscription(
 	}
 	_data.WriteString16(iccId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUceService, "createPresenceServiceForSubscription"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUceService, "createPresenceServiceForSubscription")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -303,7 +343,12 @@ func (p *UceServiceProxy) DestroyPresenceService(
 	_data.WriteInterfaceToken(DescriptorIUceService)
 	_data.WriteInt32(presenceServiceHdl)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUceService, "destroyPresenceService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUceService, "destroyPresenceService")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -323,7 +368,12 @@ func (p *UceServiceProxy) GetServiceStatus(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUceService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUceService, "getServiceStatus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUceService, "getServiceStatus")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -347,7 +397,12 @@ func (p *UceServiceProxy) GetPresenceService(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUceService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUceService, "getPresenceService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUceService, "getPresenceService")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -374,7 +429,12 @@ func (p *UceServiceProxy) GetPresenceServiceForSubscription(
 	_data.WriteInterfaceToken(DescriptorIUceService)
 	_data.WriteString16(iccId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUceService, "getPresenceServiceForSubscription"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUceService, "getPresenceServiceForSubscription")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -399,7 +459,12 @@ func (p *UceServiceProxy) GetOptionsService(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUceService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUceService, "getOptionsService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUceService, "getOptionsService")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -426,7 +491,12 @@ func (p *UceServiceProxy) GetOptionsServiceForSubscription(
 	_data.WriteInterfaceToken(DescriptorIUceService)
 	_data.WriteString16(iccId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUceService, "getOptionsServiceForSubscription"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUceService, "getOptionsServiceForSubscription")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

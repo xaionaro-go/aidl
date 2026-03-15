@@ -49,7 +49,12 @@ func (p *MediaScannerServiceProxy) RequestScanFile(
 	_data.WriteString16(mimeType)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaScannerService, "requestScanFile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaScannerService, "requestScanFile")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -72,7 +77,12 @@ func (p *MediaScannerServiceProxy) ScanFile(
 	_data.WriteString16(path)
 	_data.WriteString16(mimeType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaScannerService, "scanFile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaScannerService, "scanFile")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

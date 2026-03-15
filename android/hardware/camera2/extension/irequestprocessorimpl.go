@@ -57,7 +57,12 @@ func (p *RequestProcessorImplProxy) SetImageProcessor(
 	}
 	_data.WriteStrongBinder(imageProcessor.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRequestProcessorImpl, "setImageProcessor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRequestProcessorImpl, "setImageProcessor")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -83,7 +88,12 @@ func (p *RequestProcessorImplProxy) Submit(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRequestProcessorImpl, "submit"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRequestProcessorImpl, "submit")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -120,7 +130,12 @@ func (p *RequestProcessorImplProxy) SubmitBurst(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRequestProcessorImpl, "submitBurst"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRequestProcessorImpl, "submitBurst")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -150,7 +165,12 @@ func (p *RequestProcessorImplProxy) SetRepeating(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRequestProcessorImpl, "setRepeating"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRequestProcessorImpl, "setRepeating")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -173,7 +193,12 @@ func (p *RequestProcessorImplProxy) AbortCaptures(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRequestProcessorImpl)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRequestProcessorImpl, "abortCaptures"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRequestProcessorImpl, "abortCaptures")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -192,7 +217,12 @@ func (p *RequestProcessorImplProxy) StopRepeating(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRequestProcessorImpl)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRequestProcessorImpl, "stopRepeating"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRequestProcessorImpl, "stopRepeating")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

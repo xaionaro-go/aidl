@@ -45,7 +45,12 @@ func (p *TransientNotificationProxy) Show(
 	_data.WriteInterfaceToken(DescriptorITransientNotification)
 	_data.WriteStrongBinder(windowToken.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITransientNotification, "show"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITransientNotification, "show")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -55,6 +60,11 @@ func (p *TransientNotificationProxy) Hide(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITransientNotification)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITransientNotification, "hide"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITransientNotification, "hide")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -49,7 +49,12 @@ func (p *MbmsDownloadSessionCallbackProxy) OnError(
 	_data.WriteInt32(errorCode)
 	_data.WriteString16(message)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMbmsDownloadSessionCallback, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMbmsDownloadSessionCallback, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -70,7 +75,12 @@ func (p *MbmsDownloadSessionCallbackProxy) OnFileServicesUpdated(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMbmsDownloadSessionCallback, "onFileServicesUpdated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMbmsDownloadSessionCallback, "onFileServicesUpdated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -80,6 +90,11 @@ func (p *MbmsDownloadSessionCallbackProxy) OnMiddlewareReady(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMbmsDownloadSessionCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMbmsDownloadSessionCallback, "onMiddlewareReady"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMbmsDownloadSessionCallback, "onMiddlewareReady")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

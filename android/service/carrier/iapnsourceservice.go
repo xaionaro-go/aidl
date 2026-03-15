@@ -45,7 +45,12 @@ func (p *ApnSourceServiceProxy) GetApns(
 	_data.WriteInterfaceToken(DescriptorIApnSourceService)
 	_data.WriteInt32(subId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApnSourceService, "getApns"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApnSourceService, "getApns")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

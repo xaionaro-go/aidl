@@ -69,7 +69,12 @@ func (p *TvAdClientProxy) OnSessionCreated(
 	}
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdClient, "onSessionCreated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdClient, "onSessionCreated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -81,7 +86,12 @@ func (p *TvAdClientProxy) OnSessionReleased(
 	_data.WriteInterfaceToken(DescriptorITvAdClient)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdClient, "onSessionReleased"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdClient, "onSessionReleased")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -101,7 +111,12 @@ func (p *TvAdClientProxy) OnLayoutSurface(
 	_data.WriteInt32(bottom)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdClient, "onLayoutSurface"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdClient, "onLayoutSurface")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -113,7 +128,12 @@ func (p *TvAdClientProxy) OnRequestCurrentVideoBounds(
 	_data.WriteInterfaceToken(DescriptorITvAdClient)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdClient, "onRequestCurrentVideoBounds"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdClient, "onRequestCurrentVideoBounds")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -125,7 +145,12 @@ func (p *TvAdClientProxy) OnRequestCurrentChannelUri(
 	_data.WriteInterfaceToken(DescriptorITvAdClient)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdClient, "onRequestCurrentChannelUri"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdClient, "onRequestCurrentChannelUri")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -137,7 +162,12 @@ func (p *TvAdClientProxy) OnRequestTrackInfoList(
 	_data.WriteInterfaceToken(DescriptorITvAdClient)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdClient, "onRequestTrackInfoList"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdClient, "onRequestTrackInfoList")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -149,7 +179,12 @@ func (p *TvAdClientProxy) OnRequestCurrentTvInputId(
 	_data.WriteInterfaceToken(DescriptorITvAdClient)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdClient, "onRequestCurrentTvInputId"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdClient, "onRequestCurrentTvInputId")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -176,7 +211,12 @@ func (p *TvAdClientProxy) OnRequestSigning(
 	}
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdClient, "onRequestSigning"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdClient, "onRequestSigning")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -194,6 +234,11 @@ func (p *TvAdClientProxy) OnTvAdSessionData(
 	}
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdClient, "onTvAdSessionData"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdClient, "onTvAdSessionData")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

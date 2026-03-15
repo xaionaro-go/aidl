@@ -51,7 +51,12 @@ func (p *PinItemRequestProxy) IsValid(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPinItemRequest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPinItemRequest, "isValid"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPinItemRequest, "isValid")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -76,7 +81,12 @@ func (p *PinItemRequestProxy) Accept(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPinItemRequest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPinItemRequest, "accept"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPinItemRequest, "accept")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -100,7 +110,12 @@ func (p *PinItemRequestProxy) GetShortcutInfo(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPinItemRequest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPinItemRequest, "getShortcutInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPinItemRequest, "getShortcutInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -123,7 +138,12 @@ func (p *PinItemRequestProxy) GetAppWidgetProviderInfo(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPinItemRequest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPinItemRequest, "getAppWidgetProviderInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPinItemRequest, "getAppWidgetProviderInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -146,7 +166,12 @@ func (p *PinItemRequestProxy) GetExtras(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPinItemRequest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPinItemRequest, "getExtras"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPinItemRequest, "getExtras")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

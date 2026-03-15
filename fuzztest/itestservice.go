@@ -44,7 +44,12 @@ func (p *TestServiceProxy) RepeatData(
 	_data.WriteInterfaceToken(DescriptorITestService)
 	_data.WriteBool(token)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITestService, "repeatData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITestService, "repeatData")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

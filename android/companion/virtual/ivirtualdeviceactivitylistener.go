@@ -59,7 +59,12 @@ func (p *VirtualDeviceActivityListenerProxy) OnTopActivityChanged(
 	}
 	_data.WriteInt32(userId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDeviceActivityListener, "onTopActivityChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDeviceActivityListener, "onTopActivityChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -71,7 +76,12 @@ func (p *VirtualDeviceActivityListenerProxy) OnDisplayEmpty(
 	_data.WriteInterfaceToken(DescriptorIVirtualDeviceActivityListener)
 	_data.WriteInt32(displayId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDeviceActivityListener, "onDisplayEmpty"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDeviceActivityListener, "onDisplayEmpty")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -95,7 +105,12 @@ func (p *VirtualDeviceActivityListenerProxy) OnActivityLaunchBlocked(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDeviceActivityListener, "onActivityLaunchBlocked"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDeviceActivityListener, "onActivityLaunchBlocked")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -115,7 +130,12 @@ func (p *VirtualDeviceActivityListenerProxy) OnSecureWindowShown(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDeviceActivityListener, "onSecureWindowShown"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDeviceActivityListener, "onSecureWindowShown")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -127,6 +147,11 @@ func (p *VirtualDeviceActivityListenerProxy) OnSecureWindowHidden(
 	_data.WriteInterfaceToken(DescriptorIVirtualDeviceActivityListener)
 	_data.WriteInt32(displayId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDeviceActivityListener, "onSecureWindowHidden"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDeviceActivityListener, "onSecureWindowHidden")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -43,7 +43,12 @@ func (p *SetEnabledProvidersCallbackProxy) OnResponse(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISetEnabledProvidersCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISetEnabledProvidersCallback, "onResponse"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISetEnabledProvidersCallback, "onResponse")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -57,6 +62,11 @@ func (p *SetEnabledProvidersCallbackProxy) OnError(
 	_data.WriteString16(errorType)
 	_data.WriteString16(message)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISetEnabledProvidersCallback, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISetEnabledProvidersCallback, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

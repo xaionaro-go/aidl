@@ -71,7 +71,12 @@ func (p *PowerProxy) SetMode(
 	_data.WriteInt32(int32(type_))
 	_data.WriteBool(enabled)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPower, "setMode"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPower, "setMode")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -84,7 +89,12 @@ func (p *PowerProxy) IsModeSupported(
 	_data.WriteInterfaceToken(DescriptorIPower)
 	_data.WriteInt32(int32(type_))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPower, "isModeSupported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPower, "isModeSupported")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -111,7 +121,12 @@ func (p *PowerProxy) SetBoost(
 	_data.WriteInt32(int32(type_))
 	_data.WriteInt32(durationMs)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPower, "setBoost"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPower, "setBoost")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -124,7 +139,12 @@ func (p *PowerProxy) IsBoostSupported(
 	_data.WriteInterfaceToken(DescriptorIPower)
 	_data.WriteInt32(int32(type_))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPower, "isBoostSupported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPower, "isBoostSupported")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -163,7 +183,12 @@ func (p *PowerProxy) CreateHintSession(
 	}
 	_data.WriteInt64(durationNanos)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPower, "createHintSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPower, "createHintSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -188,7 +213,12 @@ func (p *PowerProxy) GetHintSessionPreferredRate(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPower)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPower, "getHintSessionPreferredRate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPower, "getHintSessionPreferredRate")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -230,7 +260,12 @@ func (p *PowerProxy) CreateHintSessionWithConfig(
 	_data.WriteInt64(durationNanos)
 	_data.WriteInt32(int32(tag))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPower, "createHintSessionWithConfig"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPower, "createHintSessionWithConfig")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -262,7 +297,12 @@ func (p *PowerProxy) GetSessionChannel(
 	_data.WriteInt32(tgid)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPower, "getSessionChannel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPower, "getSessionChannel")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -288,7 +328,12 @@ func (p *PowerProxy) CloseSessionChannel(
 	_data.WriteInt32(tgid)
 	_data.WriteInt32(uid)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPower, "closeSessionChannel"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPower, "closeSessionChannel")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -299,7 +344,12 @@ func (p *PowerProxy) GetSupportInfo(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPower)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPower, "getSupportInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPower, "getSupportInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -326,7 +376,12 @@ func (p *PowerProxy) GetCpuHeadroom(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPower, "getCpuHeadroom"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPower, "getCpuHeadroom")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -353,7 +408,12 @@ func (p *PowerProxy) GetGpuHeadroom(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPower, "getGpuHeadroom"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPower, "getGpuHeadroom")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -386,7 +446,12 @@ func (p *PowerProxy) SendCompositionData(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPower, "sendCompositionData"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPower, "sendCompositionData")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -400,6 +465,11 @@ func (p *PowerProxy) SendCompositionUpdate(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPower, "sendCompositionUpdate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPower, "sendCompositionUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

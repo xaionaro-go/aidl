@@ -51,7 +51,12 @@ func (p *SoundTriggerMiddlewareServiceProxy) ListModulesAsOriginator(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerMiddlewareService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerMiddlewareService, "listModulesAsOriginator"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerMiddlewareService, "listModulesAsOriginator")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -86,7 +91,12 @@ func (p *SoundTriggerMiddlewareServiceProxy) ListModulesAsMiddleman(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerMiddlewareService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerMiddlewareService, "listModulesAsMiddleman"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerMiddlewareService, "listModulesAsMiddleman")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -124,7 +134,12 @@ func (p *SoundTriggerMiddlewareServiceProxy) AttachAsOriginator(
 	_data.WriteInt32(handle)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerMiddlewareService, "attachAsOriginator"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerMiddlewareService, "attachAsOriginator")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -157,7 +172,12 @@ func (p *SoundTriggerMiddlewareServiceProxy) AttachAsMiddleman(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteBool(isTrusted)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerMiddlewareService, "attachAsMiddleman"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerMiddlewareService, "attachAsMiddleman")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -183,7 +203,12 @@ func (p *SoundTriggerMiddlewareServiceProxy) AttachFakeHalInjection(
 	_data.WriteInterfaceToken(DescriptorISoundTriggerMiddlewareService)
 	_data.WriteStrongBinder(injection.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerMiddlewareService, "attachFakeHalInjection"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerMiddlewareService, "attachFakeHalInjection")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

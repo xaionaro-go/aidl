@@ -106,7 +106,12 @@ func (p *ImsMmTelFeatureProxy) SetListener(
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 	_data.WriteStrongBinder(l.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "setListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "setListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -126,7 +131,12 @@ func (p *ImsMmTelFeatureProxy) GetFeatureState(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "getFeatureState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "getFeatureState")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -154,7 +164,12 @@ func (p *ImsMmTelFeatureProxy) CreateCallProfile(
 	_data.WriteInt32(callSessionType)
 	_data.WriteInt32(callType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "createCallProfile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "createCallProfile")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -187,7 +202,12 @@ func (p *ImsMmTelFeatureProxy) ChangeOfferedRtpHeaderExtensionTypes(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "changeOfferedRtpHeaderExtensionTypes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "changeOfferedRtpHeaderExtensionTypes")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -211,7 +231,12 @@ func (p *ImsMmTelFeatureProxy) CreateCallSession(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "createCallSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "createCallSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -245,7 +270,12 @@ func (p *ImsMmTelFeatureProxy) ShouldProcessCall(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "shouldProcessCall"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "shouldProcessCall")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -269,7 +299,12 @@ func (p *ImsMmTelFeatureProxy) GetUtInterface(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "getUtInterface"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "getUtInterface")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -294,7 +329,12 @@ func (p *ImsMmTelFeatureProxy) GetEcbmInterface(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "getEcbmInterface"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "getEcbmInterface")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -324,7 +364,12 @@ func (p *ImsMmTelFeatureProxy) SetUiTtyMode(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "setUiTtyMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "setUiTtyMode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -344,7 +389,12 @@ func (p *ImsMmTelFeatureProxy) GetMultiEndpointInterface(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "getMultiEndpointInterface"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "getMultiEndpointInterface")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -369,7 +419,12 @@ func (p *ImsMmTelFeatureProxy) QueryCapabilityStatus(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "queryCapabilityStatus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "queryCapabilityStatus")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -394,7 +449,12 @@ func (p *ImsMmTelFeatureProxy) SetTerminalBasedCallWaitingStatus(
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "setTerminalBasedCallWaitingStatus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "setTerminalBasedCallWaitingStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -415,7 +475,12 @@ func (p *ImsMmTelFeatureProxy) AddCapabilityCallback(
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 	_data.WriteStrongBinder(c.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "addCapabilityCallback"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "addCapabilityCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -427,7 +492,12 @@ func (p *ImsMmTelFeatureProxy) RemoveCapabilityCallback(
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 	_data.WriteStrongBinder(c.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "removeCapabilityCallback"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "removeCapabilityCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -443,7 +513,12 @@ func (p *ImsMmTelFeatureProxy) ChangeCapabilitiesConfiguration(
 	}
 	_data.WriteStrongBinder(c.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "changeCapabilitiesConfiguration"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "changeCapabilitiesConfiguration")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -459,7 +534,12 @@ func (p *ImsMmTelFeatureProxy) QueryCapabilityConfiguration(
 	_data.WriteInt32(radioTech)
 	_data.WriteStrongBinder(c.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "queryCapabilityConfiguration"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "queryCapabilityConfiguration")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -471,7 +551,12 @@ func (p *ImsMmTelFeatureProxy) NotifySrvccStarted(
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "notifySrvccStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "notifySrvccStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -481,7 +566,12 @@ func (p *ImsMmTelFeatureProxy) NotifySrvccCompleted(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "notifySrvccCompleted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "notifySrvccCompleted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -491,7 +581,12 @@ func (p *ImsMmTelFeatureProxy) NotifySrvccFailed(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "notifySrvccFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "notifySrvccFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -501,7 +596,12 @@ func (p *ImsMmTelFeatureProxy) NotifySrvccCanceled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "notifySrvccCanceled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "notifySrvccCanceled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -517,7 +617,12 @@ func (p *ImsMmTelFeatureProxy) SetMediaQualityThreshold(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "setMediaQualityThreshold"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "setMediaQualityThreshold")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -530,7 +635,12 @@ func (p *ImsMmTelFeatureProxy) QueryMediaQualityStatus(
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 	_data.WriteInt32(mediaSessionType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "queryMediaQualityStatus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "queryMediaQualityStatus")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -554,7 +664,12 @@ func (p *ImsMmTelFeatureProxy) SetSmsListener(
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 	_data.WriteStrongBinder(l.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "setSmsListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "setSmsListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -592,7 +707,12 @@ func (p *ImsMmTelFeatureProxy) SendSms(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "sendSms"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "sendSms")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -604,7 +724,12 @@ func (p *ImsMmTelFeatureProxy) OnMemoryAvailable(
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 	_data.WriteInt32(token)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "onMemoryAvailable"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "onMemoryAvailable")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -620,7 +745,12 @@ func (p *ImsMmTelFeatureProxy) AcknowledgeSms(
 	_data.WriteInt32(messageRef)
 	_data.WriteInt32(result)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "acknowledgeSms"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "acknowledgeSms")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -645,7 +775,12 @@ func (p *ImsMmTelFeatureProxy) AcknowledgeSmsWithPdu(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "acknowledgeSmsWithPdu"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "acknowledgeSmsWithPdu")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -661,7 +796,12 @@ func (p *ImsMmTelFeatureProxy) AcknowledgeSmsReport(
 	_data.WriteInt32(messageRef)
 	_data.WriteInt32(result)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "acknowledgeSmsReport"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "acknowledgeSmsReport")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -672,7 +812,12 @@ func (p *ImsMmTelFeatureProxy) GetSmsFormat(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "getSmsFormat"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "getSmsFormat")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -695,6 +840,11 @@ func (p *ImsMmTelFeatureProxy) OnSmsReady(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelFeature, "onSmsReady"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "onSmsReady")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

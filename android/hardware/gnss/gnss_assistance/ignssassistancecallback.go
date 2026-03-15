@@ -41,7 +41,12 @@ func (p *GnssAssistanceCallbackProxy) InjectRequestCb(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGnssAssistanceCallback)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGnssAssistanceCallback, "injectRequestCb"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGnssAssistanceCallback, "injectRequestCb")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

@@ -46,6 +46,11 @@ func (p *ServiceConnectionProxy) Connected(
 	_data.WriteStrongBinder(service.Handle())
 	_data.WriteBool(dead)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceConnection, "connected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceConnection, "connected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

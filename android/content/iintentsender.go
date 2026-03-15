@@ -56,6 +56,11 @@ func (p *IntentSenderProxy) Send(
 	_data.WriteStrongBinder(finishedReceiver.AsBinder().Handle())
 	_data.WriteString16(requiredPermission)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIntentSender, "send"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIntentSender, "send")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

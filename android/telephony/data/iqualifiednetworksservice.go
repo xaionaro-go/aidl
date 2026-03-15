@@ -51,7 +51,12 @@ func (p *QualifiedNetworksServiceProxy) CreateNetworkAvailabilityProvider(
 	_data.WriteInt32(slotId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQualifiedNetworksService, "createNetworkAvailabilityProvider"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQualifiedNetworksService, "createNetworkAvailabilityProvider")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -63,7 +68,12 @@ func (p *QualifiedNetworksServiceProxy) RemoveNetworkAvailabilityProvider(
 	_data.WriteInterfaceToken(DescriptorIQualifiedNetworksService)
 	_data.WriteInt32(slotId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQualifiedNetworksService, "removeNetworkAvailabilityProvider"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQualifiedNetworksService, "removeNetworkAvailabilityProvider")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -86,7 +96,12 @@ func (p *QualifiedNetworksServiceProxy) ReportThrottleStatusChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQualifiedNetworksService, "reportThrottleStatusChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQualifiedNetworksService, "reportThrottleStatusChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -100,6 +115,11 @@ func (p *QualifiedNetworksServiceProxy) ReportEmergencyDataNetworkPreferredTrans
 	_data.WriteInt32(slotId)
 	_data.WriteInt32(transportType)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQualifiedNetworksService, "reportEmergencyDataNetworkPreferredTransportChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQualifiedNetworksService, "reportEmergencyDataNetworkPreferredTransportChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

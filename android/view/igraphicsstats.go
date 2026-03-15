@@ -46,7 +46,12 @@ func (p *GraphicsStatsProxy) RequestBufferForProcess(
 	_data.WriteString16(packageName)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGraphicsStats, "requestBufferForProcess"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGraphicsStats, "requestBufferForProcess")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

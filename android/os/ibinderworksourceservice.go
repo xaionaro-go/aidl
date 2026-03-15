@@ -50,7 +50,12 @@ func (p *BinderWorkSourceServiceProxy) GetIncomingWorkSourceUid(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderWorkSourceService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderWorkSourceService, "getIncomingWorkSourceUid"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderWorkSourceService, "getIncomingWorkSourceUid")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -74,7 +79,12 @@ func (p *BinderWorkSourceServiceProxy) GetBinderCallingUid(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderWorkSourceService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderWorkSourceService, "getBinderCallingUid"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderWorkSourceService, "getBinderCallingUid")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -98,7 +108,12 @@ func (p *BinderWorkSourceServiceProxy) GetThreadLocalWorkSourceUid(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderWorkSourceService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderWorkSourceService, "getThreadLocalWorkSourceUid"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderWorkSourceService, "getThreadLocalWorkSourceUid")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -123,7 +138,12 @@ func (p *BinderWorkSourceServiceProxy) SetWorkSourceProvider(
 	_data.WriteInterfaceToken(DescriptorIBinderWorkSourceService)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderWorkSourceService, "setWorkSourceProvider"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderWorkSourceService, "setWorkSourceProvider")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -142,7 +162,12 @@ func (p *BinderWorkSourceServiceProxy) ClearWorkSourceProvider(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderWorkSourceService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderWorkSourceService, "clearWorkSourceProvider"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderWorkSourceService, "clearWorkSourceProvider")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

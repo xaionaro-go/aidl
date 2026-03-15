@@ -51,7 +51,12 @@ func (p *CapabilityExchangeEventListenerProxy) OnRequestPublishCapabilities(
 	_data.WriteInterfaceToken(DescriptorICapabilityExchangeEventListener)
 	_data.WriteInt32(publishTriggerType)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICapabilityExchangeEventListener, "onRequestPublishCapabilities"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICapabilityExchangeEventListener, "onRequestPublishCapabilities")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -61,7 +66,12 @@ func (p *CapabilityExchangeEventListenerProxy) OnUnpublish(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICapabilityExchangeEventListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICapabilityExchangeEventListener, "onUnpublish"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICapabilityExchangeEventListener, "onUnpublish")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -75,7 +85,12 @@ func (p *CapabilityExchangeEventListenerProxy) OnPublishUpdated(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICapabilityExchangeEventListener, "onPublishUpdated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICapabilityExchangeEventListener, "onPublishUpdated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -100,6 +115,11 @@ func (p *CapabilityExchangeEventListenerProxy) OnRemoteCapabilityRequest(
 	}
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICapabilityExchangeEventListener, "onRemoteCapabilityRequest"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICapabilityExchangeEventListener, "onRemoteCapabilityRequest")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -87,7 +87,12 @@ func (p *MediaQualityProxy) SetCallback(
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "setCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "setCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -110,7 +115,12 @@ func (p *MediaQualityProxy) SetAmbientBacklightDetector(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "setAmbientBacklightDetector"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "setAmbientBacklightDetector")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -131,7 +141,12 @@ func (p *MediaQualityProxy) SetAmbientBacklightDetectionEnabled(
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "setAmbientBacklightDetectionEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "setAmbientBacklightDetectionEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -151,7 +166,12 @@ func (p *MediaQualityProxy) GetAmbientBacklightDetectionEnabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "getAmbientBacklightDetectionEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "getAmbientBacklightDetectionEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -175,7 +195,12 @@ func (p *MediaQualityProxy) IsAutoPqSupported(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "isAutoPqSupported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "isAutoPqSupported")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -199,7 +224,12 @@ func (p *MediaQualityProxy) GetAutoPqEnabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "getAutoPqEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "getAutoPqEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -224,7 +254,12 @@ func (p *MediaQualityProxy) SetAutoPqEnabled(
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
 	_data.WriteBool(enable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "setAutoPqEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "setAutoPqEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -244,7 +279,12 @@ func (p *MediaQualityProxy) IsAutoSrSupported(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "isAutoSrSupported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "isAutoSrSupported")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -268,7 +308,12 @@ func (p *MediaQualityProxy) GetAutoSrEnabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "getAutoSrEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "getAutoSrEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -293,7 +338,12 @@ func (p *MediaQualityProxy) SetAutoSrEnabled(
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
 	_data.WriteBool(enable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "setAutoSrEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "setAutoSrEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -313,7 +363,12 @@ func (p *MediaQualityProxy) IsAutoAqSupported(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "isAutoAqSupported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "isAutoAqSupported")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -337,7 +392,12 @@ func (p *MediaQualityProxy) GetAutoAqEnabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "getAutoAqEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "getAutoAqEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -362,7 +422,12 @@ func (p *MediaQualityProxy) SetAutoAqEnabled(
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
 	_data.WriteBool(enable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "setAutoAqEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "setAutoAqEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -382,7 +447,12 @@ func (p *MediaQualityProxy) GetPictureProfileListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "getPictureProfileListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "getPictureProfileListener")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -408,7 +478,12 @@ func (p *MediaQualityProxy) SetPictureProfileAdjustmentListener(
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "setPictureProfileAdjustmentListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "setPictureProfileAdjustmentListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -431,7 +506,12 @@ func (p *MediaQualityProxy) SendDefaultPictureParameters(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "sendDefaultPictureParameters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "sendDefaultPictureParameters")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -451,7 +531,12 @@ func (p *MediaQualityProxy) GetSoundProfileListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "getSoundProfileListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "getSoundProfileListener")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -477,7 +562,12 @@ func (p *MediaQualityProxy) SetSoundProfileAdjustmentListener(
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "setSoundProfileAdjustmentListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "setSoundProfileAdjustmentListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -500,7 +590,12 @@ func (p *MediaQualityProxy) SendDefaultSoundParameters(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "sendDefaultSoundParameters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "sendDefaultSoundParameters")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -529,7 +624,12 @@ func (p *MediaQualityProxy) GetParamCaps(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "getParamCaps"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "getParamCaps")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -572,7 +672,12 @@ func (p *MediaQualityProxy) GetVendorParamCaps(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "getVendorParamCaps"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "getVendorParamCaps")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -607,7 +712,12 @@ func (p *MediaQualityProxy) SendPictureParameters(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "sendPictureParameters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "sendPictureParameters")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -630,7 +740,12 @@ func (p *MediaQualityProxy) SendSoundParameters(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaQuality, "sendSoundParameters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "sendSoundParameters")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

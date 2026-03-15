@@ -49,7 +49,12 @@ func (p *SharedSecretProxy) GetSharedSecretParameters(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISharedSecret)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISharedSecret, "getSharedSecretParameters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISharedSecret, "getSharedSecretParameters")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -83,7 +88,12 @@ func (p *SharedSecretProxy) ComputeSharedSecret(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISharedSecret, "computeSharedSecret"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISharedSecret, "computeSharedSecret")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

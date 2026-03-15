@@ -62,7 +62,12 @@ func (p *MediaBrowserServiceProxy) Connect(
 	}
 	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaBrowserService, "connect"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaBrowserService, "connect")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -74,7 +79,12 @@ func (p *MediaBrowserServiceProxy) Disconnect(
 	_data.WriteInterfaceToken(DescriptorIMediaBrowserService)
 	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaBrowserService, "disconnect"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaBrowserService, "disconnect")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -88,7 +98,12 @@ func (p *MediaBrowserServiceProxy) AddSubscriptionDeprecated(
 	_data.WriteString16(uri)
 	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaBrowserService, "addSubscriptionDeprecated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaBrowserService, "addSubscriptionDeprecated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -102,7 +117,12 @@ func (p *MediaBrowserServiceProxy) RemoveSubscriptionDeprecated(
 	_data.WriteString16(uri)
 	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaBrowserService, "removeSubscriptionDeprecated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaBrowserService, "removeSubscriptionDeprecated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -120,7 +140,12 @@ func (p *MediaBrowserServiceProxy) GetMediaItem(
 	}
 	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaBrowserService, "getMediaItem"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaBrowserService, "getMediaItem")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -140,7 +165,12 @@ func (p *MediaBrowserServiceProxy) AddSubscription(
 	}
 	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaBrowserService, "addSubscription"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaBrowserService, "addSubscription")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -156,6 +186,11 @@ func (p *MediaBrowserServiceProxy) RemoveSubscription(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaBrowserService, "removeSubscription"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaBrowserService, "removeSubscription")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -45,7 +45,12 @@ func (p *SnapshotRuntimeProfileCallbackProxy) OnSuccess(
 	_data.WriteInterfaceToken(DescriptorISnapshotRuntimeProfileCallback)
 	_data.WriteFileDescriptor(profileReadFd)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISnapshotRuntimeProfileCallback, "onSuccess"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISnapshotRuntimeProfileCallback, "onSuccess")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -57,6 +62,11 @@ func (p *SnapshotRuntimeProfileCallbackProxy) OnError(
 	_data.WriteInterfaceToken(DescriptorISnapshotRuntimeProfileCallback)
 	_data.WriteInt32(errCode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISnapshotRuntimeProfileCallback, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISnapshotRuntimeProfileCallback, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

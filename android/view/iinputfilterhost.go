@@ -47,6 +47,11 @@ func (p *InputFilterHostProxy) SendInputEvent(
 	}
 	_data.WriteInt32(policyFlags)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputFilterHost, "sendInputEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputFilterHost, "sendInputEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

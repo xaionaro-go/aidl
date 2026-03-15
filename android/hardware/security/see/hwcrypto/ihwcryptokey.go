@@ -57,7 +57,12 @@ func (p *HwCryptoKeyProxy) DeriveCurrentDicePolicyBoundKey(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHwCryptoKey)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHwCryptoKey, "deriveCurrentDicePolicyBoundKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHwCryptoKey, "deriveCurrentDicePolicyBoundKey")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -87,7 +92,12 @@ func (p *HwCryptoKeyProxy) DeriveDicePolicyBoundKey(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHwCryptoKey, "deriveDicePolicyBoundKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHwCryptoKey, "deriveDicePolicyBoundKey")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -108,7 +118,12 @@ func (p *HwCryptoKeyProxy) DeriveKey(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHwCryptoKey)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHwCryptoKey, "deriveKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHwCryptoKey, "deriveKey")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -128,7 +143,12 @@ func (p *HwCryptoKeyProxy) GetHwCryptoOperations(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHwCryptoKey)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHwCryptoKey, "getHwCryptoOperations"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHwCryptoKey, "getHwCryptoOperations")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -158,7 +178,12 @@ func (p *HwCryptoKeyProxy) ImportClearKey(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHwCryptoKey, "importClearKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHwCryptoKey, "importClearKey")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -183,7 +208,12 @@ func (p *HwCryptoKeyProxy) GetCurrentDicePolicy(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHwCryptoKey)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHwCryptoKey, "getCurrentDicePolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHwCryptoKey, "getCurrentDicePolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -227,7 +257,12 @@ func (p *HwCryptoKeyProxy) KeyTokenImport(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHwCryptoKey, "keyTokenImport"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHwCryptoKey, "keyTokenImport")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -253,7 +288,12 @@ func (p *HwCryptoKeyProxy) GetKeyslotData(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHwCryptoKey)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHwCryptoKey, "getKeyslotData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHwCryptoKey, "getKeyslotData")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

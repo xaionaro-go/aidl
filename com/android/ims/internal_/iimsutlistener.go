@@ -63,7 +63,12 @@ func (p *ImsUtListenerProxy) UtConfigurationUpdated(
 	_data.WriteStrongBinder(ut.AsBinder().Handle())
 	_data.WriteInt32(id)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUtListener, "utConfigurationUpdated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUtListener, "utConfigurationUpdated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -81,7 +86,12 @@ func (p *ImsUtListenerProxy) UtConfigurationUpdateFailed(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUtListener, "utConfigurationUpdateFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUtListener, "utConfigurationUpdateFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -99,7 +109,12 @@ func (p *ImsUtListenerProxy) UtConfigurationQueried(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUtListener, "utConfigurationQueried"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUtListener, "utConfigurationQueried")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -117,7 +132,12 @@ func (p *ImsUtListenerProxy) UtConfigurationQueryFailed(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUtListener, "utConfigurationQueryFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUtListener, "utConfigurationQueryFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -133,7 +153,12 @@ func (p *ImsUtListenerProxy) LineIdentificationSupplementaryServiceResponse(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUtListener, "lineIdentificationSupplementaryServiceResponse"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUtListener, "lineIdentificationSupplementaryServiceResponse")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -158,7 +183,12 @@ func (p *ImsUtListenerProxy) UtConfigurationCallBarringQueried(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUtListener, "utConfigurationCallBarringQueried"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUtListener, "utConfigurationCallBarringQueried")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -183,7 +213,12 @@ func (p *ImsUtListenerProxy) UtConfigurationCallForwardQueried(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUtListener, "utConfigurationCallForwardQueried"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUtListener, "utConfigurationCallForwardQueried")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -208,7 +243,12 @@ func (p *ImsUtListenerProxy) UtConfigurationCallWaitingQueried(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUtListener, "utConfigurationCallWaitingQueried"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUtListener, "utConfigurationCallWaitingQueried")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -222,6 +262,11 @@ func (p *ImsUtListenerProxy) OnSupplementaryServiceIndication(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUtListener, "onSupplementaryServiceIndication"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUtListener, "onSupplementaryServiceIndication")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

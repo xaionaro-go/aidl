@@ -65,7 +65,12 @@ func (p *DataServiceCallbackProxy) OnSetupDataCallComplete(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDataServiceCallback, "onSetupDataCallComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDataServiceCallback, "onSetupDataCallComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -77,7 +82,12 @@ func (p *DataServiceCallbackProxy) OnDeactivateDataCallComplete(
 	_data.WriteInterfaceToken(DescriptorIDataServiceCallback)
 	_data.WriteInt32(result)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDataServiceCallback, "onDeactivateDataCallComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDataServiceCallback, "onDeactivateDataCallComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -89,7 +99,12 @@ func (p *DataServiceCallbackProxy) OnSetInitialAttachApnComplete(
 	_data.WriteInterfaceToken(DescriptorIDataServiceCallback)
 	_data.WriteInt32(result)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDataServiceCallback, "onSetInitialAttachApnComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDataServiceCallback, "onSetInitialAttachApnComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -101,7 +116,12 @@ func (p *DataServiceCallbackProxy) OnSetDataProfileComplete(
 	_data.WriteInterfaceToken(DescriptorIDataServiceCallback)
 	_data.WriteInt32(result)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDataServiceCallback, "onSetDataProfileComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDataServiceCallback, "onSetDataProfileComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -124,7 +144,12 @@ func (p *DataServiceCallbackProxy) OnRequestDataCallListComplete(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDataServiceCallback, "onRequestDataCallListComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDataServiceCallback, "onRequestDataCallListComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -145,7 +170,12 @@ func (p *DataServiceCallbackProxy) OnDataCallListChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDataServiceCallback, "onDataCallListChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDataServiceCallback, "onDataCallListChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -157,7 +187,12 @@ func (p *DataServiceCallbackProxy) OnHandoverStarted(
 	_data.WriteInterfaceToken(DescriptorIDataServiceCallback)
 	_data.WriteInt32(result)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDataServiceCallback, "onHandoverStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDataServiceCallback, "onHandoverStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -169,7 +204,12 @@ func (p *DataServiceCallbackProxy) OnHandoverCancelled(
 	_data.WriteInterfaceToken(DescriptorIDataServiceCallback)
 	_data.WriteInt32(result)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDataServiceCallback, "onHandoverCancelled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDataServiceCallback, "onHandoverCancelled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -181,7 +221,12 @@ func (p *DataServiceCallbackProxy) OnApnUnthrottled(
 	_data.WriteInterfaceToken(DescriptorIDataServiceCallback)
 	_data.WriteString16(apn)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDataServiceCallback, "onApnUnthrottled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDataServiceCallback, "onApnUnthrottled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -195,6 +240,11 @@ func (p *DataServiceCallbackProxy) OnDataProfileUnthrottled(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDataServiceCallback, "onDataProfileUnthrottled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDataServiceCallback, "onDataProfileUnthrottled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

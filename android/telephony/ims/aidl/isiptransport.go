@@ -54,7 +54,12 @@ func (p *SipTransportProxy) CreateSipDelegate(
 	_data.WriteStrongBinder(dc.AsBinder().Handle())
 	_data.WriteStrongBinder(mc.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISipTransport, "createSipDelegate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISipTransport, "createSipDelegate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -68,6 +73,11 @@ func (p *SipTransportProxy) DestroySipDelegate(
 	_data.WriteStrongBinder(delegate.AsBinder().Handle())
 	_data.WriteInt32(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISipTransport, "destroySipDelegate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISipTransport, "destroySipDelegate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

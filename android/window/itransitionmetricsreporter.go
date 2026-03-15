@@ -45,6 +45,11 @@ func (p *TransitionMetricsReporterProxy) ReportAnimationStart(
 	_data.WriteStrongBinder(transitionToken.Handle())
 	_data.WriteInt64(startTime)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITransitionMetricsReporter, "reportAnimationStart"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITransitionMetricsReporter, "reportAnimationStart")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

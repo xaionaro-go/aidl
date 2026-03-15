@@ -130,7 +130,12 @@ func (p *UsageStatsManagerProxy) QueryUsageStats(
 	_data.WriteString16(callingPackage)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryUsageStats"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryUsageStats")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -161,7 +166,12 @@ func (p *UsageStatsManagerProxy) QueryConfigurationStats(
 	_data.WriteInt64(endTime)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryConfigurationStats"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryConfigurationStats")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -192,7 +202,12 @@ func (p *UsageStatsManagerProxy) QueryEventStats(
 	_data.WriteInt64(endTime)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEventStats"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEventStats")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -221,7 +236,12 @@ func (p *UsageStatsManagerProxy) QueryEvents(
 	_data.WriteInt64(endTime)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEvents"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEvents")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -250,7 +270,12 @@ func (p *UsageStatsManagerProxy) QueryEventsForPackage(
 	_data.WriteInt64(endTime)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEventsForPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEventsForPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -281,7 +306,12 @@ func (p *UsageStatsManagerProxy) QueryEventsForUser(
 	_data.WriteInt32(userId)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEventsForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEventsForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -314,7 +344,12 @@ func (p *UsageStatsManagerProxy) QueryEventsForPackageForUser(
 	_data.WriteString16(pkg)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEventsForPackageForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEventsForPackageForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -343,7 +378,12 @@ func (p *UsageStatsManagerProxy) QueryEventsWithFilter(
 	}
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEventsWithFilter"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEventsWithFilter")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -371,7 +411,12 @@ func (p *UsageStatsManagerProxy) SetAppInactive(
 	_data.WriteBool(inactive)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "setAppInactive"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "setAppInactive")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -391,7 +436,12 @@ func (p *UsageStatsManagerProxy) IsAppStandbyEnabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "isAppStandbyEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "isAppStandbyEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -421,7 +471,12 @@ func (p *UsageStatsManagerProxy) IsAppInactive(
 	_data.WriteInt32(userId)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "isAppInactive"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "isAppInactive")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -444,7 +499,12 @@ func (p *UsageStatsManagerProxy) OnCarrierPrivilegedAppsChanged(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "onCarrierPrivilegedAppsChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "onCarrierPrivilegedAppsChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -480,7 +540,12 @@ func (p *UsageStatsManagerProxy) ReportChooserSelection(
 	}
 	_data.WriteString16(action)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "reportChooserSelection"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "reportChooserSelection")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -506,7 +571,12 @@ func (p *UsageStatsManagerProxy) GetAppStandbyBucket(
 	_data.WriteString16(callingPackage)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "getAppStandbyBucket"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "getAppStandbyBucket")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -535,7 +605,12 @@ func (p *UsageStatsManagerProxy) SetAppStandbyBucket(
 	_data.WriteInt32(bucket)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "setAppStandbyBucket"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "setAppStandbyBucket")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -559,7 +634,12 @@ func (p *UsageStatsManagerProxy) GetAppStandbyBuckets(
 	_data.WriteString16(callingPackage)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "getAppStandbyBuckets"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "getAppStandbyBuckets")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -587,7 +667,12 @@ func (p *UsageStatsManagerProxy) SetAppStandbyBuckets(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "setAppStandbyBuckets"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "setAppStandbyBuckets")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -613,7 +698,12 @@ func (p *UsageStatsManagerProxy) GetAppMinStandbyBucket(
 	_data.WriteString16(callingPackage)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "getAppMinStandbyBucket"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "getAppMinStandbyBucket")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -642,7 +732,12 @@ func (p *UsageStatsManagerProxy) SetEstimatedLaunchTime(
 	_data.WriteInt64(estimatedLaunchTime)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "setEstimatedLaunchTime"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "setEstimatedLaunchTime")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -667,7 +762,12 @@ func (p *UsageStatsManagerProxy) SetEstimatedLaunchTimes(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "setEstimatedLaunchTimes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "setEstimatedLaunchTimes")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -705,7 +805,12 @@ func (p *UsageStatsManagerProxy) RegisterAppUsageObserver(
 	}
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "registerAppUsageObserver"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "registerAppUsageObserver")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -728,7 +833,12 @@ func (p *UsageStatsManagerProxy) UnregisterAppUsageObserver(
 	_data.WriteInt32(observerId)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "unregisterAppUsageObserver"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "unregisterAppUsageObserver")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -772,7 +882,12 @@ func (p *UsageStatsManagerProxy) RegisterUsageSessionObserver(
 	}
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "registerUsageSessionObserver"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "registerUsageSessionObserver")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -795,7 +910,12 @@ func (p *UsageStatsManagerProxy) UnregisterUsageSessionObserver(
 	_data.WriteInt32(sessionObserverId)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "unregisterUsageSessionObserver"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "unregisterUsageSessionObserver")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -835,7 +955,12 @@ func (p *UsageStatsManagerProxy) RegisterAppUsageLimitObserver(
 	}
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "registerAppUsageLimitObserver"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "registerAppUsageLimitObserver")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -858,7 +983,12 @@ func (p *UsageStatsManagerProxy) UnregisterAppUsageLimitObserver(
 	_data.WriteInt32(observerId)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "unregisterAppUsageLimitObserver"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "unregisterAppUsageLimitObserver")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -883,7 +1013,12 @@ func (p *UsageStatsManagerProxy) ReportUsageStart(
 	_data.WriteString16(token)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "reportUsageStart"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "reportUsageStart")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -910,7 +1045,12 @@ func (p *UsageStatsManagerProxy) ReportPastUsageStart(
 	_data.WriteInt64(timeAgoMs)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "reportPastUsageStart"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "reportPastUsageStart")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -935,7 +1075,12 @@ func (p *UsageStatsManagerProxy) ReportUsageStop(
 	_data.WriteString16(token)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "reportUsageStop"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "reportUsageStop")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -958,7 +1103,12 @@ func (p *UsageStatsManagerProxy) ReportUserInteraction(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "reportUserInteraction"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "reportUserInteraction")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -982,7 +1132,12 @@ func (p *UsageStatsManagerProxy) ReportUserInteractionWithBundle(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "reportUserInteractionWithBundle"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "reportUserInteractionWithBundle")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1002,7 +1157,12 @@ func (p *UsageStatsManagerProxy) GetUsageSource(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "getUsageSource"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "getUsageSource")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1025,7 +1185,12 @@ func (p *UsageStatsManagerProxy) ForceUsageSourceSettingRead(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "forceUsageSourceSettingRead"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "forceUsageSourceSettingRead")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1049,7 +1214,12 @@ func (p *UsageStatsManagerProxy) GetLastTimeAnyComponentUsed(
 	_data.WriteString16(packageName)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "getLastTimeAnyComponentUsed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "getLastTimeAnyComponentUsed")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1081,7 +1251,12 @@ func (p *UsageStatsManagerProxy) QueryBroadcastResponseStats(
 	_data.WriteString16(callingPackage)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryBroadcastResponseStats"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryBroadcastResponseStats")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1111,7 +1286,12 @@ func (p *UsageStatsManagerProxy) ClearBroadcastResponseStats(
 	_data.WriteString16(callingPackage)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "clearBroadcastResponseStats"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "clearBroadcastResponseStats")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1134,7 +1314,12 @@ func (p *UsageStatsManagerProxy) ClearBroadcastEvents(
 	_data.WriteString16(callingPackage)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "clearBroadcastEvents"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "clearBroadcastEvents")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1158,7 +1343,12 @@ func (p *UsageStatsManagerProxy) IsPackageExemptedFromBroadcastResponseStats(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "isPackageExemptedFromBroadcastResponseStats"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "isPackageExemptedFromBroadcastResponseStats")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1184,7 +1374,12 @@ func (p *UsageStatsManagerProxy) GetAppStandbyConstant(
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteString16(key)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsageStatsManager, "getAppStandbyConstant"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "getAppStandbyConstant")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

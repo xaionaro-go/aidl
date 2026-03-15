@@ -43,6 +43,11 @@ func (p *BooleanConsumerProxy) Accept(
 	_data.WriteInterfaceToken(DescriptorIBooleanConsumer)
 	_data.WriteBool(result)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBooleanConsumer, "accept"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBooleanConsumer, "accept")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

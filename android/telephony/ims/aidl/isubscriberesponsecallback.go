@@ -52,7 +52,12 @@ func (p *SubscribeResponseCallbackProxy) OnCommandError(
 	_data.WriteInterfaceToken(DescriptorISubscribeResponseCallback)
 	_data.WriteInt32(code)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISubscribeResponseCallback, "onCommandError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISubscribeResponseCallback, "onCommandError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -66,7 +71,12 @@ func (p *SubscribeResponseCallbackProxy) OnNetworkResponse(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISubscribeResponseCallback, "onNetworkResponse"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISubscribeResponseCallback, "onNetworkResponse")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -85,7 +95,12 @@ func (p *SubscribeResponseCallbackProxy) OnNotifyCapabilitiesUpdate(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISubscribeResponseCallback, "onNotifyCapabilitiesUpdate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISubscribeResponseCallback, "onNotifyCapabilitiesUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -106,7 +121,12 @@ func (p *SubscribeResponseCallbackProxy) OnResourceTerminated(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISubscribeResponseCallback, "onResourceTerminated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISubscribeResponseCallback, "onResourceTerminated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -120,6 +140,11 @@ func (p *SubscribeResponseCallbackProxy) OnTerminated(
 	_data.WriteString16(reason)
 	_data.WriteInt64(retryAfterMilliseconds)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISubscribeResponseCallback, "onTerminated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISubscribeResponseCallback, "onTerminated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

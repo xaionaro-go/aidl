@@ -50,7 +50,12 @@ func (p *HdmiRecordListenerProxy) GetOneTouchRecordSource(
 	_data.WriteInterfaceToken(DescriptorIHdmiRecordListener)
 	_data.WriteInt32(recorderAddress)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiRecordListener, "getOneTouchRecordSource"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiRecordListener, "getOneTouchRecordSource")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -87,7 +92,12 @@ func (p *HdmiRecordListenerProxy) OnOneTouchRecordResult(
 	_data.WriteInt32(recorderAddress)
 	_data.WriteInt32(result)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiRecordListener, "onOneTouchRecordResult"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiRecordListener, "onOneTouchRecordResult")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -110,7 +120,12 @@ func (p *HdmiRecordListenerProxy) OnTimerRecordingResult(
 	_data.WriteInt32(recorderAddress)
 	_data.WriteInt32(result)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiRecordListener, "onTimerRecordingResult"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiRecordListener, "onTimerRecordingResult")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -133,7 +148,12 @@ func (p *HdmiRecordListenerProxy) OnClearTimerRecordingResult(
 	_data.WriteInt32(recorderAddress)
 	_data.WriteInt32(result)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiRecordListener, "onClearTimerRecordingResult"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiRecordListener, "onClearTimerRecordingResult")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

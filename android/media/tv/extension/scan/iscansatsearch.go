@@ -44,7 +44,12 @@ func (p *ScanSatSearchProxy) SetCustomizedLnb(
 	_data.WriteInterfaceToken(DescriptorIScanSatSearch)
 	_data.WriteString16(customizedLnb)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSatSearch, "setCustomizedLnb"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSatSearch, "setCustomizedLnb")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

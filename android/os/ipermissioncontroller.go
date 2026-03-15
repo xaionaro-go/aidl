@@ -56,7 +56,12 @@ func (p *PermissionControllerProxy) CheckPermission(
 	_data.WriteInt32(pid)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPermissionController, "checkPermission"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPermissionController, "checkPermission")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -86,7 +91,12 @@ func (p *PermissionControllerProxy) NoteOp(
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPermissionController, "noteOp"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPermissionController, "noteOp")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -112,7 +122,12 @@ func (p *PermissionControllerProxy) GetPackagesForUid(
 	_data.WriteInterfaceToken(DescriptorIPermissionController)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPermissionController, "getPackagesForUid"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPermissionController, "getPackagesForUid")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -148,7 +163,12 @@ func (p *PermissionControllerProxy) IsRuntimePermission(
 	_data.WriteInterfaceToken(DescriptorIPermissionController)
 	_data.WriteString16(permission)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPermissionController, "isRuntimePermission"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPermissionController, "isRuntimePermission")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -176,7 +196,12 @@ func (p *PermissionControllerProxy) GetPackageUid(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(flags)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPermissionController, "getPackageUid"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPermissionController, "getPackageUid")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

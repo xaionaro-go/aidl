@@ -56,7 +56,12 @@ func (p *LocaleManagerProxy) SetApplicationLocales(
 	_data.WriteInt32(userId)
 	_data.WriteBool(fromDelegate)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocaleManager, "setApplicationLocales"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocaleManager, "setApplicationLocales")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -80,7 +85,12 @@ func (p *LocaleManagerProxy) GetApplicationLocales(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocaleManager, "getApplicationLocales"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocaleManager, "getApplicationLocales")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -100,7 +110,12 @@ func (p *LocaleManagerProxy) GetSystemLocales(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocaleManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocaleManager, "getSystemLocales"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocaleManager, "getSystemLocales")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -127,7 +142,12 @@ func (p *LocaleManagerProxy) SetOverrideLocaleConfig(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocaleManager, "setOverrideLocaleConfig"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocaleManager, "setOverrideLocaleConfig")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -151,7 +171,12 @@ func (p *LocaleManagerProxy) GetOverrideLocaleConfig(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocaleManager, "getOverrideLocaleConfig"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocaleManager, "getOverrideLocaleConfig")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

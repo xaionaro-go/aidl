@@ -45,7 +45,12 @@ func (p *OptionsResponseCallbackProxy) OnCommandError(
 	_data.WriteInterfaceToken(DescriptorIOptionsResponseCallback)
 	_data.WriteInt32(code)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOptionsResponseCallback, "onCommandError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOptionsResponseCallback, "onCommandError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -68,6 +73,11 @@ func (p *OptionsResponseCallbackProxy) OnNetworkResponse(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOptionsResponseCallback, "onNetworkResponse"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOptionsResponseCallback, "onNetworkResponse")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

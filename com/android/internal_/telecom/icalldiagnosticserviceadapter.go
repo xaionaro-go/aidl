@@ -52,7 +52,12 @@ func (p *CallDiagnosticServiceAdapterProxy) DisplayDiagnosticMessage(
 	_data.WriteString16(callId)
 	_data.WriteInt32(messageId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallDiagnosticServiceAdapter, "displayDiagnosticMessage"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallDiagnosticServiceAdapter, "displayDiagnosticMessage")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -66,7 +71,12 @@ func (p *CallDiagnosticServiceAdapterProxy) ClearDiagnosticMessage(
 	_data.WriteString16(callId)
 	_data.WriteInt32(messageId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallDiagnosticServiceAdapter, "clearDiagnosticMessage"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallDiagnosticServiceAdapter, "clearDiagnosticMessage")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -82,7 +92,12 @@ func (p *CallDiagnosticServiceAdapterProxy) SendDeviceToDeviceMessage(
 	_data.WriteInt32(message)
 	_data.WriteInt32(value)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallDiagnosticServiceAdapter, "sendDeviceToDeviceMessage"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallDiagnosticServiceAdapter, "sendDeviceToDeviceMessage")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -95,6 +110,11 @@ func (p *CallDiagnosticServiceAdapterProxy) OverrideDisconnectMessage(
 	_data.WriteInterfaceToken(DescriptorICallDiagnosticServiceAdapter)
 	_data.WriteString16(callId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallDiagnosticServiceAdapter, "overrideDisconnectMessage"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallDiagnosticServiceAdapter, "overrideDisconnectMessage")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

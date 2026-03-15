@@ -83,7 +83,12 @@ func (p *SessionProcessorImplProxy) InitSession(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISessionProcessorImpl, "initSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISessionProcessorImpl, "initSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -107,7 +112,12 @@ func (p *SessionProcessorImplProxy) DeInitSession(
 	_data.WriteInterfaceToken(DescriptorISessionProcessorImpl)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISessionProcessorImpl, "deInitSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISessionProcessorImpl, "deInitSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -130,7 +140,12 @@ func (p *SessionProcessorImplProxy) OnCaptureSessionStart(
 	_data.WriteStrongBinder(requestProcessor.AsBinder().Handle())
 	_data.WriteString16(statsKey)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISessionProcessorImpl, "onCaptureSessionStart"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISessionProcessorImpl, "onCaptureSessionStart")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -149,7 +164,12 @@ func (p *SessionProcessorImplProxy) OnCaptureSessionEnd(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionProcessorImpl)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISessionProcessorImpl, "onCaptureSessionEnd"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISessionProcessorImpl, "onCaptureSessionEnd")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -171,7 +191,12 @@ func (p *SessionProcessorImplProxy) StartRepeating(
 	_data.WriteInterfaceToken(DescriptorISessionProcessorImpl)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISessionProcessorImpl, "startRepeating"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISessionProcessorImpl, "startRepeating")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -194,7 +219,12 @@ func (p *SessionProcessorImplProxy) StopRepeating(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionProcessorImpl)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISessionProcessorImpl, "stopRepeating"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISessionProcessorImpl, "stopRepeating")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -218,7 +248,12 @@ func (p *SessionProcessorImplProxy) StartCapture(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteBool(isPostviewRequested)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISessionProcessorImpl, "startCapture"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISessionProcessorImpl, "startCapture")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -245,7 +280,12 @@ func (p *SessionProcessorImplProxy) SetParameters(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISessionProcessorImpl, "setParameters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISessionProcessorImpl, "setParameters")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -271,7 +311,12 @@ func (p *SessionProcessorImplProxy) StartTrigger(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISessionProcessorImpl, "startTrigger"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISessionProcessorImpl, "startTrigger")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -295,7 +340,12 @@ func (p *SessionProcessorImplProxy) GetRealtimeCaptureLatency(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionProcessorImpl)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISessionProcessorImpl, "getRealtimeCaptureLatency"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISessionProcessorImpl, "getRealtimeCaptureLatency")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

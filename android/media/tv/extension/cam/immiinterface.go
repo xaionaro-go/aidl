@@ -48,7 +48,12 @@ func (p *MmiInterfaceProxy) OpenSession(
 	_data.WriteInt32(slotId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMmiInterface, "openSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMmiInterface, "openSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -76,7 +81,12 @@ func (p *MmiInterfaceProxy) AppInfoEnterMenu(
 	_data.WriteInt32(slotId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMmiInterface, "appInfoEnterMenu"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMmiInterface, "appInfoEnterMenu")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

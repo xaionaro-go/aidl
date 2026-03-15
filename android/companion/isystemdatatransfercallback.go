@@ -43,7 +43,12 @@ func (p *SystemDataTransferCallbackProxy) OnResult(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISystemDataTransferCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemDataTransferCallback, "onResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemDataTransferCallback, "onResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -55,6 +60,11 @@ func (p *SystemDataTransferCallbackProxy) OnError(
 	_data.WriteInterfaceToken(DescriptorISystemDataTransferCallback)
 	_data.WriteString16(error_)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemDataTransferCallback, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemDataTransferCallback, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

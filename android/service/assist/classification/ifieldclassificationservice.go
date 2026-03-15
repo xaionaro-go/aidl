@@ -49,7 +49,12 @@ func (p *FieldClassificationServiceProxy) OnConnected(
 	_data.WriteBool(debug)
 	_data.WriteBool(verbose)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFieldClassificationService, "onConnected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFieldClassificationService, "onConnected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -59,7 +64,12 @@ func (p *FieldClassificationServiceProxy) OnDisconnected(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFieldClassificationService)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFieldClassificationService, "onDisconnected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFieldClassificationService, "onDisconnected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -75,6 +85,11 @@ func (p *FieldClassificationServiceProxy) OnFieldClassificationRequest(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFieldClassificationService, "onFieldClassificationRequest"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFieldClassificationService, "onFieldClassificationRequest")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

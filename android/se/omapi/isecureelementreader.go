@@ -48,7 +48,12 @@ func (p *SecureElementReaderProxy) IsSecureElementPresent(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISecureElementReader)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISecureElementReader, "isSecureElementPresent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISecureElementReader, "isSecureElementPresent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -72,7 +77,12 @@ func (p *SecureElementReaderProxy) OpenSession(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISecureElementReader)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISecureElementReader, "openSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISecureElementReader, "openSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -96,7 +106,12 @@ func (p *SecureElementReaderProxy) CloseSessions(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISecureElementReader)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISecureElementReader, "closeSessions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISecureElementReader, "closeSessions")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -116,7 +131,12 @@ func (p *SecureElementReaderProxy) Reset(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISecureElementReader)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISecureElementReader, "reset"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISecureElementReader, "reset")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

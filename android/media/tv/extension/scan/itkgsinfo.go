@@ -46,7 +46,12 @@ func (p *TkgsInfoProxy) SetPrefServiceList(
 	_data.WriteInterfaceToken(DescriptorITkgsInfo)
 	_data.WriteString16(prefServiceList)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITkgsInfo, "setPrefServiceList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITkgsInfo, "setPrefServiceList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -72,7 +77,12 @@ func (p *TkgsInfoProxy) SetTkgsInfoListener(
 	_data.WriteInterfaceToken(DescriptorITkgsInfo)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITkgsInfo, "setTkgsInfoListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITkgsInfo, "setTkgsInfoListener")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

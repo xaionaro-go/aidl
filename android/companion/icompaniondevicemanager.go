@@ -132,7 +132,12 @@ func (p *CompanionDeviceManagerProxy) Associate(
 	_data.WriteString16(callingPackage)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "associate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "associate")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -156,7 +161,12 @@ func (p *CompanionDeviceManagerProxy) GetAssociations(
 	_data.WriteString16(callingPackage)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "getAssociations"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "getAssociations")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -191,7 +201,12 @@ func (p *CompanionDeviceManagerProxy) GetAllAssociationsForUser(
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "getAllAssociationsForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "getAllAssociationsForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -229,7 +244,12 @@ func (p *CompanionDeviceManagerProxy) LegacyDisassociate(
 	_data.WriteString16(callingPackage)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "legacyDisassociate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "legacyDisassociate")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -250,7 +270,12 @@ func (p *CompanionDeviceManagerProxy) Disassociate(
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteInt32(associationId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "disassociate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "disassociate")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -274,7 +299,12 @@ func (p *CompanionDeviceManagerProxy) HasNotificationAccess(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "hasNotificationAccess"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "hasNotificationAccess")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -304,7 +334,12 @@ func (p *CompanionDeviceManagerProxy) RequestNotificationAccess(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "requestNotificationAccess"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "requestNotificationAccess")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -333,7 +368,12 @@ func (p *CompanionDeviceManagerProxy) IsDeviceAssociatedForWifiConnection(
 	_data.WriteString16(macAddress)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "isDeviceAssociatedForWifiConnection"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "isDeviceAssociatedForWifiConnection")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -362,7 +402,12 @@ func (p *CompanionDeviceManagerProxy) LegacyStartObservingDevicePresence(
 	_data.WriteString16(callingPackage)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "legacyStartObservingDevicePresence"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "legacyStartObservingDevicePresence")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -387,7 +432,12 @@ func (p *CompanionDeviceManagerProxy) LegacyStopObservingDevicePresence(
 	_data.WriteString16(callingPackage)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "legacyStopObservingDevicePresence"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "legacyStopObservingDevicePresence")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -414,7 +464,12 @@ func (p *CompanionDeviceManagerProxy) StartObservingDevicePresence(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "startObservingDevicePresence"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "startObservingDevicePresence")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -441,7 +496,12 @@ func (p *CompanionDeviceManagerProxy) StopObservingDevicePresence(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "stopObservingDevicePresence"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "stopObservingDevicePresence")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -467,7 +527,12 @@ func (p *CompanionDeviceManagerProxy) CanPairWithoutPrompt(
 	_data.WriteString16(deviceMacAddress)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "canPairWithoutPrompt"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "canPairWithoutPrompt")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -505,7 +570,12 @@ func (p *CompanionDeviceManagerProxy) CreateAssociation(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "createAssociation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "createAssociation")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -528,7 +598,12 @@ func (p *CompanionDeviceManagerProxy) AddOnAssociationsChangedListener(
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "addOnAssociationsChangedListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "addOnAssociationsChangedListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -551,7 +626,12 @@ func (p *CompanionDeviceManagerProxy) RemoveOnAssociationsChangedListener(
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "removeOnAssociationsChangedListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "removeOnAssociationsChangedListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -572,7 +652,12 @@ func (p *CompanionDeviceManagerProxy) AddOnTransportsChangedListener(
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "addOnTransportsChangedListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "addOnTransportsChangedListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -593,7 +678,12 @@ func (p *CompanionDeviceManagerProxy) RemoveOnTransportsChangedListener(
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "removeOnTransportsChangedListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "removeOnTransportsChangedListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -632,7 +722,12 @@ func (p *CompanionDeviceManagerProxy) SendMessage(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "sendMessage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "sendMessage")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -655,7 +750,12 @@ func (p *CompanionDeviceManagerProxy) AddOnMessageReceivedListener(
 	_data.WriteInt32(messageType)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "addOnMessageReceivedListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "addOnMessageReceivedListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -678,7 +778,12 @@ func (p *CompanionDeviceManagerProxy) RemoveOnMessageReceivedListener(
 	_data.WriteInt32(messageType)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "removeOnMessageReceivedListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "removeOnMessageReceivedListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -699,7 +804,12 @@ func (p *CompanionDeviceManagerProxy) NotifySelfManagedDeviceAppeared(
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteInt32(associationId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "notifySelfManagedDeviceAppeared"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "notifySelfManagedDeviceAppeared")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -720,7 +830,12 @@ func (p *CompanionDeviceManagerProxy) NotifySelfManagedDeviceDisappeared(
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteInt32(associationId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "notifySelfManagedDeviceDisappeared"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "notifySelfManagedDeviceDisappeared")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -746,7 +861,12 @@ func (p *CompanionDeviceManagerProxy) BuildPermissionTransferUserConsentIntent(
 	_data.WriteInt32(userId)
 	_data.WriteInt32(associationId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "buildPermissionTransferUserConsentIntent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "buildPermissionTransferUserConsentIntent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -775,7 +895,12 @@ func (p *CompanionDeviceManagerProxy) IsPermissionTransferUserConsented(
 	_data.WriteInt32(userId)
 	_data.WriteInt32(associationId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "isPermissionTransferUserConsented"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "isPermissionTransferUserConsented")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -806,7 +931,12 @@ func (p *CompanionDeviceManagerProxy) StartSystemDataTransfer(
 	_data.WriteInt32(associationId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "startSystemDataTransfer"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "startSystemDataTransfer")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -833,7 +963,12 @@ func (p *CompanionDeviceManagerProxy) AttachSystemDataTransport(
 	_data.WriteInt32(associationId)
 	_data.WriteFileDescriptor(fd)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "attachSystemDataTransport"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "attachSystemDataTransport")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -858,7 +993,12 @@ func (p *CompanionDeviceManagerProxy) DetachSystemDataTransport(
 	_data.WriteInt32(userId)
 	_data.WriteInt32(associationId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "detachSystemDataTransport"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "detachSystemDataTransport")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -882,7 +1022,12 @@ func (p *CompanionDeviceManagerProxy) IsCompanionApplicationBound(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "isCompanionApplicationBound"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "isCompanionApplicationBound")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -910,7 +1055,12 @@ func (p *CompanionDeviceManagerProxy) BuildAssociationCancellationIntent(
 	_data.WriteString16(callingPackage)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "buildAssociationCancellationIntent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "buildAssociationCancellationIntent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -936,7 +1086,12 @@ func (p *CompanionDeviceManagerProxy) EnableSystemDataSync(
 	_data.WriteInt32(associationId)
 	_data.WriteInt32(flags)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "enableSystemDataSync"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "enableSystemDataSync")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -959,7 +1114,12 @@ func (p *CompanionDeviceManagerProxy) DisableSystemDataSync(
 	_data.WriteInt32(associationId)
 	_data.WriteInt32(flags)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "disableSystemDataSync"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "disableSystemDataSync")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -980,7 +1140,12 @@ func (p *CompanionDeviceManagerProxy) EnablePermissionsSync(
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteInt32(associationId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "enablePermissionsSync"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "enablePermissionsSync")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1001,7 +1166,12 @@ func (p *CompanionDeviceManagerProxy) DisablePermissionsSync(
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteInt32(associationId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "disablePermissionsSync"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "disablePermissionsSync")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1023,7 +1193,12 @@ func (p *CompanionDeviceManagerProxy) GetPermissionSyncRequest(
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteInt32(associationId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "getPermissionSyncRequest"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "getPermissionSyncRequest")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1047,7 +1222,12 @@ func (p *CompanionDeviceManagerProxy) EnableSecureTransport(
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "enableSecureTransport"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "enableSecureTransport")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1072,7 +1252,12 @@ func (p *CompanionDeviceManagerProxy) SetDeviceId(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "setDeviceId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "setDeviceId")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1094,7 +1279,12 @@ func (p *CompanionDeviceManagerProxy) GetBackupPayload(
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "getBackupPayload"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "getBackupPayload")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1138,7 +1328,12 @@ func (p *CompanionDeviceManagerProxy) ApplyRestoredPayload(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "applyRestoredPayload"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "applyRestoredPayload")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1164,7 +1359,12 @@ func (p *CompanionDeviceManagerProxy) RemoveBond(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICompanionDeviceManager, "removeBond"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "removeBond")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

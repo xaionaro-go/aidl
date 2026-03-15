@@ -58,7 +58,12 @@ func (p *FastbootProxy) DoOemCommand(
 	_data.WriteInterfaceToken(DescriptorIFastboot)
 	_data.WriteString16(oemCmd)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFastboot, "doOemCommand"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFastboot, "doOemCommand")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -81,7 +86,12 @@ func (p *FastbootProxy) DoOemSpecificErase(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFastboot)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFastboot, "doOemSpecificErase"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFastboot, "doOemSpecificErase")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -101,7 +111,12 @@ func (p *FastbootProxy) GetBatteryVoltageFlashingThreshold(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFastboot)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFastboot, "getBatteryVoltageFlashingThreshold"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFastboot, "getBatteryVoltageFlashingThreshold")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -125,7 +140,12 @@ func (p *FastbootProxy) GetOffModeChargeState(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFastboot)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFastboot, "getOffModeChargeState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFastboot, "getOffModeChargeState")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -151,7 +171,12 @@ func (p *FastbootProxy) GetPartitionType(
 	_data.WriteInterfaceToken(DescriptorIFastboot)
 	_data.WriteString16(partitionName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFastboot, "getPartitionType"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFastboot, "getPartitionType")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -176,7 +201,12 @@ func (p *FastbootProxy) GetVariant(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFastboot)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFastboot, "getVariant"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFastboot, "getVariant")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

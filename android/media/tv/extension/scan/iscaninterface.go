@@ -53,7 +53,12 @@ func (p *ScanInterfaceProxy) CreateSession(
 	_data.WriteString16(operator)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanInterface, "createSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanInterface, "createSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -88,7 +93,12 @@ func (p *ScanInterfaceProxy) GetParameters(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanInterface, "getParameters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanInterface, "getParameters")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

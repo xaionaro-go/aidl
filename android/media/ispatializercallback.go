@@ -45,7 +45,12 @@ func (p *SpatializerCallbackProxy) DispatchSpatializerEnabledChanged(
 	_data.WriteInterfaceToken(DescriptorISpatializerCallback)
 	_data.WriteBool(enabled)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISpatializerCallback, "dispatchSpatializerEnabledChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISpatializerCallback, "dispatchSpatializerEnabledChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -57,6 +62,11 @@ func (p *SpatializerCallbackProxy) DispatchSpatializerAvailableChanged(
 	_data.WriteInterfaceToken(DescriptorISpatializerCallback)
 	_data.WriteBool(available)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISpatializerCallback, "dispatchSpatializerAvailableChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISpatializerCallback, "dispatchSpatializerAvailableChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

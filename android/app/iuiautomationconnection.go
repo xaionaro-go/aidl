@@ -93,7 +93,12 @@ func (p *UiAutomationConnectionProxy) Connect(
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 	_data.WriteInt32(flags)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "connect"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "connect")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -112,7 +117,12 @@ func (p *UiAutomationConnectionProxy) Disconnect(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "disconnect"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "disconnect")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -137,7 +147,12 @@ func (p *UiAutomationConnectionProxy) InjectInputEvent(
 	_data.WriteBool(sync)
 	_data.WriteBool(waitForAnimations)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "injectInputEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "injectInputEvent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -161,7 +176,12 @@ func (p *UiAutomationConnectionProxy) InjectInputEventToInputFilter(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "injectInputEventToInputFilter"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "injectInputEventToInputFilter")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -182,7 +202,12 @@ func (p *UiAutomationConnectionProxy) SyncInputTransactions(
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 	_data.WriteBool(waitForAnimations)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "syncInputTransactions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "syncInputTransactions")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -204,7 +229,12 @@ func (p *UiAutomationConnectionProxy) SetRotation(
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 	_data.WriteInt32(rotation)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "setRotation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "setRotation")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -235,7 +265,12 @@ func (p *UiAutomationConnectionProxy) TakeScreenshot(
 	}
 	_data.WriteInt32(displayId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "takeScreenshot"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "takeScreenshot")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -261,7 +296,12 @@ func (p *UiAutomationConnectionProxy) TakeSurfaceControlScreenshot(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "takeSurfaceControlScreenshot"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "takeSurfaceControlScreenshot")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -287,7 +327,12 @@ func (p *UiAutomationConnectionProxy) ClearWindowContentFrameStats(
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 	_data.WriteInt32(windowId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "clearWindowContentFrameStats"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "clearWindowContentFrameStats")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -313,7 +358,12 @@ func (p *UiAutomationConnectionProxy) GetWindowContentFrameStats(
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 	_data.WriteInt32(windowId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "getWindowContentFrameStats"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "getWindowContentFrameStats")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -332,7 +382,12 @@ func (p *UiAutomationConnectionProxy) ClearWindowAnimationFrameStats(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "clearWindowAnimationFrameStats"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "clearWindowAnimationFrameStats")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -352,7 +407,12 @@ func (p *UiAutomationConnectionProxy) GetWindowAnimationFrameStats(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "getWindowAnimationFrameStats"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "getWindowAnimationFrameStats")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -377,7 +437,12 @@ func (p *UiAutomationConnectionProxy) ExecuteShellCommand(
 	_data.WriteFileDescriptor(sink)
 	_data.WriteFileDescriptor(source)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "executeShellCommand"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "executeShellCommand")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -402,7 +467,12 @@ func (p *UiAutomationConnectionProxy) GrantRuntimePermission(
 	_data.WriteString16(permission)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "grantRuntimePermission"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "grantRuntimePermission")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -427,7 +497,12 @@ func (p *UiAutomationConnectionProxy) RevokeRuntimePermission(
 	_data.WriteString16(permission)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "revokeRuntimePermission"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "revokeRuntimePermission")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -457,7 +532,12 @@ func (p *UiAutomationConnectionProxy) AdoptShellPermissionIdentity(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "adoptShellPermissionIdentity"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "adoptShellPermissionIdentity")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -476,7 +556,12 @@ func (p *UiAutomationConnectionProxy) DropShellPermissionIdentity(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "dropShellPermissionIdentity"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "dropShellPermissionIdentity")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -495,7 +580,12 @@ func (p *UiAutomationConnectionProxy) Shutdown(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "shutdown"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "shutdown")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -513,7 +603,12 @@ func (p *UiAutomationConnectionProxy) ExecuteShellCommandWithStderr(
 	_data.WriteFileDescriptor(source)
 	_data.WriteFileDescriptor(stderrSink)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "executeShellCommandWithStderr"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "executeShellCommandWithStderr")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -547,7 +642,12 @@ func (p *UiAutomationConnectionProxy) ExecuteShellCommandArrayWithStderr(
 	_data.WriteFileDescriptor(source)
 	_data.WriteFileDescriptor(stderrSink)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "executeShellCommandArrayWithStderr"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "executeShellCommandArrayWithStderr")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -567,7 +667,12 @@ func (p *UiAutomationConnectionProxy) GetAdoptedShellPermissions(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "getAdoptedShellPermissions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "getAdoptedShellPermissions")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -606,7 +711,12 @@ func (p *UiAutomationConnectionProxy) AddOverridePermissionState(
 	_data.WriteString16(permission)
 	_data.WriteInt32(result)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "addOverridePermissionState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "addOverridePermissionState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -629,7 +739,12 @@ func (p *UiAutomationConnectionProxy) RemoveOverridePermissionState(
 	_data.WriteInt32(uid)
 	_data.WriteString16(permission)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "removeOverridePermissionState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "removeOverridePermissionState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -650,7 +765,12 @@ func (p *UiAutomationConnectionProxy) ClearOverridePermissionStates(
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "clearOverridePermissionStates"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "clearOverridePermissionStates")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -669,7 +789,12 @@ func (p *UiAutomationConnectionProxy) ClearAllOverridePermissionStates(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiAutomationConnection, "clearAllOverridePermissionStates"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "clearAllOverridePermissionStates")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

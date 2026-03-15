@@ -45,6 +45,11 @@ func (p *KeyguardClientProxy) OnCreateKeyguardSurface(
 	_data.WriteStrongBinder(hostInputToken.Handle())
 	_data.WriteStrongBinder(keyguardCallback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyguardClient, "onCreateKeyguardSurface"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardClient, "onCreateKeyguardSurface")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

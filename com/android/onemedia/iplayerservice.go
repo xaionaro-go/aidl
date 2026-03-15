@@ -54,7 +54,12 @@ func (p *PlayerServiceProxy) GetSessionToken(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPlayerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPlayerService, "getSessionToken"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPlayerService, "getSessionToken")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -78,7 +83,12 @@ func (p *PlayerServiceProxy) RegisterCallback(
 	_data.WriteInterfaceToken(DescriptorIPlayerService)
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPlayerService, "registerCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPlayerService, "registerCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -99,7 +109,12 @@ func (p *PlayerServiceProxy) UnregisterCallback(
 	_data.WriteInterfaceToken(DescriptorIPlayerService)
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPlayerService, "unregisterCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPlayerService, "unregisterCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -126,7 +141,12 @@ func (p *PlayerServiceProxy) SendRequest(
 	}
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPlayerService, "sendRequest"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPlayerService, "sendRequest")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -149,7 +169,12 @@ func (p *PlayerServiceProxy) SetIcon(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPlayerService, "setIcon"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPlayerService, "setIcon")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

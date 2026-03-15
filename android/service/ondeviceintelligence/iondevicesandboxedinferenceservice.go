@@ -56,7 +56,12 @@ func (p *OnDeviceSandboxedInferenceServiceProxy) RegisterRemoteStorageService(
 	_data.WriteStrongBinder(storageService.AsBinder().Handle())
 	_data.WriteStrongBinder(remoteCallback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOnDeviceSandboxedInferenceService, "registerRemoteStorageService"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOnDeviceSandboxedInferenceService, "registerRemoteStorageService")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -82,7 +87,12 @@ func (p *OnDeviceSandboxedInferenceServiceProxy) RequestTokenInfo(
 	}
 	_data.WriteStrongBinder(tokenInfoCallback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOnDeviceSandboxedInferenceService, "requestTokenInfo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOnDeviceSandboxedInferenceService, "requestTokenInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -114,7 +124,12 @@ func (p *OnDeviceSandboxedInferenceServiceProxy) ProcessRequest(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOnDeviceSandboxedInferenceService, "processRequest"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOnDeviceSandboxedInferenceService, "processRequest")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -146,7 +161,12 @@ func (p *OnDeviceSandboxedInferenceServiceProxy) ProcessRequestStreaming(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOnDeviceSandboxedInferenceService, "processRequestStreaming"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOnDeviceSandboxedInferenceService, "processRequestStreaming")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -162,6 +182,11 @@ func (p *OnDeviceSandboxedInferenceServiceProxy) UpdateProcessingState(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOnDeviceSandboxedInferenceService, "updateProcessingState"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOnDeviceSandboxedInferenceService, "updateProcessingState")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

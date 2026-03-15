@@ -65,7 +65,12 @@ func (p *CallControlProxy) SetActive(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallControl, "setActive"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallControl, "setActive")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -83,7 +88,12 @@ func (p *CallControlProxy) Answer(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallControl, "answer"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallControl, "answer")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -99,7 +109,12 @@ func (p *CallControlProxy) SetInactive(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallControl, "setInactive"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallControl, "setInactive")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -119,7 +134,12 @@ func (p *CallControlProxy) Disconnect(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallControl, "disconnect"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallControl, "disconnect")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -135,7 +155,12 @@ func (p *CallControlProxy) StartCallStreaming(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallControl, "startCallStreaming"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallControl, "startCallStreaming")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -153,7 +178,12 @@ func (p *CallControlProxy) RequestCallEndpointChange(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallControl, "requestCallEndpointChange"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallControl, "requestCallEndpointChange")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -169,7 +199,12 @@ func (p *CallControlProxy) SetMuteState(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallControl, "setMuteState"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallControl, "setMuteState")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -187,7 +222,12 @@ func (p *CallControlProxy) SendEvent(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallControl, "sendEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallControl, "sendEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -205,6 +245,11 @@ func (p *CallControlProxy) RequestVideoState(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallControl, "requestVideoState"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallControl, "requestVideoState")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

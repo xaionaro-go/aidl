@@ -55,7 +55,12 @@ func (p *TvInteractiveAppServiceProxy) RegisterCallback(
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppService)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppService, "registerCallback"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppService, "registerCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -67,7 +72,12 @@ func (p *TvInteractiveAppServiceProxy) UnregisterCallback(
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppService)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppService, "unregisterCallback"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppService, "unregisterCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -87,7 +97,12 @@ func (p *TvInteractiveAppServiceProxy) CreateSession(
 	_data.WriteString16(iAppServiceId)
 	_data.WriteInt32(type_)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppService, "createSession"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppService, "createSession")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -101,7 +116,12 @@ func (p *TvInteractiveAppServiceProxy) RegisterAppLinkInfo(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppService, "registerAppLinkInfo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppService, "registerAppLinkInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -115,7 +135,12 @@ func (p *TvInteractiveAppServiceProxy) UnregisterAppLinkInfo(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppService, "unregisterAppLinkInfo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppService, "unregisterAppLinkInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -129,6 +154,11 @@ func (p *TvInteractiveAppServiceProxy) SendAppLinkCommand(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppService, "sendAppLinkCommand"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppService, "sendAppLinkCommand")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

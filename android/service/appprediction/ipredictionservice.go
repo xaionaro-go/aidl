@@ -68,7 +68,12 @@ func (p *PredictionServiceProxy) OnCreatePredictionSession(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPredictionService, "onCreatePredictionSession"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPredictionService, "onCreatePredictionSession")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -86,7 +91,12 @@ func (p *PredictionServiceProxy) NotifyAppTargetEvent(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPredictionService, "notifyAppTargetEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPredictionService, "notifyAppTargetEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -106,7 +116,12 @@ func (p *PredictionServiceProxy) NotifyLaunchLocationShown(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPredictionService, "notifyLaunchLocationShown"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPredictionService, "notifyLaunchLocationShown")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -126,7 +141,12 @@ func (p *PredictionServiceProxy) SortAppTargets(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPredictionService, "sortAppTargets"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPredictionService, "sortAppTargets")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -142,7 +162,12 @@ func (p *PredictionServiceProxy) RegisterPredictionUpdates(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPredictionService, "registerPredictionUpdates"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPredictionService, "registerPredictionUpdates")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -158,7 +183,12 @@ func (p *PredictionServiceProxy) UnregisterPredictionUpdates(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPredictionService, "unregisterPredictionUpdates"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPredictionService, "unregisterPredictionUpdates")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -172,7 +202,12 @@ func (p *PredictionServiceProxy) RequestPredictionUpdate(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPredictionService, "requestPredictionUpdate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPredictionService, "requestPredictionUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -186,7 +221,12 @@ func (p *PredictionServiceProxy) OnDestroyPredictionSession(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPredictionService, "onDestroyPredictionSession"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPredictionService, "onDestroyPredictionSession")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -202,6 +242,11 @@ func (p *PredictionServiceProxy) RequestServiceFeatures(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPredictionService, "requestServiceFeatures"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPredictionService, "requestServiceFeatures")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

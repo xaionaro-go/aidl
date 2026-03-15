@@ -55,7 +55,12 @@ func (p *UidObserverProxy) OnUidGone(
 	_data.WriteInt32(uid)
 	_data.WriteBool(disabled)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUidObserver, "onUidGone"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUidObserver, "onUidGone")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -67,7 +72,12 @@ func (p *UidObserverProxy) OnUidActive(
 	_data.WriteInterfaceToken(DescriptorIUidObserver)
 	_data.WriteInt32(uid)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUidObserver, "onUidActive"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUidObserver, "onUidActive")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -81,7 +91,12 @@ func (p *UidObserverProxy) OnUidIdle(
 	_data.WriteInt32(uid)
 	_data.WriteBool(disabled)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUidObserver, "onUidIdle"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUidObserver, "onUidIdle")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -99,7 +114,12 @@ func (p *UidObserverProxy) OnUidStateChanged(
 	_data.WriteInt64(procStateSeq)
 	_data.WriteInt32(capability)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUidObserver, "onUidStateChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUidObserver, "onUidStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -113,7 +133,12 @@ func (p *UidObserverProxy) OnUidProcAdjChanged(
 	_data.WriteInt32(uid)
 	_data.WriteInt32(adj)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUidObserver, "onUidProcAdjChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUidObserver, "onUidProcAdjChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -127,6 +152,11 @@ func (p *UidObserverProxy) OnUidCachedChanged(
 	_data.WriteInt32(uid)
 	_data.WriteBool(cached)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUidObserver, "onUidCachedChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUidObserver, "onUidCachedChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

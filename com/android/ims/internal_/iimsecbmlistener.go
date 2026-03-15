@@ -43,7 +43,12 @@ func (p *ImsEcbmListenerProxy) EnteredECBM(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsEcbmListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsEcbmListener, "enteredECBM"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsEcbmListener, "enteredECBM")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -53,6 +58,11 @@ func (p *ImsEcbmListenerProxy) ExitedECBM(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsEcbmListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsEcbmListener, "exitedECBM"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsEcbmListener, "exitedECBM")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

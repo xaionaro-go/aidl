@@ -60,7 +60,12 @@ func (p *OptionsServiceProxy) GetVersion(
 	_data.WriteInterfaceToken(DescriptorIOptionsService)
 	_data.WriteInt32(optionsServiceHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOptionsService, "getVersion"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOptionsService, "getVersion")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -93,7 +98,12 @@ func (p *OptionsServiceProxy) AddListener(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOptionsService, "addListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOptionsService, "addListener")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -127,7 +137,12 @@ func (p *OptionsServiceProxy) RemoveListener(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOptionsService, "removeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOptionsService, "removeListener")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -160,7 +175,12 @@ func (p *OptionsServiceProxy) SetMyInfo(
 	}
 	_data.WriteInt32(reqUserData)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOptionsService, "setMyInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOptionsService, "setMyInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -189,7 +209,12 @@ func (p *OptionsServiceProxy) GetMyInfo(
 	_data.WriteInt32(optionsServiceHandle)
 	_data.WriteInt32(reqUserdata)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOptionsService, "getMyInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOptionsService, "getMyInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -220,7 +245,12 @@ func (p *OptionsServiceProxy) GetContactCap(
 	_data.WriteString16(remoteURI)
 	_data.WriteInt32(reqUserData)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOptionsService, "getContactCap"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOptionsService, "getContactCap")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -258,7 +288,12 @@ func (p *OptionsServiceProxy) GetContactListCap(
 	}
 	_data.WriteInt32(reqUserData)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOptionsService, "getContactListCap"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOptionsService, "getContactListCap")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -297,7 +332,12 @@ func (p *OptionsServiceProxy) ResponseIncomingOptions(
 	}
 	_data.WriteBool(bContactInBL)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOptionsService, "responseIncomingOptions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOptionsService, "responseIncomingOptions")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

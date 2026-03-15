@@ -43,6 +43,11 @@ func (p *WakeLockCallbackProxy) OnStateChanged(
 	_data.WriteInterfaceToken(DescriptorIWakeLockCallback)
 	_data.WriteBool(enabled)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWakeLockCallback, "onStateChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWakeLockCallback, "onStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

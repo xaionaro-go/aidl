@@ -53,7 +53,12 @@ func (p *ServiceListImportSessionProxy) ImportServiceList(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceListImportSession, "importServiceList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceListImportSession, "importServiceList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -79,7 +84,12 @@ func (p *ServiceListImportSessionProxy) Preload(
 	_data.WriteInterfaceToken(DescriptorIServiceListImportSession)
 	_data.WriteFileDescriptor(pfd)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceListImportSession, "preload"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceListImportSession, "preload")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -103,7 +113,12 @@ func (p *ServiceListImportSessionProxy) Release(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIServiceListImportSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceListImportSession, "release"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceListImportSession, "release")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

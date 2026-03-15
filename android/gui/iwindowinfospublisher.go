@@ -45,6 +45,11 @@ func (p *WindowInfosPublisherProxy) AckWindowInfosReceived(
 	_data.WriteInt64(vsyncId)
 	_data.WriteInt64(listenerId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindowInfosPublisher, "ackWindowInfosReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindowInfosPublisher, "ackWindowInfosReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

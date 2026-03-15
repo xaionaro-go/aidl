@@ -105,7 +105,12 @@ func (p *VpnManagerProxy) PrepareVpn(
 	_data.WriteString16(newPackage)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "prepareVpn"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "prepareVpn")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -134,7 +139,12 @@ func (p *VpnManagerProxy) SetVpnPackageAuthorization(
 	_data.WriteInt32(userId)
 	_data.WriteInt32(vpnType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "setVpnPackageAuthorization"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "setVpnPackageAuthorization")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -158,7 +168,12 @@ func (p *VpnManagerProxy) EstablishVpn(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "establishVpn"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "establishVpn")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -186,7 +201,12 @@ func (p *VpnManagerProxy) AddVpnAddress(
 	_data.WriteString16(address)
 	_data.WriteInt32(prefixLength)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "addVpnAddress"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "addVpnAddress")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -214,7 +234,12 @@ func (p *VpnManagerProxy) RemoveVpnAddress(
 	_data.WriteString16(address)
 	_data.WriteInt32(prefixLength)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "removeVpnAddress"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "removeVpnAddress")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -244,7 +269,12 @@ func (p *VpnManagerProxy) SetUnderlyingNetworksForVpn(
 		_data.WriteInt32(int32(len(networks)))
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "setUnderlyingNetworksForVpn"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "setUnderlyingNetworksForVpn")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -274,7 +304,12 @@ func (p *VpnManagerProxy) ProvisionVpnProfile(
 	}
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "provisionVpnProfile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "provisionVpnProfile")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -299,7 +334,12 @@ func (p *VpnManagerProxy) DeleteVpnProfile(
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "deleteVpnProfile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "deleteVpnProfile")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -321,7 +361,12 @@ func (p *VpnManagerProxy) StartVpnProfile(
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "startVpnProfile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "startVpnProfile")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -346,7 +391,12 @@ func (p *VpnManagerProxy) StopVpnProfile(
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "stopVpnProfile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "stopVpnProfile")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -368,7 +418,12 @@ func (p *VpnManagerProxy) GetProvisionedVpnProfileState(
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "getProvisionedVpnProfileState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "getProvisionedVpnProfileState")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -404,7 +459,12 @@ func (p *VpnManagerProxy) SetAppExclusionList(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "setAppExclusionList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "setAppExclusionList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -432,7 +492,12 @@ func (p *VpnManagerProxy) GetAppExclusionList(
 	_data.WriteInt32(userId)
 	_data.WriteString16(vpnPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "getAppExclusionList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "getAppExclusionList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -470,7 +535,12 @@ func (p *VpnManagerProxy) IsAlwaysOnVpnPackageSupported(
 	_data.WriteInt32(userId)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "isAlwaysOnVpnPackageSupported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "isAlwaysOnVpnPackageSupported")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -509,7 +579,12 @@ func (p *VpnManagerProxy) SetAlwaysOnVpnPackage(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "setAlwaysOnVpnPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "setAlwaysOnVpnPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -535,7 +610,12 @@ func (p *VpnManagerProxy) GetAlwaysOnVpnPackage(
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "getAlwaysOnVpnPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "getAlwaysOnVpnPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -561,7 +641,12 @@ func (p *VpnManagerProxy) IsVpnLockdownEnabled(
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "isVpnLockdownEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "isVpnLockdownEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -587,7 +672,12 @@ func (p *VpnManagerProxy) GetVpnLockdownAllowlist(
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "getVpnLockdownAllowlist"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "getVpnLockdownAllowlist")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -621,7 +711,12 @@ func (p *VpnManagerProxy) IsCallerCurrentAlwaysOnVpnApp(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "isCallerCurrentAlwaysOnVpnApp"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "isCallerCurrentAlwaysOnVpnApp")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -645,7 +740,12 @@ func (p *VpnManagerProxy) IsCallerCurrentAlwaysOnVpnLockdownApp(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "isCallerCurrentAlwaysOnVpnLockdownApp"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "isCallerCurrentAlwaysOnVpnLockdownApp")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -672,7 +772,12 @@ func (p *VpnManagerProxy) StartLegacyVpn(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "startLegacyVpn"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "startLegacyVpn")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -694,7 +799,12 @@ func (p *VpnManagerProxy) GetLegacyVpnInfo(
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "getLegacyVpnInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "getLegacyVpnInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -717,7 +827,12 @@ func (p *VpnManagerProxy) UpdateLockdownVpn(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "updateLockdownVpn"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "updateLockdownVpn")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -743,7 +858,12 @@ func (p *VpnManagerProxy) GetFromVpnProfileStore(
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "getFromVpnProfileStore"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "getFromVpnProfileStore")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -788,7 +908,12 @@ func (p *VpnManagerProxy) PutIntoVpnProfileStore(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "putIntoVpnProfileStore"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "putIntoVpnProfileStore")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -814,7 +939,12 @@ func (p *VpnManagerProxy) RemoveFromVpnProfileStore(
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "removeFromVpnProfileStore"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "removeFromVpnProfileStore")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -840,7 +970,12 @@ func (p *VpnManagerProxy) ListFromVpnProfileStore(
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 	_data.WriteString16(prefix)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "listFromVpnProfileStore"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "listFromVpnProfileStore")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -876,7 +1011,12 @@ func (p *VpnManagerProxy) GetVpnConfig(
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "getVpnConfig"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "getVpnConfig")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -898,7 +1038,12 @@ func (p *VpnManagerProxy) FactoryReset(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVpnManager, "factoryReset"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "factoryReset")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

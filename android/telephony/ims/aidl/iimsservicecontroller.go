@@ -75,7 +75,12 @@ func (p *ImsServiceControllerProxy) SetListener(
 	_data.WriteInterfaceToken(DescriptorIImsServiceController)
 	_data.WriteStrongBinder(l.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsServiceController, "setListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "setListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -99,7 +104,12 @@ func (p *ImsServiceControllerProxy) CreateMmTelFeature(
 	_data.WriteInt32(slotId)
 	_data.WriteInt32(subId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsServiceController, "createMmTelFeature"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "createMmTelFeature")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -126,7 +136,12 @@ func (p *ImsServiceControllerProxy) CreateEmergencyOnlyMmTelFeature(
 	_data.WriteInterfaceToken(DescriptorIImsServiceController)
 	_data.WriteInt32(slotId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsServiceController, "createEmergencyOnlyMmTelFeature"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "createEmergencyOnlyMmTelFeature")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -155,7 +170,12 @@ func (p *ImsServiceControllerProxy) CreateRcsFeature(
 	_data.WriteInt32(slotId)
 	_data.WriteInt32(subId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsServiceController, "createRcsFeature"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "createRcsFeature")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -180,7 +200,12 @@ func (p *ImsServiceControllerProxy) QuerySupportedImsFeatures(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsServiceController)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsServiceController, "querySupportedImsFeatures"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "querySupportedImsFeatures")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -203,7 +228,12 @@ func (p *ImsServiceControllerProxy) GetImsServiceCapabilities(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsServiceController)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsServiceController, "getImsServiceCapabilities"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "getImsServiceCapabilities")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -232,7 +262,12 @@ func (p *ImsServiceControllerProxy) AddFeatureStatusCallback(
 	_data.WriteInt32(featureType)
 	_data.WriteStrongBinder(c.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsServiceController, "addFeatureStatusCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "addFeatureStatusCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -257,7 +292,12 @@ func (p *ImsServiceControllerProxy) RemoveFeatureStatusCallback(
 	_data.WriteInt32(featureType)
 	_data.WriteStrongBinder(c.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsServiceController, "removeFeatureStatusCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "removeFeatureStatusCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -276,7 +316,12 @@ func (p *ImsServiceControllerProxy) NotifyImsServiceReadyForFeatureCreation(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsServiceController)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsServiceController, "notifyImsServiceReadyForFeatureCreation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "notifyImsServiceReadyForFeatureCreation")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -301,7 +346,12 @@ func (p *ImsServiceControllerProxy) RemoveImsFeature(
 	_data.WriteInt32(featureType)
 	_data.WriteBool(changeSubId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsServiceController, "removeImsFeature"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "removeImsFeature")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -325,7 +375,12 @@ func (p *ImsServiceControllerProxy) GetConfig(
 	_data.WriteInt32(slotId)
 	_data.WriteInt32(subId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsServiceController, "getConfig"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "getConfig")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -354,7 +409,12 @@ func (p *ImsServiceControllerProxy) GetRegistration(
 	_data.WriteInt32(slotId)
 	_data.WriteInt32(subId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsServiceController, "getRegistration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "getRegistration")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -381,7 +441,12 @@ func (p *ImsServiceControllerProxy) GetSipTransport(
 	_data.WriteInterfaceToken(DescriptorIImsServiceController)
 	_data.WriteInt32(slotId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsServiceController, "getSipTransport"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "getSipTransport")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -409,7 +474,12 @@ func (p *ImsServiceControllerProxy) EnableIms(
 	_data.WriteInt32(slotId)
 	_data.WriteInt32(subId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsServiceController, "enableIms"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "enableIms")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -423,7 +493,12 @@ func (p *ImsServiceControllerProxy) DisableIms(
 	_data.WriteInt32(slotId)
 	_data.WriteInt32(subId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsServiceController, "disableIms"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "disableIms")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -437,6 +512,11 @@ func (p *ImsServiceControllerProxy) ResetIms(
 	_data.WriteInt32(slotId)
 	_data.WriteInt32(subId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsServiceController, "resetIms"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "resetIms")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

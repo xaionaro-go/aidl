@@ -47,7 +47,12 @@ func (p *EArcCallbackProxy) OnStateChange(
 	_data.WritePaddedByte(byte(status))
 	_data.WriteInt32(portId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEArcCallback, "onStateChange"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEArcCallback, "onStateChange")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -68,6 +73,11 @@ func (p *EArcCallbackProxy) OnCapabilitiesReported(
 	}
 	_data.WriteInt32(portId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEArcCallback, "onCapabilitiesReported"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEArcCallback, "onCapabilitiesReported")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

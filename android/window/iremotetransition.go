@@ -56,7 +56,12 @@ func (p *RemoteTransitionProxy) StartAnimation(
 	}
 	_data.WriteStrongBinder(finishCallback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteTransition, "startAnimation"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteTransition, "startAnimation")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -77,7 +82,12 @@ func (p *RemoteTransitionProxy) MergeAnimation(
 	_data.WriteStrongBinder(mergeTarget.Handle())
 	_data.WriteStrongBinder(finishCallback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteTransition, "mergeAnimation"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteTransition, "mergeAnimation")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -107,7 +117,12 @@ func (p *RemoteTransitionProxy) TakeOverAnimation(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteTransition, "takeOverAnimation"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteTransition, "takeOverAnimation")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -121,6 +136,11 @@ func (p *RemoteTransitionProxy) OnTransitionConsumed(
 	_data.WriteStrongBinder(transition.Handle())
 	_data.WriteBool(aborted)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteTransition, "onTransitionConsumed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteTransition, "onTransitionConsumed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

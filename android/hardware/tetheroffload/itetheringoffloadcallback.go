@@ -45,7 +45,12 @@ func (p *TetheringOffloadCallbackProxy) OnEvent(
 	_data.WriteInterfaceToken(DescriptorITetheringOffloadCallback)
 	_data.WriteInt32(int32(event))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITetheringOffloadCallback, "onEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITetheringOffloadCallback, "onEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -59,6 +64,11 @@ func (p *TetheringOffloadCallbackProxy) UpdateTimeout(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITetheringOffloadCallback, "updateTimeout"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITetheringOffloadCallback, "updateTimeout")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

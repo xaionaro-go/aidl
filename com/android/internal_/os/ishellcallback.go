@@ -48,7 +48,12 @@ func (p *ShellCallbackProxy) OpenFile(
 	_data.WriteString16(seLinuxContext)
 	_data.WriteString16(mode)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShellCallback, "openFile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShellCallback, "openFile")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

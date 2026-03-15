@@ -45,6 +45,11 @@ func (p *AdbCallbackProxy) OnDebuggingChanged(
 	_data.WriteBool(enabled)
 	_data.WritePaddedByte(byte(type_))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAdbCallback, "onDebuggingChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAdbCallback, "onDebuggingChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

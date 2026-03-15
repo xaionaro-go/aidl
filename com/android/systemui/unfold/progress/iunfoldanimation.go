@@ -43,6 +43,11 @@ func (p *UnfoldAnimationProxy) SetListener(
 	_data.WriteInterfaceToken(DescriptorIUnfoldAnimation)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUnfoldAnimation, "setListener"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUnfoldAnimation, "setListener")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

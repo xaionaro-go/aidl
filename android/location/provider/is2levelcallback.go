@@ -45,7 +45,12 @@ func (p *S2LevelCallbackProxy) OnResult(
 	_data.WriteInterfaceToken(DescriptorIS2LevelCallback)
 	_data.WriteInt32(s2Level)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIS2LevelCallback, "onResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIS2LevelCallback, "onResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -55,6 +60,11 @@ func (p *S2LevelCallbackProxy) OnError(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIS2LevelCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIS2LevelCallback, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIS2LevelCallback, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

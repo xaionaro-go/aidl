@@ -58,7 +58,12 @@ func (p *CameraExtensionsProxyServiceProxy) RegisterClient(
 	_data.WriteInterfaceToken(DescriptorICameraExtensionsProxyService)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "registerClient"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "registerClient")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -83,7 +88,12 @@ func (p *CameraExtensionsProxyServiceProxy) UnregisterClient(
 	_data.WriteInterfaceToken(DescriptorICameraExtensionsProxyService)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "unregisterClient"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "unregisterClient")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -103,7 +113,12 @@ func (p *CameraExtensionsProxyServiceProxy) AdvancedExtensionsSupported(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraExtensionsProxyService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "advancedExtensionsSupported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "advancedExtensionsSupported")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -128,7 +143,12 @@ func (p *CameraExtensionsProxyServiceProxy) InitializeSession(
 	_data.WriteInterfaceToken(DescriptorICameraExtensionsProxyService)
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "initializeSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "initializeSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -147,7 +167,12 @@ func (p *CameraExtensionsProxyServiceProxy) ReleaseSession(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraExtensionsProxyService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "releaseSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "releaseSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -169,7 +194,12 @@ func (p *CameraExtensionsProxyServiceProxy) InitializePreviewExtension(
 	_data.WriteInterfaceToken(DescriptorICameraExtensionsProxyService)
 	_data.WriteInt32(extensionType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "initializePreviewExtension"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "initializePreviewExtension")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -196,7 +226,12 @@ func (p *CameraExtensionsProxyServiceProxy) InitializeImageExtension(
 	_data.WriteInterfaceToken(DescriptorICameraExtensionsProxyService)
 	_data.WriteInt32(extensionType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "initializeImageExtension"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "initializeImageExtension")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -223,7 +258,12 @@ func (p *CameraExtensionsProxyServiceProxy) InitializeAdvancedExtension(
 	_data.WriteInterfaceToken(DescriptorICameraExtensionsProxyService)
 	_data.WriteInt32(extensionType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "initializeAdvancedExtension"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "initializeAdvancedExtension")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

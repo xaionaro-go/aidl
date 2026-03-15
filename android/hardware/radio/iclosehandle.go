@@ -41,7 +41,12 @@ func (p *CloseHandleProxy) Close(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICloseHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICloseHandle, "close"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICloseHandle, "close")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

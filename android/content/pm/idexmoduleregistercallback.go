@@ -47,6 +47,11 @@ func (p *DexModuleRegisterCallbackProxy) OnDexModuleRegistered(
 	_data.WriteBool(success)
 	_data.WriteString16(message)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDexModuleRegisterCallback, "onDexModuleRegistered"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDexModuleRegisterCallback, "onDexModuleRegistered")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

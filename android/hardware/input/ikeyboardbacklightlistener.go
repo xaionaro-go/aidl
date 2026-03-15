@@ -49,6 +49,11 @@ func (p *KeyboardBacklightListenerProxy) OnBrightnessChanged(
 	}
 	_data.WriteBool(isTriggeredByKeyPress)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyboardBacklightListener, "onBrightnessChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyboardBacklightListener, "onBrightnessChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

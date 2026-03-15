@@ -143,7 +143,12 @@ func (p *VirtualDeviceProxy) GetAssociationId(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "getAssociationId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "getAssociationId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -167,7 +172,12 @@ func (p *VirtualDeviceProxy) GetDeviceId(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "getDeviceId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "getDeviceId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -191,7 +201,12 @@ func (p *VirtualDeviceProxy) GetPersistentDeviceId(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "getPersistentDeviceId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "getPersistentDeviceId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -215,7 +230,12 @@ func (p *VirtualDeviceProxy) GetDisplayIds(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "getDisplayIds"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "getDisplayIds")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -251,7 +271,12 @@ func (p *VirtualDeviceProxy) GetDevicePolicy(
 	_data.WriteInterfaceToken(DescriptorIVirtualDevice)
 	_data.WriteInt32(policyType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "getDevicePolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "getDevicePolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -275,7 +300,12 @@ func (p *VirtualDeviceProxy) HasCustomAudioInputSupport(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "hasCustomAudioInputSupport"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "hasCustomAudioInputSupport")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -299,7 +329,12 @@ func (p *VirtualDeviceProxy) CanCreateMirrorDisplays(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "canCreateMirrorDisplays"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "canCreateMirrorDisplays")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -322,7 +357,12 @@ func (p *VirtualDeviceProxy) GoToSleep(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "goToSleep"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "goToSleep")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -341,7 +381,12 @@ func (p *VirtualDeviceProxy) WakeUp(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "wakeUp"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "wakeUp")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -360,7 +405,12 @@ func (p *VirtualDeviceProxy) Close(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "close"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "close")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -383,7 +433,12 @@ func (p *VirtualDeviceProxy) SetDevicePolicy(
 	_data.WriteInt32(policyType)
 	_data.WriteInt32(devicePolicy)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "setDevicePolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "setDevicePolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -406,7 +461,12 @@ func (p *VirtualDeviceProxy) AddActivityPolicyExemption(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "addActivityPolicyExemption"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "addActivityPolicyExemption")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -429,7 +489,12 @@ func (p *VirtualDeviceProxy) RemoveActivityPolicyExemption(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "removeActivityPolicyExemption"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "removeActivityPolicyExemption")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -454,7 +519,12 @@ func (p *VirtualDeviceProxy) SetDevicePolicyForDisplay(
 	_data.WriteInt32(policyType)
 	_data.WriteInt32(devicePolicy)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "setDevicePolicyForDisplay"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "setDevicePolicyForDisplay")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -479,7 +549,12 @@ func (p *VirtualDeviceProxy) OnAudioSessionStarting(
 	_data.WriteStrongBinder(routingCallback.AsBinder().Handle())
 	_data.WriteStrongBinder(configChangedCallback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "onAudioSessionStarting"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "onAudioSessionStarting")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -498,7 +573,12 @@ func (p *VirtualDeviceProxy) OnAudioSessionEnded(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "onAudioSessionEnded"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "onAudioSessionEnded")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -524,7 +604,12 @@ func (p *VirtualDeviceProxy) CreateVirtualDisplay(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "createVirtualDisplay"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "createVirtualDisplay")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -553,7 +638,12 @@ func (p *VirtualDeviceProxy) CreateVirtualDpad(
 	}
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "createVirtualDpad"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "createVirtualDpad")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -578,7 +668,12 @@ func (p *VirtualDeviceProxy) CreateVirtualKeyboard(
 	}
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "createVirtualKeyboard"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "createVirtualKeyboard")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -603,7 +698,12 @@ func (p *VirtualDeviceProxy) CreateVirtualMouse(
 	}
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "createVirtualMouse"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "createVirtualMouse")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -628,7 +728,12 @@ func (p *VirtualDeviceProxy) CreateVirtualTouchscreen(
 	}
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "createVirtualTouchscreen"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "createVirtualTouchscreen")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -653,7 +758,12 @@ func (p *VirtualDeviceProxy) CreateVirtualNavigationTouchpad(
 	}
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "createVirtualNavigationTouchpad"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "createVirtualNavigationTouchpad")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -678,7 +788,12 @@ func (p *VirtualDeviceProxy) CreateVirtualStylus(
 	}
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "createVirtualStylus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "createVirtualStylus")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -703,7 +818,12 @@ func (p *VirtualDeviceProxy) CreateVirtualRotaryEncoder(
 	}
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "createVirtualRotaryEncoder"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "createVirtualRotaryEncoder")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -724,7 +844,12 @@ func (p *VirtualDeviceProxy) UnregisterInputDevice(
 	_data.WriteInterfaceToken(DescriptorIVirtualDevice)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "unregisterInputDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "unregisterInputDevice")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -746,7 +871,12 @@ func (p *VirtualDeviceProxy) GetInputDeviceId(
 	_data.WriteInterfaceToken(DescriptorIVirtualDevice)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "getInputDeviceId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "getInputDeviceId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -776,7 +906,12 @@ func (p *VirtualDeviceProxy) SendDpadKeyEvent(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "sendDpadKeyEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "sendDpadKeyEvent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -806,7 +941,12 @@ func (p *VirtualDeviceProxy) SendKeyEvent(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "sendKeyEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "sendKeyEvent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -836,7 +976,12 @@ func (p *VirtualDeviceProxy) SendButtonEvent(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "sendButtonEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "sendButtonEvent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -866,7 +1011,12 @@ func (p *VirtualDeviceProxy) SendRelativeEvent(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "sendRelativeEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "sendRelativeEvent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -896,7 +1046,12 @@ func (p *VirtualDeviceProxy) SendScrollEvent(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "sendScrollEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "sendScrollEvent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -926,7 +1081,12 @@ func (p *VirtualDeviceProxy) SendTouchEvent(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "sendTouchEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "sendTouchEvent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -956,7 +1116,12 @@ func (p *VirtualDeviceProxy) SendStylusMotionEvent(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "sendStylusMotionEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "sendStylusMotionEvent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -986,7 +1151,12 @@ func (p *VirtualDeviceProxy) SendStylusButtonEvent(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "sendStylusButtonEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "sendStylusButtonEvent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1016,7 +1186,12 @@ func (p *VirtualDeviceProxy) SendRotaryEncoderScrollEvent(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "sendRotaryEncoderScrollEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "sendRotaryEncoderScrollEvent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1040,7 +1215,12 @@ func (p *VirtualDeviceProxy) GetVirtualSensorList(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "getVirtualSensorList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "getVirtualSensorList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1079,7 +1259,12 @@ func (p *VirtualDeviceProxy) SendSensorEvent(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "sendSensorEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "sendSensorEvent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1112,7 +1297,12 @@ func (p *VirtualDeviceProxy) LaunchPendingIntent(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "launchPendingIntent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "launchPendingIntent")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1134,7 +1324,12 @@ func (p *VirtualDeviceProxy) GetCursorPosition(
 	_data.WriteInterfaceToken(DescriptorIVirtualDevice)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "getCursorPosition"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "getCursorPosition")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1158,7 +1353,12 @@ func (p *VirtualDeviceProxy) SetShowPointerIcon(
 	_data.WriteInterfaceToken(DescriptorIVirtualDevice)
 	_data.WriteBool(showPointerIcon)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "setShowPointerIcon"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "setShowPointerIcon")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1181,7 +1381,12 @@ func (p *VirtualDeviceProxy) SetDisplayImePolicy(
 	_data.WriteInt32(displayId)
 	_data.WriteInt32(policy)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "setDisplayImePolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "setDisplayImePolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1206,7 +1411,12 @@ func (p *VirtualDeviceProxy) RegisterIntentInterceptor(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "registerIntentInterceptor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "registerIntentInterceptor")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1227,7 +1437,12 @@ func (p *VirtualDeviceProxy) UnregisterIntentInterceptor(
 	_data.WriteInterfaceToken(DescriptorIVirtualDevice)
 	_data.WriteStrongBinder(intentInterceptor.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "unregisterIntentInterceptor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "unregisterIntentInterceptor")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1250,7 +1465,12 @@ func (p *VirtualDeviceProxy) RegisterVirtualCamera(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "registerVirtualCamera"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "registerVirtualCamera")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1273,7 +1493,12 @@ func (p *VirtualDeviceProxy) UnregisterVirtualCamera(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "unregisterVirtualCamera"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "unregisterVirtualCamera")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1297,7 +1522,12 @@ func (p *VirtualDeviceProxy) GetVirtualCameraId(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "getVirtualCameraId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "getVirtualCameraId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1324,7 +1554,12 @@ func (p *VirtualDeviceProxy) SetListeners(
 	_data.WriteStrongBinder(activityListener.AsBinder().Handle())
 	_data.WriteStrongBinder(soundEffectListener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDevice, "setListeners"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDevice, "setListeners")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

@@ -52,7 +52,12 @@ func (p *BackAnimationProxy) SetBackToLauncherCallback(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteStrongBinder(runner.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBackAnimation, "setBackToLauncherCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBackAnimation, "setBackToLauncherCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -71,7 +76,12 @@ func (p *BackAnimationProxy) ClearBackToLauncherCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackAnimation)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBackAnimation, "clearBackToLauncherCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBackAnimation, "clearBackToLauncherCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -94,7 +104,12 @@ func (p *BackAnimationProxy) CustomizeStatusBarAppearance(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBackAnimation, "customizeStatusBarAppearance"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBackAnimation, "customizeStatusBarAppearance")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

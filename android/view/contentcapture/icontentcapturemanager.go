@@ -75,7 +75,12 @@ func (p *ContentCaptureManagerProxy) StartSession(
 	_data.WriteInt32(sessionId)
 	_data.WriteInt32(flags)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureManager, "startSession"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureManager, "startSession")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -87,7 +92,12 @@ func (p *ContentCaptureManagerProxy) FinishSession(
 	_data.WriteInterfaceToken(DescriptorIContentCaptureManager)
 	_data.WriteInt32(sessionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureManager, "finishSession"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureManager, "finishSession")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -98,7 +108,12 @@ func (p *ContentCaptureManagerProxy) GetServiceComponentName(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentCaptureManager)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureManager, "getServiceComponentName"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureManager, "getServiceComponentName")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -112,7 +127,12 @@ func (p *ContentCaptureManagerProxy) RemoveData(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureManager, "removeData"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureManager, "removeData")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -128,7 +148,12 @@ func (p *ContentCaptureManagerProxy) ShareData(
 	}
 	_data.WriteStrongBinder(adapter.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureManager, "shareData"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureManager, "shareData")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -139,7 +164,12 @@ func (p *ContentCaptureManagerProxy) IsContentCaptureFeatureEnabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentCaptureManager)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureManager, "isContentCaptureFeatureEnabled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureManager, "isContentCaptureFeatureEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -150,7 +180,12 @@ func (p *ContentCaptureManagerProxy) GetServiceSettingsActivity(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentCaptureManager)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureManager, "getServiceSettingsActivity"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureManager, "getServiceSettingsActivity")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -163,7 +198,12 @@ func (p *ContentCaptureManagerProxy) GetContentCaptureConditions(
 	_data.WriteInterfaceToken(DescriptorIContentCaptureManager)
 	_data.WriteString16(packageName)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureManager, "getContentCaptureConditions"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureManager, "getContentCaptureConditions")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -175,7 +215,12 @@ func (p *ContentCaptureManagerProxy) ResetTemporaryService(
 	_data.WriteInterfaceToken(DescriptorIContentCaptureManager)
 	_data.WriteInt32(userId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureManager, "resetTemporaryService"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureManager, "resetTemporaryService")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -191,7 +236,12 @@ func (p *ContentCaptureManagerProxy) SetTemporaryService(
 	_data.WriteString16(serviceName)
 	_data.WriteInt32(duration)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureManager, "setTemporaryService"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureManager, "setTemporaryService")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -205,7 +255,12 @@ func (p *ContentCaptureManagerProxy) SetDefaultServiceEnabled(
 	_data.WriteInt32(userId)
 	_data.WriteBool(enabled)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureManager, "setDefaultServiceEnabled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureManager, "setDefaultServiceEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -219,7 +274,12 @@ func (p *ContentCaptureManagerProxy) RegisterContentCaptureOptionsCallback(
 	_data.WriteString16(packageName)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureManager, "registerContentCaptureOptionsCallback"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureManager, "registerContentCaptureOptionsCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -230,6 +290,11 @@ func (p *ContentCaptureManagerProxy) OnLoginDetected(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentCaptureManager)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureManager, "onLoginDetected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureManager, "onLoginDetected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

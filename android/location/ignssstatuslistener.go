@@ -47,7 +47,12 @@ func (p *GnssStatusListenerProxy) OnGnssStarted(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGnssStatusListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGnssStatusListener, "onGnssStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGnssStatusListener, "onGnssStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -57,7 +62,12 @@ func (p *GnssStatusListenerProxy) OnGnssStopped(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGnssStatusListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGnssStatusListener, "onGnssStopped"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGnssStatusListener, "onGnssStopped")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -69,7 +79,12 @@ func (p *GnssStatusListenerProxy) OnFirstFix(
 	_data.WriteInterfaceToken(DescriptorIGnssStatusListener)
 	_data.WriteInt32(ttff)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGnssStatusListener, "onFirstFix"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGnssStatusListener, "onFirstFix")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -83,6 +98,11 @@ func (p *GnssStatusListenerProxy) OnSvStatusChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGnssStatusListener, "onSvStatusChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGnssStatusListener, "onSvStatusChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

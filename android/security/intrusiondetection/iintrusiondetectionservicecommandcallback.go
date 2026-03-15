@@ -44,7 +44,12 @@ func (p *IntrusionDetectionServiceCommandCallbackProxy) OnSuccess(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIntrusionDetectionServiceCommandCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIntrusionDetectionServiceCommandCallback, "onSuccess"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIntrusionDetectionServiceCommandCallback, "onSuccess")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -56,6 +61,11 @@ func (p *IntrusionDetectionServiceCommandCallbackProxy) OnFailure(
 	_data.WriteInterfaceToken(DescriptorIIntrusionDetectionServiceCommandCallback)
 	_data.WriteInt32(int32(error_))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIntrusionDetectionServiceCommandCallback, "onFailure"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIntrusionDetectionServiceCommandCallback, "onFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

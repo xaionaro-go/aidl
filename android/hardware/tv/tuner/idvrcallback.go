@@ -45,7 +45,12 @@ func (p *DvrCallbackProxy) OnPlaybackStatus(
 	_data.WriteInterfaceToken(DescriptorIDvrCallback)
 	_data.WriteInt32(int32(status))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDvrCallback, "onPlaybackStatus"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDvrCallback, "onPlaybackStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -57,6 +62,11 @@ func (p *DvrCallbackProxy) OnRecordStatus(
 	_data.WriteInterfaceToken(DescriptorIDvrCallback)
 	_data.WritePaddedByte(byte(status))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDvrCallback, "onRecordStatus"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDvrCallback, "onRecordStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

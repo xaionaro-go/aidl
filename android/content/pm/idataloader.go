@@ -61,7 +61,12 @@ func (p *DataLoaderProxy) Create(
 	}
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDataLoader, "create"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDataLoader, "create")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -73,7 +78,12 @@ func (p *DataLoaderProxy) Start(
 	_data.WriteInterfaceToken(DescriptorIDataLoader)
 	_data.WriteInt32(id)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDataLoader, "start"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDataLoader, "start")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -85,7 +95,12 @@ func (p *DataLoaderProxy) Stop(
 	_data.WriteInterfaceToken(DescriptorIDataLoader)
 	_data.WriteInt32(id)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDataLoader, "stop"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDataLoader, "stop")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -97,7 +112,12 @@ func (p *DataLoaderProxy) Destroy(
 	_data.WriteInterfaceToken(DescriptorIDataLoader)
 	_data.WriteInt32(id)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDataLoader, "destroy"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDataLoader, "destroy")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -129,6 +149,11 @@ func (p *DataLoaderProxy) PrepareImage(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDataLoader, "prepareImage"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDataLoader, "prepareImage")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

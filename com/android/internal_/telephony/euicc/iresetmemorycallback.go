@@ -43,6 +43,11 @@ func (p *ResetMemoryCallbackProxy) OnComplete(
 	_data.WriteInterfaceToken(DescriptorIResetMemoryCallback)
 	_data.WriteInt32(resultCode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIResetMemoryCallback, "onComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIResetMemoryCallback, "onComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

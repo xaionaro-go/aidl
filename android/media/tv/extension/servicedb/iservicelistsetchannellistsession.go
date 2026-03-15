@@ -62,7 +62,12 @@ func (p *ServiceListSetChannelListSessionProxy) SetChannelList(
 	}
 	_data.WriteInt32(optType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceListSetChannelListSession, "setChannelList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceListSetChannelListSession, "setChannelList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -86,7 +91,12 @@ func (p *ServiceListSetChannelListSessionProxy) Release(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIServiceListSetChannelListSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceListSetChannelListSession, "release"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceListSetChannelListSession, "release")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

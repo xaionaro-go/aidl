@@ -43,7 +43,12 @@ func (p *BluetoothMidiServiceProxy) AddBluetoothDevice(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothMidiService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothMidiService, "addBluetoothDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothMidiService, "addBluetoothDevice")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

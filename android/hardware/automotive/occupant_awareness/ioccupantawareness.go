@@ -59,7 +59,12 @@ func (p *OccupantAwarenessProxy) StartDetection(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOccupantAwareness)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOccupantAwareness, "startDetection"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOccupantAwareness, "startDetection")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -84,7 +89,12 @@ func (p *OccupantAwarenessProxy) StopDetection(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOccupantAwareness)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOccupantAwareness, "stopDetection"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOccupantAwareness, "stopDetection")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -111,7 +121,12 @@ func (p *OccupantAwarenessProxy) GetCapabilityForRole(
 	_data.WriteInterfaceToken(DescriptorIOccupantAwareness)
 	_data.WriteInt32(int32(occupantRole))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOccupantAwareness, "getCapabilityForRole"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOccupantAwareness, "getCapabilityForRole")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -139,7 +154,12 @@ func (p *OccupantAwarenessProxy) GetState(
 	_data.WriteInt32(int32(occupantRole))
 	_data.WriteInt32(detectionCapability)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOccupantAwareness, "getState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOccupantAwareness, "getState")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -165,7 +185,12 @@ func (p *OccupantAwarenessProxy) SetCallback(
 	_data.WriteInterfaceToken(DescriptorIOccupantAwareness)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOccupantAwareness, "setCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOccupantAwareness, "setCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -185,7 +210,12 @@ func (p *OccupantAwarenessProxy) GetLatestDetection(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOccupantAwareness)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOccupantAwareness, "getLatestDetection"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOccupantAwareness, "getLatestDetection")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

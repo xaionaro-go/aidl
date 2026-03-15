@@ -50,7 +50,12 @@ func (p *BluetoothChannelSoundingProxy) GetVendorSpecificData(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothChannelSounding)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothChannelSounding, "getVendorSpecificData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothChannelSounding, "getVendorSpecificData")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -83,7 +88,12 @@ func (p *BluetoothChannelSoundingProxy) GetSupportedSessionTypes(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothChannelSounding)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothChannelSounding, "getSupportedSessionTypes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothChannelSounding, "getSupportedSessionTypes")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -118,7 +128,12 @@ func (p *BluetoothChannelSoundingProxy) GetMaxSupportedCsSecurityLevel(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothChannelSounding)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothChannelSounding, "getMaxSupportedCsSecurityLevel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothChannelSounding, "getMaxSupportedCsSecurityLevel")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -149,7 +164,12 @@ func (p *BluetoothChannelSoundingProxy) OpenSession(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothChannelSounding, "openSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothChannelSounding, "openSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -174,7 +194,12 @@ func (p *BluetoothChannelSoundingProxy) GetSupportedCsSecurityLevels(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothChannelSounding)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothChannelSounding, "getSupportedCsSecurityLevels"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothChannelSounding, "getSupportedCsSecurityLevels")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

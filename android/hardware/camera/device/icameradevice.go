@@ -65,7 +65,12 @@ func (p *CameraDeviceProxy) GetCameraCharacteristics(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraDevice, "getCameraCharacteristics"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraDevice, "getCameraCharacteristics")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -90,7 +95,12 @@ func (p *CameraDeviceProxy) GetPhysicalCameraCharacteristics(
 	_data.WriteInterfaceToken(DescriptorICameraDevice)
 	_data.WriteString16(physicalCameraId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraDevice, "getPhysicalCameraCharacteristics"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraDevice, "getPhysicalCameraCharacteristics")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -113,7 +123,12 @@ func (p *CameraDeviceProxy) GetResourceCost(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraDevice, "getResourceCost"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraDevice, "getResourceCost")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -140,7 +155,12 @@ func (p *CameraDeviceProxy) IsStreamCombinationSupported(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraDevice, "isStreamCombinationSupported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraDevice, "isStreamCombinationSupported")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -166,7 +186,12 @@ func (p *CameraDeviceProxy) Open(
 	_data.WriteInterfaceToken(DescriptorICameraDevice)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraDevice, "open"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraDevice, "open")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -193,7 +218,12 @@ func (p *CameraDeviceProxy) OpenInjectionSession(
 	_data.WriteInterfaceToken(DescriptorICameraDevice)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraDevice, "openInjectionSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraDevice, "openInjectionSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -219,7 +249,12 @@ func (p *CameraDeviceProxy) SetTorchMode(
 	_data.WriteInterfaceToken(DescriptorICameraDevice)
 	_data.WriteBool(on)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraDevice, "setTorchMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraDevice, "setTorchMode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -240,7 +275,12 @@ func (p *CameraDeviceProxy) TurnOnTorchWithStrengthLevel(
 	_data.WriteInterfaceToken(DescriptorICameraDevice)
 	_data.WriteInt32(torchStrength)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraDevice, "turnOnTorchWithStrengthLevel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraDevice, "turnOnTorchWithStrengthLevel")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -260,7 +300,12 @@ func (p *CameraDeviceProxy) GetTorchStrengthLevel(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraDevice, "getTorchStrengthLevel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraDevice, "getTorchStrengthLevel")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -286,7 +331,12 @@ func (p *CameraDeviceProxy) ConstructDefaultRequestSettings(
 	_data.WriteInterfaceToken(DescriptorICameraDevice)
 	_data.WriteInt32(int32(type_))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraDevice, "constructDefaultRequestSettings"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraDevice, "constructDefaultRequestSettings")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -313,7 +363,12 @@ func (p *CameraDeviceProxy) IsStreamCombinationWithSettingsSupported(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraDevice, "isStreamCombinationWithSettingsSupported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraDevice, "isStreamCombinationWithSettingsSupported")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -341,7 +396,12 @@ func (p *CameraDeviceProxy) GetSessionCharacteristics(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraDevice, "getSessionCharacteristics"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraDevice, "getSessionCharacteristics")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

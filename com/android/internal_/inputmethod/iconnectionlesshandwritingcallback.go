@@ -44,7 +44,12 @@ func (p *ConnectionlessHandwritingCallbackProxy) OnResult(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIConnectionlessHandwritingCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIConnectionlessHandwritingCallback, "onResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIConnectionlessHandwritingCallback, "onResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -56,6 +61,11 @@ func (p *ConnectionlessHandwritingCallbackProxy) OnError(
 	_data.WriteInterfaceToken(DescriptorIConnectionlessHandwritingCallback)
 	_data.WriteInt32(errorCode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIConnectionlessHandwritingCallback, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIConnectionlessHandwritingCallback, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

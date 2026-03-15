@@ -52,7 +52,12 @@ func (p *CamInfoListenerProxy) OnCamInfoChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICamInfoListener, "onCamInfoChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICamInfoListener, "onCamInfoChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -68,7 +73,12 @@ func (p *CamInfoListenerProxy) OnSlotInfoChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICamInfoListener, "onSlotInfoChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICamInfoListener, "onSlotInfoChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -84,6 +94,11 @@ func (p *CamInfoListenerProxy) OnNewTypeCamInsert(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICamInfoListener, "onNewTypeCamInsert"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICamInfoListener, "onNewTypeCamInsert")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

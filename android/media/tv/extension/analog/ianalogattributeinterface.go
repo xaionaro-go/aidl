@@ -46,7 +46,12 @@ func (p *AnalogAttributeInterfaceProxy) GetVersion(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAnalogAttributeInterface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAnalogAttributeInterface, "getVersion"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAnalogAttributeInterface, "getVersion")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -78,7 +83,12 @@ func (p *AnalogAttributeInterfaceProxy) SetColorSystemCapability(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAnalogAttributeInterface, "setColorSystemCapability"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAnalogAttributeInterface, "setColorSystemCapability")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -98,7 +108,12 @@ func (p *AnalogAttributeInterfaceProxy) GetColorSystemCapability(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAnalogAttributeInterface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAnalogAttributeInterface, "getColorSystemCapability"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAnalogAttributeInterface, "getColorSystemCapability")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

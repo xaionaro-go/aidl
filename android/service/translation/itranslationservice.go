@@ -49,7 +49,12 @@ func (p *TranslationServiceProxy) OnConnected(
 	_data.WriteInterfaceToken(DescriptorITranslationService)
 	_data.WriteStrongBinder(callback.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITranslationService, "onConnected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITranslationService, "onConnected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -59,7 +64,12 @@ func (p *TranslationServiceProxy) OnDisconnected(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationService)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITranslationService, "onDisconnected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITranslationService, "onDisconnected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -73,7 +83,12 @@ func (p *TranslationServiceProxy) OnCreateTranslationSession(
 	_data.WriteInterfaceToken(DescriptorITranslationService)
 	_data.WriteInt32(sessionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITranslationService, "onCreateTranslationSession"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITranslationService, "onCreateTranslationSession")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -88,6 +103,11 @@ func (p *TranslationServiceProxy) OnTranslationCapabilitiesRequest(
 	_data.WriteInt32(sourceFormat)
 	_data.WriteInt32(targetFormat)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITranslationService, "onTranslationCapabilitiesRequest"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITranslationService, "onTranslationCapabilitiesRequest")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

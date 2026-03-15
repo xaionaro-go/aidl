@@ -47,7 +47,12 @@ func (p *LogAccessDialogCallbackProxy) ApproveAccessForClient(
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILogAccessDialogCallback, "approveAccessForClient"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILogAccessDialogCallback, "approveAccessForClient")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -61,6 +66,11 @@ func (p *LogAccessDialogCallbackProxy) DeclineAccessForClient(
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILogAccessDialogCallback, "declineAccessForClient"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILogAccessDialogCallback, "declineAccessForClient")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

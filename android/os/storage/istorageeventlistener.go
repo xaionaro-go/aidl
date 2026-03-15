@@ -55,7 +55,12 @@ func (p *StorageEventListenerProxy) OnUsbMassStorageConnectionChanged(
 	_data.WriteInterfaceToken(DescriptorIStorageEventListener)
 	_data.WriteBool(connected)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageEventListener, "onUsbMassStorageConnectionChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageEventListener, "onUsbMassStorageConnectionChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -71,7 +76,12 @@ func (p *StorageEventListenerProxy) OnStorageStateChanged(
 	_data.WriteString16(oldState)
 	_data.WriteString16(newState)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageEventListener, "onStorageStateChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageEventListener, "onStorageStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -89,7 +99,12 @@ func (p *StorageEventListenerProxy) OnVolumeStateChanged(
 	_data.WriteInt32(oldState)
 	_data.WriteInt32(newState)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageEventListener, "onVolumeStateChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageEventListener, "onVolumeStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -103,7 +118,12 @@ func (p *StorageEventListenerProxy) OnVolumeRecordChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageEventListener, "onVolumeRecordChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageEventListener, "onVolumeRecordChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -115,7 +135,12 @@ func (p *StorageEventListenerProxy) OnVolumeForgotten(
 	_data.WriteInterfaceToken(DescriptorIStorageEventListener)
 	_data.WriteString16(fsUuid)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageEventListener, "onVolumeForgotten"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageEventListener, "onVolumeForgotten")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -131,7 +156,12 @@ func (p *StorageEventListenerProxy) OnDiskScanned(
 	}
 	_data.WriteInt32(volumeCount)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageEventListener, "onDiskScanned"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageEventListener, "onDiskScanned")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -145,6 +175,11 @@ func (p *StorageEventListenerProxy) OnDiskDestroyed(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageEventListener, "onDiskDestroyed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageEventListener, "onDiskDestroyed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -43,6 +43,11 @@ func (p *TunnelModeEnabledListenerProxy) OnTunnelModeEnabledChanged(
 	_data.WriteInterfaceToken(DescriptorITunnelModeEnabledListener)
 	_data.WriteBool(enabled)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunnelModeEnabledListener, "onTunnelModeEnabledChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunnelModeEnabledListener, "onTunnelModeEnabledChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

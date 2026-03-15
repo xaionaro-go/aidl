@@ -63,7 +63,12 @@ func (p *InlineSuggestionRenderServiceProxy) RenderSuggestion(
 	_data.WriteInt32(userId)
 	_data.WriteInt32(sessionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInlineSuggestionRenderService, "renderSuggestion"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInlineSuggestionRenderService, "renderSuggestion")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -74,7 +79,12 @@ func (p *InlineSuggestionRenderServiceProxy) GetInlineSuggestionsRendererInfo(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInlineSuggestionRenderService)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInlineSuggestionRenderService, "getInlineSuggestionsRendererInfo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInlineSuggestionRenderService, "getInlineSuggestionsRendererInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -88,6 +98,11 @@ func (p *InlineSuggestionRenderServiceProxy) DestroySuggestionViews(
 	_data.WriteInt32(userId)
 	_data.WriteInt32(sessionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInlineSuggestionRenderService, "destroySuggestionViews"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInlineSuggestionRenderService, "destroySuggestionViews")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

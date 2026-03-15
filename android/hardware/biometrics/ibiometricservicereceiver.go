@@ -53,7 +53,12 @@ func (p *BiometricServiceReceiverProxy) OnAuthenticationSucceeded(
 	_data.WriteInterfaceToken(DescriptorIBiometricServiceReceiver)
 	_data.WriteInt32(authenticationType)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBiometricServiceReceiver, "onAuthenticationSucceeded"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBiometricServiceReceiver, "onAuthenticationSucceeded")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -63,7 +68,12 @@ func (p *BiometricServiceReceiverProxy) OnAuthenticationFailed(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricServiceReceiver)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBiometricServiceReceiver, "onAuthenticationFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBiometricServiceReceiver, "onAuthenticationFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -79,7 +89,12 @@ func (p *BiometricServiceReceiverProxy) OnError(
 	_data.WriteInt32(error_)
 	_data.WriteInt32(vendorCode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBiometricServiceReceiver, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBiometricServiceReceiver, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -93,7 +108,12 @@ func (p *BiometricServiceReceiverProxy) OnAcquired(
 	_data.WriteInt32(acquiredInfo)
 	_data.WriteString16(message)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBiometricServiceReceiver, "onAcquired"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBiometricServiceReceiver, "onAcquired")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -105,7 +125,12 @@ func (p *BiometricServiceReceiverProxy) OnDialogDismissed(
 	_data.WriteInterfaceToken(DescriptorIBiometricServiceReceiver)
 	_data.WriteInt32(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBiometricServiceReceiver, "onDialogDismissed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBiometricServiceReceiver, "onDialogDismissed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -117,6 +142,11 @@ func (p *BiometricServiceReceiverProxy) OnSystemEvent(
 	_data.WriteInterfaceToken(DescriptorIBiometricServiceReceiver)
 	_data.WriteInt32(event)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBiometricServiceReceiver, "onSystemEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBiometricServiceReceiver, "onSystemEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

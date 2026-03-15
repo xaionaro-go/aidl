@@ -68,7 +68,12 @@ func (p *UsbCallbackProxy) NotifyPortStatusChange(
 	}
 	_data.WriteInt32(int32(retval))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsbCallback, "notifyPortStatusChange"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsbCallback, "notifyPortStatusChange")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -88,7 +93,12 @@ func (p *UsbCallbackProxy) NotifyRoleSwitchStatus(
 	_data.WriteInt32(int32(retval))
 	_data.WriteInt64(transactionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsbCallback, "notifyRoleSwitchStatus"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsbCallback, "notifyRoleSwitchStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -106,7 +116,12 @@ func (p *UsbCallbackProxy) NotifyEnableUsbDataStatus(
 	_data.WriteInt32(int32(retval))
 	_data.WriteInt64(transactionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsbCallback, "notifyEnableUsbDataStatus"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsbCallback, "notifyEnableUsbDataStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -122,7 +137,12 @@ func (p *UsbCallbackProxy) NotifyEnableUsbDataWhileDockedStatus(
 	_data.WriteInt32(int32(retval))
 	_data.WriteInt64(transactionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsbCallback, "notifyEnableUsbDataWhileDockedStatus"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsbCallback, "notifyEnableUsbDataWhileDockedStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -140,7 +160,12 @@ func (p *UsbCallbackProxy) NotifyContaminantEnabledStatus(
 	_data.WriteInt32(int32(retval))
 	_data.WriteInt64(transactionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsbCallback, "notifyContaminantEnabledStatus"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsbCallback, "notifyContaminantEnabledStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -156,7 +181,12 @@ func (p *UsbCallbackProxy) NotifyQueryPortStatus(
 	_data.WriteInt32(int32(retval))
 	_data.WriteInt64(transactionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsbCallback, "notifyQueryPortStatus"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsbCallback, "notifyQueryPortStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -174,7 +204,12 @@ func (p *UsbCallbackProxy) NotifyLimitPowerTransferStatus(
 	_data.WriteInt32(int32(retval))
 	_data.WriteInt64(transactionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsbCallback, "notifyLimitPowerTransferStatus"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsbCallback, "notifyLimitPowerTransferStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -190,6 +225,11 @@ func (p *UsbCallbackProxy) NotifyResetUsbPortStatus(
 	_data.WriteInt32(int32(retval))
 	_data.WriteInt64(transactionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUsbCallback, "notifyResetUsbPortStatus"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUsbCallback, "notifyResetUsbPortStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

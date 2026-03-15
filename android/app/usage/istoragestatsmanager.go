@@ -71,7 +71,12 @@ func (p *StorageStatsManagerProxy) IsQuotaSupported(
 	_data.WriteString16(volumeUuid)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageStatsManager, "isQuotaSupported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageStatsManager, "isQuotaSupported")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -99,7 +104,12 @@ func (p *StorageStatsManagerProxy) IsReservedSupported(
 	_data.WriteString16(volumeUuid)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageStatsManager, "isReservedSupported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageStatsManager, "isReservedSupported")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -127,7 +137,12 @@ func (p *StorageStatsManagerProxy) GetTotalBytes(
 	_data.WriteString16(volumeUuid)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageStatsManager, "getTotalBytes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageStatsManager, "getTotalBytes")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -155,7 +170,12 @@ func (p *StorageStatsManagerProxy) GetFreeBytes(
 	_data.WriteString16(volumeUuid)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageStatsManager, "getFreeBytes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageStatsManager, "getFreeBytes")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -183,7 +203,12 @@ func (p *StorageStatsManagerProxy) GetCacheBytes(
 	_data.WriteString16(volumeUuid)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageStatsManager, "getCacheBytes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageStatsManager, "getCacheBytes")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -213,7 +238,12 @@ func (p *StorageStatsManagerProxy) GetCacheQuotaBytes(
 	_data.WriteInt32(uid)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageStatsManager, "getCacheQuotaBytes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageStatsManager, "getCacheQuotaBytes")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -245,7 +275,12 @@ func (p *StorageStatsManagerProxy) QueryStatsForPackage(
 	_data.WriteInt32(userId)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageStatsManager, "queryStatsForPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageStatsManager, "queryStatsForPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -274,7 +309,12 @@ func (p *StorageStatsManagerProxy) QueryStatsForUid(
 	_data.WriteInt32(uid)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageStatsManager, "queryStatsForUid"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageStatsManager, "queryStatsForUid")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -303,7 +343,12 @@ func (p *StorageStatsManagerProxy) QueryStatsForUser(
 	_data.WriteInt32(userId)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageStatsManager, "queryStatsForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageStatsManager, "queryStatsForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -332,7 +377,12 @@ func (p *StorageStatsManagerProxy) QueryExternalStatsForUser(
 	_data.WriteInt32(userId)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageStatsManager, "queryExternalStatsForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageStatsManager, "queryExternalStatsForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -363,7 +413,12 @@ func (p *StorageStatsManagerProxy) QueryCratesForPackage(
 	_data.WriteInt32(userId)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageStatsManager, "queryCratesForPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageStatsManager, "queryCratesForPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -392,7 +447,12 @@ func (p *StorageStatsManagerProxy) QueryCratesForUid(
 	_data.WriteInt32(uid)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageStatsManager, "queryCratesForUid"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageStatsManager, "queryCratesForUid")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -421,7 +481,12 @@ func (p *StorageStatsManagerProxy) QueryCratesForUser(
 	_data.WriteInt32(userId)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageStatsManager, "queryCratesForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageStatsManager, "queryCratesForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

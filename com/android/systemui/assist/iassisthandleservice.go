@@ -41,6 +41,11 @@ func (p *AssistHandleServiceProxy) RequestAssistHandles(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAssistHandleService)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAssistHandleService, "requestAssistHandles"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAssistHandleService, "requestAssistHandles")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

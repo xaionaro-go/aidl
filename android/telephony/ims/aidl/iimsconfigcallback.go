@@ -47,7 +47,12 @@ func (p *ImsConfigCallbackProxy) OnIntConfigChanged(
 	_data.WriteInt32(item)
 	_data.WriteInt32(value)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsConfigCallback, "onIntConfigChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsConfigCallback, "onIntConfigChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -61,6 +66,11 @@ func (p *ImsConfigCallbackProxy) OnStringConfigChanged(
 	_data.WriteInt32(item)
 	_data.WriteString16(value)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsConfigCallback, "onStringConfigChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsConfigCallback, "onStringConfigChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

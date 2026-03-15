@@ -52,6 +52,11 @@ func (p *StorageHealthListenerProxy) OnHealthStatus(
 	_data.WriteInt32(storageId)
 	_data.WriteInt32(status)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageHealthListener, "onHealthStatus"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageHealthListener, "onHealthStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

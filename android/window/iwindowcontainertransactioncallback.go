@@ -44,6 +44,11 @@ func (p *WindowContainerTransactionCallbackProxy) OnTransactionReady(
 	_data.WriteInterfaceToken(DescriptorIWindowContainerTransactionCallback)
 	_data.WriteInt32(id)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindowContainerTransactionCallback, "onTransactionReady"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindowContainerTransactionCallback, "onTransactionReady")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

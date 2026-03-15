@@ -153,7 +153,12 @@ func (p *VoiceInteractionManagerServiceProxy) ShowSession(
 	_data.WriteInt32(flags)
 	_data.WriteString16(attributionTag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "showSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "showSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -178,7 +183,12 @@ func (p *VoiceInteractionManagerServiceProxy) DeliverNewSession(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteStrongBinder(interactor.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "deliverNewSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "deliverNewSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -209,7 +219,12 @@ func (p *VoiceInteractionManagerServiceProxy) ShowSessionFromSession(
 	_data.WriteInt32(flags)
 	_data.WriteString16(attributionTag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "showSessionFromSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "showSessionFromSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -235,7 +250,12 @@ func (p *VoiceInteractionManagerServiceProxy) HideSessionFromSession(
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "hideSessionFromSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "hideSessionFromSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -266,7 +286,12 @@ func (p *VoiceInteractionManagerServiceProxy) StartVoiceActivity(
 	_data.WriteString16(resolvedType)
 	_data.WriteString16(attributionTag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "startVoiceActivity"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "startVoiceActivity")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -298,7 +323,12 @@ func (p *VoiceInteractionManagerServiceProxy) StartAssistantActivity(
 	_data.WriteString16(resolvedType)
 	_data.WriteString16(attributionTag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "startAssistantActivity"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "startAssistantActivity")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -325,7 +355,12 @@ func (p *VoiceInteractionManagerServiceProxy) SetKeepAwake(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteBool(keepAwake)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "setKeepAwake"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "setKeepAwake")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -346,7 +381,12 @@ func (p *VoiceInteractionManagerServiceProxy) CloseSystemDialogs(
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "closeSystemDialogs"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "closeSystemDialogs")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -367,7 +407,12 @@ func (p *VoiceInteractionManagerServiceProxy) Finish(
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "finish"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "finish")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -388,7 +433,12 @@ func (p *VoiceInteractionManagerServiceProxy) SetDisabledShowContext(
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteInt32(flags)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "setDisabledShowContext"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "setDisabledShowContext")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -408,7 +458,12 @@ func (p *VoiceInteractionManagerServiceProxy) GetDisabledShowContext(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "getDisabledShowContext"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "getDisabledShowContext")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -432,7 +487,12 @@ func (p *VoiceInteractionManagerServiceProxy) GetUserDisabledShowContext(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "getUserDisabledShowContext"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "getUserDisabledShowContext")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -460,7 +520,12 @@ func (p *VoiceInteractionManagerServiceProxy) GetKeyphraseSoundModel(
 	_data.WriteInt32(keyphraseId)
 	_data.WriteString16(bcp47Locale)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "getKeyphraseSoundModel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "getKeyphraseSoundModel")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -487,7 +552,12 @@ func (p *VoiceInteractionManagerServiceProxy) UpdateKeyphraseSoundModel(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "updateKeyphraseSoundModel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "updateKeyphraseSoundModel")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -515,7 +585,12 @@ func (p *VoiceInteractionManagerServiceProxy) DeleteKeyphraseSoundModel(
 	_data.WriteInt32(keyphraseId)
 	_data.WriteString16(bcp47Locale)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "deleteKeyphraseSoundModel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "deleteKeyphraseSoundModel")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -542,7 +617,12 @@ func (p *VoiceInteractionManagerServiceProxy) SetModelDatabaseForTestEnabled(
 	_data.WriteBool(enabled)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "setModelDatabaseForTestEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "setModelDatabaseForTestEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -566,7 +646,12 @@ func (p *VoiceInteractionManagerServiceProxy) IsEnrolledForKeyphrase(
 	_data.WriteInt32(keyphraseId)
 	_data.WriteString16(bcp47Locale)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "isEnrolledForKeyphrase"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "isEnrolledForKeyphrase")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -594,7 +679,12 @@ func (p *VoiceInteractionManagerServiceProxy) GetEnrolledKeyphraseMetadata(
 	_data.WriteString16(keyphrase)
 	_data.WriteString16(bcp47Locale)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "getEnrolledKeyphraseMetadata"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "getEnrolledKeyphraseMetadata")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -617,7 +707,12 @@ func (p *VoiceInteractionManagerServiceProxy) GetActiveServiceComponentName(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "getActiveServiceComponentName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "getActiveServiceComponentName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -646,7 +741,12 @@ func (p *VoiceInteractionManagerServiceProxy) ShowSessionForActiveService(
 	_data.WriteStrongBinder(showCallback.AsBinder().Handle())
 	_data.WriteStrongBinder(activityToken.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "showSessionForActiveService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "showSessionForActiveService")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -669,7 +769,12 @@ func (p *VoiceInteractionManagerServiceProxy) HideCurrentSession(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "hideCurrentSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "hideCurrentSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -688,7 +793,12 @@ func (p *VoiceInteractionManagerServiceProxy) LaunchVoiceAssistFromKeyguard(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "launchVoiceAssistFromKeyguard"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "launchVoiceAssistFromKeyguard")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -708,7 +818,12 @@ func (p *VoiceInteractionManagerServiceProxy) IsSessionRunning(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "isSessionRunning"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "isSessionRunning")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -732,7 +847,12 @@ func (p *VoiceInteractionManagerServiceProxy) ActiveServiceSupportsAssist(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "activeServiceSupportsAssist"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "activeServiceSupportsAssist")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -756,7 +876,12 @@ func (p *VoiceInteractionManagerServiceProxy) ActiveServiceSupportsLaunchFromKey
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "activeServiceSupportsLaunchFromKeyguard"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "activeServiceSupportsLaunchFromKeyguard")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -779,7 +904,12 @@ func (p *VoiceInteractionManagerServiceProxy) OnLockscreenShown(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "onLockscreenShown"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "onLockscreenShown")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -800,7 +930,12 @@ func (p *VoiceInteractionManagerServiceProxy) RegisterVoiceInteractionSessionLis
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "registerVoiceInteractionSessionListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "registerVoiceInteractionSessionListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -830,7 +965,12 @@ func (p *VoiceInteractionManagerServiceProxy) GetActiveServiceSupportedActions(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "getActiveServiceSupportedActions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "getActiveServiceSupportedActions")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -850,7 +990,12 @@ func (p *VoiceInteractionManagerServiceProxy) SetUiHints(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "setUiHints"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "setUiHints")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -877,7 +1022,12 @@ func (p *VoiceInteractionManagerServiceProxy) RequestDirectActions(
 	_data.WriteInt32(taskId)
 	_data.WriteStrongBinder(assistToken.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "requestDirectActions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "requestDirectActions")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -907,7 +1057,12 @@ func (p *VoiceInteractionManagerServiceProxy) PerformDirectAction(
 	_data.WriteInt32(taskId)
 	_data.WriteStrongBinder(assistToken.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "performDirectAction"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "performDirectAction")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -928,7 +1083,12 @@ func (p *VoiceInteractionManagerServiceProxy) SetDisabled(
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteBool(disabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "setDisabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "setDisabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -955,7 +1115,12 @@ func (p *VoiceInteractionManagerServiceProxy) CreateSoundTriggerSessionAsOrigina
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "createSoundTriggerSessionAsOriginator"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "createSoundTriggerSessionAsOriginator")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -981,7 +1146,12 @@ func (p *VoiceInteractionManagerServiceProxy) ListModuleProperties(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "listModuleProperties"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "listModuleProperties")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1017,7 +1187,12 @@ func (p *VoiceInteractionManagerServiceProxy) UpdateState(
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "updateState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "updateState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1045,7 +1220,12 @@ func (p *VoiceInteractionManagerServiceProxy) InitAndVerifyDetector(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteInt32(detectorType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "initAndVerifyDetector"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "initAndVerifyDetector")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1066,7 +1246,12 @@ func (p *VoiceInteractionManagerServiceProxy) DestroyDetector(
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "destroyDetector"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "destroyDetector")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1085,7 +1270,12 @@ func (p *VoiceInteractionManagerServiceProxy) ShutdownHotwordDetectionService(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "shutdownHotwordDetectionService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "shutdownHotwordDetectionService")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1106,7 +1296,12 @@ func (p *VoiceInteractionManagerServiceProxy) SubscribeVisualQueryRecognitionSta
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "subscribeVisualQueryRecognitionStatus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "subscribeVisualQueryRecognitionStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1127,7 +1322,12 @@ func (p *VoiceInteractionManagerServiceProxy) EnableVisualQueryDetection(
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteStrongBinder(Listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "enableVisualQueryDetection"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "enableVisualQueryDetection")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1146,7 +1346,12 @@ func (p *VoiceInteractionManagerServiceProxy) DisableVisualQueryDetection(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "disableVisualQueryDetection"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "disableVisualQueryDetection")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1166,7 +1371,12 @@ func (p *VoiceInteractionManagerServiceProxy) StartPerceiving(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "startPerceiving"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "startPerceiving")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1185,7 +1395,12 @@ func (p *VoiceInteractionManagerServiceProxy) StopPerceiving(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "stopPerceiving"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "stopPerceiving")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1206,7 +1421,12 @@ func (p *VoiceInteractionManagerServiceProxy) StartListeningFromMic(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "startListeningFromMic"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "startListeningFromMic")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1225,7 +1445,12 @@ func (p *VoiceInteractionManagerServiceProxy) StopListeningFromMic(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "stopListeningFromMic"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "stopListeningFromMic")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1251,7 +1476,12 @@ func (p *VoiceInteractionManagerServiceProxy) StartListeningFromExternalSource(
 	_data.WriteFileDescriptor(audioStream)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "startListeningFromExternalSource"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "startListeningFromExternalSource")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1276,7 +1506,12 @@ func (p *VoiceInteractionManagerServiceProxy) TriggerHardwareRecognitionEventFor
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "triggerHardwareRecognitionEventForTest"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "triggerHardwareRecognitionEventForTest")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1297,7 +1532,12 @@ func (p *VoiceInteractionManagerServiceProxy) StartListeningVisibleActivityChang
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "startListeningVisibleActivityChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "startListeningVisibleActivityChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1318,7 +1558,12 @@ func (p *VoiceInteractionManagerServiceProxy) StopListeningVisibleActivityChange
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "stopListeningVisibleActivityChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "stopListeningVisibleActivityChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1341,7 +1586,12 @@ func (p *VoiceInteractionManagerServiceProxy) SetSessionWindowVisible(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteBool(visible)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "setSessionWindowVisible"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "setSessionWindowVisible")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1364,7 +1614,12 @@ func (p *VoiceInteractionManagerServiceProxy) NotifyActivityEventChanged(
 	_data.WriteStrongBinder(activityToken.Handle())
 	_data.WriteInt32(type_)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "notifyActivityEventChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "notifyActivityEventChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1375,7 +1630,12 @@ func (p *VoiceInteractionManagerServiceProxy) GetAccessibilityDetectionEnabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "getAccessibilityDetectionEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "getAccessibilityDetectionEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1400,7 +1660,12 @@ func (p *VoiceInteractionManagerServiceProxy) RegisterAccessibilityDetectionSett
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "registerAccessibilityDetectionSettingsListener"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "registerAccessibilityDetectionSettingsListener")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1412,6 +1677,11 @@ func (p *VoiceInteractionManagerServiceProxy) UnregisterAccessibilityDetectionSe
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "unregisterAccessibilityDetectionSettingsListener"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "unregisterAccessibilityDetectionSettingsListener")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -50,6 +50,11 @@ func (p *ThreadChipCallbackProxy) OnReceiveSpinelFrame(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIThreadChipCallback, "onReceiveSpinelFrame"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIThreadChipCallback, "onReceiveSpinelFrame")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

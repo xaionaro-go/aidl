@@ -58,7 +58,12 @@ func (p *ImsRegistrationProxy) GetRegistrationTechnology(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRegistration)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistration, "getRegistrationTechnology"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistration, "getRegistrationTechnology")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -83,7 +88,12 @@ func (p *ImsRegistrationProxy) AddRegistrationCallback(
 	_data.WriteInterfaceToken(DescriptorIImsRegistration)
 	_data.WriteStrongBinder(c.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistration, "addRegistrationCallback"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistration, "addRegistrationCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -95,7 +105,12 @@ func (p *ImsRegistrationProxy) RemoveRegistrationCallback(
 	_data.WriteInterfaceToken(DescriptorIImsRegistration)
 	_data.WriteStrongBinder(c.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistration, "removeRegistrationCallback"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistration, "removeRegistrationCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -107,7 +122,12 @@ func (p *ImsRegistrationProxy) AddEmergencyRegistrationCallback(
 	_data.WriteInterfaceToken(DescriptorIImsRegistration)
 	_data.WriteStrongBinder(c.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistration, "addEmergencyRegistrationCallback"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistration, "addEmergencyRegistrationCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -119,7 +139,12 @@ func (p *ImsRegistrationProxy) RemoveEmergencyRegistrationCallback(
 	_data.WriteInterfaceToken(DescriptorIImsRegistration)
 	_data.WriteStrongBinder(c.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistration, "removeEmergencyRegistrationCallback"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistration, "removeEmergencyRegistrationCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -133,7 +158,12 @@ func (p *ImsRegistrationProxy) TriggerFullNetworkRegistration(
 	_data.WriteInt32(sipCode)
 	_data.WriteString16(sipReason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistration, "triggerFullNetworkRegistration"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistration, "triggerFullNetworkRegistration")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -143,7 +173,12 @@ func (p *ImsRegistrationProxy) TriggerUpdateSipDelegateRegistration(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRegistration)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistration, "triggerUpdateSipDelegateRegistration"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistration, "triggerUpdateSipDelegateRegistration")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -153,7 +188,12 @@ func (p *ImsRegistrationProxy) TriggerSipDelegateDeregistration(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRegistration)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistration, "triggerSipDelegateDeregistration"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistration, "triggerSipDelegateDeregistration")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -165,6 +205,11 @@ func (p *ImsRegistrationProxy) TriggerDeregistration(
 	_data.WriteInterfaceToken(DescriptorIImsRegistration)
 	_data.WriteInt32(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistration, "triggerDeregistration"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistration, "triggerDeregistration")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

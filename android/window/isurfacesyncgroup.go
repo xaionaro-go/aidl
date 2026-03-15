@@ -48,7 +48,12 @@ func (p *SurfaceSyncGroupProxy) OnAddedToSyncGroup(
 	_data.WriteStrongBinder(parentSyncGroupToken.Handle())
 	_data.WriteBool(parentSyncGroupMerge)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISurfaceSyncGroup, "onAddedToSyncGroup"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISurfaceSyncGroup, "onAddedToSyncGroup")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -76,7 +81,12 @@ func (p *SurfaceSyncGroupProxy) AddToSync(
 	_data.WriteStrongBinder(surfaceSyncGroup.AsBinder().Handle())
 	_data.WriteBool(parentSyncGroupMerge)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISurfaceSyncGroup, "addToSync"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISurfaceSyncGroup, "addToSync")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

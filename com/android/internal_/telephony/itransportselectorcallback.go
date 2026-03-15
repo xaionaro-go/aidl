@@ -49,7 +49,12 @@ func (p *TransportSelectorCallbackProxy) OnCreated(
 	_data.WriteInterfaceToken(DescriptorITransportSelectorCallback)
 	_data.WriteStrongBinder(selector.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITransportSelectorCallback, "onCreated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITransportSelectorCallback, "onCreated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -61,7 +66,12 @@ func (p *TransportSelectorCallbackProxy) OnWlanSelected(
 	_data.WriteInterfaceToken(DescriptorITransportSelectorCallback)
 	_data.WriteBool(useEmergencyPdn)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITransportSelectorCallback, "onWlanSelected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITransportSelectorCallback, "onWlanSelected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -73,7 +83,12 @@ func (p *TransportSelectorCallbackProxy) OnWwanSelectedAsync(
 	_data.WriteInterfaceToken(DescriptorITransportSelectorCallback)
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITransportSelectorCallback, "onWwanSelectedAsync"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITransportSelectorCallback, "onWwanSelectedAsync")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -85,6 +100,11 @@ func (p *TransportSelectorCallbackProxy) OnSelectionTerminated(
 	_data.WriteInterfaceToken(DescriptorITransportSelectorCallback)
 	_data.WriteInt32(cause)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITransportSelectorCallback, "onSelectionTerminated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITransportSelectorCallback, "onSelectionTerminated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

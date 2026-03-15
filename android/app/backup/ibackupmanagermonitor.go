@@ -42,6 +42,11 @@ func (p *BackupManagerMonitorProxy) OnEvent(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupManagerMonitor)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBackupManagerMonitor, "onEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBackupManagerMonitor, "onEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

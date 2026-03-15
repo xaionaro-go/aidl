@@ -51,7 +51,12 @@ func (p *ServiceListExportSessionProxy) ExportServiceList(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceListExportSession, "exportServiceList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceListExportSession, "exportServiceList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -75,7 +80,12 @@ func (p *ServiceListExportSessionProxy) Release(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIServiceListExportSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceListExportSession, "release"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceListExportSession, "release")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

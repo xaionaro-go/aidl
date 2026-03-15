@@ -62,7 +62,12 @@ func (p *ImsRcsFeatureProxy) QueryCapabilityStatus(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsFeature)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRcsFeature, "queryCapabilityStatus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "queryCapabilityStatus")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -86,7 +91,12 @@ func (p *ImsRcsFeatureProxy) GetFeatureState(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsFeature)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRcsFeature, "getFeatureState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "getFeatureState")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -111,7 +121,12 @@ func (p *ImsRcsFeatureProxy) AddCapabilityCallback(
 	_data.WriteInterfaceToken(DescriptorIImsRcsFeature)
 	_data.WriteStrongBinder(c.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRcsFeature, "addCapabilityCallback"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "addCapabilityCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -123,7 +138,12 @@ func (p *ImsRcsFeatureProxy) RemoveCapabilityCallback(
 	_data.WriteInterfaceToken(DescriptorIImsRcsFeature)
 	_data.WriteStrongBinder(c.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRcsFeature, "removeCapabilityCallback"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "removeCapabilityCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -139,7 +159,12 @@ func (p *ImsRcsFeatureProxy) ChangeCapabilitiesConfiguration(
 	}
 	_data.WriteStrongBinder(c.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRcsFeature, "changeCapabilitiesConfiguration"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "changeCapabilitiesConfiguration")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -155,7 +180,12 @@ func (p *ImsRcsFeatureProxy) QueryCapabilityConfiguration(
 	_data.WriteInt32(radioTech)
 	_data.WriteStrongBinder(c.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRcsFeature, "queryCapabilityConfiguration"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "queryCapabilityConfiguration")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -167,7 +197,12 @@ func (p *ImsRcsFeatureProxy) SetCapabilityExchangeEventListener(
 	_data.WriteInterfaceToken(DescriptorIImsRcsFeature)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRcsFeature, "setCapabilityExchangeEventListener"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "setCapabilityExchangeEventListener")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -181,7 +216,12 @@ func (p *ImsRcsFeatureProxy) PublishCapabilities(
 	_data.WriteString16(pidfXml)
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRcsFeature, "publishCapabilities"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "publishCapabilities")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -204,7 +244,12 @@ func (p *ImsRcsFeatureProxy) SubscribeForCapabilities(
 	}
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRcsFeature, "subscribeForCapabilities"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "subscribeForCapabilities")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -229,6 +274,11 @@ func (p *ImsRcsFeatureProxy) SendOptionsCapabilityRequest(
 	}
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRcsFeature, "sendOptionsCapabilityRequest"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "sendOptionsCapabilityRequest")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

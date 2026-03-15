@@ -47,6 +47,11 @@ func (p *SensitiveContentProtectionManagerProxy) SetSensitiveContentProtection(
 	_data.WriteString16(packageName)
 	_data.WriteBool(isShowingSensitiveContent)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISensitiveContentProtectionManager, "setSensitiveContentProtection"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISensitiveContentProtectionManager, "setSensitiveContentProtection")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

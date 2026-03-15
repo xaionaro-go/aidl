@@ -53,7 +53,12 @@ func (p *DataVerifyProxy) VerifyData(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDataVerify, "verifyData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDataVerify, "verifyData")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -76,7 +81,12 @@ func (p *DataVerifyProxy) ResetData(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDataVerify)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDataVerify, "resetData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDataVerify, "resetData")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

@@ -47,7 +47,12 @@ func (p *DragAndDropPermissionsProxy) Take(
 	_data.WriteInterfaceToken(DescriptorIDragAndDropPermissions)
 	_data.WriteStrongBinder(activityToken.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDragAndDropPermissions, "take"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDragAndDropPermissions, "take")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -66,7 +71,12 @@ func (p *DragAndDropPermissionsProxy) TakeTransient(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDragAndDropPermissions)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDragAndDropPermissions, "takeTransient"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDragAndDropPermissions, "takeTransient")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -85,7 +95,12 @@ func (p *DragAndDropPermissionsProxy) Release(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDragAndDropPermissions)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDragAndDropPermissions, "release"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDragAndDropPermissions, "release")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

@@ -68,7 +68,12 @@ func (p *DesktopModeProxy) ShowDesktopApps(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDesktopMode, "showDesktopApps"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDesktopMode, "showDesktopApps")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -89,7 +94,12 @@ func (p *DesktopModeProxy) StashDesktopApps(
 	_data.WriteInterfaceToken(DescriptorIDesktopMode)
 	_data.WriteInt32(displayId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDesktopMode, "stashDesktopApps"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDesktopMode, "stashDesktopApps")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -110,7 +120,12 @@ func (p *DesktopModeProxy) HideStashedDesktopApps(
 	_data.WriteInterfaceToken(DescriptorIDesktopMode)
 	_data.WriteInt32(displayId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDesktopMode, "hideStashedDesktopApps"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDesktopMode, "hideStashedDesktopApps")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -139,7 +154,12 @@ func (p *DesktopModeProxy) ShowDesktopApp(
 		_data.WriteInt32(-1)
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDesktopMode, "showDesktopApp"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDesktopMode, "showDesktopApp")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -152,7 +172,12 @@ func (p *DesktopModeProxy) GetVisibleTaskCount(
 	_data.WriteInterfaceToken(DescriptorIDesktopMode)
 	_data.WriteInt32(displayId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDesktopMode, "getVisibleTaskCount"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDesktopMode, "getVisibleTaskCount")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -179,7 +204,12 @@ func (p *DesktopModeProxy) OnDesktopSplitSelectAnimComplete(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDesktopMode, "onDesktopSplitSelectAnimComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDesktopMode, "onDesktopSplitSelectAnimComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -191,7 +221,12 @@ func (p *DesktopModeProxy) SetTaskListener(
 	_data.WriteInterfaceToken(DescriptorIDesktopMode)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDesktopMode, "setTaskListener"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDesktopMode, "setTaskListener")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -215,7 +250,12 @@ func (p *DesktopModeProxy) MoveToDesktop(
 		_data.WriteInt32(-1)
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDesktopMode, "moveToDesktop"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDesktopMode, "moveToDesktop")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -236,7 +276,12 @@ func (p *DesktopModeProxy) RemoveDesktop(
 	_data.WriteInterfaceToken(DescriptorIDesktopMode)
 	_data.WriteInt32(displayId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDesktopMode, "removeDesktop"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDesktopMode, "removeDesktop")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -248,7 +293,12 @@ func (p *DesktopModeProxy) MoveToExternalDisplay(
 	_data.WriteInterfaceToken(DescriptorIDesktopMode)
 	_data.WriteInt32(taskId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDesktopMode, "moveToExternalDisplay"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDesktopMode, "moveToExternalDisplay")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

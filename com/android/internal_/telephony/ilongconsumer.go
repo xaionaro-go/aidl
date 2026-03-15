@@ -43,6 +43,11 @@ func (p *LongConsumerProxy) Accept(
 	_data.WriteInterfaceToken(DescriptorILongConsumer)
 	_data.WriteInt64(result)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILongConsumer, "accept"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILongConsumer, "accept")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -55,7 +55,12 @@ func (p *OnBackInvokedCallbackProxy) OnBackStarted(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOnBackInvokedCallback, "onBackStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOnBackInvokedCallback, "onBackStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -69,7 +74,12 @@ func (p *OnBackInvokedCallbackProxy) OnBackProgressed(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOnBackInvokedCallback, "onBackProgressed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOnBackInvokedCallback, "onBackProgressed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -79,7 +89,12 @@ func (p *OnBackInvokedCallbackProxy) OnBackCancelled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOnBackInvokedCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOnBackInvokedCallback, "onBackCancelled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOnBackInvokedCallback, "onBackCancelled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -89,7 +104,12 @@ func (p *OnBackInvokedCallbackProxy) OnBackInvoked(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOnBackInvokedCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOnBackInvokedCallback, "onBackInvoked"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOnBackInvokedCallback, "onBackInvoked")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -101,7 +121,12 @@ func (p *OnBackInvokedCallbackProxy) SetTriggerBack(
 	_data.WriteInterfaceToken(DescriptorIOnBackInvokedCallback)
 	_data.WriteBool(triggerBack)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOnBackInvokedCallback, "setTriggerBack"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOnBackInvokedCallback, "setTriggerBack")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -113,6 +138,11 @@ func (p *OnBackInvokedCallbackProxy) SetHandoffHandler(
 	_data.WriteInterfaceToken(DescriptorIOnBackInvokedCallback)
 	_data.WriteStrongBinder(handoffHandler.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOnBackInvokedCallback, "setHandoffHandler"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOnBackInvokedCallback, "setHandoffHandler")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

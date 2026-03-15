@@ -58,7 +58,12 @@ func (p *GeofenceHardwareCallbackProxy) OnGeofenceTransition(
 	_data.WriteInt64(timestamp)
 	_data.WriteInt32(monitoringType)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGeofenceHardwareCallback, "onGeofenceTransition"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardwareCallback, "onGeofenceTransition")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -72,7 +77,12 @@ func (p *GeofenceHardwareCallbackProxy) OnGeofenceAdd(
 	_data.WriteInt32(geofenceId)
 	_data.WriteInt32(status)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGeofenceHardwareCallback, "onGeofenceAdd"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardwareCallback, "onGeofenceAdd")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -86,7 +96,12 @@ func (p *GeofenceHardwareCallbackProxy) OnGeofenceRemove(
 	_data.WriteInt32(geofenceId)
 	_data.WriteInt32(status)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGeofenceHardwareCallback, "onGeofenceRemove"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardwareCallback, "onGeofenceRemove")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -100,7 +115,12 @@ func (p *GeofenceHardwareCallbackProxy) OnGeofencePause(
 	_data.WriteInt32(geofenceId)
 	_data.WriteInt32(status)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGeofenceHardwareCallback, "onGeofencePause"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardwareCallback, "onGeofencePause")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -114,6 +134,11 @@ func (p *GeofenceHardwareCallbackProxy) OnGeofenceResume(
 	_data.WriteInt32(geofenceId)
 	_data.WriteInt32(status)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGeofenceHardwareCallback, "onGeofenceResume"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardwareCallback, "onGeofenceResume")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

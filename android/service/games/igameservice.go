@@ -47,7 +47,12 @@ func (p *GameServiceProxy) Connected(
 	_data.WriteInterfaceToken(DescriptorIGameService)
 	_data.WriteStrongBinder(gameServiceController.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameService, "connected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameService, "connected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -57,7 +62,12 @@ func (p *GameServiceProxy) Disconnected(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameService)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameService, "disconnected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameService, "disconnected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -71,6 +81,11 @@ func (p *GameServiceProxy) GameStarted(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameService, "gameStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameService, "gameStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

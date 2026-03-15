@@ -45,7 +45,12 @@ func (p *ChannelListTransferProxy) ImportChannelList(
 	_data.WriteInterfaceToken(DescriptorIChannelListTransfer)
 	_data.WriteFileDescriptor(pfd)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIChannelListTransfer, "importChannelList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIChannelListTransfer, "importChannelList")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -66,7 +71,12 @@ func (p *ChannelListTransferProxy) ExportChannelList(
 	_data.WriteInterfaceToken(DescriptorIChannelListTransfer)
 	_data.WriteFileDescriptor(pfd)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIChannelListTransfer, "exportChannelList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIChannelListTransfer, "exportChannelList")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

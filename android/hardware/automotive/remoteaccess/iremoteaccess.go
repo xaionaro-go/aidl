@@ -66,7 +66,12 @@ func (p *RemoteAccessProxy) GetVehicleId(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteAccess)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteAccess, "getVehicleId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteAccess, "getVehicleId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -90,7 +95,12 @@ func (p *RemoteAccessProxy) GetWakeupServiceName(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteAccess)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteAccess, "getWakeupServiceName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteAccess, "getWakeupServiceName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -114,7 +124,12 @@ func (p *RemoteAccessProxy) GetProcessorId(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteAccess)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteAccess, "getProcessorId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteAccess, "getProcessorId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -139,7 +154,12 @@ func (p *RemoteAccessProxy) SetRemoteTaskCallback(
 	_data.WriteInterfaceToken(DescriptorIRemoteAccess)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteAccess, "setRemoteTaskCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteAccess, "setRemoteTaskCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -158,7 +178,12 @@ func (p *RemoteAccessProxy) ClearRemoteTaskCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteAccess)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteAccess, "clearRemoteTaskCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteAccess, "clearRemoteTaskCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -181,7 +206,12 @@ func (p *RemoteAccessProxy) NotifyApStateChange(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteAccess, "notifyApStateChange"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteAccess, "notifyApStateChange")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -201,7 +231,12 @@ func (p *RemoteAccessProxy) IsTaskScheduleSupported(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteAccess)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteAccess, "isTaskScheduleSupported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteAccess, "isTaskScheduleSupported")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -225,7 +260,12 @@ func (p *RemoteAccessProxy) GetSupportedTaskTypesForScheduling(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteAccess)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteAccess, "getSupportedTaskTypesForScheduling"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteAccess, "getSupportedTaskTypesForScheduling")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -263,7 +303,12 @@ func (p *RemoteAccessProxy) ScheduleTask(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteAccess, "scheduleTask"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteAccess, "scheduleTask")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -286,7 +331,12 @@ func (p *RemoteAccessProxy) UnscheduleTask(
 	_data.WriteString16(clientId)
 	_data.WriteString16(scheduleId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteAccess, "unscheduleTask"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteAccess, "unscheduleTask")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -307,7 +357,12 @@ func (p *RemoteAccessProxy) UnscheduleAllTasks(
 	_data.WriteInterfaceToken(DescriptorIRemoteAccess)
 	_data.WriteString16(clientId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteAccess, "unscheduleAllTasks"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteAccess, "unscheduleAllTasks")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -331,7 +386,12 @@ func (p *RemoteAccessProxy) IsTaskScheduled(
 	_data.WriteString16(clientId)
 	_data.WriteString16(scheduleId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteAccess, "isTaskScheduled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteAccess, "isTaskScheduled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -357,7 +417,12 @@ func (p *RemoteAccessProxy) GetAllPendingScheduledTasks(
 	_data.WriteInterfaceToken(DescriptorIRemoteAccess)
 	_data.WriteString16(clientId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteAccess, "getAllPendingScheduledTasks"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteAccess, "getAllPendingScheduledTasks")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

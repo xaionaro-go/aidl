@@ -51,7 +51,12 @@ func (p *KeyguardStateCallbackProxy) OnShowingStateChanged(
 	_data.WriteBool(showing)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyguardStateCallback, "onShowingStateChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardStateCallback, "onShowingStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -72,7 +77,12 @@ func (p *KeyguardStateCallbackProxy) OnSimSecureStateChanged(
 	_data.WriteInterfaceToken(DescriptorIKeyguardStateCallback)
 	_data.WriteBool(simSecure)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyguardStateCallback, "onSimSecureStateChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardStateCallback, "onSimSecureStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -93,7 +103,12 @@ func (p *KeyguardStateCallbackProxy) OnInputRestrictedStateChanged(
 	_data.WriteInterfaceToken(DescriptorIKeyguardStateCallback)
 	_data.WriteBool(inputRestricted)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyguardStateCallback, "onInputRestrictedStateChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardStateCallback, "onInputRestrictedStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -114,7 +129,12 @@ func (p *KeyguardStateCallbackProxy) OnTrustedChanged(
 	_data.WriteInterfaceToken(DescriptorIKeyguardStateCallback)
 	_data.WriteBool(trusted)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyguardStateCallback, "onTrustedChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardStateCallback, "onTrustedChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

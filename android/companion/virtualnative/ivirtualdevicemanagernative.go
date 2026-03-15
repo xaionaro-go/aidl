@@ -57,7 +57,12 @@ func (p *VirtualDeviceManagerNativeProxy) GetDeviceIdsForUid(
 	_data.WriteInterfaceToken(DescriptorIVirtualDeviceManagerNative)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDeviceManagerNative, "getDeviceIdsForUid"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDeviceManagerNative, "getDeviceIdsForUid")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -95,7 +100,12 @@ func (p *VirtualDeviceManagerNativeProxy) GetDevicePolicy(
 	_data.WriteInt32(deviceId)
 	_data.WriteInt32(policyType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVirtualDeviceManagerNative, "getDevicePolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDeviceManagerNative, "getDevicePolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

@@ -53,7 +53,11 @@ func OpenConn(
 
 	// Wrap with version-aware transport so that ResolveCode returns
 	// the correct transaction codes for the target device's API level.
-	transport := versionaware.NewTransport(driver, targetAPI)
+	transport, err := versionaware.NewTransport(ctx, driver, targetAPI)
+	if err != nil {
+		driver.Close(ctx)
+		return nil, fmt.Errorf("initializing version-aware transport: %w", err)
+	}
 
 	sm := servicemanager.New(transport)
 

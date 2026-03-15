@@ -52,7 +52,12 @@ func (p *MicrophoneHotwordDetectionVoiceInteractionCallbackProxy) OnDetected(
 	}
 	_data.WriteFileDescriptor(audioStream)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMicrophoneHotwordDetectionVoiceInteractionCallback, "onDetected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMicrophoneHotwordDetectionVoiceInteractionCallback, "onDetected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -66,7 +71,12 @@ func (p *MicrophoneHotwordDetectionVoiceInteractionCallbackProxy) OnHotwordDetec
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMicrophoneHotwordDetectionVoiceInteractionCallback, "onHotwordDetectionServiceFailure"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMicrophoneHotwordDetectionVoiceInteractionCallback, "onHotwordDetectionServiceFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -80,6 +90,11 @@ func (p *MicrophoneHotwordDetectionVoiceInteractionCallbackProxy) OnRejected(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMicrophoneHotwordDetectionVoiceInteractionCallback, "onRejected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMicrophoneHotwordDetectionVoiceInteractionCallback, "onRejected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

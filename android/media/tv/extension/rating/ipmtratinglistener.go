@@ -45,6 +45,11 @@ func (p *PmtRatingListenerProxy) OnPmtRatingChanged(
 	_data.WriteString16(sessionToken)
 	_data.WriteString16(newTvContentRating)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPmtRatingListener, "onPmtRatingChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPmtRatingListener, "onPmtRatingChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

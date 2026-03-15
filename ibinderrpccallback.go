@@ -45,7 +45,12 @@ func (p *BinderRpcCallbackProxy) SendCallback(
 	_data.WriteInterfaceToken(DescriptorIBinderRpcCallback)
 	_data.WriteString16(str)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcCallback, "sendCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcCallback, "sendCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -66,6 +71,11 @@ func (p *BinderRpcCallbackProxy) SendOnewayCallback(
 	_data.WriteInterfaceToken(DescriptorIBinderRpcCallback)
 	_data.WriteString16(str)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcCallback, "sendOnewayCallback"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcCallback, "sendOnewayCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -48,7 +48,12 @@ func (p *ComposerProxy) CreateClient(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIComposer)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIComposer, "createClient"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIComposer, "createClient")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -73,7 +78,12 @@ func (p *ComposerProxy) GetCapabilities(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIComposer)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIComposer, "getCapabilities"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIComposer, "getCapabilities")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

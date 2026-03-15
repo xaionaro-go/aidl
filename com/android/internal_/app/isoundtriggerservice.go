@@ -58,7 +58,12 @@ func (p *SoundTriggerServiceProxy) AttachAsOriginator(
 	}
 	_data.WriteStrongBinder(client.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerService, "attachAsOriginator"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerService, "attachAsOriginator")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -91,7 +96,12 @@ func (p *SoundTriggerServiceProxy) AttachAsMiddleman(
 	}
 	_data.WriteStrongBinder(client.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerService, "attachAsMiddleman"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerService, "attachAsMiddleman")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -117,7 +127,12 @@ func (p *SoundTriggerServiceProxy) ListModuleProperties(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerService, "listModuleProperties"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerService, "listModuleProperties")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -150,7 +165,12 @@ func (p *SoundTriggerServiceProxy) AttachInjection(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerService, "attachInjection"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerService, "attachInjection")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -171,7 +191,12 @@ func (p *SoundTriggerServiceProxy) SetInPhoneCallState(
 	_data.WriteInterfaceToken(DescriptorISoundTriggerService)
 	_data.WriteBool(isInPhoneCall)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerService, "setInPhoneCallState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerService, "setInPhoneCallState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

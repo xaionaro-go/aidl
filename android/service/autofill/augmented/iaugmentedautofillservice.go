@@ -54,7 +54,12 @@ func (p *AugmentedAutofillServiceProxy) OnConnected(
 	_data.WriteBool(debug)
 	_data.WriteBool(verbose)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAugmentedAutofillService, "onConnected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAugmentedAutofillService, "onConnected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -64,7 +69,12 @@ func (p *AugmentedAutofillServiceProxy) OnDisconnected(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAugmentedAutofillService)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAugmentedAutofillService, "onDisconnected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAugmentedAutofillService, "onDisconnected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -100,7 +110,12 @@ func (p *AugmentedAutofillServiceProxy) OnFillRequest(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAugmentedAutofillService, "onFillRequest"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAugmentedAutofillService, "onFillRequest")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -110,6 +125,11 @@ func (p *AugmentedAutofillServiceProxy) OnDestroyAllFillWindowsRequest(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAugmentedAutofillService)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAugmentedAutofillService, "onDestroyAllFillWindowsRequest"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAugmentedAutofillService, "onDestroyAllFillWindowsRequest")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

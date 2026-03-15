@@ -45,7 +45,12 @@ func (p *ExternalVibratorServiceProxy) OnExternalVibrationStart(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIExternalVibratorService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIExternalVibratorService, "onExternalVibrationStart"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIExternalVibratorService, "onExternalVibrationStart")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -68,7 +73,12 @@ func (p *ExternalVibratorServiceProxy) OnExternalVibrationStop(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIExternalVibratorService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIExternalVibratorService, "onExternalVibrationStop"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIExternalVibratorService, "onExternalVibrationStop")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

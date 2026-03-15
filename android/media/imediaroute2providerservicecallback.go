@@ -53,7 +53,12 @@ func (p *MediaRoute2ProviderServiceCallbackProxy) NotifyProviderUpdated(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaRoute2ProviderServiceCallback, "notifyProviderUpdated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaRoute2ProviderServiceCallback, "notifyProviderUpdated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -69,7 +74,12 @@ func (p *MediaRoute2ProviderServiceCallbackProxy) NotifySessionCreated(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaRoute2ProviderServiceCallback, "notifySessionCreated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaRoute2ProviderServiceCallback, "notifySessionCreated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -90,7 +100,12 @@ func (p *MediaRoute2ProviderServiceCallbackProxy) NotifySessionsUpdated(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaRoute2ProviderServiceCallback, "notifySessionsUpdated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaRoute2ProviderServiceCallback, "notifySessionsUpdated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -104,7 +119,12 @@ func (p *MediaRoute2ProviderServiceCallbackProxy) NotifySessionReleased(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaRoute2ProviderServiceCallback, "notifySessionReleased"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaRoute2ProviderServiceCallback, "notifySessionReleased")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -118,6 +138,11 @@ func (p *MediaRoute2ProviderServiceCallbackProxy) NotifyRequestFailed(
 	_data.WriteInt64(requestId)
 	_data.WriteInt32(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaRoute2ProviderServiceCallback, "notifyRequestFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaRoute2ProviderServiceCallback, "notifyRequestFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

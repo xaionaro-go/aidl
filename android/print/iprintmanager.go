@@ -98,7 +98,12 @@ func (p *PrintManagerProxy) GetPrintJobInfos(
 	_data.WriteInt32(appId)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "getPrintJobInfos"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "getPrintJobInfos")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -139,7 +144,12 @@ func (p *PrintManagerProxy) GetPrintJobInfo(
 	_data.WriteInt32(appId)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "getPrintJobInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "getPrintJobInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -176,7 +186,12 @@ func (p *PrintManagerProxy) Print(
 	_data.WriteInt32(appId)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "print"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "print")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -206,7 +221,12 @@ func (p *PrintManagerProxy) CancelPrintJob(
 	_data.WriteInt32(appId)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "cancelPrintJob"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "cancelPrintJob")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -233,7 +253,12 @@ func (p *PrintManagerProxy) RestartPrintJob(
 	_data.WriteInt32(appId)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "restartPrintJob"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "restartPrintJob")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -258,7 +283,12 @@ func (p *PrintManagerProxy) AddPrintJobStateChangeListener(
 	_data.WriteInt32(appId)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "addPrintJobStateChangeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "addPrintJobStateChangeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -281,7 +311,12 @@ func (p *PrintManagerProxy) RemovePrintJobStateChangeListener(
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "removePrintJobStateChangeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "removePrintJobStateChangeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -304,7 +339,12 @@ func (p *PrintManagerProxy) AddPrintServicesChangeListener(
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "addPrintServicesChangeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "addPrintServicesChangeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -327,7 +367,12 @@ func (p *PrintManagerProxy) RemovePrintServicesChangeListener(
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "removePrintServicesChangeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "removePrintServicesChangeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -351,7 +396,12 @@ func (p *PrintManagerProxy) GetPrintServices(
 	_data.WriteInt32(selectionFlags)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "getPrintServices"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "getPrintServices")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -388,7 +438,12 @@ func (p *PrintManagerProxy) SetPrintServiceEnabled(
 	_data.WriteBool(isEnabled)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "setPrintServiceEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "setPrintServiceEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -414,7 +469,12 @@ func (p *PrintManagerProxy) IsPrintServiceEnabled(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "isPrintServiceEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "isPrintServiceEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -441,7 +501,12 @@ func (p *PrintManagerProxy) AddPrintServiceRecommendationsChangeListener(
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "addPrintServiceRecommendationsChangeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "addPrintServiceRecommendationsChangeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -464,7 +529,12 @@ func (p *PrintManagerProxy) RemovePrintServiceRecommendationsChangeListener(
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "removePrintServiceRecommendationsChangeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "removePrintServiceRecommendationsChangeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -486,7 +556,12 @@ func (p *PrintManagerProxy) GetPrintServiceRecommendations(
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "getPrintServiceRecommendations"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "getPrintServiceRecommendations")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -522,7 +597,12 @@ func (p *PrintManagerProxy) CreatePrinterDiscoverySession(
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "createPrinterDiscoverySession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "createPrinterDiscoverySession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -556,7 +636,12 @@ func (p *PrintManagerProxy) StartPrinterDiscovery(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "startPrinterDiscovery"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "startPrinterDiscovery")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -579,7 +664,12 @@ func (p *PrintManagerProxy) StopPrinterDiscovery(
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "stopPrinterDiscovery"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "stopPrinterDiscovery")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -611,7 +701,12 @@ func (p *PrintManagerProxy) ValidatePrinters(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "validatePrinters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "validatePrinters")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -636,7 +731,12 @@ func (p *PrintManagerProxy) StartPrinterStateTracking(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "startPrinterStateTracking"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "startPrinterStateTracking")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -662,7 +762,12 @@ func (p *PrintManagerProxy) GetCustomPrinterIcon(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "getCustomPrinterIcon"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "getCustomPrinterIcon")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -690,7 +795,12 @@ func (p *PrintManagerProxy) StopPrinterStateTracking(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "stopPrinterStateTracking"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "stopPrinterStateTracking")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -713,7 +823,12 @@ func (p *PrintManagerProxy) DestroyPrinterDiscoverySession(
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "destroyPrinterDiscoverySession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "destroyPrinterDiscoverySession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -735,7 +850,12 @@ func (p *PrintManagerProxy) GetBindInstantServiceAllowed(
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "getBindInstantServiceAllowed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "getBindInstantServiceAllowed")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -762,7 +882,12 @@ func (p *PrintManagerProxy) SetBindInstantServiceAllowed(
 	_data.WriteInt32(userId)
 	_data.WriteBool(allowed)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintManager, "setBindInstantServiceAllowed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "setBindInstantServiceAllowed")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

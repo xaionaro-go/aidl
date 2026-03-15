@@ -57,7 +57,12 @@ func (p *ImsRegistrationCallbackProxy) OnRegistered(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationCallback, "onRegistered"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationCallback, "onRegistered")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -71,7 +76,12 @@ func (p *ImsRegistrationCallbackProxy) OnRegistering(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationCallback, "onRegistering"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationCallback, "onRegistering")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -89,7 +99,12 @@ func (p *ImsRegistrationCallbackProxy) OnDeregistered(
 	_data.WriteInt32(suggestedAction)
 	_data.WriteInt32(imsRadioTech)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationCallback, "onDeregistered"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationCallback, "onDeregistered")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -111,7 +126,12 @@ func (p *ImsRegistrationCallbackProxy) OnDeregisteredWithDetails(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationCallback, "onDeregisteredWithDetails"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationCallback, "onDeregisteredWithDetails")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -127,7 +147,12 @@ func (p *ImsRegistrationCallbackProxy) OnTechnologyChangeFailed(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationCallback, "onTechnologyChangeFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationCallback, "onTechnologyChangeFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -148,6 +173,11 @@ func (p *ImsRegistrationCallbackProxy) OnSubscriberAssociatedUriChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationCallback, "onSubscriberAssociatedUriChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationCallback, "onSubscriberAssociatedUriChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

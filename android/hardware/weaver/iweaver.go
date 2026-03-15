@@ -52,7 +52,12 @@ func (p *WeaverProxy) GetConfig(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWeaver)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWeaver, "getConfig"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWeaver, "getConfig")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -86,7 +91,12 @@ func (p *WeaverProxy) Read(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWeaver, "read"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWeaver, "read")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -128,7 +138,12 @@ func (p *WeaverProxy) Write(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWeaver, "write"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWeaver, "write")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

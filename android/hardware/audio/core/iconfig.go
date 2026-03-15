@@ -45,7 +45,12 @@ func (p *ConfigProxy) GetSurroundSoundConfig(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIConfig)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIConfig, "getSurroundSoundConfig"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIConfig, "getSurroundSoundConfig")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -68,7 +73,12 @@ func (p *ConfigProxy) GetEngineConfig(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIConfig)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIConfig, "getEngineConfig"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIConfig, "getEngineConfig")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

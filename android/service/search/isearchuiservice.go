@@ -60,7 +60,12 @@ func (p *SearchUiServiceProxy) OnCreateSearchSession(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISearchUiService, "onCreateSearchSession"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISearchUiService, "onCreateSearchSession")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -80,7 +85,12 @@ func (p *SearchUiServiceProxy) OnQuery(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISearchUiService, "onQuery"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISearchUiService, "onQuery")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -102,7 +112,12 @@ func (p *SearchUiServiceProxy) OnNotifyEvent(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISearchUiService, "onNotifyEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISearchUiService, "onNotifyEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -118,7 +133,12 @@ func (p *SearchUiServiceProxy) OnRegisterEmptyQueryResultUpdateCallback(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISearchUiService, "onRegisterEmptyQueryResultUpdateCallback"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISearchUiService, "onRegisterEmptyQueryResultUpdateCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -134,7 +154,12 @@ func (p *SearchUiServiceProxy) OnUnregisterEmptyQueryResultUpdateCallback(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISearchUiService, "onUnregisterEmptyQueryResultUpdateCallback"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISearchUiService, "onUnregisterEmptyQueryResultUpdateCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -148,6 +173,11 @@ func (p *SearchUiServiceProxy) OnDestroy(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISearchUiService, "onDestroy"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISearchUiService, "onDestroy")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -122,7 +122,12 @@ func (p *BinderRecordReplayTestProxy) SetByte(
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 	_data.WritePaddedByte(input)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setByte"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setByte")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -142,7 +147,12 @@ func (p *BinderRecordReplayTestProxy) GetByte(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getByte"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getByte")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -167,7 +177,12 @@ func (p *BinderRecordReplayTestProxy) SetChar(
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 	_data.WriteInt32(int32(input))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setChar"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setChar")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -187,7 +202,12 @@ func (p *BinderRecordReplayTestProxy) GetChar(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getChar"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getChar")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -213,7 +233,12 @@ func (p *BinderRecordReplayTestProxy) SetBoolean(
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 	_data.WriteBool(input)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setBoolean"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setBoolean")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -233,7 +258,12 @@ func (p *BinderRecordReplayTestProxy) GetBoolean(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getBoolean"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getBoolean")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -258,7 +288,12 @@ func (p *BinderRecordReplayTestProxy) SetInt(
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 	_data.WriteInt32(input)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setInt"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setInt")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -278,7 +313,12 @@ func (p *BinderRecordReplayTestProxy) GetInt(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getInt"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getInt")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -303,7 +343,12 @@ func (p *BinderRecordReplayTestProxy) SetFloat(
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 	_data.WriteFloat32(input)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setFloat"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setFloat")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -323,7 +368,12 @@ func (p *BinderRecordReplayTestProxy) GetFloat(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getFloat"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getFloat")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -348,7 +398,12 @@ func (p *BinderRecordReplayTestProxy) SetLong(
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 	_data.WriteInt64(input)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setLong"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setLong")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -368,7 +423,12 @@ func (p *BinderRecordReplayTestProxy) GetLong(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getLong"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getLong")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -393,7 +453,12 @@ func (p *BinderRecordReplayTestProxy) SetDouble(
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 	_data.WriteFloat64(input)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setDouble"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setDouble")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -413,7 +478,12 @@ func (p *BinderRecordReplayTestProxy) GetDouble(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getDouble"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getDouble")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -438,7 +508,12 @@ func (p *BinderRecordReplayTestProxy) SetString(
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 	_data.WriteString16(input)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setString"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setString")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -458,7 +533,12 @@ func (p *BinderRecordReplayTestProxy) GetString(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getString"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getString")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -485,7 +565,12 @@ func (p *BinderRecordReplayTestProxy) SetSingleDataParcelable(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setSingleDataParcelable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setSingleDataParcelable")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -505,7 +590,12 @@ func (p *BinderRecordReplayTestProxy) GetSingleDataParcelable(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getSingleDataParcelable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getSingleDataParcelable")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -536,7 +626,12 @@ func (p *BinderRecordReplayTestProxy) SetByteArray(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setByteArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setByteArray")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -556,7 +651,12 @@ func (p *BinderRecordReplayTestProxy) GetByteArray(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getByteArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getByteArray")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -598,7 +698,12 @@ func (p *BinderRecordReplayTestProxy) SetCharArray(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setCharArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setCharArray")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -618,7 +723,12 @@ func (p *BinderRecordReplayTestProxy) GetCharArray(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getCharArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getCharArray")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -661,7 +771,12 @@ func (p *BinderRecordReplayTestProxy) SetBooleanArray(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setBooleanArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setBooleanArray")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -681,7 +796,12 @@ func (p *BinderRecordReplayTestProxy) GetBooleanArray(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getBooleanArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getBooleanArray")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -723,7 +843,12 @@ func (p *BinderRecordReplayTestProxy) SetIntArray(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setIntArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setIntArray")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -743,7 +868,12 @@ func (p *BinderRecordReplayTestProxy) GetIntArray(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getIntArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getIntArray")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -785,7 +915,12 @@ func (p *BinderRecordReplayTestProxy) SetFloatArray(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setFloatArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setFloatArray")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -805,7 +940,12 @@ func (p *BinderRecordReplayTestProxy) GetFloatArray(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getFloatArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getFloatArray")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -847,7 +987,12 @@ func (p *BinderRecordReplayTestProxy) SetLongArray(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setLongArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setLongArray")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -867,7 +1012,12 @@ func (p *BinderRecordReplayTestProxy) GetLongArray(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getLongArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getLongArray")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -909,7 +1059,12 @@ func (p *BinderRecordReplayTestProxy) SetDoubleArray(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setDoubleArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setDoubleArray")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -929,7 +1084,12 @@ func (p *BinderRecordReplayTestProxy) GetDoubleArray(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getDoubleArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getDoubleArray")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -971,7 +1131,12 @@ func (p *BinderRecordReplayTestProxy) SetStringArray(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setStringArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setStringArray")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -991,7 +1156,12 @@ func (p *BinderRecordReplayTestProxy) GetStringArray(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getStringArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getStringArray")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1035,7 +1205,12 @@ func (p *BinderRecordReplayTestProxy) SetSingleDataParcelableArray(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setSingleDataParcelableArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setSingleDataParcelableArray")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1055,7 +1230,12 @@ func (p *BinderRecordReplayTestProxy) GetSingleDataParcelableArray(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getSingleDataParcelableArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getSingleDataParcelableArray")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1089,7 +1269,12 @@ func (p *BinderRecordReplayTestProxy) SetBinder(
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 	_data.WriteStrongBinder(binder_.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setBinder"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setBinder")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1109,7 +1294,12 @@ func (p *BinderRecordReplayTestProxy) GetBinder(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getBinder"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getBinder")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1134,7 +1324,12 @@ func (p *BinderRecordReplayTestProxy) SetFileDescriptor(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setFileDescriptor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setFileDescriptor")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1154,7 +1349,12 @@ func (p *BinderRecordReplayTestProxy) GetFileDescriptor(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getFileDescriptor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "getFileDescriptor")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

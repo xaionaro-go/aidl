@@ -86,7 +86,12 @@ func (p *InputMethodPrivilegedOperationsProxy) SetImeWindowStatusAsync(
 	_data.WriteInt32(vis)
 	_data.WriteInt32(backDisposition)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "setImeWindowStatusAsync"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "setImeWindowStatusAsync")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -98,7 +103,12 @@ func (p *InputMethodPrivilegedOperationsProxy) ReportStartInputAsync(
 	_data.WriteInterfaceToken(DescriptorIInputMethodPrivilegedOperations)
 	_data.WriteStrongBinder(startInputToken.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "reportStartInputAsync"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "reportStartInputAsync")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -115,7 +125,12 @@ func (p *InputMethodPrivilegedOperationsProxy) CreateInputContentUriToken(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "createInputContentUriToken"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "createInputContentUriToken")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -127,7 +142,12 @@ func (p *InputMethodPrivilegedOperationsProxy) ReportFullscreenModeAsync(
 	_data.WriteInterfaceToken(DescriptorIInputMethodPrivilegedOperations)
 	_data.WriteBool(fullscreen)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "reportFullscreenModeAsync"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "reportFullscreenModeAsync")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -143,7 +163,12 @@ func (p *InputMethodPrivilegedOperationsProxy) SetInputMethod(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "setInputMethod"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "setInputMethod")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -163,7 +188,12 @@ func (p *InputMethodPrivilegedOperationsProxy) SetInputMethodAndSubtype(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "setInputMethodAndSubtype"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "setInputMethodAndSubtype")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -185,7 +215,12 @@ func (p *InputMethodPrivilegedOperationsProxy) HideMySoftInput(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "hideMySoftInput"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "hideMySoftInput")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -207,7 +242,12 @@ func (p *InputMethodPrivilegedOperationsProxy) ShowMySoftInput(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "showMySoftInput"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "showMySoftInput")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -221,7 +261,12 @@ func (p *InputMethodPrivilegedOperationsProxy) UpdateStatusIconAsync(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(iconId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "updateStatusIconAsync"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "updateStatusIconAsync")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -235,7 +280,12 @@ func (p *InputMethodPrivilegedOperationsProxy) SwitchToPreviousInputMethod(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "switchToPreviousInputMethod"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "switchToPreviousInputMethod")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -251,7 +301,12 @@ func (p *InputMethodPrivilegedOperationsProxy) SwitchToNextInputMethod(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "switchToNextInputMethod"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "switchToNextInputMethod")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -265,7 +320,12 @@ func (p *InputMethodPrivilegedOperationsProxy) ShouldOfferSwitchingToNextInputMe
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "shouldOfferSwitchingToNextInputMethod"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "shouldOfferSwitchingToNextInputMethod")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -277,7 +337,12 @@ func (p *InputMethodPrivilegedOperationsProxy) OnImeSwitchButtonClickFromClient(
 	_data.WriteInterfaceToken(DescriptorIInputMethodPrivilegedOperations)
 	_data.WriteInt32(displayId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "onImeSwitchButtonClickFromClient"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "onImeSwitchButtonClickFromClient")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -287,7 +352,12 @@ func (p *InputMethodPrivilegedOperationsProxy) NotifyUserActionAsync(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodPrivilegedOperations)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "notifyUserActionAsync"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "notifyUserActionAsync")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -305,7 +375,12 @@ func (p *InputMethodPrivilegedOperationsProxy) ApplyImeVisibilityAsync(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "applyImeVisibilityAsync"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "applyImeVisibilityAsync")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -319,7 +394,12 @@ func (p *InputMethodPrivilegedOperationsProxy) OnStylusHandwritingReady(
 	_data.WriteInt32(requestId)
 	_data.WriteInt32(pid)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "onStylusHandwritingReady"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "onStylusHandwritingReady")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -331,7 +411,12 @@ func (p *InputMethodPrivilegedOperationsProxy) ResetStylusHandwriting(
 	_data.WriteInterfaceToken(DescriptorIInputMethodPrivilegedOperations)
 	_data.WriteInt32(requestId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "resetStylusHandwriting"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "resetStylusHandwriting")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -343,7 +428,12 @@ func (p *InputMethodPrivilegedOperationsProxy) SwitchKeyboardLayoutAsync(
 	_data.WriteInterfaceToken(DescriptorIInputMethodPrivilegedOperations)
 	_data.WriteInt32(direction)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "switchKeyboardLayoutAsync"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "switchKeyboardLayoutAsync")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -355,7 +445,12 @@ func (p *InputMethodPrivilegedOperationsProxy) SetHandwritingSurfaceNotTouchable
 	_data.WriteInterfaceToken(DescriptorIInputMethodPrivilegedOperations)
 	_data.WriteBool(notTouchable)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "setHandwritingSurfaceNotTouchable"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "setHandwritingSurfaceNotTouchable")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -369,6 +464,11 @@ func (p *InputMethodPrivilegedOperationsProxy) SetHandwritingTouchableRegion(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "setHandwritingTouchableRegion"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "setHandwritingTouchableRegion")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

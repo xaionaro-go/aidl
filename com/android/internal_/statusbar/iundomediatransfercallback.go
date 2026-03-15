@@ -41,6 +41,11 @@ func (p *UndoMediaTransferCallbackProxy) OnUndoTriggered(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUndoMediaTransferCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUndoMediaTransferCallback, "onUndoTriggered"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUndoMediaTransferCallback, "onUndoTriggered")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

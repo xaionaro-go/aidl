@@ -76,7 +76,12 @@ func (p *MacsecPskPluginProxy) AddTestKey(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMacsecPskPlugin, "addTestKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMacsecPskPlugin, "addTestKey")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -114,7 +119,12 @@ func (p *MacsecPskPluginProxy) CalcIcv(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMacsecPskPlugin, "calcIcv"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMacsecPskPlugin, "calcIcv")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -168,7 +178,12 @@ func (p *MacsecPskPluginProxy) GenerateSak(
 	}
 	_data.WriteInt32(sakLength)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMacsecPskPlugin, "generateSak"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMacsecPskPlugin, "generateSak")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -220,7 +235,12 @@ func (p *MacsecPskPluginProxy) WrapSak(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMacsecPskPlugin, "wrapSak"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMacsecPskPlugin, "wrapSak")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -272,7 +292,12 @@ func (p *MacsecPskPluginProxy) UnwrapSak(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMacsecPskPlugin, "unwrapSak"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMacsecPskPlugin, "unwrapSak")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

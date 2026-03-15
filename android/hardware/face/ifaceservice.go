@@ -115,7 +115,12 @@ func (p *FaceServiceProxy) CreateTestSession(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteString16(opPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "createTestSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "createTestSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -144,7 +149,12 @@ func (p *FaceServiceProxy) DumpSensorServiceStateProto(
 	_data.WriteInt32(sensorId)
 	_data.WriteBool(clearSchedulerBuffer)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "dumpSensorServiceStateProto"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "dumpSensorServiceStateProto")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -180,7 +190,12 @@ func (p *FaceServiceProxy) GetSensorPropertiesInternal(
 	_data.WriteInterfaceToken(DescriptorIFaceService)
 	_data.WriteString16(opPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "getSensorPropertiesInternal"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "getSensorPropertiesInternal")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -217,7 +232,12 @@ func (p *FaceServiceProxy) GetSensorProperties(
 	_data.WriteInt32(sensorId)
 	_data.WriteString16(opPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "getSensorProperties"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "getSensorProperties")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -250,7 +270,12 @@ func (p *FaceServiceProxy) Authenticate(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "authenticate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "authenticate")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -282,7 +307,12 @@ func (p *FaceServiceProxy) DetectFace(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "detectFace"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "detectFace")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -323,7 +353,12 @@ func (p *FaceServiceProxy) PrepareForAuthentication(
 	_data.WriteInt32(cookie)
 	_data.WriteBool(allowBackgroundAuthentication)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "prepareForAuthentication"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "prepareForAuthentication")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -346,7 +381,12 @@ func (p *FaceServiceProxy) StartPreparedClient(
 	_data.WriteInt32(sensorId)
 	_data.WriteInt32(cookie)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "startPreparedClient"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "startPreparedClient")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -371,7 +411,12 @@ func (p *FaceServiceProxy) CancelAuthentication(
 	_data.WriteString16(opPackageName)
 	_data.WriteInt64(requestId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "cancelAuthentication"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "cancelAuthentication")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -396,7 +441,12 @@ func (p *FaceServiceProxy) CancelFaceDetect(
 	_data.WriteString16(opPackageName)
 	_data.WriteInt64(requestId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "cancelFaceDetect"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "cancelFaceDetect")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -423,7 +473,12 @@ func (p *FaceServiceProxy) CancelAuthenticationFromService(
 	_data.WriteString16(opPackageName)
 	_data.WriteInt64(requestId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "cancelAuthenticationFromService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "cancelAuthenticationFromService")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -476,7 +531,12 @@ func (p *FaceServiceProxy) Enroll(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "enroll"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "enroll")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -526,7 +586,12 @@ func (p *FaceServiceProxy) EnrollRemotely(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "enrollRemotely"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "enrollRemotely")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -553,7 +618,12 @@ func (p *FaceServiceProxy) CancelEnrollment(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt64(requestId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "cancelEnrollment"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "cancelEnrollment")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -582,7 +652,12 @@ func (p *FaceServiceProxy) Remove(
 	_data.WriteStrongBinder(receiver.AsBinder().Handle())
 	_data.WriteString16(opPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "remove"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "remove")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -609,7 +684,12 @@ func (p *FaceServiceProxy) RemoveAll(
 	_data.WriteStrongBinder(receiver.AsBinder().Handle())
 	_data.WriteString16(opPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "removeAll"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "removeAll")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -635,7 +715,12 @@ func (p *FaceServiceProxy) GetEnrolledFaces(
 	_data.WriteInt32(userId)
 	_data.WriteString16(opPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "getEnrolledFaces"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "getEnrolledFaces")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -672,7 +757,12 @@ func (p *FaceServiceProxy) IsHardwareDetected(
 	_data.WriteInt32(sensorId)
 	_data.WriteString16(opPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "isHardwareDetected"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "isHardwareDetected")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -705,7 +795,12 @@ func (p *FaceServiceProxy) GenerateChallenge(
 	_data.WriteStrongBinder(receiver.AsBinder().Handle())
 	_data.WriteString16(opPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "generateChallenge"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "generateChallenge")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -734,7 +829,12 @@ func (p *FaceServiceProxy) RevokeChallenge(
 	_data.WriteString16(opPackageName)
 	_data.WriteInt64(challenge)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "revokeChallenge"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "revokeChallenge")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -760,7 +860,12 @@ func (p *FaceServiceProxy) HasEnrolledFaces(
 	_data.WriteInt32(userId)
 	_data.WriteString16(opPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "hasEnrolledFaces"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "hasEnrolledFaces")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -788,7 +893,12 @@ func (p *FaceServiceProxy) GetLockoutModeForUser(
 	_data.WriteInt32(sensorId)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "getLockoutModeForUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "getLockoutModeForUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -817,7 +927,12 @@ func (p *FaceServiceProxy) InvalidateAuthenticatorId(
 	_data.WriteInt32(userId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "invalidateAuthenticatorId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "invalidateAuthenticatorId")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -841,7 +956,12 @@ func (p *FaceServiceProxy) GetAuthenticatorId(
 	_data.WriteInt32(sensorId)
 	_data.WriteInt32(callingUserId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "getAuthenticatorId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "getAuthenticatorId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -881,7 +1001,12 @@ func (p *FaceServiceProxy) ResetLockout(
 	}
 	_data.WriteString16(opPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "resetLockout"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "resetLockout")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -904,7 +1029,12 @@ func (p *FaceServiceProxy) AddLockoutResetCallback(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteString16(opPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "addLockoutResetCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "addLockoutResetCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -944,7 +1074,12 @@ func (p *FaceServiceProxy) SetFeature(
 	_data.WriteStrongBinder(receiver.AsBinder().Handle())
 	_data.WriteString16(opPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "setFeature"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "setFeature")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -973,7 +1108,12 @@ func (p *FaceServiceProxy) GetFeature(
 	_data.WriteStrongBinder(receiver.AsBinder().Handle())
 	_data.WriteString16(opPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "getFeature"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "getFeature")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -996,7 +1136,12 @@ func (p *FaceServiceProxy) RegisterAuthenticators(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "registerAuthenticators"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "registerAuthenticators")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1017,7 +1162,12 @@ func (p *FaceServiceProxy) AddAuthenticatorsRegisteredCallback(
 	_data.WriteInterfaceToken(DescriptorIFaceService)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "addAuthenticatorsRegisteredCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "addAuthenticatorsRegisteredCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1038,7 +1188,12 @@ func (p *FaceServiceProxy) RegisterAuthenticationStateListener(
 	_data.WriteInterfaceToken(DescriptorIFaceService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "registerAuthenticationStateListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "registerAuthenticationStateListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1059,7 +1214,12 @@ func (p *FaceServiceProxy) UnregisterAuthenticationStateListener(
 	_data.WriteInterfaceToken(DescriptorIFaceService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "unregisterAuthenticationStateListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "unregisterAuthenticationStateListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1080,7 +1240,12 @@ func (p *FaceServiceProxy) RegisterBiometricStateListener(
 	_data.WriteInterfaceToken(DescriptorIFaceService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "registerBiometricStateListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "registerBiometricStateListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1099,6 +1264,11 @@ func (p *FaceServiceProxy) ScheduleWatchdog(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFaceService, "scheduleWatchdog"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "scheduleWatchdog")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -59,7 +59,12 @@ func (p *LocationProviderManagerProxy) OnInitialize(
 	}
 	_data.WriteString16(attributionTag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationProviderManager, "onInitialize"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationProviderManager, "onInitialize")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -80,7 +85,12 @@ func (p *LocationProviderManagerProxy) OnSetAllowed(
 	_data.WriteInterfaceToken(DescriptorILocationProviderManager)
 	_data.WriteBool(allowed)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationProviderManager, "onSetAllowed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationProviderManager, "onSetAllowed")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -103,7 +113,12 @@ func (p *LocationProviderManagerProxy) OnSetProperties(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationProviderManager, "onSetProperties"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationProviderManager, "onSetProperties")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -123,7 +138,12 @@ func (p *LocationProviderManagerProxy) OnReportLocation(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationProviderManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationProviderManager, "onReportLocation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationProviderManager, "onReportLocation")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -148,7 +168,12 @@ func (p *LocationProviderManagerProxy) OnReportLocations(
 		_data.WriteInt32(int32(len(locations)))
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationProviderManager, "onReportLocations"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationProviderManager, "onReportLocations")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -167,7 +192,12 @@ func (p *LocationProviderManagerProxy) OnFlushComplete(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationProviderManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILocationProviderManager, "onFlushComplete"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILocationProviderManager, "onFlushComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

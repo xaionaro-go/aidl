@@ -51,7 +51,12 @@ func (p *BluetoothChannelSoundingSessionCallbackProxy) OnOpened(
 	_data.WriteInterfaceToken(DescriptorIBluetoothChannelSoundingSessionCallback)
 	_data.WriteInt32(int32(reason))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothChannelSoundingSessionCallback, "onOpened"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothChannelSoundingSessionCallback, "onOpened")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -72,7 +77,12 @@ func (p *BluetoothChannelSoundingSessionCallbackProxy) OnOpenFailed(
 	_data.WriteInterfaceToken(DescriptorIBluetoothChannelSoundingSessionCallback)
 	_data.WriteInt32(int32(reason))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothChannelSoundingSessionCallback, "onOpenFailed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothChannelSoundingSessionCallback, "onOpenFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -95,7 +105,12 @@ func (p *BluetoothChannelSoundingSessionCallbackProxy) OnResult(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothChannelSoundingSessionCallback, "onResult"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothChannelSoundingSessionCallback, "onResult")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -116,7 +131,12 @@ func (p *BluetoothChannelSoundingSessionCallbackProxy) OnClose(
 	_data.WriteInterfaceToken(DescriptorIBluetoothChannelSoundingSessionCallback)
 	_data.WriteInt32(int32(reason))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothChannelSoundingSessionCallback, "onClose"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothChannelSoundingSessionCallback, "onClose")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -137,7 +157,12 @@ func (p *BluetoothChannelSoundingSessionCallbackProxy) OnCloseFailed(
 	_data.WriteInterfaceToken(DescriptorIBluetoothChannelSoundingSessionCallback)
 	_data.WriteInt32(int32(reason))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothChannelSoundingSessionCallback, "onCloseFailed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothChannelSoundingSessionCallback, "onCloseFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

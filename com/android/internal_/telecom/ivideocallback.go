@@ -58,7 +58,12 @@ func (p *VideoCallbackProxy) ReceiveSessionModifyRequest(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVideoCallback, "receiveSessionModifyRequest"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVideoCallback, "receiveSessionModifyRequest")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -78,7 +83,12 @@ func (p *VideoCallbackProxy) ReceiveSessionModifyResponse(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVideoCallback, "receiveSessionModifyResponse"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVideoCallback, "receiveSessionModifyResponse")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -90,7 +100,12 @@ func (p *VideoCallbackProxy) HandleCallSessionEvent(
 	_data.WriteInterfaceToken(DescriptorIVideoCallback)
 	_data.WriteInt32(event)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVideoCallback, "handleCallSessionEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVideoCallback, "handleCallSessionEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -104,7 +119,12 @@ func (p *VideoCallbackProxy) ChangePeerDimensions(
 	_data.WriteInt32(width)
 	_data.WriteInt32(height)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVideoCallback, "changePeerDimensions"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVideoCallback, "changePeerDimensions")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -116,7 +136,12 @@ func (p *VideoCallbackProxy) ChangeCallDataUsage(
 	_data.WriteInterfaceToken(DescriptorIVideoCallback)
 	_data.WriteInt64(dataUsage)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVideoCallback, "changeCallDataUsage"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVideoCallback, "changeCallDataUsage")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -130,7 +155,12 @@ func (p *VideoCallbackProxy) ChangeCameraCapabilities(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVideoCallback, "changeCameraCapabilities"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVideoCallback, "changeCameraCapabilities")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -142,6 +172,11 @@ func (p *VideoCallbackProxy) ChangeVideoQuality(
 	_data.WriteInterfaceToken(DescriptorIVideoCallback)
 	_data.WriteInt32(videoQuality)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVideoCallback, "changeVideoQuality"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVideoCallback, "changeVideoQuality")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

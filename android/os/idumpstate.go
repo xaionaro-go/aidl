@@ -63,7 +63,12 @@ func (p *DumpstateProxy) PreDumpUiData(
 	_data.WriteInterfaceToken(DescriptorIDumpstate)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDumpstate, "preDumpUiData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDumpstate, "preDumpUiData")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -98,7 +103,12 @@ func (p *DumpstateProxy) StartBugreport(
 	_data.WriteBool(isScreenshotRequested)
 	_data.WriteBool(skipUserConsent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDumpstate, "startBugreport"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDumpstate, "startBugreport")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -121,7 +131,12 @@ func (p *DumpstateProxy) CancelBugreport(
 	_data.WriteInt32(callingUid)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDumpstate, "cancelBugreport"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDumpstate, "cancelBugreport")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -155,7 +170,12 @@ func (p *DumpstateProxy) RetrieveBugreport(
 	_data.WriteBool(skipUserConsent)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDumpstate, "retrieveBugreport"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDumpstate, "retrieveBugreport")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

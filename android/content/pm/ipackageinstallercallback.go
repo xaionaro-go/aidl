@@ -51,7 +51,12 @@ func (p *PackageInstallerCallbackProxy) OnSessionCreated(
 	_data.WriteInterfaceToken(DescriptorIPackageInstallerCallback)
 	_data.WriteInt32(sessionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageInstallerCallback, "onSessionCreated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageInstallerCallback, "onSessionCreated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -63,7 +68,12 @@ func (p *PackageInstallerCallbackProxy) OnSessionBadgingChanged(
 	_data.WriteInterfaceToken(DescriptorIPackageInstallerCallback)
 	_data.WriteInt32(sessionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageInstallerCallback, "onSessionBadgingChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageInstallerCallback, "onSessionBadgingChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -77,7 +87,12 @@ func (p *PackageInstallerCallbackProxy) OnSessionActiveChanged(
 	_data.WriteInt32(sessionId)
 	_data.WriteBool(active)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageInstallerCallback, "onSessionActiveChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageInstallerCallback, "onSessionActiveChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -91,7 +106,12 @@ func (p *PackageInstallerCallbackProxy) OnSessionProgressChanged(
 	_data.WriteInt32(sessionId)
 	_data.WriteFloat32(progress)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageInstallerCallback, "onSessionProgressChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageInstallerCallback, "onSessionProgressChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -105,6 +125,11 @@ func (p *PackageInstallerCallbackProxy) OnSessionFinished(
 	_data.WriteInt32(sessionId)
 	_data.WriteBool(success)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageInstallerCallback, "onSessionFinished"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageInstallerCallback, "onSessionFinished")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

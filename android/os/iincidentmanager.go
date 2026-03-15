@@ -60,7 +60,12 @@ func (p *IncidentManagerProxy) ReportIncident(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncidentManager)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIncidentManager, "reportIncident"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIncidentManager, "reportIncident")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -74,7 +79,12 @@ func (p *IncidentManagerProxy) ReportIncidentToStream(
 	_data.WriteInterfaceToken(DescriptorIIncidentManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIncidentManager, "reportIncidentToStream"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIncidentManager, "reportIncidentToStream")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -87,7 +97,12 @@ func (p *IncidentManagerProxy) ReportIncidentToDumpstate(
 	_data.WriteInterfaceToken(DescriptorIIncidentManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIncidentManager, "reportIncidentToDumpstate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIncidentManager, "reportIncidentToDumpstate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -103,7 +118,12 @@ func (p *IncidentManagerProxy) RegisterSection(
 	_data.WriteString16(name)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIncidentManager, "registerSection"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIncidentManager, "registerSection")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -115,7 +135,12 @@ func (p *IncidentManagerProxy) UnregisterSection(
 	_data.WriteInterfaceToken(DescriptorIIncidentManager)
 	_data.WriteInt32(id)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIncidentManager, "unregisterSection"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIncidentManager, "unregisterSection")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -125,7 +150,12 @@ func (p *IncidentManagerProxy) SystemRunning(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncidentManager)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIncidentManager, "systemRunning"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIncidentManager, "systemRunning")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -140,7 +170,12 @@ func (p *IncidentManagerProxy) GetIncidentReportList(
 	_data.WriteString16(pkg)
 	_data.WriteString16(cls)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIncidentManager, "getIncidentReportList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIncidentManager, "getIncidentReportList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -180,7 +215,12 @@ func (p *IncidentManagerProxy) GetIncidentReport(
 	_data.WriteString16(cls)
 	_data.WriteString16(id)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIncidentManager, "getIncidentReport"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIncidentManager, "getIncidentReport")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -205,7 +245,12 @@ func (p *IncidentManagerProxy) DeleteIncidentReports(
 	_data.WriteString16(cls)
 	_data.WriteString16(id)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIncidentManager, "deleteIncidentReports"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIncidentManager, "deleteIncidentReports")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -226,7 +271,12 @@ func (p *IncidentManagerProxy) DeleteAllIncidentReports(
 	_data.WriteInterfaceToken(DescriptorIIncidentManager)
 	_data.WriteString16(pkg)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIncidentManager, "deleteAllIncidentReports"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIncidentManager, "deleteAllIncidentReports")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

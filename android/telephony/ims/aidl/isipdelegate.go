@@ -54,7 +54,12 @@ func (p *SipDelegateProxy) SendMessage(
 	}
 	_data.WriteInt64(configVersion)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISipDelegate, "sendMessage"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISipDelegate, "sendMessage")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -66,7 +71,12 @@ func (p *SipDelegateProxy) NotifyMessageReceived(
 	_data.WriteInterfaceToken(DescriptorISipDelegate)
 	_data.WriteString16(viaTransactionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISipDelegate, "notifyMessageReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISipDelegate, "notifyMessageReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -80,7 +90,12 @@ func (p *SipDelegateProxy) NotifyMessageReceiveError(
 	_data.WriteString16(viaTransactionId)
 	_data.WriteInt32(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISipDelegate, "notifyMessageReceiveError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISipDelegate, "notifyMessageReceiveError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -92,6 +107,11 @@ func (p *SipDelegateProxy) CleanupSession(
 	_data.WriteInterfaceToken(DescriptorISipDelegate)
 	_data.WriteString16(callId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISipDelegate, "cleanupSession"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISipDelegate, "cleanupSession")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -62,7 +62,12 @@ func (p *DreamOverlayClientProxy) StartDream(
 	_data.WriteBool(isPreview)
 	_data.WriteBool(shouldShowComplications)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDreamOverlayClient, "startDream"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDreamOverlayClient, "startDream")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -81,7 +86,12 @@ func (p *DreamOverlayClientProxy) WakeUp(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDreamOverlayClient)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDreamOverlayClient, "wakeUp"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDreamOverlayClient, "wakeUp")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -100,7 +110,12 @@ func (p *DreamOverlayClientProxy) EndDream(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDreamOverlayClient)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDreamOverlayClient, "endDream"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDreamOverlayClient, "endDream")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -119,7 +134,12 @@ func (p *DreamOverlayClientProxy) OnWakeRequested(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDreamOverlayClient)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDreamOverlayClient, "onWakeRequested"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDreamOverlayClient, "onWakeRequested")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -138,7 +158,12 @@ func (p *DreamOverlayClientProxy) ComeToFront(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDreamOverlayClient)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDreamOverlayClient, "comeToFront"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDreamOverlayClient, "comeToFront")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

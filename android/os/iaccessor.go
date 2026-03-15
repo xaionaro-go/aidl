@@ -52,7 +52,12 @@ func (p *AccessorProxy) AddConnection(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessor)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAccessor, "addConnection"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAccessor, "addConnection")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -76,7 +81,12 @@ func (p *AccessorProxy) GetInstanceName(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessor)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAccessor, "getInstanceName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAccessor, "getInstanceName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

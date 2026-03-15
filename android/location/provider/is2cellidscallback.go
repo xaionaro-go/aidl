@@ -52,7 +52,12 @@ func (p *S2CellIdsCallbackProxy) OnResult(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIS2CellIdsCallback, "onResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIS2CellIdsCallback, "onResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -62,6 +67,11 @@ func (p *S2CellIdsCallbackProxy) OnError(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIS2CellIdsCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIS2CellIdsCallback, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIS2CellIdsCallback, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -45,7 +45,12 @@ func (p *InjectGlobalEventProxy) TriggerRestart(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInjectGlobalEvent)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInjectGlobalEvent, "triggerRestart"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInjectGlobalEvent, "triggerRestart")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -59,7 +64,12 @@ func (p *InjectGlobalEventProxy) SetResourceContention(
 	_data.WriteBool(isContended)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInjectGlobalEvent, "setResourceContention"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInjectGlobalEvent, "setResourceContention")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -69,6 +79,11 @@ func (p *InjectGlobalEventProxy) TriggerOnResourcesAvailable(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInjectGlobalEvent)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInjectGlobalEvent, "triggerOnResourcesAvailable"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInjectGlobalEvent, "triggerOnResourcesAvailable")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

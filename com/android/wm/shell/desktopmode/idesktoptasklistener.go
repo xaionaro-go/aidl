@@ -53,7 +53,12 @@ func (p *DesktopTaskListenerProxy) OnTasksVisibilityChanged(
 	_data.WriteInt32(displayId)
 	_data.WriteInt32(visibleTasksCount)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDesktopTaskListener, "onTasksVisibilityChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDesktopTaskListener, "onTasksVisibilityChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -67,7 +72,12 @@ func (p *DesktopTaskListenerProxy) OnStashedChanged(
 	_data.WriteInt32(displayId)
 	_data.WriteBool(stashed)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDesktopTaskListener, "onStashedChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDesktopTaskListener, "onStashedChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -79,7 +89,12 @@ func (p *DesktopTaskListenerProxy) OnTaskbarCornerRoundingUpdate(
 	_data.WriteInterfaceToken(DescriptorIDesktopTaskListener)
 	_data.WriteBool(hasTasksRequiringTaskbarRounding)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDesktopTaskListener, "onTaskbarCornerRoundingUpdate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDesktopTaskListener, "onTaskbarCornerRoundingUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -91,7 +106,12 @@ func (p *DesktopTaskListenerProxy) OnEnterDesktopModeTransitionStarted(
 	_data.WriteInterfaceToken(DescriptorIDesktopTaskListener)
 	_data.WriteInt32(transitionDuration)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDesktopTaskListener, "onEnterDesktopModeTransitionStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDesktopTaskListener, "onEnterDesktopModeTransitionStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -103,6 +123,11 @@ func (p *DesktopTaskListenerProxy) OnExitDesktopModeTransitionStarted(
 	_data.WriteInterfaceToken(DescriptorIDesktopTaskListener)
 	_data.WriteInt32(transitionDuration)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDesktopTaskListener, "onExitDesktopModeTransitionStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDesktopTaskListener, "onExitDesktopModeTransitionStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -44,7 +44,12 @@ func (p *BinderRustNdkInteropTestProxy) Echo(
 	_data.WriteInterfaceToken(DescriptorIBinderRustNdkInteropTest)
 	_data.WriteString16(str)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRustNdkInteropTest, "echo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRustNdkInteropTest, "echo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

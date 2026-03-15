@@ -83,7 +83,12 @@ func (p *PackageManagerNativeProxy) GetNamesForUids(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageManagerNative, "getNamesForUids"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "getNamesForUids")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -123,7 +128,12 @@ func (p *PackageManagerNativeProxy) GetPackageUid(
 	_data.WriteInt64(flags)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageManagerNative, "getPackageUid"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "getPackageUid")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -149,7 +159,12 @@ func (p *PackageManagerNativeProxy) GetInstallerForPackage(
 	_data.WriteInterfaceToken(DescriptorIPackageManagerNative)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageManagerNative, "getInstallerForPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "getInstallerForPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -175,7 +190,12 @@ func (p *PackageManagerNativeProxy) GetVersionCodeForPackage(
 	_data.WriteInterfaceToken(DescriptorIPackageManagerNative)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageManagerNative, "getVersionCodeForPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "getVersionCodeForPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -208,7 +228,12 @@ func (p *PackageManagerNativeProxy) IsAudioPlaybackCaptureAllowed(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageManagerNative, "isAudioPlaybackCaptureAllowed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "isAudioPlaybackCaptureAllowed")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -244,7 +269,12 @@ func (p *PackageManagerNativeProxy) GetLocationFlags(
 	_data.WriteInterfaceToken(DescriptorIPackageManagerNative)
 	_data.WriteString(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageManagerNative, "getLocationFlags"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "getLocationFlags")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -270,7 +300,12 @@ func (p *PackageManagerNativeProxy) GetTargetSdkVersionForPackage(
 	_data.WriteInterfaceToken(DescriptorIPackageManagerNative)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageManagerNative, "getTargetSdkVersionForPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "getTargetSdkVersionForPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -294,7 +329,12 @@ func (p *PackageManagerNativeProxy) GetModuleMetadataPackageName(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManagerNative)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageManagerNative, "getModuleMetadataPackageName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "getModuleMetadataPackageName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -329,7 +369,12 @@ func (p *PackageManagerNativeProxy) HasSha256SigningCertificate(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageManagerNative, "hasSha256SigningCertificate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "hasSha256SigningCertificate")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -355,7 +400,12 @@ func (p *PackageManagerNativeProxy) IsPackageDebuggable(
 	_data.WriteInterfaceToken(DescriptorIPackageManagerNative)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageManagerNative, "isPackageDebuggable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "isPackageDebuggable")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -383,7 +433,12 @@ func (p *PackageManagerNativeProxy) HasSystemFeature(
 	_data.WriteString16(featureName)
 	_data.WriteInt32(version)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageManagerNative, "hasSystemFeature"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "hasSystemFeature")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -408,7 +463,12 @@ func (p *PackageManagerNativeProxy) RegisterStagedApexObserver(
 	_data.WriteInterfaceToken(DescriptorIPackageManagerNative)
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageManagerNative, "registerStagedApexObserver"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "registerStagedApexObserver")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -429,7 +489,12 @@ func (p *PackageManagerNativeProxy) UnregisterStagedApexObserver(
 	_data.WriteInterfaceToken(DescriptorIPackageManagerNative)
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageManagerNative, "unregisterStagedApexObserver"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "unregisterStagedApexObserver")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -449,7 +514,12 @@ func (p *PackageManagerNativeProxy) GetStagedApexInfos(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManagerNative)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageManagerNative, "getStagedApexInfos"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "getStagedApexInfos")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

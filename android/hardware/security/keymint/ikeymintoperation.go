@@ -73,7 +73,12 @@ func (p *KeyMintOperationProxy) UpdateAad(
 		_data.WriteInt32(-1)
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyMintOperation, "updateAad"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyMintOperation, "updateAad")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -118,7 +123,12 @@ func (p *KeyMintOperationProxy) Update(
 		_data.WriteInt32(-1)
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyMintOperation, "update"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyMintOperation, "update")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -195,7 +205,12 @@ func (p *KeyMintOperationProxy) Finish(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyMintOperation, "finish"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyMintOperation, "finish")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -228,7 +243,12 @@ func (p *KeyMintOperationProxy) Abort(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyMintOperation)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyMintOperation, "abort"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyMintOperation, "abort")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

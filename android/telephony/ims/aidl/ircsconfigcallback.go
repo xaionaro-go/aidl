@@ -58,7 +58,12 @@ func (p *RcsConfigCallbackProxy) OnConfigurationChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRcsConfigCallback, "onConfigurationChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRcsConfigCallback, "onConfigurationChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -72,7 +77,12 @@ func (p *RcsConfigCallbackProxy) OnAutoConfigurationErrorReceived(
 	_data.WriteInt32(errorCode)
 	_data.WriteString16(errorString)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRcsConfigCallback, "onAutoConfigurationErrorReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRcsConfigCallback, "onAutoConfigurationErrorReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -82,7 +92,12 @@ func (p *RcsConfigCallbackProxy) OnConfigurationReset(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRcsConfigCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRcsConfigCallback, "onConfigurationReset"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRcsConfigCallback, "onConfigurationReset")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -92,7 +107,12 @@ func (p *RcsConfigCallbackProxy) OnRemoved(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRcsConfigCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRcsConfigCallback, "onRemoved"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRcsConfigCallback, "onRemoved")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -111,6 +131,11 @@ func (p *RcsConfigCallbackProxy) OnPreProvisioningReceived(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRcsConfigCallback, "onPreProvisioningReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRcsConfigCallback, "onPreProvisioningReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

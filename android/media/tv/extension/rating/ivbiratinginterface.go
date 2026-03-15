@@ -48,7 +48,12 @@ func (p *VbiRatingInterfaceProxy) GetVbiRating(
 	_data.WriteInterfaceToken(DescriptorIVbiRatingInterface)
 	_data.WriteString16(sessionToken)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVbiRatingInterface, "getVbiRating"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVbiRatingInterface, "getVbiRating")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -75,7 +80,12 @@ func (p *VbiRatingInterfaceProxy) AddVbiRatingListener(
 	_data.WriteString16(clientToken)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVbiRatingInterface, "addVbiRatingListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVbiRatingInterface, "addVbiRatingListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -96,7 +106,12 @@ func (p *VbiRatingInterfaceProxy) RemoveVbiRatingListener(
 	_data.WriteInterfaceToken(DescriptorIVbiRatingInterface)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVbiRatingInterface, "removeVbiRatingListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVbiRatingInterface, "removeVbiRatingListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

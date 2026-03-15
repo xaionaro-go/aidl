@@ -67,7 +67,12 @@ func (p *ProtectedProxy) ProtectedByInternet(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIProtected)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIProtected, "ProtectedByInternet"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIProtected, "ProtectedByInternet")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -86,7 +91,12 @@ func (p *ProtectedProxy) ProtectedByVibrate(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIProtected)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIProtected, "ProtectedByVibrate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIProtected, "ProtectedByVibrate")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -105,7 +115,12 @@ func (p *ProtectedProxy) ProtectedByInternetAndVibrateImplicitly(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIProtected)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIProtected, "ProtectedByInternetAndVibrateImplicitly"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIProtected, "ProtectedByInternetAndVibrateImplicitly")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -124,7 +139,12 @@ func (p *ProtectedProxy) ProtectedByInternetAndAccessNetworkStateImplicitly(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIProtected)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIProtected, "ProtectedByInternetAndAccessNetworkStateImplicitly"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIProtected, "ProtectedByInternetAndAccessNetworkStateImplicitly")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -143,7 +163,12 @@ func (p *ProtectedProxy) ProtectedByInternetAndReadSyncSettingsImplicitly(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIProtected)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIProtected, "ProtectedByInternetAndReadSyncSettingsImplicitly"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIProtected, "ProtectedByInternetAndReadSyncSettingsImplicitly")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -162,7 +187,12 @@ func (p *ProtectedProxy) ProtectedByTurnScreenOn(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIProtected)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIProtected, "ProtectedByTurnScreenOn"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIProtected, "ProtectedByTurnScreenOn")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -181,7 +211,12 @@ func (p *ProtectedProxy) ProtectedByReadContacts(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIProtected)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIProtected, "ProtectedByReadContacts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIProtected, "ProtectedByReadContacts")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -200,7 +235,12 @@ func (p *ProtectedProxy) ProtectedByReadCalendar(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIProtected)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIProtected, "ProtectedByReadCalendar"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIProtected, "ProtectedByReadCalendar")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -219,7 +259,12 @@ func (p *ProtectedProxy) ProtectedByInternetAndVibrate(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIProtected)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIProtected, "ProtectedByInternetAndVibrate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIProtected, "ProtectedByInternetAndVibrate")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -238,7 +283,12 @@ func (p *ProtectedProxy) ProtectedByInternetAndReadSyncSettings(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIProtected)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIProtected, "ProtectedByInternetAndReadSyncSettings"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIProtected, "ProtectedByInternetAndReadSyncSettings")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -257,7 +307,12 @@ func (p *ProtectedProxy) ProtectedByAccessWifiStateOrVibrate(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIProtected)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIProtected, "ProtectedByAccessWifiStateOrVibrate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIProtected, "ProtectedByAccessWifiStateOrVibrate")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -276,7 +331,12 @@ func (p *ProtectedProxy) ProtectedByInternetOrVibrate(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIProtected)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIProtected, "ProtectedByInternetOrVibrate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIProtected, "ProtectedByInternetOrVibrate")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -295,7 +355,12 @@ func (p *ProtectedProxy) NotProtected(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIProtected)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIProtected, "NotProtected"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIProtected, "NotProtected")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -314,7 +379,12 @@ func (p *ProtectedProxy) ManuallyProtected(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIProtected)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIProtected, "ManuallyProtected"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIProtected, "ManuallyProtected")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

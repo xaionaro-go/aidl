@@ -48,7 +48,12 @@ func (p *AppTraceRetrieverProxy) GetTraceFileDescriptor(
 	_data.WriteInt32(uid)
 	_data.WriteInt32(pid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAppTraceRetriever, "getTraceFileDescriptor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAppTraceRetriever, "getTraceFileDescriptor")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

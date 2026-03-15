@@ -37,11 +37,13 @@ func (m *MockBinder) Transact(
 }
 
 // ResolveCode always returns FirstCallTransaction for the mock.
+// The mock doesn't care about transaction codes — it returns
+// SecurityException regardless.
 func (m *MockBinder) ResolveCode(
 	_ string,
 	_ string,
-) binder.TransactionCode {
-	return binder.FirstCallTransaction
+) (binder.TransactionCode, error) {
+	return binder.FirstCallTransaction, nil
 }
 
 // LinkToDeath is a no-op for the mock.
@@ -71,6 +73,6 @@ func (m *MockBinder) Handle() uint32 {
 }
 
 // Transport returns nil since there is no underlying transport.
-func (m *MockBinder) Transport() binder.Transport {
+func (m *MockBinder) Transport() binder.VersionAwareTransport {
 	return nil
 }

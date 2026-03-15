@@ -54,7 +54,12 @@ func (p *StreamCommonProxy) Close(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStreamCommon)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStreamCommon, "close"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStreamCommon, "close")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -73,7 +78,12 @@ func (p *StreamCommonProxy) PrepareToClose(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStreamCommon)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStreamCommon, "prepareToClose"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStreamCommon, "prepareToClose")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -94,7 +104,12 @@ func (p *StreamCommonProxy) UpdateHwAvSyncId(
 	_data.WriteInterfaceToken(DescriptorIStreamCommon)
 	_data.WriteInt32(hwAvSyncId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStreamCommon, "updateHwAvSyncId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStreamCommon, "updateHwAvSyncId")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -123,7 +138,12 @@ func (p *StreamCommonProxy) GetVendorParameters(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStreamCommon, "getVendorParameters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStreamCommon, "getVendorParameters")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -168,7 +188,12 @@ func (p *StreamCommonProxy) SetVendorParameters(
 	}
 	_data.WriteBool(async)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStreamCommon, "setVendorParameters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStreamCommon, "setVendorParameters")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -189,7 +214,12 @@ func (p *StreamCommonProxy) AddEffect(
 	_data.WriteInterfaceToken(DescriptorIStreamCommon)
 	_data.WriteStrongBinder(effect.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStreamCommon, "addEffect"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStreamCommon, "addEffect")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -210,7 +240,12 @@ func (p *StreamCommonProxy) RemoveEffect(
 	_data.WriteInterfaceToken(DescriptorIStreamCommon)
 	_data.WriteStrongBinder(effect.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStreamCommon, "removeEffect"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStreamCommon, "removeEffect")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

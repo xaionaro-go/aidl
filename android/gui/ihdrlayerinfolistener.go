@@ -51,6 +51,11 @@ func (p *HdrLayerInfoListenerProxy) OnHdrLayerInfoChanged(
 	_data.WriteInt32(flags)
 	_data.WriteFloat32(maxDesiredHdrSdrRatio)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdrLayerInfoListener, "onHdrLayerInfoChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdrLayerInfoListener, "onHdrLayerInfoChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

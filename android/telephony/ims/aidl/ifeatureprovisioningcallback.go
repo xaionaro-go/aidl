@@ -49,7 +49,12 @@ func (p *FeatureProvisioningCallbackProxy) OnFeatureProvisioningChanged(
 	_data.WriteInt32(tech)
 	_data.WriteBool(isProvisioned)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFeatureProvisioningCallback, "onFeatureProvisioningChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFeatureProvisioningCallback, "onFeatureProvisioningChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -65,6 +70,11 @@ func (p *FeatureProvisioningCallbackProxy) OnRcsFeatureProvisioningChanged(
 	_data.WriteInt32(tech)
 	_data.WriteBool(isProvisioned)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFeatureProvisioningCallback, "onRcsFeatureProvisioningChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFeatureProvisioningCallback, "onRcsFeatureProvisioningChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

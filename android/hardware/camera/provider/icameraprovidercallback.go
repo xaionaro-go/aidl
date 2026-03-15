@@ -50,7 +50,12 @@ func (p *CameraProviderCallbackProxy) CameraDeviceStatusChange(
 	_data.WriteString16(cameraDeviceName)
 	_data.WriteInt32(int32(newStatus))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraProviderCallback, "cameraDeviceStatusChange"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraProviderCallback, "cameraDeviceStatusChange")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -73,7 +78,12 @@ func (p *CameraProviderCallbackProxy) TorchModeStatusChange(
 	_data.WriteString16(cameraDeviceName)
 	_data.WriteInt32(int32(newStatus))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraProviderCallback, "torchModeStatusChange"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraProviderCallback, "torchModeStatusChange")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -98,7 +108,12 @@ func (p *CameraProviderCallbackProxy) PhysicalCameraDeviceStatusChange(
 	_data.WriteString16(physicalCameraDeviceName)
 	_data.WriteInt32(int32(newStatus))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraProviderCallback, "physicalCameraDeviceStatusChange"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraProviderCallback, "physicalCameraDeviceStatusChange")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

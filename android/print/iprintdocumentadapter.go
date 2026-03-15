@@ -52,7 +52,12 @@ func (p *PrintDocumentAdapterProxy) SetObserver(
 	_data.WriteInterfaceToken(DescriptorIPrintDocumentAdapter)
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintDocumentAdapter, "setObserver"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintDocumentAdapter, "setObserver")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -62,7 +67,12 @@ func (p *PrintDocumentAdapterProxy) Start(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintDocumentAdapter)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintDocumentAdapter, "start"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintDocumentAdapter, "start")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -88,7 +98,12 @@ func (p *PrintDocumentAdapterProxy) Layout(
 	}
 	_data.WriteInt32(sequence)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintDocumentAdapter, "layout"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintDocumentAdapter, "layout")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -115,7 +130,12 @@ func (p *PrintDocumentAdapterProxy) Write(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteInt32(sequence)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintDocumentAdapter, "write"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintDocumentAdapter, "write")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -125,6 +145,11 @@ func (p *PrintDocumentAdapterProxy) Finish(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintDocumentAdapter)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintDocumentAdapter, "finish"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintDocumentAdapter, "finish")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

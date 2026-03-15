@@ -48,7 +48,12 @@ func (p *CamHostControlTuneQuietlyFlagProxy) AddHcTuneQuietlyFlagListener(
 	_data.WriteInterfaceToken(DescriptorICamHostControlTuneQuietlyFlag)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICamHostControlTuneQuietlyFlag, "addHcTuneQuietlyFlagListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICamHostControlTuneQuietlyFlag, "addHcTuneQuietlyFlagListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -69,7 +74,12 @@ func (p *CamHostControlTuneQuietlyFlagProxy) RemoveHcTuneQuietlyFlagListener(
 	_data.WriteInterfaceToken(DescriptorICamHostControlTuneQuietlyFlag)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICamHostControlTuneQuietlyFlag, "removeHcTuneQuietlyFlagListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICamHostControlTuneQuietlyFlag, "removeHcTuneQuietlyFlagListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -91,7 +101,12 @@ func (p *CamHostControlTuneQuietlyFlagProxy) GetHcTuneQuietlyFlag(
 	_data.WriteInterfaceToken(DescriptorICamHostControlTuneQuietlyFlag)
 	_data.WriteString16(sessionToken)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICamHostControlTuneQuietlyFlag, "getHcTuneQuietlyFlag"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICamHostControlTuneQuietlyFlag, "getHcTuneQuietlyFlag")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

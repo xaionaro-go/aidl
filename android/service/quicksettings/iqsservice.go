@@ -66,7 +66,12 @@ func (p *QSServiceProxy) GetTile(
 	_data.WriteInterfaceToken(DescriptorIQSService)
 	_data.WriteStrongBinder(tile.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQSService, "getTile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "getTile")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -94,7 +99,12 @@ func (p *QSServiceProxy) UpdateQsTile(
 	}
 	_data.WriteStrongBinder(service.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQSService, "updateQsTile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "updateQsTile")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -121,7 +131,12 @@ func (p *QSServiceProxy) UpdateStatusIcon(
 	}
 	_data.WriteString16(contentDescription)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQSService, "updateStatusIcon"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "updateStatusIcon")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -142,7 +157,12 @@ func (p *QSServiceProxy) OnShowDialog(
 	_data.WriteInterfaceToken(DescriptorIQSService)
 	_data.WriteStrongBinder(tile.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQSService, "onShowDialog"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "onShowDialog")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -163,7 +183,12 @@ func (p *QSServiceProxy) OnStartActivity(
 	_data.WriteInterfaceToken(DescriptorIQSService)
 	_data.WriteStrongBinder(tile.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQSService, "onStartActivity"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "onStartActivity")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -188,7 +213,12 @@ func (p *QSServiceProxy) StartActivity(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQSService, "startActivity"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "startActivity")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -208,7 +238,12 @@ func (p *QSServiceProxy) IsLocked(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIQSService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQSService, "isLocked"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "isLocked")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -232,7 +267,12 @@ func (p *QSServiceProxy) IsSecure(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIQSService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQSService, "isSecure"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "isSecure")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -257,7 +297,12 @@ func (p *QSServiceProxy) StartUnlockAndRun(
 	_data.WriteInterfaceToken(DescriptorIQSService)
 	_data.WriteStrongBinder(tile.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQSService, "startUnlockAndRun"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "startUnlockAndRun")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -278,7 +323,12 @@ func (p *QSServiceProxy) OnDialogHidden(
 	_data.WriteInterfaceToken(DescriptorIQSService)
 	_data.WriteStrongBinder(tile.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQSService, "onDialogHidden"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "onDialogHidden")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -299,7 +349,12 @@ func (p *QSServiceProxy) OnStartSuccessful(
 	_data.WriteInterfaceToken(DescriptorIQSService)
 	_data.WriteStrongBinder(tile.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQSService, "onStartSuccessful"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "onStartSuccessful")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

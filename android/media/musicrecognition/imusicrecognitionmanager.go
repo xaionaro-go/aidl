@@ -47,7 +47,12 @@ func (p *MusicRecognitionManagerProxy) BeginRecognition(
 	}
 	_data.WriteStrongBinder(callback.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMusicRecognitionManager, "beginRecognition"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMusicRecognitionManager, "beginRecognition")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

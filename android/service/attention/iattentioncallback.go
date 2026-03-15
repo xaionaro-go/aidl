@@ -47,7 +47,12 @@ func (p *AttentionCallbackProxy) OnSuccess(
 	_data.WriteInt32(result)
 	_data.WriteInt64(timestamp)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAttentionCallback, "onSuccess"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAttentionCallback, "onSuccess")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -59,6 +64,11 @@ func (p *AttentionCallbackProxy) OnFailure(
 	_data.WriteInterfaceToken(DescriptorIAttentionCallback)
 	_data.WriteInt32(error_)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAttentionCallback, "onFailure"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAttentionCallback, "onFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

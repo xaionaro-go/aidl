@@ -42,7 +42,12 @@ func (p *AppTransitionAnimationSpecsFutureProxy) Get(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppTransitionAnimationSpecsFuture)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAppTransitionAnimationSpecsFuture, "get"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAppTransitionAnimationSpecsFuture, "get")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

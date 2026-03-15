@@ -45,6 +45,11 @@ func (p *MidiDeviceOpenCallbackProxy) OnDeviceOpened(
 	_data.WriteStrongBinder(server.AsBinder().Handle())
 	_data.WriteStrongBinder(token.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMidiDeviceOpenCallback, "onDeviceOpened"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMidiDeviceOpenCallback, "onDeviceOpened")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

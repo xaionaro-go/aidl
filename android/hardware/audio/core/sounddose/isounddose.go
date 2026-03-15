@@ -53,7 +53,12 @@ func (p *SoundDoseProxy) SetOutputRs2UpperBound(
 	_data.WriteInterfaceToken(DescriptorISoundDose)
 	_data.WriteFloat32(rs2ValueDbA)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundDose, "setOutputRs2UpperBound"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundDose, "setOutputRs2UpperBound")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -73,7 +78,12 @@ func (p *SoundDoseProxy) GetOutputRs2UpperBound(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundDose)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundDose, "getOutputRs2UpperBound"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundDose, "getOutputRs2UpperBound")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -98,7 +108,12 @@ func (p *SoundDoseProxy) RegisterSoundDoseCallback(
 	_data.WriteInterfaceToken(DescriptorISoundDose)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundDose, "registerSoundDoseCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundDose, "registerSoundDoseCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

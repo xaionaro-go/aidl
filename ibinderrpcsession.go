@@ -42,7 +42,12 @@ func (p *BinderRpcSessionProxy) GetName(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcSession, "getName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcSession, "getName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

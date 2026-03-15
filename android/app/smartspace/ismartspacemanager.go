@@ -61,7 +61,12 @@ func (p *SmartspaceManagerProxy) CreateSmartspaceSession(
 	}
 	_data.WriteStrongBinder(token.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISmartspaceManager, "createSmartspaceSession"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISmartspaceManager, "createSmartspaceSession")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -79,7 +84,12 @@ func (p *SmartspaceManagerProxy) NotifySmartspaceEvent(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISmartspaceManager, "notifySmartspaceEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISmartspaceManager, "notifySmartspaceEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -93,7 +103,12 @@ func (p *SmartspaceManagerProxy) RequestSmartspaceUpdate(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISmartspaceManager, "requestSmartspaceUpdate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISmartspaceManager, "requestSmartspaceUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -109,7 +124,12 @@ func (p *SmartspaceManagerProxy) RegisterSmartspaceUpdates(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISmartspaceManager, "registerSmartspaceUpdates"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISmartspaceManager, "registerSmartspaceUpdates")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -125,7 +145,12 @@ func (p *SmartspaceManagerProxy) UnregisterSmartspaceUpdates(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISmartspaceManager, "unregisterSmartspaceUpdates"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISmartspaceManager, "unregisterSmartspaceUpdates")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -139,6 +164,11 @@ func (p *SmartspaceManagerProxy) DestroySmartspaceSession(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISmartspaceManager, "destroySmartspaceSession"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISmartspaceManager, "destroySmartspaceSession")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

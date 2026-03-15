@@ -36,7 +36,7 @@ type ServiceManager struct {
 
 // New creates a ServiceManager client using the given transport.
 func New(
-	transport binder.Transport,
+	transport binder.VersionAwareTransport,
 ) *ServiceManager {
 	return &ServiceManager{
 		remote: binder.NewProxyBinder(transport, serviceManagerHandle),
@@ -172,8 +172,8 @@ func (sm *ServiceManager) IsDeclared(
 	return val, nil
 }
 
-// transport extracts the Transport from the ProxyBinder.
-func (sm *ServiceManager) transport() binder.Transport {
+// transport extracts the VersionAwareTransport from the ProxyBinder.
+func (sm *ServiceManager) transport() binder.VersionAwareTransport {
 	pb, ok := sm.remote.(*binder.ProxyBinder)
 	if !ok {
 		panic("servicemanager: remote is not a *binder.ProxyBinder")

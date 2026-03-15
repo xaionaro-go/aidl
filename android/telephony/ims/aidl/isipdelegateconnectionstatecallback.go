@@ -52,7 +52,12 @@ func (p *SipDelegateConnectionStateCallbackProxy) OnCreated(
 	_data.WriteInterfaceToken(DescriptorISipDelegateConnectionStateCallback)
 	_data.WriteStrongBinder(c.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISipDelegateConnectionStateCallback, "onCreated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISipDelegateConnectionStateCallback, "onCreated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -77,7 +82,12 @@ func (p *SipDelegateConnectionStateCallbackProxy) OnFeatureTagStatusChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISipDelegateConnectionStateCallback, "onFeatureTagStatusChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISipDelegateConnectionStateCallback, "onFeatureTagStatusChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -91,7 +101,12 @@ func (p *SipDelegateConnectionStateCallbackProxy) OnImsConfigurationChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISipDelegateConnectionStateCallback, "onImsConfigurationChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISipDelegateConnectionStateCallback, "onImsConfigurationChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -105,7 +120,12 @@ func (p *SipDelegateConnectionStateCallbackProxy) OnConfigurationChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISipDelegateConnectionStateCallback, "onConfigurationChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISipDelegateConnectionStateCallback, "onConfigurationChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -117,6 +137,11 @@ func (p *SipDelegateConnectionStateCallbackProxy) OnDestroyed(
 	_data.WriteInterfaceToken(DescriptorISipDelegateConnectionStateCallback)
 	_data.WriteInt32(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISipDelegateConnectionStateCallback, "onDestroyed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISipDelegateConnectionStateCallback, "onDestroyed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

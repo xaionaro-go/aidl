@@ -51,7 +51,12 @@ func (p *AudioDeviceVolumeDispatcherProxy) DispatchDeviceVolumeChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAudioDeviceVolumeDispatcher, "dispatchDeviceVolumeChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAudioDeviceVolumeDispatcher, "dispatchDeviceVolumeChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -73,6 +78,11 @@ func (p *AudioDeviceVolumeDispatcherProxy) DispatchDeviceVolumeAdjusted(
 	_data.WriteInt32(direction)
 	_data.WriteInt32(mode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAudioDeviceVolumeDispatcher, "dispatchDeviceVolumeAdjusted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAudioDeviceVolumeDispatcher, "dispatchDeviceVolumeAdjusted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

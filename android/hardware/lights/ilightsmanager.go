@@ -50,7 +50,12 @@ func (p *LightsManagerProxy) GetLights(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILightsManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILightsManager, "getLights"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILightsManager, "getLights")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -85,7 +90,12 @@ func (p *LightsManagerProxy) GetLightState(
 	_data.WriteInterfaceToken(DescriptorILightsManager)
 	_data.WriteInt32(lightId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILightsManager, "getLightState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILightsManager, "getLightState")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -111,7 +121,12 @@ func (p *LightsManagerProxy) OpenSession(
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(priority)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILightsManager, "openSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILightsManager, "openSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -132,7 +147,12 @@ func (p *LightsManagerProxy) CloseSession(
 	_data.WriteInterfaceToken(DescriptorILightsManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILightsManager, "closeSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILightsManager, "closeSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -173,7 +193,12 @@ func (p *LightsManagerProxy) SetLightStates(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILightsManager, "setLightStates"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILightsManager, "setLightStates")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

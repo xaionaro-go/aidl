@@ -51,7 +51,12 @@ func (p *ImsCapabilityCallbackProxy) OnQueryCapabilityConfiguration(
 	_data.WriteInt32(radioTech)
 	_data.WriteBool(enabled)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCapabilityCallback, "onQueryCapabilityConfiguration"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCapabilityCallback, "onQueryCapabilityConfiguration")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -67,7 +72,12 @@ func (p *ImsCapabilityCallbackProxy) OnChangeCapabilityConfigurationError(
 	_data.WriteInt32(radioTech)
 	_data.WriteInt32(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCapabilityCallback, "onChangeCapabilityConfigurationError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCapabilityCallback, "onChangeCapabilityConfigurationError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -79,6 +89,11 @@ func (p *ImsCapabilityCallbackProxy) OnCapabilitiesStatusChanged(
 	_data.WriteInterfaceToken(DescriptorIImsCapabilityCallback)
 	_data.WriteInt32(config)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCapabilityCallback, "onCapabilitiesStatusChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCapabilityCallback, "onCapabilitiesStatusChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

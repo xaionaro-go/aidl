@@ -52,7 +52,12 @@ func (p *SchedulingPolicyServiceProxy) RequestPriority(
 	_data.WriteInt32(prio)
 	_data.WriteBool(isForApp)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISchedulingPolicyService, "requestPriority"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISchedulingPolicyService, "requestPriority")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -80,7 +85,12 @@ func (p *SchedulingPolicyServiceProxy) RequestCpusetBoost(
 	_data.WriteBool(enable)
 	_data.WriteStrongBinder(client.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISchedulingPolicyService, "requestCpusetBoost"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISchedulingPolicyService, "requestCpusetBoost")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

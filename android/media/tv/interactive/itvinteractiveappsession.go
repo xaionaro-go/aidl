@@ -144,7 +144,12 @@ func (p *TvInteractiveAppSessionProxy) StartInteractiveApp(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "startInteractiveApp"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "startInteractiveApp")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -154,7 +159,12 @@ func (p *TvInteractiveAppSessionProxy) StopInteractiveApp(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "stopInteractiveApp"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "stopInteractiveApp")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -164,7 +174,12 @@ func (p *TvInteractiveAppSessionProxy) ResetInteractiveApp(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "resetInteractiveApp"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "resetInteractiveApp")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -182,7 +197,12 @@ func (p *TvInteractiveAppSessionProxy) CreateBiInteractiveApp(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "createBiInteractiveApp"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "createBiInteractiveApp")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -194,7 +214,12 @@ func (p *TvInteractiveAppSessionProxy) DestroyBiInteractiveApp(
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 	_data.WriteString16(biIAppId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "destroyBiInteractiveApp"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "destroyBiInteractiveApp")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -206,7 +231,12 @@ func (p *TvInteractiveAppSessionProxy) SetTeletextAppEnabled(
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 	_data.WriteBool(enable)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "setTeletextAppEnabled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "setTeletextAppEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -220,7 +250,12 @@ func (p *TvInteractiveAppSessionProxy) SendCurrentVideoBounds(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendCurrentVideoBounds"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendCurrentVideoBounds")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -234,7 +269,12 @@ func (p *TvInteractiveAppSessionProxy) SendCurrentChannelUri(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendCurrentChannelUri"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendCurrentChannelUri")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -246,7 +286,12 @@ func (p *TvInteractiveAppSessionProxy) SendCurrentChannelLcn(
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 	_data.WriteInt32(lcn)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendCurrentChannelLcn"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendCurrentChannelLcn")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -258,7 +303,12 @@ func (p *TvInteractiveAppSessionProxy) SendStreamVolume(
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 	_data.WriteFloat32(volume)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendStreamVolume"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendStreamVolume")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -279,7 +329,12 @@ func (p *TvInteractiveAppSessionProxy) SendTrackInfoList(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendTrackInfoList"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendTrackInfoList")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -291,7 +346,12 @@ func (p *TvInteractiveAppSessionProxy) SendCurrentTvInputId(
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 	_data.WriteString16(inputId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendCurrentTvInputId"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendCurrentTvInputId")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -303,7 +363,12 @@ func (p *TvInteractiveAppSessionProxy) SendTimeShiftMode(
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 	_data.WriteInt32(mode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendTimeShiftMode"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendTimeShiftMode")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -322,7 +387,12 @@ func (p *TvInteractiveAppSessionProxy) SendAvailableSpeeds(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendAvailableSpeeds"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendAvailableSpeeds")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -343,7 +413,12 @@ func (p *TvInteractiveAppSessionProxy) SendSigningResult(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendSigningResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendSigningResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -361,7 +436,12 @@ func (p *TvInteractiveAppSessionProxy) SendCertificate(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendCertificate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendCertificate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -375,7 +455,12 @@ func (p *TvInteractiveAppSessionProxy) SendTvRecordingInfo(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendTvRecordingInfo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendTvRecordingInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -396,7 +481,12 @@ func (p *TvInteractiveAppSessionProxy) SendTvRecordingInfoList(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendTvRecordingInfoList"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendTvRecordingInfoList")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -412,7 +502,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyError(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -426,7 +521,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyTimeShiftPlaybackParams(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyTimeShiftPlaybackParams"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyTimeShiftPlaybackParams")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -440,7 +540,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyTimeShiftStatusChanged(
 	_data.WriteString16(inputId)
 	_data.WriteInt32(status)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyTimeShiftStatusChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyTimeShiftStatusChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -454,7 +559,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyTimeShiftStartPositionChanged(
 	_data.WriteString16(inputId)
 	_data.WriteInt64(timeMs)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyTimeShiftStartPositionChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyTimeShiftStartPositionChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -468,7 +578,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyTimeShiftCurrentPositionChanged(
 	_data.WriteString16(inputId)
 	_data.WriteInt64(timeMs)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyTimeShiftCurrentPositionChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyTimeShiftCurrentPositionChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -482,7 +597,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyRecordingConnectionFailed(
 	_data.WriteString16(recordingId)
 	_data.WriteString16(inputId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyRecordingConnectionFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyRecordingConnectionFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -496,7 +616,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyRecordingDisconnected(
 	_data.WriteString16(recordingId)
 	_data.WriteString16(inputId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyRecordingDisconnected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyRecordingDisconnected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -512,7 +637,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyRecordingTuned(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyRecordingTuned"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyRecordingTuned")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -526,7 +656,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyRecordingError(
 	_data.WriteString16(recordingId)
 	_data.WriteInt32(err)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyRecordingError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyRecordingError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -540,7 +675,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyRecordingScheduled(
 	_data.WriteString16(recordingId)
 	_data.WriteString16(requestId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyRecordingScheduled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyRecordingScheduled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -550,7 +690,12 @@ func (p *TvInteractiveAppSessionProxy) Release(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "release"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "release")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -564,7 +709,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyTuned(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyTuned"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyTuned")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -578,7 +728,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyTrackSelected(
 	_data.WriteInt32(type_)
 	_data.WriteString16(trackId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyTrackSelected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyTrackSelected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -599,7 +754,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyTracksChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyTracksChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyTracksChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -609,7 +769,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyVideoAvailable(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyVideoAvailable"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyVideoAvailable")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -621,7 +786,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyVideoUnavailable(
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 	_data.WriteInt32(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyVideoUnavailable"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyVideoUnavailable")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -633,7 +803,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyVideoFreezeUpdated(
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 	_data.WriteBool(isFrozen)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyVideoFreezeUpdated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyVideoFreezeUpdated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -643,7 +818,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyContentAllowed(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyContentAllowed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyContentAllowed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -655,7 +835,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyContentBlocked(
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 	_data.WriteString16(rating)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyContentBlocked"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyContentBlocked")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -667,7 +852,12 @@ func (p *TvInteractiveAppSessionProxy) NotifySignalStrength(
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 	_data.WriteInt32(strength)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifySignalStrength"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifySignalStrength")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -681,7 +871,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyRecordingStarted(
 	_data.WriteString16(recordingId)
 	_data.WriteString16(requestId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyRecordingStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyRecordingStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -693,7 +888,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyRecordingStopped(
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 	_data.WriteString16(recordingId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyRecordingStopped"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyRecordingStopped")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -709,7 +909,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyTvMessage(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyTvMessage"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyTvMessage")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -720,7 +925,12 @@ func (p *TvInteractiveAppSessionProxy) SetSurface(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "setSurface"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "setSurface")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -736,7 +946,12 @@ func (p *TvInteractiveAppSessionProxy) DispatchSurfaceChanged(
 	_data.WriteInt32(width)
 	_data.WriteInt32(height)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "dispatchSurfaceChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "dispatchSurfaceChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -750,7 +965,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyBroadcastInfoResponse(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyBroadcastInfoResponse"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyBroadcastInfoResponse")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -764,7 +984,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyAdResponse(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyAdResponse"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyAdResponse")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -778,7 +1003,12 @@ func (p *TvInteractiveAppSessionProxy) NotifyAdBufferConsumed(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyAdBufferConsumed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "notifyAdBufferConsumed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -799,7 +1029,12 @@ func (p *TvInteractiveAppSessionProxy) SendSelectedTrackInfo(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendSelectedTrackInfo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "sendSelectedTrackInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -815,7 +1050,12 @@ func (p *TvInteractiveAppSessionProxy) CreateMediaView(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "createMediaView"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "createMediaView")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -829,7 +1069,12 @@ func (p *TvInteractiveAppSessionProxy) RelayoutMediaView(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "relayoutMediaView"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "relayoutMediaView")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -839,6 +1084,11 @@ func (p *TvInteractiveAppSessionProxy) RemoveMediaView(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "removeMediaView"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSession, "removeMediaView")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

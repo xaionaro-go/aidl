@@ -43,6 +43,11 @@ func (p *SetDefaultSmdpAddressCallbackProxy) OnComplete(
 	_data.WriteInterfaceToken(DescriptorISetDefaultSmdpAddressCallback)
 	_data.WriteInt32(resultCode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISetDefaultSmdpAddressCallback, "onComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISetDefaultSmdpAddressCallback, "onComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

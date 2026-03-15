@@ -77,7 +77,12 @@ func (p *SurfaceComposerClientProxy) CreateSurface(
 	_data.WriteInt32(flags)
 	_data.WriteStrongBinder(parent.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISurfaceComposerClient, "createSurface"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposerClient, "createSurface")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -101,7 +106,12 @@ func (p *SurfaceComposerClientProxy) ClearLayerFrameStats(
 	_data.WriteInterfaceToken(DescriptorISurfaceComposerClient)
 	_data.WriteStrongBinder(handle.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISurfaceComposerClient, "clearLayerFrameStats"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposerClient, "clearLayerFrameStats")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -123,7 +133,12 @@ func (p *SurfaceComposerClientProxy) GetLayerFrameStats(
 	_data.WriteInterfaceToken(DescriptorISurfaceComposerClient)
 	_data.WriteStrongBinder(handle.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISurfaceComposerClient, "getLayerFrameStats"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposerClient, "getLayerFrameStats")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -148,7 +163,12 @@ func (p *SurfaceComposerClientProxy) MirrorSurface(
 	_data.WriteInterfaceToken(DescriptorISurfaceComposerClient)
 	_data.WriteStrongBinder(mirrorFromHandle.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISurfaceComposerClient, "mirrorSurface"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposerClient, "mirrorSurface")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -173,7 +193,12 @@ func (p *SurfaceComposerClientProxy) MirrorDisplay(
 	_data.WriteInterfaceToken(DescriptorISurfaceComposerClient)
 	_data.WriteInt64(displayId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISurfaceComposerClient, "mirrorDisplay"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposerClient, "mirrorDisplay")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -196,7 +221,12 @@ func (p *SurfaceComposerClientProxy) GetSchedulingPolicy(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposerClient)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISurfaceComposerClient, "getSchedulingPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposerClient, "getSchedulingPolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

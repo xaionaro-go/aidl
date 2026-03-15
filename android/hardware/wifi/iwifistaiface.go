@@ -110,7 +110,12 @@ func (p *WifiStaIfaceProxy) GetName(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "getName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "getName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -137,7 +142,12 @@ func (p *WifiStaIfaceProxy) ConfigureRoaming(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "configureRoaming"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "configureRoaming")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -156,7 +166,12 @@ func (p *WifiStaIfaceProxy) DisableLinkLayerStatsCollection(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "disableLinkLayerStatsCollection"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "disableLinkLayerStatsCollection")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -177,7 +192,12 @@ func (p *WifiStaIfaceProxy) EnableLinkLayerStatsCollection(
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 	_data.WriteBool(debug)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "enableLinkLayerStatsCollection"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "enableLinkLayerStatsCollection")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -198,7 +218,12 @@ func (p *WifiStaIfaceProxy) EnableNdOffload(
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 	_data.WriteBool(enable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "enableNdOffload"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "enableNdOffload")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -218,7 +243,12 @@ func (p *WifiStaIfaceProxy) GetApfPacketFilterCapabilities(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "getApfPacketFilterCapabilities"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "getApfPacketFilterCapabilities")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -241,7 +271,12 @@ func (p *WifiStaIfaceProxy) GetBackgroundScanCapabilities(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "getBackgroundScanCapabilities"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "getBackgroundScanCapabilities")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -264,7 +299,12 @@ func (p *WifiStaIfaceProxy) GetFeatureSet(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "getFeatureSet"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "getFeatureSet")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -288,7 +328,12 @@ func (p *WifiStaIfaceProxy) GetDebugRxPacketFates(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "getDebugRxPacketFates"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "getDebugRxPacketFates")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -321,7 +366,12 @@ func (p *WifiStaIfaceProxy) GetDebugTxPacketFates(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "getDebugTxPacketFates"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "getDebugTxPacketFates")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -354,7 +404,12 @@ func (p *WifiStaIfaceProxy) GetFactoryMacAddress(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "getFactoryMacAddress"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "getFactoryMacAddress")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -388,7 +443,12 @@ func (p *WifiStaIfaceProxy) GetLinkLayerStats(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "getLinkLayerStats"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "getLinkLayerStats")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -411,7 +471,12 @@ func (p *WifiStaIfaceProxy) GetRoamingCapabilities(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "getRoamingCapabilities"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "getRoamingCapabilities")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -442,7 +507,12 @@ func (p *WifiStaIfaceProxy) InstallApfPacketFilter(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "installApfPacketFilter"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "installApfPacketFilter")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -462,7 +532,12 @@ func (p *WifiStaIfaceProxy) ReadApfPacketFilterData(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "readApfPacketFilterData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "readApfPacketFilterData")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -497,7 +572,12 @@ func (p *WifiStaIfaceProxy) RegisterEventCallback(
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "registerEventCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "registerEventCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -525,7 +605,12 @@ func (p *WifiStaIfaceProxy) SetMacAddress(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "setMacAddress"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "setMacAddress")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -546,7 +631,12 @@ func (p *WifiStaIfaceProxy) SetRoamingState(
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 	_data.WritePaddedByte(byte(state))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "setRoamingState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "setRoamingState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -567,7 +657,12 @@ func (p *WifiStaIfaceProxy) SetScanMode(
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 	_data.WriteBool(enable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "setScanMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "setScanMode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -592,7 +687,12 @@ func (p *WifiStaIfaceProxy) StartBackgroundScan(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "startBackgroundScan"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "startBackgroundScan")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -611,7 +711,12 @@ func (p *WifiStaIfaceProxy) StartDebugPacketFateMonitoring(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "startDebugPacketFateMonitoring"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "startDebugPacketFateMonitoring")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -636,7 +741,12 @@ func (p *WifiStaIfaceProxy) StartRssiMonitoring(
 	_data.WriteInt32(maxRssi)
 	_data.WriteInt32(minRssi)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "startRssiMonitoring"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "startRssiMonitoring")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -688,7 +798,12 @@ func (p *WifiStaIfaceProxy) StartSendingKeepAlivePackets(
 	}
 	_data.WriteInt32(periodInMs)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "startSendingKeepAlivePackets"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "startSendingKeepAlivePackets")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -709,7 +824,12 @@ func (p *WifiStaIfaceProxy) StopBackgroundScan(
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 	_data.WriteInt32(cmdId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "stopBackgroundScan"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "stopBackgroundScan")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -730,7 +850,12 @@ func (p *WifiStaIfaceProxy) StopRssiMonitoring(
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 	_data.WriteInt32(cmdId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "stopRssiMonitoring"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "stopRssiMonitoring")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -751,7 +876,12 @@ func (p *WifiStaIfaceProxy) StopSendingKeepAlivePackets(
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 	_data.WriteInt32(cmdId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "stopSendingKeepAlivePackets"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "stopSendingKeepAlivePackets")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -772,7 +902,12 @@ func (p *WifiStaIfaceProxy) SetDtimMultiplier(
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 	_data.WriteInt32(multiplier)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "setDtimMultiplier"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "setDtimMultiplier")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -792,7 +927,12 @@ func (p *WifiStaIfaceProxy) GetCachedScanData(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "getCachedScanData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "getCachedScanData")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -815,7 +955,12 @@ func (p *WifiStaIfaceProxy) TwtGetCapabilities(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "twtGetCapabilities"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "twtGetCapabilities")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -843,7 +988,12 @@ func (p *WifiStaIfaceProxy) TwtSessionSetup(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "twtSessionSetup"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "twtSessionSetup")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -870,7 +1020,12 @@ func (p *WifiStaIfaceProxy) TwtSessionUpdate(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "twtSessionUpdate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "twtSessionUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -893,7 +1048,12 @@ func (p *WifiStaIfaceProxy) TwtSessionSuspend(
 	_data.WriteInt32(cmdId)
 	_data.WriteInt32(sessionId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "twtSessionSuspend"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "twtSessionSuspend")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -916,7 +1076,12 @@ func (p *WifiStaIfaceProxy) TwtSessionResume(
 	_data.WriteInt32(cmdId)
 	_data.WriteInt32(sessionId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "twtSessionResume"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "twtSessionResume")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -939,7 +1104,12 @@ func (p *WifiStaIfaceProxy) TwtSessionTeardown(
 	_data.WriteInt32(cmdId)
 	_data.WriteInt32(sessionId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "twtSessionTeardown"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "twtSessionTeardown")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -962,7 +1132,12 @@ func (p *WifiStaIfaceProxy) TwtSessionGetStats(
 	_data.WriteInt32(cmdId)
 	_data.WriteInt32(sessionId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIface, "twtSessionGetStats"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "twtSessionGetStats")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

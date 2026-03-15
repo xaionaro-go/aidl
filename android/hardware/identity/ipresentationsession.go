@@ -50,7 +50,12 @@ func (p *PresentationSessionProxy) GetEphemeralKeyPair(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPresentationSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPresentationSession, "getEphemeralKeyPair"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPresentationSession, "getEphemeralKeyPair")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -84,7 +89,12 @@ func (p *PresentationSessionProxy) GetAuthChallenge(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPresentationSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPresentationSession, "getAuthChallenge"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPresentationSession, "getAuthChallenge")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -116,7 +126,12 @@ func (p *PresentationSessionProxy) SetReaderEphemeralPublicKey(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPresentationSession, "setReaderEphemeralPublicKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPresentationSession, "setReaderEphemeralPublicKey")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -144,7 +159,12 @@ func (p *PresentationSessionProxy) SetSessionTranscript(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPresentationSession, "setSessionTranscript"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPresentationSession, "setSessionTranscript")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -173,7 +193,12 @@ func (p *PresentationSessionProxy) GetCredential(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPresentationSession, "getCredential"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPresentationSession, "getCredential")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

@@ -54,7 +54,12 @@ func (p *CellInfoCallbackProxy) OnCellInfo(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICellInfoCallback, "onCellInfo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICellInfoCallback, "onCellInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -70,6 +75,11 @@ func (p *CellInfoCallbackProxy) OnError(
 	_data.WriteString16(exceptionName)
 	_data.WriteString16(message)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICellInfoCallback, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICellInfoCallback, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

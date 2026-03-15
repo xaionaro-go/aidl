@@ -72,7 +72,12 @@ func (p *FilterProxy) GetQueueDesc(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFilter)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFilter, "getQueueDesc"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFilter, "getQueueDesc")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -94,7 +99,12 @@ func (p *FilterProxy) Close(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFilter)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFilter, "close"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFilter, "close")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -117,7 +127,12 @@ func (p *FilterProxy) Configure(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFilter, "configure"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFilter, "configure")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -140,7 +155,12 @@ func (p *FilterProxy) ConfigureAvStreamType(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFilter, "configureAvStreamType"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFilter, "configureAvStreamType")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -161,7 +181,12 @@ func (p *FilterProxy) ConfigureIpCid(
 	_data.WriteInterfaceToken(DescriptorIFilter)
 	_data.WriteInt32(ipCid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFilter, "configureIpCid"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFilter, "configureIpCid")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -182,7 +207,12 @@ func (p *FilterProxy) ConfigureMonitorEvent(
 	_data.WriteInterfaceToken(DescriptorIFilter)
 	_data.WriteInt32(monitorEventTypes)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFilter, "configureMonitorEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFilter, "configureMonitorEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -201,7 +231,12 @@ func (p *FilterProxy) Start(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFilter)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFilter, "start"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFilter, "start")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -220,7 +255,12 @@ func (p *FilterProxy) Stop(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFilter)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFilter, "stop"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFilter, "stop")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -239,7 +279,12 @@ func (p *FilterProxy) Flush(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFilter)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFilter, "flush"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFilter, "flush")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -260,7 +305,12 @@ func (p *FilterProxy) GetAvSharedHandle(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFilter)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFilter, "getAvSharedHandle"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFilter, "getAvSharedHandle")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -287,7 +337,12 @@ func (p *FilterProxy) GetId(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFilter)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFilter, "getId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFilter, "getId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -311,7 +366,12 @@ func (p *FilterProxy) GetId64Bit(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFilter)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFilter, "getId64Bit"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFilter, "getId64Bit")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -340,7 +400,12 @@ func (p *FilterProxy) ReleaseAvHandle(
 	}
 	_data.WriteInt64(avDataId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFilter, "releaseAvHandle"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFilter, "releaseAvHandle")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -361,7 +426,12 @@ func (p *FilterProxy) SetDataSource(
 	_data.WriteInterfaceToken(DescriptorIFilter)
 	_data.WriteStrongBinder(filter.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFilter, "setDataSource"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFilter, "setDataSource")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -384,7 +454,12 @@ func (p *FilterProxy) SetDelayHint(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFilter, "setDelayHint"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFilter, "setDelayHint")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

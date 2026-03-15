@@ -65,7 +65,12 @@ func (p *RadioModemIndicationProxy) HardwareConfigChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioModemIndication, "hardwareConfigChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioModemIndication, "hardwareConfigChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -79,7 +84,12 @@ func (p *RadioModemIndicationProxy) ModemReset(
 	_data.WriteInt32(int32(type_))
 	_data.WriteString16(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioModemIndication, "modemReset"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioModemIndication, "modemReset")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -95,7 +105,12 @@ func (p *RadioModemIndicationProxy) RadioCapabilityIndication(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioModemIndication, "radioCapabilityIndication"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioModemIndication, "radioCapabilityIndication")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -109,7 +124,12 @@ func (p *RadioModemIndicationProxy) RadioStateChanged(
 	_data.WriteInt32(int32(type_))
 	_data.WriteInt32(int32(radioState))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioModemIndication, "radioStateChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioModemIndication, "radioStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -121,7 +141,12 @@ func (p *RadioModemIndicationProxy) RilConnected(
 	_data.WriteInterfaceToken(DescriptorIRadioModemIndication)
 	_data.WriteInt32(int32(type_))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioModemIndication, "rilConnected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioModemIndication, "rilConnected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -137,6 +162,11 @@ func (p *RadioModemIndicationProxy) OnImeiMappingChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioModemIndication, "onImeiMappingChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioModemIndication, "onImeiMappingChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

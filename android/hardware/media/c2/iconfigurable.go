@@ -58,7 +58,12 @@ func (p *ConfigurableProxy) Config(
 	}
 	_data.WriteBool(mayBlock)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIConfigurable, "config"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIConfigurable, "config")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -78,7 +83,12 @@ func (p *ConfigurableProxy) GetId(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIConfigurable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIConfigurable, "getId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIConfigurable, "getId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -102,7 +112,12 @@ func (p *ConfigurableProxy) GetName(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIConfigurable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIConfigurable, "getName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIConfigurable, "getName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -137,7 +152,12 @@ func (p *ConfigurableProxy) Query(
 	}
 	_data.WriteBool(mayBlock)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIConfigurable, "query"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIConfigurable, "query")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -161,7 +181,12 @@ func (p *ConfigurableProxy) QuerySupportedParams(
 	_data.WriteInt32(start)
 	_data.WriteInt32(count)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIConfigurable, "querySupportedParams"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIConfigurable, "querySupportedParams")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -207,7 +232,12 @@ func (p *ConfigurableProxy) QuerySupportedValues(
 	}
 	_data.WriteBool(mayBlock)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIConfigurable, "querySupportedValues"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIConfigurable, "querySupportedValues")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

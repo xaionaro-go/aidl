@@ -47,7 +47,12 @@ func (p *DeviceSettingsConfigProviderServiceProxy) GetDeviceSettingsConfig(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDeviceSettingsConfigProviderService, "getDeviceSettingsConfig"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDeviceSettingsConfigProviderService, "getDeviceSettingsConfig")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

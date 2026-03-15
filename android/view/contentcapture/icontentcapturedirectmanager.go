@@ -45,6 +45,11 @@ func (p *ContentCaptureDirectManagerProxy) SendEvents(
 	_data.WriteInterfaceToken(DescriptorIContentCaptureDirectManager)
 	_data.WriteInt32(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureDirectManager, "sendEvents"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureDirectManager, "sendEvents")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -45,7 +45,12 @@ func (p *StreamCallbackProxy) OnTransferReady(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStreamCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStreamCallback, "onTransferReady"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStreamCallback, "onTransferReady")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -55,7 +60,12 @@ func (p *StreamCallbackProxy) OnError(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStreamCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStreamCallback, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStreamCallback, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -65,6 +75,11 @@ func (p *StreamCallbackProxy) OnDrainReady(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStreamCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStreamCallback, "onDrainReady"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStreamCallback, "onDrainReady")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

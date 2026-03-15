@@ -76,7 +76,12 @@ func (p *PreviewExtenderImplProxy) OnInit(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteString16(cameraId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "onInit"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "onInit")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -97,7 +102,12 @@ func (p *PreviewExtenderImplProxy) OnDeInit(
 	_data.WriteInterfaceToken(DescriptorIPreviewExtenderImpl)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "onDeInit"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "onDeInit")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -117,7 +127,12 @@ func (p *PreviewExtenderImplProxy) OnPresetSession(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPreviewExtenderImpl)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "onPresetSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "onPresetSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -140,7 +155,12 @@ func (p *PreviewExtenderImplProxy) OnEnableSession(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPreviewExtenderImpl)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "onEnableSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "onEnableSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -163,7 +183,12 @@ func (p *PreviewExtenderImplProxy) OnDisableSession(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPreviewExtenderImpl)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "onDisableSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "onDisableSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -188,7 +213,12 @@ func (p *PreviewExtenderImplProxy) Init(
 	_data.WriteInterfaceToken(DescriptorIPreviewExtenderImpl)
 	_data.WriteString16(cameraId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "init"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "init")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -211,7 +241,12 @@ func (p *PreviewExtenderImplProxy) IsExtensionAvailable(
 	_data.WriteInterfaceToken(DescriptorIPreviewExtenderImpl)
 	_data.WriteString16(cameraId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "isExtensionAvailable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "isExtensionAvailable")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -235,7 +270,12 @@ func (p *PreviewExtenderImplProxy) GetCaptureStage(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPreviewExtenderImpl)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "getCaptureStage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "getCaptureStage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -258,7 +298,12 @@ func (p *PreviewExtenderImplProxy) GetSessionType(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPreviewExtenderImpl)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "getSessionType"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "getSessionType")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -282,7 +327,12 @@ func (p *PreviewExtenderImplProxy) GetProcessorType(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPreviewExtenderImpl)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "getProcessorType"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "getProcessorType")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -306,7 +356,12 @@ func (p *PreviewExtenderImplProxy) GetPreviewImageProcessor(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPreviewExtenderImpl)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "getPreviewImageProcessor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "getPreviewImageProcessor")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -331,7 +386,12 @@ func (p *PreviewExtenderImplProxy) GetRequestUpdateProcessor(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPreviewExtenderImpl)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "getRequestUpdateProcessor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "getRequestUpdateProcessor")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -356,7 +416,12 @@ func (p *PreviewExtenderImplProxy) GetSupportedResolutions(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPreviewExtenderImpl)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "getSupportedResolutions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "getSupportedResolutions")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

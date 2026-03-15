@@ -51,7 +51,12 @@ func (p *BluetoothHciProxy) Close(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothHci)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothHci, "close"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHci, "close")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -72,7 +77,12 @@ func (p *BluetoothHciProxy) Initialize(
 	_data.WriteInterfaceToken(DescriptorIBluetoothHci)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothHci, "initialize"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHci, "initialize")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -100,7 +110,12 @@ func (p *BluetoothHciProxy) SendAclData(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothHci, "sendAclData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHci, "sendAclData")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -128,7 +143,12 @@ func (p *BluetoothHciProxy) SendHciCommand(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothHci, "sendHciCommand"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHci, "sendHciCommand")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -156,7 +176,12 @@ func (p *BluetoothHciProxy) SendIsoData(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothHci, "sendIsoData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHci, "sendIsoData")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -184,7 +209,12 @@ func (p *BluetoothHciProxy) SendScoData(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothHci, "sendScoData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHci, "sendScoData")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

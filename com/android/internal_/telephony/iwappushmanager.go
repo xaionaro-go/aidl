@@ -57,7 +57,12 @@ func (p *WapPushManagerProxy) ProcessMessage(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWapPushManager, "processMessage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWapPushManager, "processMessage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -95,7 +100,12 @@ func (p *WapPushManagerProxy) AddPackage(
 	_data.WriteBool(need_signature)
 	_data.WriteBool(further_processing)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWapPushManager, "addPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWapPushManager, "addPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -133,7 +143,12 @@ func (p *WapPushManagerProxy) UpdatePackage(
 	_data.WriteBool(need_signature)
 	_data.WriteBool(further_processing)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWapPushManager, "updatePackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWapPushManager, "updatePackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -165,7 +180,12 @@ func (p *WapPushManagerProxy) DeletePackage(
 	_data.WriteString16(package_name)
 	_data.WriteString16(class_name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWapPushManager, "deletePackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWapPushManager, "deletePackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

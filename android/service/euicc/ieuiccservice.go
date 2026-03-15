@@ -91,7 +91,12 @@ func (p *EuiccServiceProxy) DownloadSubscription(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccService, "downloadSubscription"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "downloadSubscription")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -115,7 +120,12 @@ func (p *EuiccServiceProxy) GetDownloadableSubscriptionMetadata(
 	_data.WriteBool(forceDeactivateSim)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccService, "getDownloadableSubscriptionMetadata"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "getDownloadableSubscriptionMetadata")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -129,7 +139,12 @@ func (p *EuiccServiceProxy) GetEid(
 	_data.WriteInt32(slotId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccService, "getEid"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "getEid")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -143,7 +158,12 @@ func (p *EuiccServiceProxy) GetOtaStatus(
 	_data.WriteInt32(slotId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccService, "getOtaStatus"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "getOtaStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -157,7 +177,12 @@ func (p *EuiccServiceProxy) StartOtaIfNecessary(
 	_data.WriteInt32(slotId)
 	_data.WriteStrongBinder(statusChangedCallback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccService, "startOtaIfNecessary"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "startOtaIfNecessary")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -171,7 +196,12 @@ func (p *EuiccServiceProxy) GetEuiccProfileInfoList(
 	_data.WriteInt32(slotId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccService, "getEuiccProfileInfoList"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "getEuiccProfileInfoList")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -187,7 +217,12 @@ func (p *EuiccServiceProxy) GetDefaultDownloadableSubscriptionList(
 	_data.WriteBool(forceDeactivateSim)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccService, "getDefaultDownloadableSubscriptionList"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "getDefaultDownloadableSubscriptionList")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -201,7 +236,12 @@ func (p *EuiccServiceProxy) GetEuiccInfo(
 	_data.WriteInt32(slotId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccService, "getEuiccInfo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "getEuiccInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -217,7 +257,12 @@ func (p *EuiccServiceProxy) DeleteSubscription(
 	_data.WriteString16(iccid)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccService, "deleteSubscription"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "deleteSubscription")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -239,7 +284,12 @@ func (p *EuiccServiceProxy) SwitchToSubscription(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteBool(useLegacyApi)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccService, "switchToSubscription"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "switchToSubscription")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -257,7 +307,12 @@ func (p *EuiccServiceProxy) UpdateSubscriptionNickname(
 	_data.WriteString16(nickname)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccService, "updateSubscriptionNickname"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "updateSubscriptionNickname")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -271,7 +326,12 @@ func (p *EuiccServiceProxy) EraseSubscriptions(
 	_data.WriteInt32(slotId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccService, "eraseSubscriptions"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "eraseSubscriptions")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -287,7 +347,12 @@ func (p *EuiccServiceProxy) EraseSubscriptionsWithOptions(
 	_data.WriteInt32(options)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccService, "eraseSubscriptionsWithOptions"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "eraseSubscriptionsWithOptions")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -301,7 +366,12 @@ func (p *EuiccServiceProxy) RetainSubscriptionsForFactoryReset(
 	_data.WriteInt32(slotId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccService, "retainSubscriptionsForFactoryReset"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "retainSubscriptionsForFactoryReset")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -313,7 +383,12 @@ func (p *EuiccServiceProxy) Dump(
 	_data.WriteInterfaceToken(DescriptorIEuiccService)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccService, "dump"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "dump")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -327,6 +402,11 @@ func (p *EuiccServiceProxy) GetAvailableMemoryInBytes(
 	_data.WriteInt32(slotId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccService, "getAvailableMemoryInBytes"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "getAvailableMemoryInBytes")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -59,7 +59,12 @@ func (p *AllocatorProxy) Allocate(
 	}
 	_data.WriteInt32(count)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAllocator, "allocate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAllocator, "allocate")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -88,7 +93,12 @@ func (p *AllocatorProxy) Allocate2(
 	}
 	_data.WriteInt32(count)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAllocator, "allocate2"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAllocator, "allocate2")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -115,7 +125,12 @@ func (p *AllocatorProxy) IsSupported(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAllocator, "isSupported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAllocator, "isSupported")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -139,7 +154,12 @@ func (p *AllocatorProxy) GetIMapperLibrarySuffix(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAllocator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAllocator, "getIMapperLibrarySuffix"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAllocator, "getIMapperLibrarySuffix")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

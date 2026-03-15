@@ -44,7 +44,12 @@ func (p *DirProxy) ReadNextFilenames(
 	_data.WriteInterfaceToken(DescriptorIDir)
 	_data.WriteInt32(maxCount)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDir, "readNextFilenames"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDir, "readNextFilenames")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

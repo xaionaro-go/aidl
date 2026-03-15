@@ -47,7 +47,12 @@ func (p *BatteryPropertiesRegistrarProxy) GetProperty(
 	_data.WriteInterfaceToken(DescriptorIBatteryPropertiesRegistrar)
 	_data.WriteInt32(id)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBatteryPropertiesRegistrar, "getProperty"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBatteryPropertiesRegistrar, "getProperty")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -73,6 +78,11 @@ func (p *BatteryPropertiesRegistrarProxy) ScheduleUpdate(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBatteryPropertiesRegistrar)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBatteryPropertiesRegistrar, "scheduleUpdate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBatteryPropertiesRegistrar, "scheduleUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

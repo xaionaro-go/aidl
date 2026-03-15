@@ -49,7 +49,12 @@ func (p *RegistrationProxy) GetKey(
 	_data.WriteInt32(keyId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRegistration, "getKey"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRegistration, "getKey")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -61,7 +66,12 @@ func (p *RegistrationProxy) CancelGetKey(
 	_data.WriteInterfaceToken(DescriptorIRegistration)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRegistration, "cancelGetKey"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRegistration, "cancelGetKey")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -91,6 +101,11 @@ func (p *RegistrationProxy) StoreUpgradedKeyAsync(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRegistration, "storeUpgradedKeyAsync"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRegistration, "storeUpgradedKeyAsync")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

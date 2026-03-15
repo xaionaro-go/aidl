@@ -50,7 +50,12 @@ func (p *CallStreamingServiceProxy) SetStreamingCallAdapter(
 	_data.WriteInterfaceToken(DescriptorICallStreamingService)
 	_data.WriteStrongBinder(streamingCallAdapter.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallStreamingService, "setStreamingCallAdapter"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallStreamingService, "setStreamingCallAdapter")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -64,7 +69,12 @@ func (p *CallStreamingServiceProxy) OnCallStreamingStarted(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallStreamingService, "onCallStreamingStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallStreamingService, "onCallStreamingStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -74,7 +84,12 @@ func (p *CallStreamingServiceProxy) OnCallStreamingStopped(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICallStreamingService)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallStreamingService, "onCallStreamingStopped"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallStreamingService, "onCallStreamingStopped")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -86,6 +101,11 @@ func (p *CallStreamingServiceProxy) OnCallStreamingStateChanged(
 	_data.WriteInterfaceToken(DescriptorICallStreamingService)
 	_data.WriteInt32(state)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallStreamingService, "onCallStreamingStateChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallStreamingService, "onCallStreamingStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

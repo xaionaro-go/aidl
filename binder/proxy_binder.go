@@ -2,22 +2,23 @@ package binder
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/facebookincubator/go-belt/tool/logger"
 	"github.com/xaionaro-go/aidl/parcel"
 )
 
 // ProxyBinder is a client-side handle to a remote Binder object.
-// It delegates all operations to the underlying Transport.
+// It delegates all operations to the underlying VersionAwareTransport.
 type ProxyBinder struct {
-	transport Transport
+	transport VersionAwareTransport
 	handle    uint32
 }
 
 // NewProxyBinder creates a new ProxyBinder for the given transport and handle.
+// The transport must implement VersionAwareTransport (use
+// versionaware.NewTransport to wrap a raw kernelbinder.Driver).
 func NewProxyBinder(
-	transport Transport,
+	transport VersionAwareTransport,
 	handle uint32,
 ) *ProxyBinder {
 	return &ProxyBinder{
@@ -39,21 +40,12 @@ func (b *ProxyBinder) Transact(
 	return b.transport.Transact(ctx, b.handle, code, flags, data)
 }
 
-// ResolveCode delegates to the underlying Transport if it implements
-// CodeResolver. Otherwise it panics; callers should use a version-aware
-// transport or the generated transaction code constants directly.
+// ResolveCode delegates to the underlying Transport.
 func (b *ProxyBinder) ResolveCode(
 	descriptor string,
 	method string,
-) TransactionCode {
-	if resolver, ok := b.transport.(CodeResolver); ok {
-		return resolver.ResolveCode(descriptor, method)
-	}
-	panic(fmt.Sprintf(
-		"binder: transport %T does not implement CodeResolver; "+
-			"use versionaware.NewTransport() to wrap it",
-		b.transport,
-	))
+) (TransactionCode, error) {
+	return b.transport.ResolveCode(descriptor, method)
 }
 
 // LinkToDeath registers a DeathRecipient for this Binder object.
@@ -88,8 +80,8 @@ func (b *ProxyBinder) Handle() uint32 {
 	return b.handle
 }
 
-// Transport returns the underlying Transport used by this ProxyBinder.
-func (b *ProxyBinder) Transport() Transport {
+// Transport returns the underlying VersionAwareTransport used by this ProxyBinder.
+func (b *ProxyBinder) Transport() VersionAwareTransport {
 	return b.transport
 }
 

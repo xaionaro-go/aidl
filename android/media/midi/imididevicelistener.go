@@ -46,7 +46,12 @@ func (p *MidiDeviceListenerProxy) OnDeviceAdded(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiDeviceListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMidiDeviceListener, "onDeviceAdded"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMidiDeviceListener, "onDeviceAdded")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -57,7 +62,12 @@ func (p *MidiDeviceListenerProxy) OnDeviceRemoved(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiDeviceListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMidiDeviceListener, "onDeviceRemoved"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMidiDeviceListener, "onDeviceRemoved")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -71,6 +81,11 @@ func (p *MidiDeviceListenerProxy) OnDeviceStatusChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMidiDeviceListener, "onDeviceStatusChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMidiDeviceListener, "onDeviceStatusChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -54,7 +54,12 @@ func (p *OptionsListenerProxy) GetVersionCb(
 	_data.WriteInterfaceToken(DescriptorIOptionsListener)
 	_data.WriteString16(version)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOptionsListener, "getVersionCb"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOptionsListener, "getVersionCb")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -75,7 +80,12 @@ func (p *OptionsListenerProxy) ServiceAvailable(
 	_data.WriteInterfaceToken(DescriptorIOptionsListener)
 	_data.WriteInt32(int32(statusCode))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOptionsListener, "serviceAvailable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOptionsListener, "serviceAvailable")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -96,7 +106,12 @@ func (p *OptionsListenerProxy) ServiceUnavailable(
 	_data.WriteInterfaceToken(DescriptorIOptionsListener)
 	_data.WriteInt32(int32(statusCode))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOptionsListener, "serviceUnavailable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOptionsListener, "serviceUnavailable")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -125,7 +140,12 @@ func (p *OptionsListenerProxy) SipResponseReceived(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOptionsListener, "sipResponseReceived"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOptionsListener, "sipResponseReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -148,7 +168,12 @@ func (p *OptionsListenerProxy) CmdStatus(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOptionsListener, "cmdStatus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOptionsListener, "cmdStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -175,7 +200,12 @@ func (p *OptionsListenerProxy) IncomingOptions(
 	}
 	_data.WriteInt32(tID)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOptionsListener, "incomingOptions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOptionsListener, "incomingOptions")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

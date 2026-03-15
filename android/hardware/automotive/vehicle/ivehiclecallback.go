@@ -53,7 +53,12 @@ func (p *VehicleCallbackProxy) OnGetValues(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVehicleCallback, "onGetValues"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVehicleCallback, "onGetValues")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -67,7 +72,12 @@ func (p *VehicleCallbackProxy) OnSetValues(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVehicleCallback, "onSetValues"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVehicleCallback, "onSetValues")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -83,7 +93,12 @@ func (p *VehicleCallbackProxy) OnPropertyEvent(
 	}
 	_data.WriteInt32(sharedMemoryFileCount)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVehicleCallback, "onPropertyEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVehicleCallback, "onPropertyEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -97,7 +112,12 @@ func (p *VehicleCallbackProxy) OnPropertySetError(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVehicleCallback, "onPropertySetError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVehicleCallback, "onPropertySetError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -118,6 +138,11 @@ func (p *VehicleCallbackProxy) OnSupportedValueChange(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVehicleCallback, "onSupportedValueChange"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVehicleCallback, "onSupportedValueChange")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

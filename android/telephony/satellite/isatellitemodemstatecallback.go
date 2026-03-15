@@ -49,7 +49,12 @@ func (p *SatelliteModemStateCallbackProxy) OnSatelliteModemStateChanged(
 	_data.WriteInterfaceToken(DescriptorISatelliteModemStateCallback)
 	_data.WriteInt32(state)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISatelliteModemStateCallback, "onSatelliteModemStateChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISatelliteModemStateCallback, "onSatelliteModemStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -61,7 +66,12 @@ func (p *SatelliteModemStateCallbackProxy) OnEmergencyModeChanged(
 	_data.WriteInterfaceToken(DescriptorISatelliteModemStateCallback)
 	_data.WriteBool(isEmergency)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISatelliteModemStateCallback, "onEmergencyModeChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISatelliteModemStateCallback, "onEmergencyModeChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -73,7 +83,12 @@ func (p *SatelliteModemStateCallbackProxy) OnRegistrationFailure(
 	_data.WriteInterfaceToken(DescriptorISatelliteModemStateCallback)
 	_data.WriteInt32(causeCode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISatelliteModemStateCallback, "onRegistrationFailure"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISatelliteModemStateCallback, "onRegistrationFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -85,6 +100,11 @@ func (p *SatelliteModemStateCallbackProxy) OnTerrestrialNetworkAvailableChanged(
 	_data.WriteInterfaceToken(DescriptorISatelliteModemStateCallback)
 	_data.WriteBool(isAvailable)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISatelliteModemStateCallback, "onTerrestrialNetworkAvailableChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISatelliteModemStateCallback, "onTerrestrialNetworkAvailableChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

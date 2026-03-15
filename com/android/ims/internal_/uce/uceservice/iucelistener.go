@@ -43,7 +43,12 @@ func (p *UceListenerProxy) SetStatus(
 	_data.WriteInterfaceToken(DescriptorIUceListener)
 	_data.WriteInt32(serviceStatusValue)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUceListener, "setStatus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUceListener, "setStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

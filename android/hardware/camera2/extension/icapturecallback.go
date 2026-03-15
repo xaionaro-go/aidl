@@ -59,7 +59,12 @@ func (p *CaptureCallbackProxy) OnCaptureStarted(
 	_data.WriteInt32(captureSequenceId)
 	_data.WriteInt64(timestamp)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICaptureCallback, "onCaptureStarted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICaptureCallback, "onCaptureStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -80,7 +85,12 @@ func (p *CaptureCallbackProxy) OnCaptureProcessStarted(
 	_data.WriteInterfaceToken(DescriptorICaptureCallback)
 	_data.WriteInt32(captureSequenceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICaptureCallback, "onCaptureProcessStarted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICaptureCallback, "onCaptureProcessStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -101,7 +111,12 @@ func (p *CaptureCallbackProxy) OnCaptureFailed(
 	_data.WriteInterfaceToken(DescriptorICaptureCallback)
 	_data.WriteInt32(captureSequenceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICaptureCallback, "onCaptureFailed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICaptureCallback, "onCaptureFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -122,7 +137,12 @@ func (p *CaptureCallbackProxy) OnCaptureSequenceCompleted(
 	_data.WriteInterfaceToken(DescriptorICaptureCallback)
 	_data.WriteInt32(captureSequenceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICaptureCallback, "onCaptureSequenceCompleted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICaptureCallback, "onCaptureSequenceCompleted")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -143,7 +163,12 @@ func (p *CaptureCallbackProxy) OnCaptureSequenceAborted(
 	_data.WriteInterfaceToken(DescriptorICaptureCallback)
 	_data.WriteInt32(captureSequenceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICaptureCallback, "onCaptureSequenceAborted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICaptureCallback, "onCaptureSequenceAborted")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -167,7 +192,12 @@ func (p *CaptureCallbackProxy) OnCaptureCompleted(
 	_data.WriteInt64(shutterTimestamp)
 	_data.WriteInt32(requestId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICaptureCallback, "onCaptureCompleted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICaptureCallback, "onCaptureCompleted")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -188,7 +218,12 @@ func (p *CaptureCallbackProxy) OnCaptureProcessProgressed(
 	_data.WriteInterfaceToken(DescriptorICaptureCallback)
 	_data.WriteInt32(progress)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICaptureCallback, "onCaptureProcessProgressed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICaptureCallback, "onCaptureProcessProgressed")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -211,7 +246,12 @@ func (p *CaptureCallbackProxy) OnCaptureProcessFailed(
 	_data.WriteInt32(captureSequenceId)
 	_data.WriteInt32(captureFailureReason)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICaptureCallback, "onCaptureProcessFailed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICaptureCallback, "onCaptureProcessFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

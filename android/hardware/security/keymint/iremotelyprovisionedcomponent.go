@@ -57,7 +57,12 @@ func (p *RemotelyProvisionedComponentProxy) GetHardwareInfo(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemotelyProvisionedComponent)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemotelyProvisionedComponent, "getHardwareInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemotelyProvisionedComponent, "getHardwareInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -83,7 +88,12 @@ func (p *RemotelyProvisionedComponentProxy) GenerateEcdsaP256KeyPair(
 	_data.WriteInterfaceToken(DescriptorIRemotelyProvisionedComponent)
 	_data.WriteBool(testMode)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemotelyProvisionedComponent, "generateEcdsaP256KeyPair"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemotelyProvisionedComponent, "generateEcdsaP256KeyPair")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -153,7 +163,12 @@ func (p *RemotelyProvisionedComponentProxy) GenerateCertificateRequest(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemotelyProvisionedComponent, "generateCertificateRequest"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemotelyProvisionedComponent, "generateCertificateRequest")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -213,7 +228,12 @@ func (p *RemotelyProvisionedComponentProxy) GenerateCertificateRequestV2(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemotelyProvisionedComponent, "generateCertificateRequestV2"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemotelyProvisionedComponent, "generateCertificateRequestV2")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

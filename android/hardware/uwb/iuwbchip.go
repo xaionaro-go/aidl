@@ -54,7 +54,12 @@ func (p *UwbChipProxy) GetName(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUwbChip)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUwbChip, "getName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUwbChip, "getName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -79,7 +84,12 @@ func (p *UwbChipProxy) Open(
 	_data.WriteInterfaceToken(DescriptorIUwbChip)
 	_data.WriteStrongBinder(clientCallback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUwbChip, "open"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUwbChip, "open")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -98,7 +108,12 @@ func (p *UwbChipProxy) Close(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUwbChip)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUwbChip, "close"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUwbChip, "close")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -117,7 +132,12 @@ func (p *UwbChipProxy) CoreInit(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUwbChip)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUwbChip, "coreInit"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUwbChip, "coreInit")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -138,7 +158,12 @@ func (p *UwbChipProxy) SessionInit(
 	_data.WriteInterfaceToken(DescriptorIUwbChip)
 	_data.WriteInt32(sessionId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUwbChip, "sessionInit"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUwbChip, "sessionInit")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -158,7 +183,12 @@ func (p *UwbChipProxy) GetSupportedAndroidUciVersion(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUwbChip)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUwbChip, "getSupportedAndroidUciVersion"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUwbChip, "getSupportedAndroidUciVersion")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -191,7 +221,12 @@ func (p *UwbChipProxy) SendUciMessage(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUwbChip, "sendUciMessage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUwbChip, "sendUciMessage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

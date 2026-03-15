@@ -43,7 +43,12 @@ func (p *ActivityRecognitionHardwareWatcherProxy) OnInstanceChanged(
 	_data.WriteInterfaceToken(DescriptorIActivityRecognitionHardwareWatcher)
 	_data.WriteStrongBinder(instance.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIActivityRecognitionHardwareWatcher, "onInstanceChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIActivityRecognitionHardwareWatcher, "onInstanceChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

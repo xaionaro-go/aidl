@@ -63,7 +63,12 @@ func (p *SatelliteListenerProxy) OnSatelliteDatagramReceived(
 	}
 	_data.WriteInt32(pendingCount)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISatelliteListener, "onSatelliteDatagramReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISatelliteListener, "onSatelliteDatagramReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -73,7 +78,12 @@ func (p *SatelliteListenerProxy) OnPendingDatagrams(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatelliteListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISatelliteListener, "onPendingDatagrams"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISatelliteListener, "onPendingDatagrams")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -87,7 +97,12 @@ func (p *SatelliteListenerProxy) OnSatellitePositionChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISatelliteListener, "onSatellitePositionChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISatelliteListener, "onSatellitePositionChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -99,7 +114,12 @@ func (p *SatelliteListenerProxy) OnSatelliteModemStateChanged(
 	_data.WriteInterfaceToken(DescriptorISatelliteListener)
 	_data.WriteInt32(int32(state))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISatelliteListener, "onSatelliteModemStateChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISatelliteListener, "onSatelliteModemStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -113,7 +133,12 @@ func (p *SatelliteListenerProxy) OnNtnSignalStrengthChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISatelliteListener, "onNtnSignalStrengthChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISatelliteListener, "onNtnSignalStrengthChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -127,7 +152,12 @@ func (p *SatelliteListenerProxy) OnSatelliteCapabilitiesChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISatelliteListener, "onSatelliteCapabilitiesChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISatelliteListener, "onSatelliteCapabilitiesChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -139,7 +169,12 @@ func (p *SatelliteListenerProxy) OnSatelliteSupportedStateChanged(
 	_data.WriteInterfaceToken(DescriptorISatelliteListener)
 	_data.WriteBool(supported)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISatelliteListener, "onSatelliteSupportedStateChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISatelliteListener, "onSatelliteSupportedStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -151,7 +186,12 @@ func (p *SatelliteListenerProxy) OnRegistrationFailure(
 	_data.WriteInterfaceToken(DescriptorISatelliteListener)
 	_data.WriteInt32(causeCode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISatelliteListener, "onRegistrationFailure"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISatelliteListener, "onRegistrationFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -163,6 +203,11 @@ func (p *SatelliteListenerProxy) OnTerrestrialNetworkAvailableChanged(
 	_data.WriteInterfaceToken(DescriptorISatelliteListener)
 	_data.WriteBool(isAvailable)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISatelliteListener, "onTerrestrialNetworkAvailableChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISatelliteListener, "onTerrestrialNetworkAvailableChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

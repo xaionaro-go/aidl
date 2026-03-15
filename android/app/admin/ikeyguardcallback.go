@@ -48,7 +48,12 @@ func (p *KeyguardCallbackProxy) OnRemoteContentReady(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyguardCallback, "onRemoteContentReady"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardCallback, "onRemoteContentReady")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -58,6 +63,11 @@ func (p *KeyguardCallbackProxy) OnDismiss(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyguardCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyguardCallback, "onDismiss"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardCallback, "onDismiss")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

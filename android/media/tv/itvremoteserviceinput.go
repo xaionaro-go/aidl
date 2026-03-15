@@ -75,7 +75,12 @@ func (p *TvRemoteServiceInputProxy) OpenInputBridge(
 	_data.WriteInt32(height)
 	_data.WriteInt32(maxPointers)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "openInputBridge"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "openInputBridge")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -87,7 +92,12 @@ func (p *TvRemoteServiceInputProxy) CloseInputBridge(
 	_data.WriteInterfaceToken(DescriptorITvRemoteServiceInput)
 	_data.WriteStrongBinder(token.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "closeInputBridge"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "closeInputBridge")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -99,7 +109,12 @@ func (p *TvRemoteServiceInputProxy) ClearInputBridge(
 	_data.WriteInterfaceToken(DescriptorITvRemoteServiceInput)
 	_data.WriteStrongBinder(token.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "clearInputBridge"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "clearInputBridge")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -113,7 +128,12 @@ func (p *TvRemoteServiceInputProxy) SendTimestamp(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt64(timestamp)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendTimestamp"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendTimestamp")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -127,7 +147,12 @@ func (p *TvRemoteServiceInputProxy) SendKeyDown(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt32(keyCode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendKeyDown"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendKeyDown")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -141,7 +166,12 @@ func (p *TvRemoteServiceInputProxy) SendKeyUp(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt32(keyCode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendKeyUp"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendKeyUp")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -159,7 +189,12 @@ func (p *TvRemoteServiceInputProxy) SendPointerDown(
 	_data.WriteInt32(x)
 	_data.WriteInt32(y)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendPointerDown"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendPointerDown")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -173,7 +208,12 @@ func (p *TvRemoteServiceInputProxy) SendPointerUp(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt32(pointerId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendPointerUp"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendPointerUp")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -185,7 +225,12 @@ func (p *TvRemoteServiceInputProxy) SendPointerSync(
 	_data.WriteInterfaceToken(DescriptorITvRemoteServiceInput)
 	_data.WriteStrongBinder(token.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendPointerSync"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendPointerSync")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -199,7 +244,12 @@ func (p *TvRemoteServiceInputProxy) OpenGamepadBridge(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteString16(name)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "openGamepadBridge"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "openGamepadBridge")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -213,7 +263,12 @@ func (p *TvRemoteServiceInputProxy) SendGamepadKeyDown(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt32(keyCode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendGamepadKeyDown"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendGamepadKeyDown")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -227,7 +282,12 @@ func (p *TvRemoteServiceInputProxy) SendGamepadKeyUp(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt32(keyCode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendGamepadKeyUp"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendGamepadKeyUp")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -243,6 +303,11 @@ func (p *TvRemoteServiceInputProxy) SendGamepadAxisValue(
 	_data.WriteInt32(axis)
 	_data.WriteFloat32(value)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendGamepadAxisValue"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendGamepadAxisValue")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

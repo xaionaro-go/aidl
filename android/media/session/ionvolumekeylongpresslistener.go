@@ -42,6 +42,11 @@ func (p *OnVolumeKeyLongPressListenerProxy) OnVolumeKeyLongPress(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOnVolumeKeyLongPressListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOnVolumeKeyLongPressListener, "onVolumeKeyLongPress"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOnVolumeKeyLongPressListener, "onVolumeKeyLongPress")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

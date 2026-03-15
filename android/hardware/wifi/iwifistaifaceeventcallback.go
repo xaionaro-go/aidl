@@ -70,7 +70,12 @@ func (p *WifiStaIfaceEventCallbackProxy) OnBackgroundFullScanResult(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onBackgroundFullScanResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onBackgroundFullScanResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -82,7 +87,12 @@ func (p *WifiStaIfaceEventCallbackProxy) OnBackgroundScanFailure(
 	_data.WriteInterfaceToken(DescriptorIWifiStaIfaceEventCallback)
 	_data.WriteInt32(cmdId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onBackgroundScanFailure"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onBackgroundScanFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -105,7 +115,12 @@ func (p *WifiStaIfaceEventCallbackProxy) OnBackgroundScanResults(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onBackgroundScanResults"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onBackgroundScanResults")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -128,7 +143,12 @@ func (p *WifiStaIfaceEventCallbackProxy) OnRssiThresholdBreached(
 	}
 	_data.WriteInt32(currRssi)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onRssiThresholdBreached"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onRssiThresholdBreached")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -142,7 +162,12 @@ func (p *WifiStaIfaceEventCallbackProxy) OnTwtFailure(
 	_data.WriteInt32(cmdId)
 	_data.WritePaddedByte(byte(error_))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onTwtFailure"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onTwtFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -158,7 +183,12 @@ func (p *WifiStaIfaceEventCallbackProxy) OnTwtSessionCreate(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onTwtSessionCreate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onTwtSessionCreate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -174,7 +204,12 @@ func (p *WifiStaIfaceEventCallbackProxy) OnTwtSessionUpdate(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onTwtSessionUpdate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onTwtSessionUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -190,7 +225,12 @@ func (p *WifiStaIfaceEventCallbackProxy) OnTwtSessionTeardown(
 	_data.WriteInt32(twtSessionId)
 	_data.WritePaddedByte(byte(reasonCode))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onTwtSessionTeardown"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onTwtSessionTeardown")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -208,7 +248,12 @@ func (p *WifiStaIfaceEventCallbackProxy) OnTwtSessionStats(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onTwtSessionStats"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onTwtSessionStats")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -222,7 +267,12 @@ func (p *WifiStaIfaceEventCallbackProxy) OnTwtSessionSuspend(
 	_data.WriteInt32(cmdId)
 	_data.WriteInt32(twtSessionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onTwtSessionSuspend"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onTwtSessionSuspend")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -236,6 +286,11 @@ func (p *WifiStaIfaceEventCallbackProxy) OnTwtSessionResume(
 	_data.WriteInt32(cmdId)
 	_data.WriteInt32(twtSessionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onTwtSessionResume"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIfaceEventCallback, "onTwtSessionResume")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

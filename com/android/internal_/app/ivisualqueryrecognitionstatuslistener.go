@@ -43,7 +43,12 @@ func (p *VisualQueryRecognitionStatusListenerProxy) OnStartPerceiving(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVisualQueryRecognitionStatusListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVisualQueryRecognitionStatusListener, "onStartPerceiving"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVisualQueryRecognitionStatusListener, "onStartPerceiving")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -53,6 +58,11 @@ func (p *VisualQueryRecognitionStatusListenerProxy) OnStopPerceiving(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVisualQueryRecognitionStatusListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVisualQueryRecognitionStatusListener, "onStopPerceiving"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVisualQueryRecognitionStatusListener, "onStopPerceiving")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -42,7 +42,12 @@ func (p *WindowlessStartingSurfaceCallbackProxy) OnSurfaceAdded(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowlessStartingSurfaceCallback)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindowlessStartingSurfaceCallback, "onSurfaceAdded"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindowlessStartingSurfaceCallback, "onSurfaceAdded")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

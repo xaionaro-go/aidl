@@ -46,7 +46,12 @@ func (p *AGnssCallbackProxy) AgnssStatusCb(
 	_data.WriteInt32(int32(type_))
 	_data.WriteInt32(int32(status))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAGnssCallback, "agnssStatusCb"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAGnssCallback, "agnssStatusCb")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

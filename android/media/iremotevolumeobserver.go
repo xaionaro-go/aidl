@@ -45,6 +45,11 @@ func (p *RemoteVolumeObserverProxy) DispatchRemoteVolumeUpdate(
 	_data.WriteInt32(direction)
 	_data.WriteInt32(value)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteVolumeObserver, "dispatchRemoteVolumeUpdate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteVolumeObserver, "dispatchRemoteVolumeUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

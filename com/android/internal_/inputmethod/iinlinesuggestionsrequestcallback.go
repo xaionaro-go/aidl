@@ -56,7 +56,12 @@ func (p *InlineSuggestionsRequestCallbackProxy) OnInlineSuggestionsUnsupported(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInlineSuggestionsRequestCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInlineSuggestionsRequestCallback, "onInlineSuggestionsUnsupported"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInlineSuggestionsRequestCallback, "onInlineSuggestionsUnsupported")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -72,7 +77,12 @@ func (p *InlineSuggestionsRequestCallbackProxy) OnInlineSuggestionsRequest(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInlineSuggestionsRequestCallback, "onInlineSuggestionsRequest"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInlineSuggestionsRequestCallback, "onInlineSuggestionsRequest")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -83,7 +93,12 @@ func (p *InlineSuggestionsRequestCallbackProxy) OnInputMethodStartInput(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInlineSuggestionsRequestCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInlineSuggestionsRequestCallback, "onInputMethodStartInput"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInlineSuggestionsRequestCallback, "onInputMethodStartInput")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -95,7 +110,12 @@ func (p *InlineSuggestionsRequestCallbackProxy) OnInputMethodShowInputRequested(
 	_data.WriteInterfaceToken(DescriptorIInlineSuggestionsRequestCallback)
 	_data.WriteBool(requestResult)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInlineSuggestionsRequestCallback, "onInputMethodShowInputRequested"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInlineSuggestionsRequestCallback, "onInputMethodShowInputRequested")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -105,7 +125,12 @@ func (p *InlineSuggestionsRequestCallbackProxy) OnInputMethodStartInputView(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInlineSuggestionsRequestCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInlineSuggestionsRequestCallback, "onInputMethodStartInputView"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInlineSuggestionsRequestCallback, "onInputMethodStartInputView")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -115,7 +140,12 @@ func (p *InlineSuggestionsRequestCallbackProxy) OnInputMethodFinishInputView(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInlineSuggestionsRequestCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInlineSuggestionsRequestCallback, "onInputMethodFinishInputView"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInlineSuggestionsRequestCallback, "onInputMethodFinishInputView")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -125,7 +155,12 @@ func (p *InlineSuggestionsRequestCallbackProxy) OnInputMethodFinishInput(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInlineSuggestionsRequestCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInlineSuggestionsRequestCallback, "onInputMethodFinishInput"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInlineSuggestionsRequestCallback, "onInputMethodFinishInput")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -135,6 +170,11 @@ func (p *InlineSuggestionsRequestCallbackProxy) OnInlineSuggestionsSessionInvali
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInlineSuggestionsRequestCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInlineSuggestionsRequestCallback, "onInlineSuggestionsSessionInvalidated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInlineSuggestionsRequestCallback, "onInlineSuggestionsSessionInvalidated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

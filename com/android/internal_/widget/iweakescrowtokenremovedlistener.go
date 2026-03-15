@@ -45,6 +45,11 @@ func (p *WeakEscrowTokenRemovedListenerProxy) OnWeakEscrowTokenRemoved(
 	_data.WriteInt64(handle)
 	_data.WriteInt32(userId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWeakEscrowTokenRemovedListener, "onWeakEscrowTokenRemoved"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWeakEscrowTokenRemovedListener, "onWeakEscrowTokenRemoved")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

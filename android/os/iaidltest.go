@@ -74,7 +74,12 @@ func (p *AidlTestProxy) IntMethod(
 	_data.WriteInterfaceToken(DescriptorIAidlTest)
 	_data.WriteInt32(a)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlTest, "intMethod"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlTest, "intMethod")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -102,7 +107,12 @@ func (p *AidlTestProxy) ParcelableIn(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlTest, "parcelableIn"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlTest, "parcelableIn")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -126,7 +136,12 @@ func (p *AidlTestProxy) ParcelableOut(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAidlTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlTest, "parcelableOut"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlTest, "parcelableOut")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -156,7 +171,12 @@ func (p *AidlTestProxy) ParcelableInOut(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlTest, "parcelableInOut"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlTest, "parcelableInOut")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -195,7 +215,12 @@ func (p *AidlTestProxy) ListParcelableLonger(
 	}
 	_data.WriteInt32(index)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlTest, "listParcelableLonger"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlTest, "listParcelableLonger")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -243,7 +268,12 @@ func (p *AidlTestProxy) ListParcelableShorter(
 	}
 	_data.WriteInt32(index)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlTest, "listParcelableShorter"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlTest, "listParcelableShorter")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -298,7 +328,12 @@ func (p *AidlTestProxy) BooleanArray(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlTest, "booleanArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlTest, "booleanArray")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -377,7 +412,12 @@ func (p *AidlTestProxy) CharArray(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlTest, "charArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlTest, "charArray")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -459,7 +499,12 @@ func (p *AidlTestProxy) IntArray(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlTest, "intArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlTest, "intArray")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -538,7 +583,12 @@ func (p *AidlTestProxy) LongArray(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlTest, "longArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlTest, "longArray")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -617,7 +667,12 @@ func (p *AidlTestProxy) FloatArray(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlTest, "floatArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlTest, "floatArray")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -696,7 +751,12 @@ func (p *AidlTestProxy) DoubleArray(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlTest, "doubleArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlTest, "doubleArray")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -775,7 +835,12 @@ func (p *AidlTestProxy) StringArray(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlTest, "stringArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlTest, "stringArray")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -858,7 +923,12 @@ func (p *AidlTestProxy) ParcelableArray(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlTest, "parcelableArray"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlTest, "parcelableArray")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -914,7 +984,12 @@ func (p *AidlTestProxy) VoidSecurityException(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAidlTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlTest, "voidSecurityException"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlTest, "voidSecurityException")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -934,7 +1009,12 @@ func (p *AidlTestProxy) IntSecurityException(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAidlTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlTest, "intSecurityException"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlTest, "intSecurityException")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

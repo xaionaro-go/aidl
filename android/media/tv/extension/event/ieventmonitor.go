@@ -60,7 +60,12 @@ func (p *EventMonitorProxy) GetPresentEventInfo(
 	_data.WriteInterfaceToken(DescriptorIEventMonitor)
 	_data.WriteInt64(channelDbId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEventMonitor, "getPresentEventInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEventMonitor, "getPresentEventInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -84,7 +89,12 @@ func (p *EventMonitorProxy) AddPresentEventInfoListener(
 	_data.WriteInterfaceToken(DescriptorIEventMonitor)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEventMonitor, "addPresentEventInfoListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEventMonitor, "addPresentEventInfoListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -105,7 +115,12 @@ func (p *EventMonitorProxy) RemovePresentEventInfoListener(
 	_data.WriteInterfaceToken(DescriptorIEventMonitor)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEventMonitor, "removePresentEventInfoListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEventMonitor, "removePresentEventInfoListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -127,7 +142,12 @@ func (p *EventMonitorProxy) GetFollowingEventInfo(
 	_data.WriteInterfaceToken(DescriptorIEventMonitor)
 	_data.WriteInt64(channelDbId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEventMonitor, "getFollowingEventInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEventMonitor, "getFollowingEventInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -151,7 +171,12 @@ func (p *EventMonitorProxy) AddFollowingEventInfoListener(
 	_data.WriteInterfaceToken(DescriptorIEventMonitor)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEventMonitor, "addFollowingEventInfoListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEventMonitor, "addFollowingEventInfoListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -172,7 +197,12 @@ func (p *EventMonitorProxy) RemoveFollowingEventInfoListener(
 	_data.WriteInterfaceToken(DescriptorIEventMonitor)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEventMonitor, "removeFollowingEventInfoListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEventMonitor, "removeFollowingEventInfoListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -194,7 +224,12 @@ func (p *EventMonitorProxy) GetSdtGuidanceInfo(
 	_data.WriteInterfaceToken(DescriptorIEventMonitor)
 	_data.WriteInt64(channelDbId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEventMonitor, "getSdtGuidanceInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEventMonitor, "getSdtGuidanceInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -227,7 +262,12 @@ func (p *EventMonitorProxy) SetBgmTuneChannelInfo(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEventMonitor, "setBgmTuneChannelInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEventMonitor, "setBgmTuneChannelInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

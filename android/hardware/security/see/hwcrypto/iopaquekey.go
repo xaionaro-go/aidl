@@ -53,7 +53,12 @@ func (p *OpaqueKeyProxy) ExportWrappedKey(
 	_data.WriteInterfaceToken(DescriptorIOpaqueKey)
 	_data.WriteStrongBinder(wrappingKey.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOpaqueKey, "exportWrappedKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOpaqueKey, "exportWrappedKey")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -87,7 +92,12 @@ func (p *OpaqueKeyProxy) GetKeyPolicy(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOpaqueKey)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOpaqueKey, "getKeyPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOpaqueKey, "getKeyPolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -110,7 +120,12 @@ func (p *OpaqueKeyProxy) GetPublicKey(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOpaqueKey)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOpaqueKey, "getPublicKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOpaqueKey, "getPublicKey")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -153,7 +168,12 @@ func (p *OpaqueKeyProxy) GetShareableToken(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOpaqueKey, "getShareableToken"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOpaqueKey, "getShareableToken")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -182,7 +202,12 @@ func (p *OpaqueKeyProxy) SetProtectionId(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOpaqueKey, "setProtectionId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOpaqueKey, "setProtectionId")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

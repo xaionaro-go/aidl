@@ -47,7 +47,12 @@ func (p *ResourcesManagerProxy) DumpResources(
 	_data.WriteString16(process)
 	_data.WriteFileDescriptor(fd)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIResourcesManager, "dumpResources"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIResourcesManager, "dumpResources")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

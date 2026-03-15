@@ -45,6 +45,11 @@ func (p *AccessibilityInputMethodSessionCallbackProxy) SessionCreated(
 	_data.WriteStrongBinder(session.AsBinder().Handle())
 	_data.WriteInt32(id)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAccessibilityInputMethodSessionCallback, "sessionCreated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityInputMethodSessionCallback, "sessionCreated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

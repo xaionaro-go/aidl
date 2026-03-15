@@ -72,7 +72,12 @@ func (p *CredentialManagerProxy) ExecuteGetCredential(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICredentialManager, "executeGetCredential"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "executeGetCredential")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -102,7 +107,12 @@ func (p *CredentialManagerProxy) ExecutePrepareGetCredential(
 	_data.WriteStrongBinder(getCredentialCallback.AsBinder().Handle())
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICredentialManager, "executePrepareGetCredential"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "executePrepareGetCredential")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -130,7 +140,12 @@ func (p *CredentialManagerProxy) ExecuteCreateCredential(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICredentialManager, "executeCreateCredential"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "executeCreateCredential")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -160,7 +175,12 @@ func (p *CredentialManagerProxy) GetCandidateCredentials(
 	_data.WriteStrongBinder(clientCallback.Handle())
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICredentialManager, "getCandidateCredentials"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "getCandidateCredentials")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -188,7 +208,12 @@ func (p *CredentialManagerProxy) ClearCredentialState(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICredentialManager, "clearCredentialState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "clearCredentialState")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -229,7 +254,12 @@ func (p *CredentialManagerProxy) SetEnabledProviders(
 	_data.WriteInt32(userId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICredentialManager, "setEnabledProviders"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "setEnabledProviders")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -254,7 +284,12 @@ func (p *CredentialManagerProxy) RegisterCredentialDescription(
 	}
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICredentialManager, "registerCredentialDescription"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "registerCredentialDescription")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -279,7 +314,12 @@ func (p *CredentialManagerProxy) UnregisterCredentialDescription(
 	}
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICredentialManager, "unregisterCredentialDescription"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "unregisterCredentialDescription")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -302,7 +342,12 @@ func (p *CredentialManagerProxy) IsEnabledCredentialProviderService(
 	_data.WriteInterfaceToken(DescriptorICredentialManager)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICredentialManager, "isEnabledCredentialProviderService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "isEnabledCredentialProviderService")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -330,7 +375,12 @@ func (p *CredentialManagerProxy) GetCredentialProviderServices(
 	_data.WriteInt32(userId)
 	_data.WriteInt32(providerFilter)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICredentialManager, "getCredentialProviderServices"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "getCredentialProviderServices")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -365,7 +415,12 @@ func (p *CredentialManagerProxy) GetCredentialProviderServicesForTesting(
 	_data.WriteInterfaceToken(DescriptorICredentialManager)
 	_data.WriteInt32(providerFilter)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICredentialManager, "getCredentialProviderServicesForTesting"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "getCredentialProviderServicesForTesting")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -398,7 +453,12 @@ func (p *CredentialManagerProxy) IsServiceEnabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICredentialManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICredentialManager, "isServiceEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "isServiceEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

@@ -46,7 +46,12 @@ func (p *ProcessResultImplProxy) OnCaptureCompleted(
 	_data.WriteInterfaceToken(DescriptorIProcessResultImpl)
 	_data.WriteInt64(shutterTimestamp)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIProcessResultImpl, "onCaptureCompleted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIProcessResultImpl, "onCaptureCompleted")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -67,7 +72,12 @@ func (p *ProcessResultImplProxy) OnCaptureProcessProgressed(
 	_data.WriteInterfaceToken(DescriptorIProcessResultImpl)
 	_data.WriteInt32(progress)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIProcessResultImpl, "onCaptureProcessProgressed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIProcessResultImpl, "onCaptureProcessProgressed")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

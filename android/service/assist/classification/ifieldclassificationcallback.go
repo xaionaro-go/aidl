@@ -52,7 +52,12 @@ func (p *FieldClassificationCallbackProxy) OnCancellable(
 	_data.WriteInterfaceToken(DescriptorIFieldClassificationCallback)
 	_data.WriteStrongBinder(cancellation.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFieldClassificationCallback, "onCancellable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFieldClassificationCallback, "onCancellable")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -75,7 +80,12 @@ func (p *FieldClassificationCallbackProxy) OnSuccess(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFieldClassificationCallback, "onSuccess"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFieldClassificationCallback, "onSuccess")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -94,7 +104,12 @@ func (p *FieldClassificationCallbackProxy) OnFailure(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFieldClassificationCallback)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFieldClassificationCallback, "onFailure"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFieldClassificationCallback, "onFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -114,7 +129,12 @@ func (p *FieldClassificationCallbackProxy) IsCompleted(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFieldClassificationCallback)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFieldClassificationCallback, "isCompleted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFieldClassificationCallback, "isCompleted")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -137,7 +157,12 @@ func (p *FieldClassificationCallbackProxy) Cancel(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFieldClassificationCallback)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFieldClassificationCallback, "cancel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFieldClassificationCallback, "cancel")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

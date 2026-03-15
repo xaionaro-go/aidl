@@ -95,7 +95,12 @@ func (p *SystemUiProxyProxy) StartScreenPinning(
 	_data.WriteInterfaceToken(DescriptorISystemUiProxy)
 	_data.WriteInt32(taskId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "startScreenPinning"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "startScreenPinning")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -107,7 +112,12 @@ func (p *SystemUiProxyProxy) OnOverviewShown(
 	_data.WriteInterfaceToken(DescriptorISystemUiProxy)
 	_data.WriteBool(fromHome)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "onOverviewShown"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "onOverviewShown")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -121,7 +131,12 @@ func (p *SystemUiProxyProxy) OnStatusBarTouchEvent(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "onStatusBarTouchEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "onStatusBarTouchEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -133,7 +148,12 @@ func (p *SystemUiProxyProxy) OnAssistantProgress(
 	_data.WriteInterfaceToken(DescriptorISystemUiProxy)
 	_data.WriteFloat32(progress)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "onAssistantProgress"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "onAssistantProgress")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -145,7 +165,12 @@ func (p *SystemUiProxyProxy) OnAssistantGestureCompletion(
 	_data.WriteInterfaceToken(DescriptorISystemUiProxy)
 	_data.WriteFloat32(velocity)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "onAssistantGestureCompletion"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "onAssistantGestureCompletion")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -159,7 +184,12 @@ func (p *SystemUiProxyProxy) StartAssistant(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "startAssistant"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "startAssistant")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -178,7 +208,12 @@ func (p *SystemUiProxyProxy) SetAssistantOverridesRequested(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "setAssistantOverridesRequested"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "setAssistantOverridesRequested")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -190,7 +225,12 @@ func (p *SystemUiProxyProxy) NotifyAccessibilityButtonClicked(
 	_data.WriteInterfaceToken(DescriptorISystemUiProxy)
 	_data.WriteInt32(displayId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "notifyAccessibilityButtonClicked"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "notifyAccessibilityButtonClicked")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -200,7 +240,12 @@ func (p *SystemUiProxyProxy) NotifyAccessibilityButtonLongClicked(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISystemUiProxy)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "notifyAccessibilityButtonLongClicked"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "notifyAccessibilityButtonLongClicked")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -210,7 +255,12 @@ func (p *SystemUiProxyProxy) StopScreenPinning(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISystemUiProxy)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "stopScreenPinning"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "stopScreenPinning")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -222,7 +272,12 @@ func (p *SystemUiProxyProxy) NotifyPrioritizedRotation(
 	_data.WriteInterfaceToken(DescriptorISystemUiProxy)
 	_data.WriteInt32(rotation)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "notifyPrioritizedRotation"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "notifyPrioritizedRotation")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -232,7 +287,12 @@ func (p *SystemUiProxyProxy) ExpandNotificationPanel(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISystemUiProxy)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "expandNotificationPanel"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "expandNotificationPanel")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -246,7 +306,12 @@ func (p *SystemUiProxyProxy) OnBackEvent(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "onBackEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "onBackEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -258,7 +323,12 @@ func (p *SystemUiProxyProxy) SetHomeRotationEnabled(
 	_data.WriteInterfaceToken(DescriptorISystemUiProxy)
 	_data.WriteBool(enabled)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "setHomeRotationEnabled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "setHomeRotationEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -272,7 +342,12 @@ func (p *SystemUiProxyProxy) NotifyTaskbarStatus(
 	_data.WriteBool(visible)
 	_data.WriteBool(stashed)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "notifyTaskbarStatus"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "notifyTaskbarStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -284,7 +359,12 @@ func (p *SystemUiProxyProxy) NotifyTaskbarAutohideSuspend(
 	_data.WriteInterfaceToken(DescriptorISystemUiProxy)
 	_data.WriteBool(suspend)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "notifyTaskbarAutohideSuspend"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "notifyTaskbarAutohideSuspend")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -294,7 +374,12 @@ func (p *SystemUiProxyProxy) OnImeSwitcherPressed(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISystemUiProxy)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "onImeSwitcherPressed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "onImeSwitcherPressed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -304,7 +389,12 @@ func (p *SystemUiProxyProxy) ToggleNotificationPanel(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISystemUiProxy)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "toggleNotificationPanel"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "toggleNotificationPanel")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -318,7 +408,12 @@ func (p *SystemUiProxyProxy) TakeScreenshot(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "takeScreenshot"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "takeScreenshot")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -332,7 +427,12 @@ func (p *SystemUiProxyProxy) OnStatusBarTrackpadEvent(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "onStatusBarTrackpadEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "onStatusBarTrackpadEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -348,7 +448,12 @@ func (p *SystemUiProxyProxy) AnimateNavBarLongPress(
 	_data.WriteBool(shrink)
 	_data.WriteInt64(durationMs)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "animateNavBarLongPress"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "animateNavBarLongPress")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -364,7 +469,12 @@ func (p *SystemUiProxyProxy) SetOverrideHomeButtonLongPress(
 	_data.WriteFloat32(slopMultiplier)
 	_data.WriteBool(haptic)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "setOverrideHomeButtonLongPress"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "setOverrideHomeButtonLongPress")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -374,7 +484,12 @@ func (p *SystemUiProxyProxy) ToggleQuickSettingsPanel(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISystemUiProxy)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "toggleQuickSettingsPanel"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "toggleQuickSettingsPanel")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -384,7 +499,12 @@ func (p *SystemUiProxyProxy) OnImeSwitcherLongPress(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISystemUiProxy)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "onImeSwitcherLongPress"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "onImeSwitcherLongPress")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -398,6 +518,11 @@ func (p *SystemUiProxyProxy) UpdateContextualEduStats(
 	_data.WriteBool(isTrackpadGesture)
 	_data.WriteString16(gestureType)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISystemUiProxy, "updateContextualEduStats"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISystemUiProxy, "updateContextualEduStats")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

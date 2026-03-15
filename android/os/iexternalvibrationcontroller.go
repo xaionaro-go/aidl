@@ -44,7 +44,12 @@ func (p *ExternalVibrationControllerProxy) Mute(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIExternalVibrationController)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIExternalVibrationController, "mute"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIExternalVibrationController, "mute")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -68,7 +73,12 @@ func (p *ExternalVibrationControllerProxy) Unmute(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIExternalVibrationController)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIExternalVibrationController, "unmute"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIExternalVibrationController, "unmute")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

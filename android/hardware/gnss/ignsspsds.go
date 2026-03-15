@@ -54,7 +54,12 @@ func (p *GnssPsdsProxy) InjectPsdsData(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGnssPsds, "injectPsdsData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGnssPsds, "injectPsdsData")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -75,7 +80,12 @@ func (p *GnssPsdsProxy) SetCallback(
 	_data.WriteInterfaceToken(DescriptorIGnssPsds)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGnssPsds, "setCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGnssPsds, "setCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

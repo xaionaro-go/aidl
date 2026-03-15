@@ -104,7 +104,12 @@ func (p *ScanSessionProxy) StartScan(
 	_data.WriteString16(scanType)
 	_data.WriteString16(languageCode)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "startScan"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "startScan")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -128,7 +133,12 @@ func (p *ScanSessionProxy) ResetScan(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIScanSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "resetScan"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "resetScan")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -152,7 +162,12 @@ func (p *ScanSessionProxy) CancelScan(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIScanSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "cancelScan"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "cancelScan")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -176,7 +191,12 @@ func (p *ScanSessionProxy) GetAvailableExtensionInterfaceNames(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIScanSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "getAvailableExtensionInterfaceNames"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "getAvailableExtensionInterfaceNames")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -212,7 +232,12 @@ func (p *ScanSessionProxy) GetExtensionInterface(
 	_data.WriteInterfaceToken(DescriptorIScanSession)
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "getExtensionInterface"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "getExtensionInterface")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -241,7 +266,12 @@ func (p *ScanSessionProxy) ClearServiceList(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "clearServiceList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "clearServiceList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -265,7 +295,12 @@ func (p *ScanSessionProxy) StoreServiceList(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIScanSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "storeServiceList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "storeServiceList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -300,7 +335,12 @@ func (p *ScanSessionProxy) GetServiceInfo(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "getServiceInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "getServiceInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -323,7 +363,12 @@ func (p *ScanSessionProxy) GetServiceInfoIdList(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIScanSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "getServiceInfoIdList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "getServiceInfoIdList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -370,7 +415,12 @@ func (p *ScanSessionProxy) GetServiceInfoList(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "getServiceInfoList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "getServiceInfoList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -397,7 +447,12 @@ func (p *ScanSessionProxy) UpdateServiceInfo(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "updateServiceInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "updateServiceInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -432,7 +487,12 @@ func (p *ScanSessionProxy) UpdateServiceInfoByList(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "updateServiceInfoByList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "updateServiceInfoByList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -456,7 +516,12 @@ func (p *ScanSessionProxy) GetServiceLists(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIScanSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "getServiceLists"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "getServiceLists")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -481,7 +546,12 @@ func (p *ScanSessionProxy) SetServiceList(
 	_data.WriteInterfaceToken(DescriptorIScanSession)
 	_data.WriteInt32(serviceListRecId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "setServiceList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "setServiceList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -505,7 +575,12 @@ func (p *ScanSessionProxy) GetPackageData(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIScanSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "getPackageData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "getPackageData")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -530,7 +605,12 @@ func (p *ScanSessionProxy) SetPackage(
 	_data.WriteInterfaceToken(DescriptorIScanSession)
 	_data.WriteString16(packageId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "setPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "setPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -554,7 +634,12 @@ func (p *ScanSessionProxy) GetCountryRegionData(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIScanSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "getCountryRegionData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "getCountryRegionData")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -579,7 +664,12 @@ func (p *ScanSessionProxy) SetCountryRegion(
 	_data.WriteInterfaceToken(DescriptorIScanSession)
 	_data.WriteString16(regionId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "setCountryRegion"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "setCountryRegion")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -603,7 +693,12 @@ func (p *ScanSessionProxy) GetRegionData(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIScanSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "getRegionData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "getRegionData")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -628,7 +723,12 @@ func (p *ScanSessionProxy) SetRegion(
 	_data.WriteInterfaceToken(DescriptorIScanSession)
 	_data.WriteString16(regionId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "setRegion"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "setRegion")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -652,7 +752,12 @@ func (p *ScanSessionProxy) GetSessionToken(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIScanSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "getSessionToken"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "getSessionToken")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -676,7 +781,12 @@ func (p *ScanSessionProxy) Release(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIScanSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScanSession, "release"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScanSession, "release")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

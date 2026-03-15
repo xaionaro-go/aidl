@@ -47,7 +47,12 @@ func (p *GetRegistrationCallbackProxy) OnSuccess(
 	_data.WriteInterfaceToken(DescriptorIGetRegistrationCallback)
 	_data.WriteStrongBinder(registration.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGetRegistrationCallback, "onSuccess"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGetRegistrationCallback, "onSuccess")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -57,7 +62,12 @@ func (p *GetRegistrationCallbackProxy) OnCancel(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGetRegistrationCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGetRegistrationCallback, "onCancel"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGetRegistrationCallback, "onCancel")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -69,6 +79,11 @@ func (p *GetRegistrationCallbackProxy) OnError(
 	_data.WriteInterfaceToken(DescriptorIGetRegistrationCallback)
 	_data.WriteString16(error_)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGetRegistrationCallback, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGetRegistrationCallback, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

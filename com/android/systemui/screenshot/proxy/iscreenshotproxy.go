@@ -44,7 +44,12 @@ func (p *ScreenshotProxyProxy) IsNotificationShadeExpanded(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIScreenshotProxy)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScreenshotProxy, "isNotificationShadeExpanded"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScreenshotProxy, "isNotificationShadeExpanded")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -69,7 +74,12 @@ func (p *ScreenshotProxyProxy) DismissKeyguard(
 	_data.WriteInterfaceToken(DescriptorIScreenshotProxy)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIScreenshotProxy, "dismissKeyguard"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIScreenshotProxy, "dismissKeyguard")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

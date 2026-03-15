@@ -45,7 +45,12 @@ func (p *ServiceListProxy) GetServiceListIds(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIServiceList)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceList, "getServiceListIds"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceList, "getServiceListIds")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -90,7 +95,12 @@ func (p *ServiceListProxy) GetServiceListInfo(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceList, "getServiceListInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceList, "getServiceListInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

@@ -76,7 +76,12 @@ func (p *NetdEventCallbackProxy) OnDnsEvent(
 	_data.WriteInt64(timestamp)
 	_data.WriteInt32(uid)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetdEventCallback, "onDnsEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetdEventCallback, "onDnsEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -94,7 +99,12 @@ func (p *NetdEventCallbackProxy) OnNat64PrefixEvent(
 	_data.WriteString16(prefixString)
 	_data.WriteInt32(prefixLength)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetdEventCallback, "onNat64PrefixEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetdEventCallback, "onNat64PrefixEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -112,7 +122,12 @@ func (p *NetdEventCallbackProxy) OnPrivateDnsValidationEvent(
 	_data.WriteString16(hostname)
 	_data.WriteBool(validated)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetdEventCallback, "onPrivateDnsValidationEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetdEventCallback, "onPrivateDnsValidationEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -130,6 +145,11 @@ func (p *NetdEventCallbackProxy) OnConnectEvent(
 	_data.WriteInt64(timestamp)
 	_data.WriteInt32(uid)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetdEventCallback, "onConnectEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetdEventCallback, "onConnectEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

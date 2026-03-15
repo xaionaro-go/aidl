@@ -43,6 +43,11 @@ func (p *RotationWatcherProxy) OnRotationChanged(
 	_data.WriteInterfaceToken(DescriptorIRotationWatcher)
 	_data.WriteInt32(rotation)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRotationWatcher, "onRotationChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRotationWatcher, "onRotationChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

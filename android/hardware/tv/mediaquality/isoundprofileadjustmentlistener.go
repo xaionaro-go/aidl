@@ -51,7 +51,12 @@ func (p *SoundProfileAdjustmentListenerProxy) OnSoundProfileAdjusted(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundProfileAdjustmentListener, "onSoundProfileAdjusted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundProfileAdjustmentListener, "onSoundProfileAdjusted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -74,7 +79,12 @@ func (p *SoundProfileAdjustmentListenerProxy) OnParamCapabilityChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundProfileAdjustmentListener, "onParamCapabilityChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundProfileAdjustmentListener, "onParamCapabilityChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -97,7 +107,12 @@ func (p *SoundProfileAdjustmentListenerProxy) OnVendorParamCapabilityChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundProfileAdjustmentListener, "onVendorParamCapabilityChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundProfileAdjustmentListener, "onVendorParamCapabilityChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -109,6 +124,11 @@ func (p *SoundProfileAdjustmentListenerProxy) OnRequestSoundParameters(
 	_data.WriteInterfaceToken(DescriptorISoundProfileAdjustmentListener)
 	_data.WriteInt64(SoundProfileId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundProfileAdjustmentListener, "onRequestSoundParameters"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundProfileAdjustmentListener, "onRequestSoundParameters")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

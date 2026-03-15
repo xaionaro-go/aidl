@@ -53,7 +53,12 @@ func (p *StorageSessionProxy) CommitChanges(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageSession, "commitChanges"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageSession, "commitChanges")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -72,7 +77,12 @@ func (p *StorageSessionProxy) StageChangesForCommitOnAbUpdateComplete(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageSession, "stageChangesForCommitOnAbUpdateComplete"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageSession, "stageChangesForCommitOnAbUpdateComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -91,7 +101,12 @@ func (p *StorageSessionProxy) AbandonChanges(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageSession, "abandonChanges"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageSession, "abandonChanges")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -117,7 +132,12 @@ func (p *StorageSessionProxy) OpenFile(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageSession, "openFile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageSession, "openFile")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -143,7 +163,12 @@ func (p *StorageSessionProxy) DeleteFile(
 	_data.WriteInterfaceToken(DescriptorIStorageSession)
 	_data.WriteString(filePath)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageSession, "deleteFile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageSession, "deleteFile")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -168,7 +193,12 @@ func (p *StorageSessionProxy) RenameFile(
 	_data.WriteString(destPath)
 	_data.WriteInt32(int32(destCreateMode))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageSession, "renameFile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageSession, "renameFile")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -190,7 +220,12 @@ func (p *StorageSessionProxy) OpenDir(
 	_data.WriteInterfaceToken(DescriptorIStorageSession)
 	_data.WriteString(path)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStorageSession, "openDir"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStorageSession, "openDir")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

@@ -51,7 +51,12 @@ func (p *BroadcastTimeProxy) GetUtcTime(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBroadcastTime)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBroadcastTime, "getUtcTime"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBroadcastTime, "getUtcTime")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -75,7 +80,12 @@ func (p *BroadcastTimeProxy) GetLocalTime(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBroadcastTime)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBroadcastTime, "getLocalTime"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBroadcastTime, "getLocalTime")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -99,7 +109,12 @@ func (p *BroadcastTimeProxy) GetTimeZoneInfo(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBroadcastTime)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBroadcastTime, "getTimeZoneInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBroadcastTime, "getTimeZoneInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -124,7 +139,12 @@ func (p *BroadcastTimeProxy) GetUtcTimePerStream(
 	_data.WriteInterfaceToken(DescriptorIBroadcastTime)
 	_data.WriteString16(SessionToken)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBroadcastTime, "getUtcTimePerStream"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBroadcastTime, "getUtcTimePerStream")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -150,7 +170,12 @@ func (p *BroadcastTimeProxy) GetLocalTimePerStream(
 	_data.WriteInterfaceToken(DescriptorIBroadcastTime)
 	_data.WriteString16(SessionToken)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBroadcastTime, "getLocalTimePerStream"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBroadcastTime, "getLocalTimePerStream")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

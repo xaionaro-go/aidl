@@ -72,7 +72,12 @@ func (p *ImeTrackerProxy) OnStart(
 	_data.WriteInt32(reason)
 	_data.WriteBool(fromUser)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImeTracker, "onStart"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImeTracker, "onStart")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -98,7 +103,12 @@ func (p *ImeTrackerProxy) OnProgress(
 	_data.WriteStrongBinder(binder_.Handle())
 	_data.WriteInt32(phase)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImeTracker, "onProgress"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImeTracker, "onProgress")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -114,7 +124,12 @@ func (p *ImeTrackerProxy) OnFailed(
 	}
 	_data.WriteInt32(phase)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImeTracker, "onFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImeTracker, "onFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -130,7 +145,12 @@ func (p *ImeTrackerProxy) OnCancelled(
 	}
 	_data.WriteInt32(phase)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImeTracker, "onCancelled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImeTracker, "onCancelled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -144,7 +164,12 @@ func (p *ImeTrackerProxy) OnShown(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImeTracker, "onShown"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImeTracker, "onShown")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -158,7 +183,12 @@ func (p *ImeTrackerProxy) OnHidden(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImeTracker, "onHidden"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImeTracker, "onHidden")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -172,7 +202,12 @@ func (p *ImeTrackerProxy) OnDispatched(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImeTracker, "onDispatched"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImeTracker, "onDispatched")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -183,7 +218,12 @@ func (p *ImeTrackerProxy) HasPendingImeVisibilityRequests(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImeTracker)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImeTracker, "hasPendingImeVisibilityRequests"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImeTracker, "hasPendingImeVisibilityRequests")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -210,6 +250,11 @@ func (p *ImeTrackerProxy) FinishTrackingPendingImeVisibilityRequests(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImeTracker, "finishTrackingPendingImeVisibilityRequests"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImeTracker, "finishTrackingPendingImeVisibilityRequests")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

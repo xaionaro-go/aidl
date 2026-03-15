@@ -156,7 +156,12 @@ func (p *HdmiControlServiceProxy) GetSupportedTypes(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "getSupportedTypes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "getSupportedTypes")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -190,7 +195,12 @@ func (p *HdmiControlServiceProxy) GetActiveSource(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "getActiveSource"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "getActiveSource")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -214,7 +224,12 @@ func (p *HdmiControlServiceProxy) OneTouchPlay(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "oneTouchPlay"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "oneTouchPlay")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -233,7 +248,12 @@ func (p *HdmiControlServiceProxy) ToggleAndFollowTvPower(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "toggleAndFollowTvPower"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "toggleAndFollowTvPower")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -253,7 +273,12 @@ func (p *HdmiControlServiceProxy) ShouldHandleTvPowerKey(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "shouldHandleTvPowerKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "shouldHandleTvPowerKey")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -278,7 +303,12 @@ func (p *HdmiControlServiceProxy) QueryDisplayStatus(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "queryDisplayStatus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "queryDisplayStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -299,7 +329,12 @@ func (p *HdmiControlServiceProxy) AddHdmiControlStatusChangeListener(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "addHdmiControlStatusChangeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "addHdmiControlStatusChangeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -320,7 +355,12 @@ func (p *HdmiControlServiceProxy) RemoveHdmiControlStatusChangeListener(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "removeHdmiControlStatusChangeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "removeHdmiControlStatusChangeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -341,7 +381,12 @@ func (p *HdmiControlServiceProxy) AddHdmiCecVolumeControlFeatureListener(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "addHdmiCecVolumeControlFeatureListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "addHdmiCecVolumeControlFeatureListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -362,7 +407,12 @@ func (p *HdmiControlServiceProxy) RemoveHdmiCecVolumeControlFeatureListener(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "removeHdmiCecVolumeControlFeatureListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "removeHdmiCecVolumeControlFeatureListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -383,7 +433,12 @@ func (p *HdmiControlServiceProxy) AddHotplugEventListener(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "addHotplugEventListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "addHotplugEventListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -404,7 +459,12 @@ func (p *HdmiControlServiceProxy) RemoveHotplugEventListener(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "removeHotplugEventListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "removeHotplugEventListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -425,7 +485,12 @@ func (p *HdmiControlServiceProxy) AddDeviceEventListener(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "addDeviceEventListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "addDeviceEventListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -448,7 +513,12 @@ func (p *HdmiControlServiceProxy) DeviceSelect(
 	_data.WriteInt32(deviceId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "deviceSelect"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "deviceSelect")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -471,7 +541,12 @@ func (p *HdmiControlServiceProxy) PortSelect(
 	_data.WriteInt32(portId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "portSelect"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "portSelect")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -496,7 +571,12 @@ func (p *HdmiControlServiceProxy) SendKeyEvent(
 	_data.WriteInt32(keyCode)
 	_data.WriteBool(isPressed)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "sendKeyEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "sendKeyEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -521,7 +601,12 @@ func (p *HdmiControlServiceProxy) SendVolumeKeyEvent(
 	_data.WriteInt32(keyCode)
 	_data.WriteBool(isPressed)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "sendVolumeKeyEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "sendVolumeKeyEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -541,7 +626,12 @@ func (p *HdmiControlServiceProxy) GetPortInfo(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "getPortInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "getPortInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -574,7 +664,12 @@ func (p *HdmiControlServiceProxy) CanChangeSystemAudioMode(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "canChangeSystemAudioMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "canChangeSystemAudioMode")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -598,7 +693,12 @@ func (p *HdmiControlServiceProxy) GetSystemAudioMode(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "getSystemAudioMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "getSystemAudioMode")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -622,7 +722,12 @@ func (p *HdmiControlServiceProxy) GetPhysicalAddress(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "getPhysicalAddress"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "getPhysicalAddress")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -649,7 +754,12 @@ func (p *HdmiControlServiceProxy) SetSystemAudioMode(
 	_data.WriteBool(enabled)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "setSystemAudioMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "setSystemAudioMode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -670,7 +780,12 @@ func (p *HdmiControlServiceProxy) AddSystemAudioModeChangeListener(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "addSystemAudioModeChangeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "addSystemAudioModeChangeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -691,7 +806,12 @@ func (p *HdmiControlServiceProxy) RemoveSystemAudioModeChangeListener(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "removeSystemAudioModeChangeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "removeSystemAudioModeChangeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -712,7 +832,12 @@ func (p *HdmiControlServiceProxy) SetArcMode(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "setArcMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "setArcMode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -733,7 +858,12 @@ func (p *HdmiControlServiceProxy) SetProhibitMode(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "setProhibitMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "setProhibitMode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -758,7 +888,12 @@ func (p *HdmiControlServiceProxy) SetSystemAudioVolume(
 	_data.WriteInt32(newIndex)
 	_data.WriteInt32(maxIndex)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "setSystemAudioVolume"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "setSystemAudioVolume")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -779,7 +914,12 @@ func (p *HdmiControlServiceProxy) SetSystemAudioMute(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteBool(mute)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "setSystemAudioMute"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "setSystemAudioMute")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -800,7 +940,12 @@ func (p *HdmiControlServiceProxy) SetInputChangeListener(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "setInputChangeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "setInputChangeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -820,7 +965,12 @@ func (p *HdmiControlServiceProxy) GetInputDevices(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "getInputDevices"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "getInputDevices")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -853,7 +1003,12 @@ func (p *HdmiControlServiceProxy) GetDeviceList(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "getDeviceList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "getDeviceList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -889,7 +1044,12 @@ func (p *HdmiControlServiceProxy) PowerOffRemoteDevice(
 	_data.WriteInt32(logicalAddress)
 	_data.WriteInt32(powerStatus)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "powerOffRemoteDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "powerOffRemoteDevice")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -912,7 +1072,12 @@ func (p *HdmiControlServiceProxy) PowerOnRemoteDevice(
 	_data.WriteInt32(logicalAddress)
 	_data.WriteInt32(powerStatus)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "powerOnRemoteDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "powerOnRemoteDevice")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -933,7 +1098,12 @@ func (p *HdmiControlServiceProxy) AskRemoteDeviceToBecomeActiveSource(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteInt32(physicalAddress)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "askRemoteDeviceToBecomeActiveSource"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "askRemoteDeviceToBecomeActiveSource")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -967,7 +1137,12 @@ func (p *HdmiControlServiceProxy) SendVendorCommand(
 	}
 	_data.WriteBool(hasVendorId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "sendVendorCommand"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "sendVendorCommand")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -990,7 +1165,12 @@ func (p *HdmiControlServiceProxy) AddVendorCommandListener(
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteInt32(vendorId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "addVendorCommandListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "addVendorCommandListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1013,7 +1193,12 @@ func (p *HdmiControlServiceProxy) SendStandby(
 	_data.WriteInt32(deviceType)
 	_data.WriteInt32(deviceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "sendStandby"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "sendStandby")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1034,7 +1219,12 @@ func (p *HdmiControlServiceProxy) SetHdmiRecordListener(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "setHdmiRecordListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "setHdmiRecordListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1064,7 +1254,12 @@ func (p *HdmiControlServiceProxy) StartOneTouchRecord(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "startOneTouchRecord"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "startOneTouchRecord")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1085,7 +1280,12 @@ func (p *HdmiControlServiceProxy) StopOneTouchRecord(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteInt32(recorderAddress)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "stopOneTouchRecord"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "stopOneTouchRecord")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1117,7 +1317,12 @@ func (p *HdmiControlServiceProxy) StartTimerRecording(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "startTimerRecording"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "startTimerRecording")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1149,7 +1354,12 @@ func (p *HdmiControlServiceProxy) ClearTimerRecording(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "clearTimerRecording"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "clearTimerRecording")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1183,7 +1393,12 @@ func (p *HdmiControlServiceProxy) SendMhlVendorCommand(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "sendMhlVendorCommand"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "sendMhlVendorCommand")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1204,7 +1419,12 @@ func (p *HdmiControlServiceProxy) AddHdmiMhlVendorCommandListener(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "addHdmiMhlVendorCommandListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "addHdmiMhlVendorCommandListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1225,7 +1445,12 @@ func (p *HdmiControlServiceProxy) SetStandbyMode(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteBool(isStandbyModeOn)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "setStandbyMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "setStandbyMode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1252,7 +1477,12 @@ func (p *HdmiControlServiceProxy) ReportAudioStatus(
 	_data.WriteInt32(maxVolume)
 	_data.WriteBool(isMute)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "reportAudioStatus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "reportAudioStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1271,7 +1501,12 @@ func (p *HdmiControlServiceProxy) SetSystemAudioModeOnForAudioOnlySource(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "setSystemAudioModeOnForAudioOnlySource"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "setSystemAudioModeOnForAudioOnlySource")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1293,7 +1528,12 @@ func (p *HdmiControlServiceProxy) SetMessageHistorySize(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteInt32(newSize)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "setMessageHistorySize"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "setMessageHistorySize")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1317,7 +1557,12 @@ func (p *HdmiControlServiceProxy) GetMessageHistorySize(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "getMessageHistorySize"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "getMessageHistorySize")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1344,7 +1589,12 @@ func (p *HdmiControlServiceProxy) AddCecSettingChangeListener(
 	_data.WriteString16(name)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "addCecSettingChangeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "addCecSettingChangeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1367,7 +1617,12 @@ func (p *HdmiControlServiceProxy) RemoveCecSettingChangeListener(
 	_data.WriteString16(name)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "removeCecSettingChangeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "removeCecSettingChangeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1387,7 +1642,12 @@ func (p *HdmiControlServiceProxy) GetUserCecSettings(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "getUserCecSettings"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "getUserCecSettings")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1423,7 +1683,12 @@ func (p *HdmiControlServiceProxy) GetAllowedCecSettingStringValues(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "getAllowedCecSettingStringValues"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "getAllowedCecSettingStringValues")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1459,7 +1724,12 @@ func (p *HdmiControlServiceProxy) GetAllowedCecSettingIntValues(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "getAllowedCecSettingIntValues"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "getAllowedCecSettingIntValues")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1495,7 +1765,12 @@ func (p *HdmiControlServiceProxy) GetCecSettingStringValue(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "getCecSettingStringValue"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "getCecSettingStringValue")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1522,7 +1797,12 @@ func (p *HdmiControlServiceProxy) SetCecSettingStringValue(
 	_data.WriteString16(name)
 	_data.WriteString16(value)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "setCecSettingStringValue"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "setCecSettingStringValue")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1544,7 +1824,12 @@ func (p *HdmiControlServiceProxy) GetCecSettingIntValue(
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "getCecSettingIntValue"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "getCecSettingIntValue")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1571,7 +1856,12 @@ func (p *HdmiControlServiceProxy) SetCecSettingIntValue(
 	_data.WriteString16(name)
 	_data.WriteInt32(value)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiControlService, "setCecSettingIntValue"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "setCecSettingIntValue")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

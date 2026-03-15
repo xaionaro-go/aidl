@@ -59,7 +59,12 @@ func (p *DvrProxy) GetQueueDesc(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDvr)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDvr, "getQueueDesc"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDvr, "getQueueDesc")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -85,7 +90,12 @@ func (p *DvrProxy) Configure(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDvr, "configure"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDvr, "configure")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -106,7 +116,12 @@ func (p *DvrProxy) AttachFilter(
 	_data.WriteInterfaceToken(DescriptorIDvr)
 	_data.WriteStrongBinder(filter.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDvr, "attachFilter"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDvr, "attachFilter")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -127,7 +142,12 @@ func (p *DvrProxy) DetachFilter(
 	_data.WriteInterfaceToken(DescriptorIDvr)
 	_data.WriteStrongBinder(filter.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDvr, "detachFilter"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDvr, "detachFilter")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -146,7 +166,12 @@ func (p *DvrProxy) Start(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDvr)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDvr, "start"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDvr, "start")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -165,7 +190,12 @@ func (p *DvrProxy) Stop(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDvr)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDvr, "stop"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDvr, "stop")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -184,7 +214,12 @@ func (p *DvrProxy) Flush(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDvr)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDvr, "flush"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDvr, "flush")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -203,7 +238,12 @@ func (p *DvrProxy) Close(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDvr)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDvr, "close"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDvr, "close")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -224,7 +264,12 @@ func (p *DvrProxy) SetStatusCheckIntervalHint(
 	_data.WriteInterfaceToken(DescriptorIDvr)
 	_data.WriteInt64(milliseconds)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDvr, "setStatusCheckIntervalHint"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDvr, "setStatusCheckIntervalHint")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

@@ -42,7 +42,12 @@ func (p *PinnerServiceProxy) GetPinnerStats(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPinnerService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPinnerService, "getPinnerStats"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPinnerService, "getPinnerStats")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

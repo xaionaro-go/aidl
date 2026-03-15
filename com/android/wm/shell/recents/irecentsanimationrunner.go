@@ -68,7 +68,12 @@ func (p *RecentsAnimationRunnerProxy) OnAnimationCanceled(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecentsAnimationRunner, "onAnimationCanceled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecentsAnimationRunner, "onAnimationCanceled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -114,7 +119,12 @@ func (p *RecentsAnimationRunnerProxy) OnAnimationStart(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecentsAnimationRunner, "onAnimationStart"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecentsAnimationRunner, "onAnimationStart")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -135,6 +145,11 @@ func (p *RecentsAnimationRunnerProxy) OnTasksAppeared(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecentsAnimationRunner, "onTasksAppeared"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecentsAnimationRunner, "onTasksAppeared")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

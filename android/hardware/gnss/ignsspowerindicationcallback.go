@@ -54,7 +54,12 @@ func (p *GnssPowerIndicationCallbackProxy) SetCapabilitiesCb(
 	_data.WriteInterfaceToken(DescriptorIGnssPowerIndicationCallback)
 	_data.WriteInt32(capabilities)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGnssPowerIndicationCallback, "setCapabilitiesCb"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGnssPowerIndicationCallback, "setCapabilitiesCb")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -77,6 +82,11 @@ func (p *GnssPowerIndicationCallbackProxy) GnssPowerStatsCb(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGnssPowerIndicationCallback, "gnssPowerStatsCb"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGnssPowerIndicationCallback, "gnssPowerStatsCb")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

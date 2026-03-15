@@ -84,7 +84,12 @@ func (p *ServiceManagerProxy) GetService(
 	_data.WriteInterfaceToken(DescriptorIServiceManager)
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceManager, "getService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "getService")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -111,7 +116,12 @@ func (p *ServiceManagerProxy) GetService2(
 	_data.WriteInterfaceToken(DescriptorIServiceManager)
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceManager, "getService2"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "getService2")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -136,7 +146,12 @@ func (p *ServiceManagerProxy) CheckService(
 	_data.WriteInterfaceToken(DescriptorIServiceManager)
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceManager, "checkService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "checkService")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -163,7 +178,12 @@ func (p *ServiceManagerProxy) CheckService2(
 	_data.WriteInterfaceToken(DescriptorIServiceManager)
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceManager, "checkService2"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "checkService2")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -193,7 +213,12 @@ func (p *ServiceManagerProxy) AddService(
 	_data.WriteBool(allowIsolated)
 	_data.WriteInt32(dumpPriority)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceManager, "addService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "addService")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -215,7 +240,12 @@ func (p *ServiceManagerProxy) ListServices(
 	_data.WriteInterfaceToken(DescriptorIServiceManager)
 	_data.WriteInt32(dumpPriority)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceManager, "listServices"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "listServices")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -252,7 +282,12 @@ func (p *ServiceManagerProxy) RegisterForNotifications(
 	_data.WriteString16(name)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceManager, "registerForNotifications"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "registerForNotifications")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -275,7 +310,12 @@ func (p *ServiceManagerProxy) UnregisterForNotifications(
 	_data.WriteString16(name)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceManager, "unregisterForNotifications"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "unregisterForNotifications")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -297,7 +337,12 @@ func (p *ServiceManagerProxy) IsDeclared(
 	_data.WriteInterfaceToken(DescriptorIServiceManager)
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceManager, "isDeclared"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "isDeclared")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -323,7 +368,12 @@ func (p *ServiceManagerProxy) GetDeclaredInstances(
 	_data.WriteInterfaceToken(DescriptorIServiceManager)
 	_data.WriteString16(iface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceManager, "getDeclaredInstances"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "getDeclaredInstances")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -359,7 +409,12 @@ func (p *ServiceManagerProxy) UpdatableViaApex(
 	_data.WriteInterfaceToken(DescriptorIServiceManager)
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceManager, "updatableViaApex"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "updatableViaApex")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -385,7 +440,12 @@ func (p *ServiceManagerProxy) GetUpdatableNames(
 	_data.WriteInterfaceToken(DescriptorIServiceManager)
 	_data.WriteString16(apexName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceManager, "getUpdatableNames"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "getUpdatableNames")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -421,7 +481,12 @@ func (p *ServiceManagerProxy) GetConnectionInfo(
 	_data.WriteInterfaceToken(DescriptorIServiceManager)
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceManager, "getConnectionInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "getConnectionInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -449,7 +514,12 @@ func (p *ServiceManagerProxy) RegisterClientCallback(
 	_data.WriteStrongBinder(service.Handle())
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceManager, "registerClientCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "registerClientCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -472,7 +542,12 @@ func (p *ServiceManagerProxy) TryUnregisterService(
 	_data.WriteString16(name)
 	_data.WriteStrongBinder(service.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceManager, "tryUnregisterService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "tryUnregisterService")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -492,7 +567,12 @@ func (p *ServiceManagerProxy) GetServiceDebugInfo(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIServiceManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceManager, "getServiceDebugInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "getServiceDebugInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

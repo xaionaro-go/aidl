@@ -58,7 +58,12 @@ func (p *RestoreObserverProxy) RestoreSetsAvailable(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRestoreObserver, "restoreSetsAvailable"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRestoreObserver, "restoreSetsAvailable")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -70,7 +75,12 @@ func (p *RestoreObserverProxy) RestoreStarting(
 	_data.WriteInterfaceToken(DescriptorIRestoreObserver)
 	_data.WriteInt32(numPackages)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRestoreObserver, "restoreStarting"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRestoreObserver, "restoreStarting")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -84,7 +94,12 @@ func (p *RestoreObserverProxy) OnUpdate(
 	_data.WriteInt32(nowBeingRestored)
 	_data.WriteString16(curentPackage)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRestoreObserver, "onUpdate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRestoreObserver, "onUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -96,6 +111,11 @@ func (p *RestoreObserverProxy) RestoreFinished(
 	_data.WriteInterfaceToken(DescriptorIRestoreObserver)
 	_data.WriteInt32(error_)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRestoreObserver, "restoreFinished"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRestoreObserver, "restoreFinished")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

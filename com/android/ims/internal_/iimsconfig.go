@@ -61,7 +61,12 @@ func (p *ImsConfigProxy) GetProvisionedValue(
 	_data.WriteInterfaceToken(DescriptorIImsConfig)
 	_data.WriteInt32(item)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsConfig, "getProvisionedValue"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsConfig, "getProvisionedValue")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -87,7 +92,12 @@ func (p *ImsConfigProxy) GetProvisionedStringValue(
 	_data.WriteInterfaceToken(DescriptorIImsConfig)
 	_data.WriteInt32(item)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsConfig, "getProvisionedStringValue"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsConfig, "getProvisionedStringValue")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -115,7 +125,12 @@ func (p *ImsConfigProxy) SetProvisionedValue(
 	_data.WriteInt32(item)
 	_data.WriteInt32(value)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsConfig, "setProvisionedValue"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsConfig, "setProvisionedValue")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -143,7 +158,12 @@ func (p *ImsConfigProxy) SetProvisionedStringValue(
 	_data.WriteInt32(item)
 	_data.WriteString16(value)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsConfig, "setProvisionedStringValue"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsConfig, "setProvisionedStringValue")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -172,7 +192,12 @@ func (p *ImsConfigProxy) GetFeatureValue(
 	_data.WriteInt32(network)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsConfig, "getFeatureValue"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsConfig, "getFeatureValue")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -190,7 +215,12 @@ func (p *ImsConfigProxy) SetFeatureValue(
 	_data.WriteInt32(value)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsConfig, "setFeatureValue"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsConfig, "setFeatureValue")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -201,7 +231,12 @@ func (p *ImsConfigProxy) GetVolteProvisioned(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsConfig)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsConfig, "getVolteProvisioned"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsConfig, "getVolteProvisioned")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -226,7 +261,12 @@ func (p *ImsConfigProxy) GetVideoQuality(
 	_data.WriteInterfaceToken(DescriptorIImsConfig)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsConfig, "getVideoQuality"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsConfig, "getVideoQuality")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -240,6 +280,11 @@ func (p *ImsConfigProxy) SetVideoQuality(
 	_data.WriteInt32(quality)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsConfig, "setVideoQuality"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsConfig, "setVideoQuality")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

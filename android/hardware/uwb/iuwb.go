@@ -44,7 +44,12 @@ func (p *UwbProxy) GetChips(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUwb)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUwb, "getChips"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUwb, "getChips")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -80,7 +85,12 @@ func (p *UwbProxy) GetChip(
 	_data.WriteInterfaceToken(DescriptorIUwb)
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUwb, "getChip"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUwb, "getChip")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

@@ -53,7 +53,12 @@ func (p *AGnssProxy) SetCallback(
 	_data.WriteInterfaceToken(DescriptorIAGnss)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAGnss, "setCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAGnss, "setCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -72,7 +77,12 @@ func (p *AGnssProxy) DataConnClosed(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAGnss)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAGnss, "dataConnClosed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAGnss, "dataConnClosed")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -91,7 +101,12 @@ func (p *AGnssProxy) DataConnFailed(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAGnss)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAGnss, "dataConnFailed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAGnss, "dataConnFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -116,7 +131,12 @@ func (p *AGnssProxy) SetServer(
 	_data.WriteString(hostname)
 	_data.WriteInt32(port)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAGnss, "setServer"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAGnss, "setServer")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -141,7 +161,12 @@ func (p *AGnssProxy) DataConnOpen(
 	_data.WriteString(apn)
 	_data.WriteInt32(int32(apnIpType))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAGnss, "dataConnOpen"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAGnss, "dataConnOpen")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

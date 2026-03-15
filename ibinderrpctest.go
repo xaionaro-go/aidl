@@ -101,7 +101,12 @@ func (p *BinderRpcTestProxy) SendString(
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 	_data.WriteString16(str)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "sendString"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "sendString")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -114,7 +119,12 @@ func (p *BinderRpcTestProxy) DoubleString(
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 	_data.WriteString16(str)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "doubleString"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "doubleString")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -138,7 +148,12 @@ func (p *BinderRpcTestProxy) GetClientPort(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "getClientPort"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "getClientPort")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -162,7 +177,12 @@ func (p *BinderRpcTestProxy) CountBinders(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "countBinders"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "countBinders")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -196,7 +216,12 @@ func (p *BinderRpcTestProxy) GetNullBinder(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "getNullBinder"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "getNullBinder")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -223,7 +248,12 @@ func (p *BinderRpcTestProxy) PingMe(
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 	_data.WriteStrongBinder(binder_.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "pingMe"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "pingMe")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -249,7 +279,12 @@ func (p *BinderRpcTestProxy) RepeatBinder(
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 	_data.WriteStrongBinder(binder_.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "repeatBinder"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "repeatBinder")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -275,7 +310,12 @@ func (p *BinderRpcTestProxy) HoldBinder(
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 	_data.WriteStrongBinder(binder_.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "holdBinder"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "holdBinder")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -295,7 +335,12 @@ func (p *BinderRpcTestProxy) GetHeldBinder(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "getHeldBinder"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "getHeldBinder")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -329,7 +374,12 @@ func (p *BinderRpcTestProxy) RepeatBytes(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "repeatBytes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "repeatBytes")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -366,7 +416,12 @@ func (p *BinderRpcTestProxy) NestMe(
 	_data.WriteStrongBinder(binder_.AsBinder().Handle())
 	_data.WriteInt32(calls)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "nestMe"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "nestMe")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -386,7 +441,12 @@ func (p *BinderRpcTestProxy) AlwaysGiveMeTheSameBinder(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "alwaysGiveMeTheSameBinder"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "alwaysGiveMeTheSameBinder")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -413,7 +473,12 @@ func (p *BinderRpcTestProxy) OpenSession(
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "openSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "openSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -438,7 +503,12 @@ func (p *BinderRpcTestProxy) GetNumOpenSessions(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "getNumOpenSessions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "getNumOpenSessions")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -461,7 +531,12 @@ func (p *BinderRpcTestProxy) Lock(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "lock"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "lock")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -482,7 +557,12 @@ func (p *BinderRpcTestProxy) UnlockInMsAsync(
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 	_data.WriteInt32(ms)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "unlockInMsAsync"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "unlockInMsAsync")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -492,7 +572,12 @@ func (p *BinderRpcTestProxy) LockUnlock(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "lockUnlock"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "lockUnlock")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -513,7 +598,12 @@ func (p *BinderRpcTestProxy) SleepMs(
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 	_data.WriteInt32(ms)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "sleepMs"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "sleepMs")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -534,7 +624,12 @@ func (p *BinderRpcTestProxy) SleepMsAsync(
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 	_data.WriteInt32(ms)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "sleepMsAsync"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "sleepMsAsync")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -552,7 +647,12 @@ func (p *BinderRpcTestProxy) DoCallback(
 	_data.WriteBool(delayed)
 	_data.WriteString16(value)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "doCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "doCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -579,7 +679,12 @@ func (p *BinderRpcTestProxy) DoCallbackAsync(
 	_data.WriteBool(delayed)
 	_data.WriteString16(value)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "doCallbackAsync"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "doCallbackAsync")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -591,7 +696,12 @@ func (p *BinderRpcTestProxy) Die(
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 	_data.WriteBool(cleanup)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "die"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "die")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -610,7 +720,12 @@ func (p *BinderRpcTestProxy) ScheduleShutdown(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "scheduleShutdown"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "scheduleShutdown")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -629,7 +744,12 @@ func (p *BinderRpcTestProxy) UseKernelBinderCallingId(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "useKernelBinderCallingId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "useKernelBinderCallingId")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -651,7 +771,12 @@ func (p *BinderRpcTestProxy) EchoAsFile(
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 	_data.WriteString16(content)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "echoAsFile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "echoAsFile")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -684,7 +809,12 @@ func (p *BinderRpcTestProxy) ConcatFiles(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "concatFiles"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "concatFiles")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -709,7 +839,12 @@ func (p *BinderRpcTestProxy) BlockingSendFdOneway(
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 	_data.WriteFileDescriptor(fd)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "blockingSendFdOneway"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "blockingSendFdOneway")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -720,7 +855,12 @@ func (p *BinderRpcTestProxy) BlockingRecvFd(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "blockingRecvFd"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "blockingRecvFd")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -745,7 +885,12 @@ func (p *BinderRpcTestProxy) BlockingSendIntOneway(
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 	_data.WriteInt32(n)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "blockingSendIntOneway"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "blockingSendIntOneway")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -756,7 +901,12 @@ func (p *BinderRpcTestProxy) BlockingRecvInt(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcTest, "blockingRecvInt"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "blockingRecvInt")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

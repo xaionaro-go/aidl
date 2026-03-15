@@ -48,7 +48,12 @@ func (p *CanControllerProxy) GetSupportedInterfaceTypes(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICanController)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICanController, "getSupportedInterfaceTypes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICanController, "getSupportedInterfaceTypes")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -85,7 +90,12 @@ func (p *CanControllerProxy) GetInterfaceName(
 	_data.WriteInterfaceToken(DescriptorICanController)
 	_data.WriteString16(busName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICanController, "getInterfaceName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICanController, "getInterfaceName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -113,7 +123,12 @@ func (p *CanControllerProxy) UpBus(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICanController, "upBus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICanController, "upBus")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -138,7 +153,12 @@ func (p *CanControllerProxy) DownBus(
 	_data.WriteInterfaceToken(DescriptorICanController)
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICanController, "downBus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICanController, "downBus")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

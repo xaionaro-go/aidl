@@ -58,7 +58,12 @@ func (p *VoiceInteractorCallbackProxy) DeliverConfirmationResult(
 	_data.WriteStrongBinder(request.AsBinder().Handle())
 	_data.WriteBool(confirmed)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "deliverConfirmationResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "deliverConfirmationResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -79,7 +84,12 @@ func (p *VoiceInteractorCallbackProxy) DeliverPickOptionResult(
 		_data.WriteInt32(int32(len(selections)))
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "deliverPickOptionResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "deliverPickOptionResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -92,7 +102,12 @@ func (p *VoiceInteractorCallbackProxy) DeliverCompleteVoiceResult(
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractorCallback)
 	_data.WriteStrongBinder(request.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "deliverCompleteVoiceResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "deliverCompleteVoiceResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -105,7 +120,12 @@ func (p *VoiceInteractorCallbackProxy) DeliverAbortVoiceResult(
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractorCallback)
 	_data.WriteStrongBinder(request.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "deliverAbortVoiceResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "deliverAbortVoiceResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -120,7 +140,12 @@ func (p *VoiceInteractorCallbackProxy) DeliverCommandResult(
 	_data.WriteStrongBinder(request.AsBinder().Handle())
 	_data.WriteBool(finished)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "deliverCommandResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "deliverCommandResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -132,7 +157,12 @@ func (p *VoiceInteractorCallbackProxy) DeliverCancel(
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractorCallback)
 	_data.WriteStrongBinder(request.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "deliverCancel"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "deliverCancel")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -142,6 +172,11 @@ func (p *VoiceInteractorCallbackProxy) Destroy(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractorCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "destroy"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "destroy")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

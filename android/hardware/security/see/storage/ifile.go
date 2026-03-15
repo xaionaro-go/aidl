@@ -54,7 +54,12 @@ func (p *FileProxy) Read(
 	_data.WriteInt64(size)
 	_data.WriteInt64(offset)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFile, "read"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFile, "read")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -99,7 +104,12 @@ func (p *FileProxy) Write(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFile, "write"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFile, "write")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -123,7 +133,12 @@ func (p *FileProxy) GetSize(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFile)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFile, "getSize"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFile, "getSize")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -148,7 +163,12 @@ func (p *FileProxy) SetSize(
 	_data.WriteInterfaceToken(DescriptorIFile)
 	_data.WriteInt64(newSize)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFile, "setSize"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFile, "setSize")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -171,7 +191,12 @@ func (p *FileProxy) Rename(
 	_data.WriteString(destPath)
 	_data.WriteInt32(int32(destCreateMode))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFile, "rename"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFile, "rename")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

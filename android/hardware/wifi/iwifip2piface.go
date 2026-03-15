@@ -42,7 +42,12 @@ func (p *WifiP2pIfaceProxy) GetName(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiP2pIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiP2pIface, "getName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiP2pIface, "getName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

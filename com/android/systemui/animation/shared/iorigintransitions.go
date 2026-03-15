@@ -53,7 +53,12 @@ func (p *OriginTransitionsProxy) MakeOriginTransition(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOriginTransitions, "makeOriginTransition"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOriginTransitions, "makeOriginTransition")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -79,7 +84,12 @@ func (p *OriginTransitionsProxy) CancelOriginTransition(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOriginTransitions, "cancelOriginTransition"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOriginTransitions, "cancelOriginTransition")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

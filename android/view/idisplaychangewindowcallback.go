@@ -42,7 +42,12 @@ func (p *DisplayChangeWindowCallbackProxy) ContinueDisplayChange(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayChangeWindowCallback)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDisplayChangeWindowCallback, "continueDisplayChange"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDisplayChangeWindowCallback, "continueDisplayChange")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

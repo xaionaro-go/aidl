@@ -53,7 +53,12 @@ func (p *PdfEditorProxy) OpenDocument(
 	_data.WriteInterfaceToken(DescriptorIPdfEditor)
 	_data.WriteFileDescriptor(source)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPdfEditor, "openDocument"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPdfEditor, "openDocument")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -87,7 +92,12 @@ func (p *PdfEditorProxy) RemovePages(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPdfEditor, "removePages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPdfEditor, "removePages")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -110,7 +120,12 @@ func (p *PdfEditorProxy) ApplyPrintAttributes(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPdfEditor, "applyPrintAttributes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPdfEditor, "applyPrintAttributes")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -131,7 +146,12 @@ func (p *PdfEditorProxy) Write(
 	_data.WriteInterfaceToken(DescriptorIPdfEditor)
 	_data.WriteFileDescriptor(destination)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPdfEditor, "write"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPdfEditor, "write")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -150,7 +170,12 @@ func (p *PdfEditorProxy) CloseDocument(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPdfEditor)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPdfEditor, "closeDocument"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPdfEditor, "closeDocument")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

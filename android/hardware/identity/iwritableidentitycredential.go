@@ -74,7 +74,12 @@ func (p *WritableIdentityCredentialProxy) GetAttestationCertificate(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWritableIdentityCredential, "getAttestationCertificate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWritableIdentityCredential, "getAttestationCertificate")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -117,7 +122,12 @@ func (p *WritableIdentityCredentialProxy) StartPersonalization(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWritableIdentityCredential, "startPersonalization"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWritableIdentityCredential, "startPersonalization")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -149,7 +159,12 @@ func (p *WritableIdentityCredentialProxy) AddAccessControlProfile(
 	_data.WriteInt64(timeoutMillis)
 	_data.WriteInt64(secureUserId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWritableIdentityCredential, "addAccessControlProfile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWritableIdentityCredential, "addAccessControlProfile")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -186,7 +201,12 @@ func (p *WritableIdentityCredentialProxy) BeginAddEntry(
 	_data.WriteString(name)
 	_data.WriteInt32(entrySize)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWritableIdentityCredential, "beginAddEntry"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWritableIdentityCredential, "beginAddEntry")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -215,7 +235,12 @@ func (p *WritableIdentityCredentialProxy) AddEntryValue(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWritableIdentityCredential, "addEntryValue"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWritableIdentityCredential, "addEntryValue")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -250,7 +275,12 @@ func (p *WritableIdentityCredentialProxy) FinishAddingEntries(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWritableIdentityCredential)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWritableIdentityCredential, "finishAddingEntries"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWritableIdentityCredential, "finishAddingEntries")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -297,7 +327,12 @@ func (p *WritableIdentityCredentialProxy) SetExpectedProofOfProvisioningSize(
 	_data.WriteInterfaceToken(DescriptorIWritableIdentityCredential)
 	_data.WriteInt32(expectedProofOfProvisioningSize)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWritableIdentityCredential, "setExpectedProofOfProvisioningSize"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWritableIdentityCredential, "setExpectedProofOfProvisioningSize")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -334,7 +369,12 @@ func (p *WritableIdentityCredentialProxy) SetRemotelyProvisionedAttestationKey(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWritableIdentityCredential, "setRemotelyProvisionedAttestationKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWritableIdentityCredential, "setRemotelyProvisionedAttestationKey")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

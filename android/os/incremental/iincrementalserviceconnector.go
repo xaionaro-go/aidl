@@ -44,7 +44,12 @@ func (p *IncrementalServiceConnectorProxy) SetStorageParams(
 	_data.WriteInterfaceToken(DescriptorIIncrementalServiceConnector)
 	_data.WriteBool(enableReadLogs)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIncrementalServiceConnector, "setStorageParams"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIncrementalServiceConnector, "setStorageParams")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

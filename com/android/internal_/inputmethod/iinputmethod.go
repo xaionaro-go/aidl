@@ -82,7 +82,12 @@ func (p *InputMethodProxy) InitializeInternal(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "initializeInternal"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "initializeInternal")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -98,7 +103,12 @@ func (p *InputMethodProxy) OnCreateInlineSuggestionsRequest(
 	}
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "onCreateInlineSuggestionsRequest"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "onCreateInlineSuggestionsRequest")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -112,7 +122,12 @@ func (p *InputMethodProxy) BindInput(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "bindInput"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "bindInput")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -122,7 +137,12 @@ func (p *InputMethodProxy) UnbindInput(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "unbindInput"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "unbindInput")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -133,7 +153,12 @@ func (p *InputMethodProxy) StartInput(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "startInput"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "startInput")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -145,7 +170,12 @@ func (p *InputMethodProxy) OnNavButtonFlagsChanged(
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
 	_data.WriteInt32(navButtonFlags)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "onNavButtonFlagsChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "onNavButtonFlagsChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -158,7 +188,12 @@ func (p *InputMethodProxy) CreateSession(
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "createSession"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "createSession")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -172,7 +207,12 @@ func (p *InputMethodProxy) SetSessionEnabled(
 	_data.WriteStrongBinder(session.AsBinder().Handle())
 	_data.WriteBool(enabled)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "setSessionEnabled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "setSessionEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -191,7 +231,12 @@ func (p *InputMethodProxy) ShowSoftInput(
 	}
 	_data.WriteInt32(flags)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "showSoftInput"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "showSoftInput")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -210,7 +255,12 @@ func (p *InputMethodProxy) HideSoftInput(
 	}
 	_data.WriteInt32(flags)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "hideSoftInput"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "hideSoftInput")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -222,7 +272,12 @@ func (p *InputMethodProxy) UpdateEditorToolType(
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
 	_data.WriteInt32(toolType)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "updateEditorToolType"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "updateEditorToolType")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -236,7 +291,12 @@ func (p *InputMethodProxy) ChangeInputMethodSubtype(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "changeInputMethodSubtype"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "changeInputMethodSubtype")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -256,7 +316,12 @@ func (p *InputMethodProxy) CanStartStylusHandwriting(
 	}
 	_data.WriteBool(isConnectionlessForDelegation)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "canStartStylusHandwriting"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "canStartStylusHandwriting")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -280,7 +345,12 @@ func (p *InputMethodProxy) StartStylusHandwriting(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "startStylusHandwriting"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "startStylusHandwriting")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -290,7 +360,12 @@ func (p *InputMethodProxy) CommitHandwritingDelegationTextIfAvailable(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "commitHandwritingDelegationTextIfAvailable"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "commitHandwritingDelegationTextIfAvailable")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -300,7 +375,12 @@ func (p *InputMethodProxy) DiscardHandwritingDelegationText(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "discardHandwritingDelegationText"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "discardHandwritingDelegationText")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -310,7 +390,12 @@ func (p *InputMethodProxy) InitInkWindow(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "initInkWindow"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "initInkWindow")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -320,7 +405,12 @@ func (p *InputMethodProxy) FinishStylusHandwriting(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "finishStylusHandwriting"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "finishStylusHandwriting")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -330,7 +420,12 @@ func (p *InputMethodProxy) RemoveStylusHandwritingWindow(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "removeStylusHandwritingWindow"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "removeStylusHandwritingWindow")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -342,6 +437,11 @@ func (p *InputMethodProxy) SetStylusWindowIdleTimeoutForTest(
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
 	_data.WriteInt64(timeout)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMethod, "setStylusWindowIdleTimeoutForTest"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "setStylusWindowIdleTimeoutForTest")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -49,7 +49,12 @@ func (p *TextToSpeechSessionCallbackProxy) OnConnected(
 	_data.WriteStrongBinder(session.AsBinder().Handle())
 	_data.WriteStrongBinder(serviceBinder.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITextToSpeechSessionCallback, "onConnected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITextToSpeechSessionCallback, "onConnected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -59,7 +64,12 @@ func (p *TextToSpeechSessionCallbackProxy) OnDisconnected(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextToSpeechSessionCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITextToSpeechSessionCallback, "onDisconnected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITextToSpeechSessionCallback, "onDisconnected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -71,6 +81,11 @@ func (p *TextToSpeechSessionCallbackProxy) OnError(
 	_data.WriteInterfaceToken(DescriptorITextToSpeechSessionCallback)
 	_data.WriteString16(errorInfo)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITextToSpeechSessionCallback, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITextToSpeechSessionCallback, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

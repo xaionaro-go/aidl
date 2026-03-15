@@ -45,7 +45,12 @@ func (p *PopulationDensityProviderProxy) GetDefaultCoarseningLevel(
 	_data.WriteInterfaceToken(DescriptorIPopulationDensityProvider)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPopulationDensityProvider, "getDefaultCoarseningLevel"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPopulationDensityProvider, "getDefaultCoarseningLevel")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -63,6 +68,11 @@ func (p *PopulationDensityProviderProxy) GetCoarsenedS2Cells(
 	_data.WriteInt32(numAdditionalCells)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPopulationDensityProvider, "getCoarsenedS2Cells"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPopulationDensityProvider, "getCoarsenedS2Cells")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -51,7 +51,12 @@ func (p *DownloadStatusListenerProxy) OnStatusUpdated(
 	}
 	_data.WriteInt32(status)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDownloadStatusListener, "onStatusUpdated"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDownloadStatusListener, "onStatusUpdated")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

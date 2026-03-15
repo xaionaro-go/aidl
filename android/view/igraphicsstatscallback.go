@@ -41,6 +41,11 @@ func (p *GraphicsStatsCallbackProxy) OnRotateGraphicsStatsBuffer(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGraphicsStatsCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGraphicsStatsCallback, "onRotateGraphicsStatsBuffer"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGraphicsStatsCallback, "onRotateGraphicsStatsBuffer")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

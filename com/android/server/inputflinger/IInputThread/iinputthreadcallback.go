@@ -41,7 +41,12 @@ func (p *InputThreadCallbackProxy) LoopOnce(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputThreadCallback)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputThreadCallback, "loopOnce"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputThreadCallback, "loopOnce")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

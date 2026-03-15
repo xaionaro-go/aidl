@@ -44,7 +44,12 @@ func (p *BinderVendorDoubleLoadTestProxy) RepeatString(
 	_data.WriteInterfaceToken(DescriptorIBinderVendorDoubleLoadTest)
 	_data.WriteString16(toRepeat)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderVendorDoubleLoadTest, "RepeatString"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderVendorDoubleLoadTest, "RepeatString")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

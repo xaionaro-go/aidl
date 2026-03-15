@@ -45,7 +45,12 @@ func (p *TracingServiceProxyProxy) NotifyTraceSessionEnded(
 	_data.WriteInterfaceToken(DescriptorITracingServiceProxy)
 	_data.WriteBool(sessionStolen)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITracingServiceProxy, "notifyTraceSessionEnded"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITracingServiceProxy, "notifyTraceSessionEnded")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -59,6 +64,11 @@ func (p *TracingServiceProxyProxy) ReportTrace(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITracingServiceProxy, "reportTrace"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITracingServiceProxy, "reportTrace")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -77,7 +77,12 @@ func (p *BluetoothAudioProviderProxy) EndSession(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothAudioProvider)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "endSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "endSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -112,7 +117,12 @@ func (p *BluetoothAudioProviderProxy) StartSession(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "startSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "startSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -136,7 +146,12 @@ func (p *BluetoothAudioProviderProxy) StreamStarted(
 	_data.WriteInterfaceToken(DescriptorIBluetoothAudioProvider)
 	_data.WriteInt32(int32(status))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "streamStarted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "streamStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -157,7 +172,12 @@ func (p *BluetoothAudioProviderProxy) StreamSuspended(
 	_data.WriteInterfaceToken(DescriptorIBluetoothAudioProvider)
 	_data.WriteInt32(int32(status))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "streamSuspended"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "streamSuspended")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -180,7 +200,12 @@ func (p *BluetoothAudioProviderProxy) UpdateAudioConfiguration(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "updateAudioConfiguration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "updateAudioConfiguration")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -201,7 +226,12 @@ func (p *BluetoothAudioProviderProxy) SetLowLatencyModeAllowed(
 	_data.WriteInterfaceToken(DescriptorIBluetoothAudioProvider)
 	_data.WriteBool(allowed)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "setLowLatencyModeAllowed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "setLowLatencyModeAllowed")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -235,7 +265,12 @@ func (p *BluetoothAudioProviderProxy) ParseA2dpConfiguration(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "parseA2dpConfiguration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "parseA2dpConfiguration")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -278,7 +313,12 @@ func (p *BluetoothAudioProviderProxy) GetA2dpConfiguration(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "getA2dpConfiguration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "getA2dpConfiguration")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -306,7 +346,12 @@ func (p *BluetoothAudioProviderProxy) SetCodecPriority(
 	}
 	_data.WriteInt32(priority)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "setCodecPriority"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "setCodecPriority")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -344,7 +389,12 @@ func (p *BluetoothAudioProviderProxy) GetLeAudioAseConfiguration(
 		_data.WriteInt32(int32(len(requirements)))
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "getLeAudioAseConfiguration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "getLeAudioAseConfiguration")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -375,7 +425,12 @@ func (p *BluetoothAudioProviderProxy) GetLeAudioAseQosConfiguration(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothAudioProvider)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "getLeAudioAseQosConfiguration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "getLeAudioAseQosConfiguration")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -397,7 +452,12 @@ func (p *BluetoothAudioProviderProxy) GetLeAudioAseDatapathConfiguration(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothAudioProvider)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "getLeAudioAseDatapathConfiguration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "getLeAudioAseDatapathConfiguration")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -432,7 +492,12 @@ func (p *BluetoothAudioProviderProxy) OnSinkAseMetadataChanged(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "onSinkAseMetadataChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "onSinkAseMetadataChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -467,7 +532,12 @@ func (p *BluetoothAudioProviderProxy) OnSourceAseMetadataChanged(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "onSourceAseMetadataChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "onSourceAseMetadataChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -494,7 +564,12 @@ func (p *BluetoothAudioProviderProxy) GetLeAudioBroadcastConfiguration(
 		_data.WriteInt32(int32(len(remoteSinkAudioCapabilities)))
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "getLeAudioBroadcastConfiguration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "getLeAudioBroadcastConfiguration")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -524,7 +599,12 @@ func (p *BluetoothAudioProviderProxy) GetLeAudioBroadcastDatapathConfiguration(
 		_data.WriteInt32(int32(len(streamMap)))
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "getLeAudioBroadcastDatapathConfiguration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothAudioProvider, "getLeAudioBroadcastDatapathConfiguration")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

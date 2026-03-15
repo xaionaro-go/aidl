@@ -45,7 +45,12 @@ func (p *InlineSuggestionUiProxy) GetSurfacePackage(
 	_data.WriteInterfaceToken(DescriptorIInlineSuggestionUi)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInlineSuggestionUi, "getSurfacePackage"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInlineSuggestionUi, "getSurfacePackage")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -55,6 +60,11 @@ func (p *InlineSuggestionUiProxy) ReleaseSurfaceControlViewHost(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInlineSuggestionUi)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInlineSuggestionUi, "releaseSurfaceControlViewHost"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInlineSuggestionUi, "releaseSurfaceControlViewHost")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

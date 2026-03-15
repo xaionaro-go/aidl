@@ -48,7 +48,12 @@ func (p *ContentControlServiceProxy) AddCamDrmInfoListener(
 	_data.WriteInterfaceToken(DescriptorIContentControlService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentControlService, "addCamDrmInfoListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentControlService, "addCamDrmInfoListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -69,7 +74,12 @@ func (p *ContentControlServiceProxy) RemoveCamDrmInfoListener(
 	_data.WriteInterfaceToken(DescriptorIContentControlService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentControlService, "removeCamDrmInfoListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentControlService, "removeCamDrmInfoListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -92,7 +102,12 @@ func (p *ContentControlServiceProxy) GetCamDrmInfo(
 	_data.WriteInterfaceToken(DescriptorIContentControlService)
 	_data.WriteInt32(slotId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentControlService, "getCamDrmInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentControlService, "getCamDrmInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

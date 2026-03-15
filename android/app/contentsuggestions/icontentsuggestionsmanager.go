@@ -68,7 +68,12 @@ func (p *ContentSuggestionsManagerProxy) ProvideContextImage(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "provideContextImage"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "provideContextImage")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -88,7 +93,12 @@ func (p *ContentSuggestionsManagerProxy) ProvideContextBitmap(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "provideContextBitmap"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "provideContextBitmap")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -106,7 +116,12 @@ func (p *ContentSuggestionsManagerProxy) SuggestContentSelections(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "suggestContentSelections"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "suggestContentSelections")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -124,7 +139,12 @@ func (p *ContentSuggestionsManagerProxy) ClassifyContentSelections(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "classifyContentSelections"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "classifyContentSelections")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -142,7 +162,12 @@ func (p *ContentSuggestionsManagerProxy) NotifyInteraction(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "notifyInteraction"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "notifyInteraction")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -156,7 +181,12 @@ func (p *ContentSuggestionsManagerProxy) IsEnabled(
 	_data.WriteInt32(userId)
 	_data.WriteStrongBinder(receiver.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "isEnabled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "isEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -168,7 +198,12 @@ func (p *ContentSuggestionsManagerProxy) ResetTemporaryService(
 	_data.WriteInterfaceToken(DescriptorIContentSuggestionsManager)
 	_data.WriteInt32(userId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "resetTemporaryService"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "resetTemporaryService")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -184,7 +219,12 @@ func (p *ContentSuggestionsManagerProxy) SetTemporaryService(
 	_data.WriteString16(serviceName)
 	_data.WriteInt32(duration)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "setTemporaryService"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "setTemporaryService")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -198,6 +238,11 @@ func (p *ContentSuggestionsManagerProxy) SetDefaultServiceEnabled(
 	_data.WriteInt32(userId)
 	_data.WriteBool(enabled)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "setDefaultServiceEnabled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "setDefaultServiceEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

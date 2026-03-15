@@ -43,6 +43,11 @@ func (p *BackupCallbackProxy) OperationComplete(
 	_data.WriteInterfaceToken(DescriptorIBackupCallback)
 	_data.WriteInt64(result)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBackupCallback, "operationComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBackupCallback, "operationComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

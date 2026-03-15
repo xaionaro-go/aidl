@@ -45,7 +45,12 @@ func (p *TransportStatusCallbackProxy) OnOperationCompleteWithStatus(
 	_data.WriteInterfaceToken(DescriptorITransportStatusCallback)
 	_data.WriteInt32(status)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITransportStatusCallback, "onOperationCompleteWithStatus"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITransportStatusCallback, "onOperationCompleteWithStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -55,6 +60,11 @@ func (p *TransportStatusCallbackProxy) OnOperationComplete(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITransportStatusCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITransportStatusCallback, "onOperationComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITransportStatusCallback, "onOperationComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

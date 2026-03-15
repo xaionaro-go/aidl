@@ -68,7 +68,12 @@ func (p *NetdProxy) AddInterfaceToOemNetwork(
 	_data.WriteInt64(networkHandle)
 	_data.WriteString16(ifname)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetd, "addInterfaceToOemNetwork"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetd, "addInterfaceToOemNetwork")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -95,7 +100,12 @@ func (p *NetdProxy) AddRouteToOemNetwork(
 	_data.WriteString16(destination)
 	_data.WriteString16(nexthop)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetd, "addRouteToOemNetwork"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetd, "addRouteToOemNetwork")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -115,7 +125,12 @@ func (p *NetdProxy) CreateOemNetwork(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetd)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetd, "createOemNetwork"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetd, "createOemNetwork")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -139,7 +154,12 @@ func (p *NetdProxy) DestroyOemNetwork(
 	_data.WriteInterfaceToken(DescriptorINetd)
 	_data.WriteInt64(networkHandle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetd, "destroyOemNetwork"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetd, "destroyOemNetwork")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -162,7 +182,12 @@ func (p *NetdProxy) RemoveInterfaceFromOemNetwork(
 	_data.WriteInt64(networkHandle)
 	_data.WriteString16(ifname)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetd, "removeInterfaceFromOemNetwork"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetd, "removeInterfaceFromOemNetwork")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -189,7 +214,12 @@ func (p *NetdProxy) RemoveRouteFromOemNetwork(
 	_data.WriteString16(destination)
 	_data.WriteString16(nexthop)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetd, "removeRouteFromOemNetwork"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetd, "removeRouteFromOemNetwork")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -214,7 +244,12 @@ func (p *NetdProxy) SetForwardingBetweenInterfaces(
 	_data.WriteString16(outputIfName)
 	_data.WriteBool(enable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetd, "setForwardingBetweenInterfaces"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetd, "setForwardingBetweenInterfaces")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -235,7 +270,12 @@ func (p *NetdProxy) SetIpForwardEnable(
 	_data.WriteInterfaceToken(DescriptorINetd)
 	_data.WriteBool(enable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetd, "setIpForwardEnable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetd, "setIpForwardEnable")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

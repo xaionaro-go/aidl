@@ -54,7 +54,12 @@ func (p *InlineContentCallbackProxy) OnContent(
 	_data.WriteInt32(width)
 	_data.WriteInt32(height)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInlineContentCallback, "onContent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInlineContentCallback, "onContent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -64,7 +69,12 @@ func (p *InlineContentCallbackProxy) OnClick(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInlineContentCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInlineContentCallback, "onClick"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInlineContentCallback, "onClick")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -74,6 +84,11 @@ func (p *InlineContentCallbackProxy) OnLongClick(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInlineContentCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInlineContentCallback, "onLongClick"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInlineContentCallback, "onLongClick")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

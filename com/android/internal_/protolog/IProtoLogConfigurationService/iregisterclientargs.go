@@ -46,7 +46,12 @@ func (p *RegisterClientArgsProxy) GetGroups(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRegisterClientArgs)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRegisterClientArgs, "getGroups"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRegisterClientArgs, "getGroups")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -80,7 +85,12 @@ func (p *RegisterClientArgsProxy) GetGroupsDefaultLogcatStatus(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRegisterClientArgs)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRegisterClientArgs, "getGroupsDefaultLogcatStatus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRegisterClientArgs, "getGroupsDefaultLogcatStatus")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -114,7 +124,12 @@ func (p *RegisterClientArgsProxy) GetViewerConfigFile(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRegisterClientArgs)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRegisterClientArgs, "getViewerConfigFile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRegisterClientArgs, "getViewerConfigFile")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

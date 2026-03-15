@@ -48,7 +48,12 @@ func (p *KeyAttestationApplicationIdProviderProxy) GetKeyAttestationApplicationI
 	_data.WriteInterfaceToken(DescriptorIKeyAttestationApplicationIdProvider)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyAttestationApplicationIdProvider, "getKeyAttestationApplicationId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyAttestationApplicationIdProvider, "getKeyAttestationApplicationId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

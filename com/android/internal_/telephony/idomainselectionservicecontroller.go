@@ -53,7 +53,12 @@ func (p *DomainSelectionServiceControllerProxy) SelectDomain(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDomainSelectionServiceController, "selectDomain"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDomainSelectionServiceController, "selectDomain")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -71,7 +76,12 @@ func (p *DomainSelectionServiceControllerProxy) UpdateServiceState(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDomainSelectionServiceController, "updateServiceState"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDomainSelectionServiceController, "updateServiceState")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -89,6 +99,11 @@ func (p *DomainSelectionServiceControllerProxy) UpdateBarringInfo(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDomainSelectionServiceController, "updateBarringInfo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDomainSelectionServiceController, "updateBarringInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

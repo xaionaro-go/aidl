@@ -69,7 +69,12 @@ func (p *PrintSpoolerCallbacksProxy) OnGetPrintJobInfosResult(
 	}
 	_data.WriteInt32(sequence)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintSpoolerCallbacks, "onGetPrintJobInfosResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintSpoolerCallbacks, "onGetPrintJobInfosResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -83,7 +88,12 @@ func (p *PrintSpoolerCallbacksProxy) OnCancelPrintJobResult(
 	_data.WriteBool(canceled)
 	_data.WriteInt32(sequence)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintSpoolerCallbacks, "onCancelPrintJobResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintSpoolerCallbacks, "onCancelPrintJobResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -97,7 +107,12 @@ func (p *PrintSpoolerCallbacksProxy) OnSetPrintJobStateResult(
 	_data.WriteBool(success)
 	_data.WriteInt32(sequence)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintSpoolerCallbacks, "onSetPrintJobStateResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintSpoolerCallbacks, "onSetPrintJobStateResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -111,7 +126,12 @@ func (p *PrintSpoolerCallbacksProxy) OnSetPrintJobTagResult(
 	_data.WriteBool(success)
 	_data.WriteInt32(sequence)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintSpoolerCallbacks, "onSetPrintJobTagResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintSpoolerCallbacks, "onSetPrintJobTagResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -127,7 +147,12 @@ func (p *PrintSpoolerCallbacksProxy) OnGetPrintJobInfoResult(
 	}
 	_data.WriteInt32(sequence)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintSpoolerCallbacks, "onGetPrintJobInfoResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintSpoolerCallbacks, "onGetPrintJobInfoResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -143,7 +168,12 @@ func (p *PrintSpoolerCallbacksProxy) OnGetCustomPrinterIconResult(
 	}
 	_data.WriteInt32(sequence)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintSpoolerCallbacks, "onGetCustomPrinterIconResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintSpoolerCallbacks, "onGetCustomPrinterIconResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -155,7 +185,12 @@ func (p *PrintSpoolerCallbacksProxy) OnCustomPrinterIconCached(
 	_data.WriteInterfaceToken(DescriptorIPrintSpoolerCallbacks)
 	_data.WriteInt32(sequence)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintSpoolerCallbacks, "onCustomPrinterIconCached"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintSpoolerCallbacks, "onCustomPrinterIconCached")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -167,6 +202,11 @@ func (p *PrintSpoolerCallbacksProxy) CustomPrinterIconCacheCleared(
 	_data.WriteInterfaceToken(DescriptorIPrintSpoolerCallbacks)
 	_data.WriteInt32(sequence)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPrintSpoolerCallbacks, "customPrinterIconCacheCleared"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPrintSpoolerCallbacks, "customPrinterIconCacheCleared")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

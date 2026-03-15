@@ -79,7 +79,12 @@ func (p *WindowProxy) ExecuteCommand(
 	_data.WriteString16(parameters)
 	_data.WriteFileDescriptor(descriptor)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindow, "executeCommand"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "executeCommand")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -111,7 +116,12 @@ func (p *WindowProxy) Resized(
 	_data.WriteInt32(syncSeqId)
 	_data.WriteBool(dragResizing)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindow, "resized"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "resized")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -129,7 +139,12 @@ func (p *WindowProxy) InsetsControlChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindow, "insetsControlChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "insetsControlChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -151,7 +166,12 @@ func (p *WindowProxy) ShowInsets(
 		_data.WriteInt32(-1)
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindow, "showInsets"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "showInsets")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -173,7 +193,12 @@ func (p *WindowProxy) HideInsets(
 		_data.WriteInt32(-1)
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindow, "hideInsets"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "hideInsets")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -187,7 +212,12 @@ func (p *WindowProxy) Moved(
 	_data.WriteInt32(newX)
 	_data.WriteInt32(newY)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindow, "moved"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "moved")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -199,7 +229,12 @@ func (p *WindowProxy) DispatchAppVisibility(
 	_data.WriteInterfaceToken(DescriptorIWindow)
 	_data.WriteBool(visible)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindow, "dispatchAppVisibility"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "dispatchAppVisibility")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -209,7 +244,12 @@ func (p *WindowProxy) DispatchGetNewSurface(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindow)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindow, "dispatchGetNewSurface"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "dispatchGetNewSurface")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -221,7 +261,12 @@ func (p *WindowProxy) CloseSystemDialogs(
 	_data.WriteInterfaceToken(DescriptorIWindow)
 	_data.WriteString16(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindow, "closeSystemDialogs"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "closeSystemDialogs")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -243,7 +288,12 @@ func (p *WindowProxy) DispatchWallpaperOffsets(
 	_data.WriteFloat32(zoom)
 	_data.WriteBool(sync)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindow, "dispatchWallpaperOffsets"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "dispatchWallpaperOffsets")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -264,7 +314,12 @@ func (p *WindowProxy) DispatchWallpaperCommand(
 	_data.WriteInt32(z)
 	_data.WriteBool(sync)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindow, "dispatchWallpaperCommand"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "dispatchWallpaperCommand")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -278,7 +333,12 @@ func (p *WindowProxy) DispatchDragEvent(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindow, "dispatchDragEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "dispatchDragEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -288,7 +348,12 @@ func (p *WindowProxy) DispatchWindowShown(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindow)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindow, "dispatchWindowShown"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "dispatchWindowShown")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -301,7 +366,12 @@ func (p *WindowProxy) RequestAppKeyboardShortcuts(
 	_data.WriteInterfaceToken(DescriptorIWindow)
 	_data.WriteInt32(deviceId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindow, "requestAppKeyboardShortcuts"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "requestAppKeyboardShortcuts")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -313,7 +383,12 @@ func (p *WindowProxy) RequestScrollCapture(
 	_data.WriteInterfaceToken(DescriptorIWindow)
 	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindow, "requestScrollCapture"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "requestScrollCapture")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -325,6 +400,11 @@ func (p *WindowProxy) DumpWindow(
 	_data.WriteInterfaceToken(DescriptorIWindow)
 	_data.WriteFileDescriptor(pfd)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindow, "dumpWindow"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "dumpWindow")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

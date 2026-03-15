@@ -45,6 +45,11 @@ func (p *GnssNmeaListenerProxy) OnNmeaReceived(
 	_data.WriteInt64(timestamp)
 	_data.WriteString16(nmea)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGnssNmeaListener, "onNmeaReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGnssNmeaListener, "onNmeaReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

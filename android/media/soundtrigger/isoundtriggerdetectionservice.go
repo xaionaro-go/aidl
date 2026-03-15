@@ -54,7 +54,12 @@ func (p *SoundTriggerDetectionServiceProxy) SetClient(
 	_data.WriteInterfaceToken(DescriptorISoundTriggerDetectionService)
 	_data.WriteStrongBinder(client.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerDetectionService, "setClient"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerDetectionService, "setClient")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -65,7 +70,12 @@ func (p *SoundTriggerDetectionServiceProxy) RemoveClient(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerDetectionService)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerDetectionService, "removeClient"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerDetectionService, "removeClient")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -82,7 +92,12 @@ func (p *SoundTriggerDetectionServiceProxy) OnGenericRecognitionEvent(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerDetectionService, "onGenericRecognitionEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerDetectionService, "onGenericRecognitionEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -97,7 +112,12 @@ func (p *SoundTriggerDetectionServiceProxy) OnError(
 	_data.WriteInt32(opId)
 	_data.WriteInt32(status)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerDetectionService, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerDetectionService, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -110,6 +130,11 @@ func (p *SoundTriggerDetectionServiceProxy) OnStopOperation(
 	_data.WriteInterfaceToken(DescriptorISoundTriggerDetectionService)
 	_data.WriteInt32(opId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerDetectionService, "onStopOperation"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerDetectionService, "onStopOperation")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

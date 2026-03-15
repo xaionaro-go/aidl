@@ -43,7 +43,12 @@ func (p *WallpaperManagerCallbackProxy) OnWallpaperChanged(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWallpaperManagerCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWallpaperManagerCallback, "onWallpaperChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWallpaperManagerCallback, "onWallpaperChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -61,6 +66,11 @@ func (p *WallpaperManagerCallbackProxy) OnWallpaperColorsChanged(
 	_data.WriteInt32(which)
 	_data.WriteInt32(userId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWallpaperManagerCallback, "onWallpaperColorsChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWallpaperManagerCallback, "onWallpaperColorsChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

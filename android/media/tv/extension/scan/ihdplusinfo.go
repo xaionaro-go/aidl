@@ -46,7 +46,12 @@ func (p *HDPlusInfoProxy) SetHDPlusInfo(
 	_data.WriteString16(isBlindScanContinue)
 	_data.WriteString16(isHDMode)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHDPlusInfo, "setHDPlusInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHDPlusInfo, "setHDPlusInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

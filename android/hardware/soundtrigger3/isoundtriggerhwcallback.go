@@ -49,7 +49,12 @@ func (p *SoundTriggerHwCallbackProxy) ModelUnloaded(
 	_data.WriteInterfaceToken(DescriptorISoundTriggerHwCallback)
 	_data.WriteInt32(model)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerHwCallback, "modelUnloaded"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerHwCallback, "modelUnloaded")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -74,7 +79,12 @@ func (p *SoundTriggerHwCallbackProxy) PhraseRecognitionCallback(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerHwCallback, "phraseRecognitionCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerHwCallback, "phraseRecognitionCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -99,7 +109,12 @@ func (p *SoundTriggerHwCallbackProxy) RecognitionCallback(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerHwCallback, "recognitionCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerHwCallback, "recognitionCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

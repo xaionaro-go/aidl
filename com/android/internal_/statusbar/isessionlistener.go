@@ -50,7 +50,12 @@ func (p *SessionListenerProxy) OnSessionStarted(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISessionListener, "onSessionStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISessionListener, "onSessionStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -66,6 +71,11 @@ func (p *SessionListenerProxy) OnSessionEnded(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISessionListener, "onSessionEnded"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISessionListener, "onSessionEnded")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

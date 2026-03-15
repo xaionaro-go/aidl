@@ -133,7 +133,12 @@ func (p *ModuleProxy) SetModuleDebug(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "setModuleDebug"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "setModuleDebug")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -153,7 +158,12 @@ func (p *ModuleProxy) GetTelephony(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getTelephony"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getTelephony")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -178,7 +188,12 @@ func (p *ModuleProxy) GetBluetooth(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getBluetooth"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getBluetooth")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -203,7 +218,12 @@ func (p *ModuleProxy) GetBluetoothA2dp(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getBluetoothA2dp"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getBluetoothA2dp")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -228,7 +248,12 @@ func (p *ModuleProxy) GetBluetoothLe(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getBluetoothLe"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getBluetoothLe")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -257,7 +282,12 @@ func (p *ModuleProxy) ConnectExternalDevice(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "connectExternalDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "connectExternalDevice")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -281,7 +311,12 @@ func (p *ModuleProxy) DisconnectExternalDevice(
 	_data.WriteInterfaceToken(DescriptorIModule)
 	_data.WriteInt32(portId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "disconnectExternalDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "disconnectExternalDevice")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -301,7 +336,12 @@ func (p *ModuleProxy) GetAudioPatches(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getAudioPatches"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getAudioPatches")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -336,7 +376,12 @@ func (p *ModuleProxy) GetAudioPort(
 	_data.WriteInterfaceToken(DescriptorIModule)
 	_data.WriteInt32(portId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getAudioPort"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getAudioPort")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -359,7 +404,12 @@ func (p *ModuleProxy) GetAudioPortConfigs(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getAudioPortConfigs"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getAudioPortConfigs")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -392,7 +442,12 @@ func (p *ModuleProxy) GetAudioPorts(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getAudioPorts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getAudioPorts")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -425,7 +480,12 @@ func (p *ModuleProxy) GetAudioRoutes(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getAudioRoutes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getAudioRoutes")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -460,7 +520,12 @@ func (p *ModuleProxy) GetAudioRoutesForAudioPort(
 	_data.WriteInterfaceToken(DescriptorIModule)
 	_data.WriteInt32(portId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getAudioRoutesForAudioPort"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getAudioRoutesForAudioPort")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -494,7 +559,12 @@ func (p *ModuleProxy) OpenInputStream(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "openInputStream"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "openInputStream")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -515,7 +585,12 @@ func (p *ModuleProxy) OpenOutputStream(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "openOutputStream"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "openOutputStream")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -535,7 +610,12 @@ func (p *ModuleProxy) GetSupportedPlaybackRateFactors(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getSupportedPlaybackRateFactors"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getSupportedPlaybackRateFactors")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -559,7 +639,12 @@ func (p *ModuleProxy) SetAudioPatch(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "setAudioPatch"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "setAudioPatch")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -587,7 +672,12 @@ func (p *ModuleProxy) SetAudioPortConfig(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "setAudioPortConfig"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "setAudioPortConfig")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -615,7 +705,12 @@ func (p *ModuleProxy) ResetAudioPatch(
 	_data.WriteInterfaceToken(DescriptorIModule)
 	_data.WriteInt32(patchId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "resetAudioPatch"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "resetAudioPatch")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -636,7 +731,12 @@ func (p *ModuleProxy) ResetAudioPortConfig(
 	_data.WriteInterfaceToken(DescriptorIModule)
 	_data.WriteInt32(portConfigId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "resetAudioPortConfig"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "resetAudioPortConfig")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -656,7 +756,12 @@ func (p *ModuleProxy) GetMasterMute(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getMasterMute"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getMasterMute")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -681,7 +786,12 @@ func (p *ModuleProxy) SetMasterMute(
 	_data.WriteInterfaceToken(DescriptorIModule)
 	_data.WriteBool(mute)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "setMasterMute"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "setMasterMute")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -701,7 +811,12 @@ func (p *ModuleProxy) GetMasterVolume(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getMasterVolume"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getMasterVolume")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -726,7 +841,12 @@ func (p *ModuleProxy) SetMasterVolume(
 	_data.WriteInterfaceToken(DescriptorIModule)
 	_data.WriteFloat32(volume)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "setMasterVolume"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "setMasterVolume")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -746,7 +866,12 @@ func (p *ModuleProxy) GetMicMute(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getMicMute"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getMicMute")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -771,7 +896,12 @@ func (p *ModuleProxy) SetMicMute(
 	_data.WriteInterfaceToken(DescriptorIModule)
 	_data.WriteBool(mute)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "setMicMute"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "setMicMute")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -791,7 +921,12 @@ func (p *ModuleProxy) GetMicrophones(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getMicrophones"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getMicrophones")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -825,7 +960,12 @@ func (p *ModuleProxy) UpdateAudioMode(
 	_data.WriteInterfaceToken(DescriptorIModule)
 	_data.WriteInt32(int32(mode))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "updateAudioMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "updateAudioMode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -845,7 +985,12 @@ func (p *ModuleProxy) UpdateScreenRotation(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "updateScreenRotation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "updateScreenRotation")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -866,7 +1011,12 @@ func (p *ModuleProxy) UpdateScreenState(
 	_data.WriteInterfaceToken(DescriptorIModule)
 	_data.WriteBool(isTurnedOn)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "updateScreenState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "updateScreenState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -886,7 +1036,12 @@ func (p *ModuleProxy) GetSoundDose(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getSoundDose"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getSoundDose")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -911,7 +1066,12 @@ func (p *ModuleProxy) GenerateHwAvSyncId(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "generateHwAvSyncId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "generateHwAvSyncId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -944,7 +1104,12 @@ func (p *ModuleProxy) GetVendorParameters(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getVendorParameters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getVendorParameters")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -989,7 +1154,12 @@ func (p *ModuleProxy) SetVendorParameters(
 	}
 	_data.WriteBool(async)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "setVendorParameters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "setVendorParameters")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1012,7 +1182,12 @@ func (p *ModuleProxy) AddDeviceEffect(
 	_data.WriteInt32(portConfigId)
 	_data.WriteStrongBinder(effect.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "addDeviceEffect"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "addDeviceEffect")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1035,7 +1210,12 @@ func (p *ModuleProxy) RemoveDeviceEffect(
 	_data.WriteInt32(portConfigId)
 	_data.WriteStrongBinder(effect.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "removeDeviceEffect"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "removeDeviceEffect")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1057,7 +1237,12 @@ func (p *ModuleProxy) GetMmapPolicyInfos(
 	_data.WriteInterfaceToken(DescriptorIModule)
 	_data.WriteInt32(int32(mmapPolicyType))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getMmapPolicyInfos"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getMmapPolicyInfos")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1090,7 +1275,12 @@ func (p *ModuleProxy) SupportsVariableLatency(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "supportsVariableLatency"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "supportsVariableLatency")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1114,7 +1304,12 @@ func (p *ModuleProxy) GetAAudioMixerBurstCount(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getAAudioMixerBurstCount"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getAAudioMixerBurstCount")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1138,7 +1333,12 @@ func (p *ModuleProxy) GetAAudioHardwareBurstMinUsec(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "getAAudioHardwareBurstMinUsec"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "getAAudioHardwareBurstMinUsec")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1163,7 +1363,12 @@ func (p *ModuleProxy) PrepareToDisconnectExternalDevice(
 	_data.WriteInterfaceToken(DescriptorIModule)
 	_data.WriteInt32(portId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIModule, "prepareToDisconnectExternalDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIModule, "prepareToDisconnectExternalDevice")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

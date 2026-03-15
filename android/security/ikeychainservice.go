@@ -103,7 +103,12 @@ func (p *KeyChainServiceProxy) RequestPrivateKey(
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 	_data.WriteString16(alias)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "requestPrivateKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "requestPrivateKey")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -129,7 +134,12 @@ func (p *KeyChainServiceProxy) GetCertificate(
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 	_data.WriteString16(alias)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "getCertificate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "getCertificate")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -165,7 +175,12 @@ func (p *KeyChainServiceProxy) GetCaCertificates(
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 	_data.WriteString16(alias)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "getCaCertificates"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "getCaCertificates")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -201,7 +216,12 @@ func (p *KeyChainServiceProxy) IsUserSelectable(
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 	_data.WriteString16(alias)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "isUserSelectable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "isUserSelectable")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -228,7 +248,12 @@ func (p *KeyChainServiceProxy) SetUserSelectable(
 	_data.WriteString16(alias)
 	_data.WriteBool(isUserSelectable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "setUserSelectable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "setUserSelectable")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -254,7 +279,12 @@ func (p *KeyChainServiceProxy) GenerateKeyPair(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "generateKeyPair"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "generateKeyPair")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -298,7 +328,12 @@ func (p *KeyChainServiceProxy) SetKeyPairCertificate(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "setKeyPairCertificate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "setKeyPairCertificate")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -331,7 +366,12 @@ func (p *KeyChainServiceProxy) InstallCaCertificate(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "installCaCertificate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "installCaCertificate")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -386,7 +426,12 @@ func (p *KeyChainServiceProxy) InstallKeyPair(
 	_data.WriteString16(alias)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "installKeyPair"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "installKeyPair")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -412,7 +457,12 @@ func (p *KeyChainServiceProxy) RemoveKeyPair(
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 	_data.WriteString16(alias)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "removeKeyPair"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "removeKeyPair")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -438,7 +488,12 @@ func (p *KeyChainServiceProxy) ContainsKeyPair(
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 	_data.WriteString16(alias)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "containsKeyPair"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "containsKeyPair")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -464,7 +519,12 @@ func (p *KeyChainServiceProxy) GetGrants(
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 	_data.WriteString16(alias)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "getGrants"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "getGrants")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -500,7 +560,12 @@ func (p *KeyChainServiceProxy) DeleteCaCertificate(
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 	_data.WriteString16(alias)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "deleteCaCertificate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "deleteCaCertificate")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -524,7 +589,12 @@ func (p *KeyChainServiceProxy) Reset(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "reset"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "reset")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -548,7 +618,12 @@ func (p *KeyChainServiceProxy) GetUserCaAliases(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "getUserCaAliases"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "getUserCaAliases")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -571,7 +646,12 @@ func (p *KeyChainServiceProxy) GetSystemCaAliases(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "getSystemCaAliases"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "getSystemCaAliases")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -596,7 +676,12 @@ func (p *KeyChainServiceProxy) ContainsCaAlias(
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 	_data.WriteString16(alias)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "containsCaAlias"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "containsCaAlias")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -624,7 +709,12 @@ func (p *KeyChainServiceProxy) GetEncodedCaCertificate(
 	_data.WriteString16(alias)
 	_data.WriteBool(includeDeletedSystem)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "getEncodedCaCertificate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "getEncodedCaCertificate")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -662,7 +752,12 @@ func (p *KeyChainServiceProxy) GetCaCertificateChainAliases(
 	_data.WriteString16(rootAlias)
 	_data.WriteBool(includeDeletedSystem)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "getCaCertificateChainAliases"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "getCaCertificateChainAliases")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -701,7 +796,12 @@ func (p *KeyChainServiceProxy) SetCredentialManagementApp(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "setCredentialManagementApp"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "setCredentialManagementApp")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -721,7 +821,12 @@ func (p *KeyChainServiceProxy) HasCredentialManagementApp(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "hasCredentialManagementApp"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "hasCredentialManagementApp")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -745,7 +850,12 @@ func (p *KeyChainServiceProxy) GetCredentialManagementAppPackageName(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "getCredentialManagementAppPackageName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "getCredentialManagementAppPackageName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -769,7 +879,12 @@ func (p *KeyChainServiceProxy) GetCredentialManagementAppPolicy(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "getCredentialManagementAppPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "getCredentialManagementAppPolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -798,7 +913,12 @@ func (p *KeyChainServiceProxy) GetPredefinedAliasForPackageAndUri(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "getPredefinedAliasForPackageAndUri"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "getPredefinedAliasForPackageAndUri")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -821,7 +941,12 @@ func (p *KeyChainServiceProxy) RemoveCredentialManagementApp(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "removeCredentialManagementApp"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "removeCredentialManagementApp")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -843,7 +968,12 @@ func (p *KeyChainServiceProxy) IsCredentialManagementApp(
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "isCredentialManagementApp"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "isCredentialManagementApp")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -873,7 +1003,12 @@ func (p *KeyChainServiceProxy) SetGrant(
 	_data.WriteString16(alias)
 	_data.WriteBool(value)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "setGrant"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "setGrant")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -901,7 +1036,12 @@ func (p *KeyChainServiceProxy) HasGrant(
 	_data.WriteInt32(uid)
 	_data.WriteString16(alias)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "hasGrant"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "hasGrant")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -927,7 +1067,12 @@ func (p *KeyChainServiceProxy) GetWifiKeyGrantAsUser(
 	_data.WriteInterfaceToken(DescriptorIKeyChainService)
 	_data.WriteString16(alias)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyChainService, "getWifiKeyGrantAsUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyChainService, "getWifiKeyGrantAsUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

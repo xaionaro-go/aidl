@@ -177,7 +177,12 @@ func (p *TelephonyRegistryProxy) AddOnSubscriptionsChangedListener(
 	_data.WriteString16(featureId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "addOnSubscriptionsChangedListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "addOnSubscriptionsChangedListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -202,7 +207,12 @@ func (p *TelephonyRegistryProxy) AddOnOpportunisticSubscriptionsChangedListener(
 	_data.WriteString16(featureId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "addOnOpportunisticSubscriptionsChangedListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "addOnOpportunisticSubscriptionsChangedListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -225,7 +235,12 @@ func (p *TelephonyRegistryProxy) RemoveOnSubscriptionsChangedListener(
 	_data.WriteString16(pkg)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "removeOnSubscriptionsChangedListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "removeOnSubscriptionsChangedListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -267,7 +282,12 @@ func (p *TelephonyRegistryProxy) ListenWithEventList(
 	}
 	_data.WriteBool(notifyNow)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "listenWithEventList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "listenWithEventList")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -290,7 +310,12 @@ func (p *TelephonyRegistryProxy) NotifyCallStateForAllSubs(
 	_data.WriteInt32(state)
 	_data.WriteString16(incomingNumber)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCallStateForAllSubs"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCallStateForAllSubs")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -317,7 +342,12 @@ func (p *TelephonyRegistryProxy) NotifyCallState(
 	_data.WriteInt32(state)
 	_data.WriteString16(incomingNumber)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCallState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCallState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -344,7 +374,12 @@ func (p *TelephonyRegistryProxy) NotifyServiceStateForPhoneId(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyServiceStateForPhoneId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyServiceStateForPhoneId")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -371,7 +406,12 @@ func (p *TelephonyRegistryProxy) NotifySignalStrengthForPhoneId(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifySignalStrengthForPhoneId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifySignalStrengthForPhoneId")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -396,7 +436,12 @@ func (p *TelephonyRegistryProxy) NotifyMessageWaitingChangedForPhoneId(
 	_data.WriteInt32(subId)
 	_data.WriteBool(mwi)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyMessageWaitingChangedForPhoneId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyMessageWaitingChangedForPhoneId")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -417,7 +462,12 @@ func (p *TelephonyRegistryProxy) NotifyCallForwardingChanged(
 	_data.WriteInterfaceToken(DescriptorITelephonyRegistry)
 	_data.WriteBool(cfi)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCallForwardingChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCallForwardingChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -440,7 +490,12 @@ func (p *TelephonyRegistryProxy) NotifyCallForwardingChangedForSubscriber(
 	_data.WriteInt32(subId)
 	_data.WriteBool(cfi)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCallForwardingChangedForSubscriber"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCallForwardingChangedForSubscriber")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -463,7 +518,12 @@ func (p *TelephonyRegistryProxy) NotifyDataActivityForSubscriber(
 	_data.WriteInt32(subId)
 	_data.WriteInt32(state)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyDataActivityForSubscriber"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyDataActivityForSubscriber")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -488,7 +548,12 @@ func (p *TelephonyRegistryProxy) NotifyDataActivityForSubscriberWithSlot(
 	_data.WriteInt32(subId)
 	_data.WriteInt32(state)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyDataActivityForSubscriberWithSlot"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyDataActivityForSubscriberWithSlot")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -515,7 +580,12 @@ func (p *TelephonyRegistryProxy) NotifyDataConnectionForSubscriber(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyDataConnectionForSubscriber"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyDataConnectionForSubscriber")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -540,7 +610,12 @@ func (p *TelephonyRegistryProxy) NotifyCellLocationForSubscriber(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCellLocationForSubscriber"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCellLocationForSubscriber")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -570,7 +645,12 @@ func (p *TelephonyRegistryProxy) NotifyCellInfo(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCellInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCellInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -629,7 +709,12 @@ func (p *TelephonyRegistryProxy) NotifyPreciseCallState(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyPreciseCallState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyPreciseCallState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -656,7 +741,12 @@ func (p *TelephonyRegistryProxy) NotifyDisconnectCause(
 	_data.WriteInt32(disconnectCause)
 	_data.WriteInt32(preciseDisconnectCause)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyDisconnectCause"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyDisconnectCause")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -688,7 +778,12 @@ func (p *TelephonyRegistryProxy) NotifyCellInfoForSubscriber(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCellInfoForSubscriber"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCellInfoForSubscriber")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -711,7 +806,12 @@ func (p *TelephonyRegistryProxy) NotifySrvccStateChanged(
 	_data.WriteInt32(subId)
 	_data.WriteInt32(lteState)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifySrvccStateChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifySrvccStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -738,7 +838,12 @@ func (p *TelephonyRegistryProxy) NotifySimActivationStateChangedForPhoneId(
 	_data.WriteInt32(activationState)
 	_data.WriteInt32(activationType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifySimActivationStateChangedForPhoneId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifySimActivationStateChangedForPhoneId")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -770,7 +875,12 @@ func (p *TelephonyRegistryProxy) NotifyOemHookRawEventForSubscriber(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyOemHookRawEventForSubscriber"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyOemHookRawEventForSubscriber")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -789,7 +899,12 @@ func (p *TelephonyRegistryProxy) NotifySubscriptionInfoChanged(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephonyRegistry)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifySubscriptionInfoChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifySubscriptionInfoChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -808,7 +923,12 @@ func (p *TelephonyRegistryProxy) NotifyOpportunisticSubscriptionInfoChanged(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephonyRegistry)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyOpportunisticSubscriptionInfoChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyOpportunisticSubscriptionInfoChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -829,7 +949,12 @@ func (p *TelephonyRegistryProxy) NotifyCarrierNetworkChange(
 	_data.WriteInterfaceToken(DescriptorITelephonyRegistry)
 	_data.WriteBool(active)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierNetworkChange"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierNetworkChange")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -852,7 +977,12 @@ func (p *TelephonyRegistryProxy) NotifyCarrierNetworkChangeWithSubId(
 	_data.WriteInt32(subId)
 	_data.WriteBool(active)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierNetworkChangeWithSubId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierNetworkChangeWithSubId")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -877,7 +1007,12 @@ func (p *TelephonyRegistryProxy) NotifyUserMobileDataStateChangedForPhoneId(
 	_data.WriteInt32(subId)
 	_data.WriteBool(state)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyUserMobileDataStateChangedForPhoneId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyUserMobileDataStateChangedForPhoneId")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -904,7 +1039,12 @@ func (p *TelephonyRegistryProxy) NotifyDisplayInfoChanged(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyDisplayInfoChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyDisplayInfoChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -927,7 +1067,12 @@ func (p *TelephonyRegistryProxy) NotifyPhoneCapabilityChanged(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyPhoneCapabilityChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyPhoneCapabilityChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -948,7 +1093,12 @@ func (p *TelephonyRegistryProxy) NotifyActiveDataSubIdChanged(
 	_data.WriteInterfaceToken(DescriptorITelephonyRegistry)
 	_data.WriteInt32(activeDataSubId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyActiveDataSubIdChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyActiveDataSubIdChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -973,7 +1123,12 @@ func (p *TelephonyRegistryProxy) NotifyRadioPowerStateChanged(
 	_data.WriteInt32(subId)
 	_data.WriteInt32(state)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyRadioPowerStateChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyRadioPowerStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -996,7 +1151,12 @@ func (p *TelephonyRegistryProxy) NotifyEmergencyNumberList(
 	_data.WriteInt32(phoneId)
 	_data.WriteInt32(subId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyEmergencyNumberList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyEmergencyNumberList")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1023,7 +1183,12 @@ func (p *TelephonyRegistryProxy) NotifyOutgoingEmergencyCall(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyOutgoingEmergencyCall"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyOutgoingEmergencyCall")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1050,7 +1215,12 @@ func (p *TelephonyRegistryProxy) NotifyOutgoingEmergencySms(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyOutgoingEmergencySms"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyOutgoingEmergencySms")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1079,7 +1249,12 @@ func (p *TelephonyRegistryProxy) NotifyCallQualityChanged(
 	_data.WriteInt32(subId)
 	_data.WriteInt32(callNetworkType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCallQualityChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCallQualityChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1106,7 +1281,12 @@ func (p *TelephonyRegistryProxy) NotifyMediaQualityStatusChanged(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyMediaQualityStatusChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyMediaQualityStatusChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1131,7 +1311,12 @@ func (p *TelephonyRegistryProxy) NotifyImsDisconnectCause(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyImsDisconnectCause"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyImsDisconnectCause")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1166,7 +1351,12 @@ func (p *TelephonyRegistryProxy) NotifyRegistrationFailed(
 	_data.WriteInt32(causeCode)
 	_data.WriteInt32(additionalCauseCode)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyRegistrationFailed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyRegistrationFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1193,7 +1383,12 @@ func (p *TelephonyRegistryProxy) NotifyBarringInfoChanged(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyBarringInfoChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyBarringInfoChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1227,7 +1422,12 @@ func (p *TelephonyRegistryProxy) NotifyPhysicalChannelConfigForSubscriber(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyPhysicalChannelConfigForSubscriber"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyPhysicalChannelConfigForSubscriber")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1254,7 +1454,12 @@ func (p *TelephonyRegistryProxy) NotifyDataEnabled(
 	_data.WriteBool(enabled)
 	_data.WriteInt32(reason)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyDataEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyDataEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1281,7 +1486,12 @@ func (p *TelephonyRegistryProxy) NotifyAllowedNetworkTypesChanged(
 	_data.WriteInt32(reason)
 	_data.WriteInt64(allowedNetworkType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyAllowedNetworkTypesChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyAllowedNetworkTypesChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1315,7 +1525,12 @@ func (p *TelephonyRegistryProxy) NotifyLinkCapacityEstimateChanged(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyLinkCapacityEstimateChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyLinkCapacityEstimateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1343,7 +1558,12 @@ func (p *TelephonyRegistryProxy) NotifySimultaneousCellularCallingSubscriptionsC
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifySimultaneousCellularCallingSubscriptionsChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifySimultaneousCellularCallingSubscriptionsChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1370,7 +1590,12 @@ func (p *TelephonyRegistryProxy) AddCarrierPrivilegesCallback(
 	_data.WriteString16(pkg)
 	_data.WriteString16(featureId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "addCarrierPrivilegesCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "addCarrierPrivilegesCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1393,7 +1618,12 @@ func (p *TelephonyRegistryProxy) RemoveCarrierPrivilegesCallback(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteString16(pkg)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "removeCarrierPrivilegesCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "removeCarrierPrivilegesCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1432,7 +1662,12 @@ func (p *TelephonyRegistryProxy) NotifyCarrierPrivilegesChanged(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierPrivilegesChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierPrivilegesChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1457,7 +1692,12 @@ func (p *TelephonyRegistryProxy) NotifyCarrierServiceChanged(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierServiceChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierServiceChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1482,7 +1722,12 @@ func (p *TelephonyRegistryProxy) AddCarrierConfigChangeListener(
 	_data.WriteString16(pkg)
 	_data.WriteString16(featureId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "addCarrierConfigChangeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "addCarrierConfigChangeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1505,7 +1750,12 @@ func (p *TelephonyRegistryProxy) RemoveCarrierConfigChangeListener(
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteString16(pkg)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "removeCarrierConfigChangeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "removeCarrierConfigChangeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1532,7 +1782,12 @@ func (p *TelephonyRegistryProxy) NotifyCarrierConfigChanged(
 	_data.WriteInt32(carrierId)
 	_data.WriteInt32(specificCarrierId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierConfigChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierConfigChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1559,7 +1814,12 @@ func (p *TelephonyRegistryProxy) NotifyCallbackModeStarted(
 	_data.WriteInt32(type_)
 	_data.WriteInt64(durationMillis)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCallbackModeStarted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCallbackModeStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1586,7 +1846,12 @@ func (p *TelephonyRegistryProxy) NotifyCallbackModeRestarted(
 	_data.WriteInt32(type_)
 	_data.WriteInt64(durationMillis)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCallbackModeRestarted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCallbackModeRestarted")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1613,7 +1878,12 @@ func (p *TelephonyRegistryProxy) NotifyCallbackModeStopped(
 	_data.WriteInt32(type_)
 	_data.WriteInt32(reason)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCallbackModeStopped"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCallbackModeStopped")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1636,7 +1906,12 @@ func (p *TelephonyRegistryProxy) NotifyCarrierRoamingNtnModeChanged(
 	_data.WriteInt32(subId)
 	_data.WriteBool(active)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierRoamingNtnModeChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierRoamingNtnModeChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1659,7 +1934,12 @@ func (p *TelephonyRegistryProxy) NotifyCarrierRoamingNtnEligibleStateChanged(
 	_data.WriteInt32(subId)
 	_data.WriteBool(eligible)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierRoamingNtnEligibleStateChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierRoamingNtnEligibleStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1689,7 +1969,12 @@ func (p *TelephonyRegistryProxy) NotifyCarrierRoamingNtnAvailableServicesChanged
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierRoamingNtnAvailableServicesChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierRoamingNtnAvailableServicesChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1711,7 +1996,12 @@ func (p *TelephonyRegistryProxy) NotifyCarrierRoamingNtnSignalStrengthChanged(
 	_data.WriteInterfaceToken(DescriptorITelephonyRegistry)
 	_data.WriteInt32(subId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierRoamingNtnSignalStrengthChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierRoamingNtnSignalStrengthChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1736,7 +2026,12 @@ func (p *TelephonyRegistryProxy) AddSatelliteStateChangeListener(
 	_data.WriteString16(pkg)
 	_data.WriteString16(featureId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "addSatelliteStateChangeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "addSatelliteStateChangeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1759,7 +2054,12 @@ func (p *TelephonyRegistryProxy) RemoveSatelliteStateChangeListener(
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteString16(pkg)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "removeSatelliteStateChangeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "removeSatelliteStateChangeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1780,7 +2080,12 @@ func (p *TelephonyRegistryProxy) NotifySatelliteStateChanged(
 	_data.WriteInterfaceToken(DescriptorITelephonyRegistry)
 	_data.WriteBool(isEnabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifySatelliteStateChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifySatelliteStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1807,7 +2112,12 @@ func (p *TelephonyRegistryProxy) NotifySecurityAlgorithmsChanged(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifySecurityAlgorithmsChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifySecurityAlgorithmsChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1834,7 +2144,12 @@ func (p *TelephonyRegistryProxy) NotifyCellularIdentifierDisclosedChanged(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCellularIdentifierDisclosedChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCellularIdentifierDisclosedChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

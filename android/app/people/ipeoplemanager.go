@@ -71,7 +71,12 @@ func (p *PeopleManagerProxy) GetConversation(
 	_data.WriteInt32(userId)
 	_data.WriteString16(shortcutId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPeopleManager, "getConversation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "getConversation")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -94,7 +99,12 @@ func (p *PeopleManagerProxy) GetRecentConversations(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPeopleManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPeopleManager, "getRecentConversations"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "getRecentConversations")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -122,7 +132,12 @@ func (p *PeopleManagerProxy) RemoveRecentConversation(
 	_data.WriteInt32(userId)
 	_data.WriteString16(shortcutId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPeopleManager, "removeRecentConversation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "removeRecentConversation")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -141,7 +156,12 @@ func (p *PeopleManagerProxy) RemoveAllRecentConversations(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPeopleManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPeopleManager, "removeAllRecentConversations"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "removeAllRecentConversations")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -167,7 +187,12 @@ func (p *PeopleManagerProxy) IsConversation(
 	_data.WriteInt32(userId)
 	_data.WriteString16(shortcutId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPeopleManager, "isConversation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "isConversation")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -197,7 +222,12 @@ func (p *PeopleManagerProxy) GetLastInteraction(
 	_data.WriteInt32(userId)
 	_data.WriteString16(shortcutId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPeopleManager, "getLastInteraction"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "getLastInteraction")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -230,7 +260,12 @@ func (p *PeopleManagerProxy) AddOrUpdateStatus(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPeopleManager, "addOrUpdateStatus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "addOrUpdateStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -257,7 +292,12 @@ func (p *PeopleManagerProxy) ClearStatus(
 	_data.WriteString16(conversationId)
 	_data.WriteString16(statusId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPeopleManager, "clearStatus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "clearStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -282,7 +322,12 @@ func (p *PeopleManagerProxy) ClearStatuses(
 	_data.WriteInt32(userId)
 	_data.WriteString16(conversationId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPeopleManager, "clearStatuses"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "clearStatuses")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -308,7 +353,12 @@ func (p *PeopleManagerProxy) GetStatuses(
 	_data.WriteInt32(userId)
 	_data.WriteString16(conversationId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPeopleManager, "getStatuses"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "getStatuses")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -338,7 +388,12 @@ func (p *PeopleManagerProxy) RegisterConversationListener(
 	_data.WriteString16(shortcutId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPeopleManager, "registerConversationListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "registerConversationListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -359,7 +414,12 @@ func (p *PeopleManagerProxy) UnregisterConversationListener(
 	_data.WriteInterfaceToken(DescriptorIPeopleManager)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPeopleManager, "unregisterConversationListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "unregisterConversationListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

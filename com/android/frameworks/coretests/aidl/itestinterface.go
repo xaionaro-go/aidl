@@ -48,7 +48,12 @@ func (p *TestInterfaceProxy) Foo(
 	_data.WriteInterfaceToken(DescriptorITestInterface)
 	_data.WriteInt32(a)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITestInterface, "foo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITestInterface, "foo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -73,7 +78,12 @@ func (p *TestInterfaceProxy) OnewayFoo(
 	_data.WriteInterfaceToken(DescriptorITestInterface)
 	_data.WriteInt32(a)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITestInterface, "onewayFoo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITestInterface, "onewayFoo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -85,7 +95,12 @@ func (p *TestInterfaceProxy) Bar(
 	_data.WriteInterfaceToken(DescriptorITestInterface)
 	_data.WriteInt32(a)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITestInterface, "bar"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITestInterface, "bar")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

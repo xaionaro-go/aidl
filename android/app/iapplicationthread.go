@@ -189,7 +189,12 @@ func (p *ApplicationThreadProxy) ScheduleReceiver(
 	_data.WriteInt32(sentFromUid)
 	_data.WriteString16(sentFromPackage)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleReceiver"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleReceiver")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -210,7 +215,12 @@ func (p *ApplicationThreadProxy) ScheduleReceiverList(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleReceiverList"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleReceiverList")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -226,7 +236,12 @@ func (p *ApplicationThreadProxy) ScheduleCreateService(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt32(processState)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleCreateService"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleCreateService")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -238,7 +253,12 @@ func (p *ApplicationThreadProxy) ScheduleStopService(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteStrongBinder(token.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleStopService"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleStopService")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -319,7 +339,12 @@ func (p *ApplicationThreadProxy) BindApplication(
 	_data.WriteInt64(startRequestedElapsedTime)
 	_data.WriteInt64(startRequestedUptime)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "bindApplication"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "bindApplication")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -340,7 +365,12 @@ func (p *ApplicationThreadProxy) RunIsolatedEntryPoint(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "runIsolatedEntryPoint"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "runIsolatedEntryPoint")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -350,7 +380,12 @@ func (p *ApplicationThreadProxy) ScheduleExit(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleExit"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleExit")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -363,7 +398,12 @@ func (p *ApplicationThreadProxy) ScheduleServiceArgs(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteStrongBinder(token.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleServiceArgs"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleServiceArgs")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -373,7 +413,12 @@ func (p *ApplicationThreadProxy) UpdateTimeZone(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "updateTimeZone"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "updateTimeZone")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -383,7 +428,12 @@ func (p *ApplicationThreadProxy) ProcessInBackground(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "processInBackground"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "processInBackground")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -402,7 +452,12 @@ func (p *ApplicationThreadProxy) ScheduleBindService(
 	_data.WriteInt32(processState)
 	_data.WriteInt64(bindSeq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleBindService"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleBindService")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -415,7 +470,12 @@ func (p *ApplicationThreadProxy) ScheduleUnbindService(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteStrongBinder(token.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleUnbindService"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleUnbindService")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -438,7 +498,12 @@ func (p *ApplicationThreadProxy) DumpService(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "dumpService"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "dumpService")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -469,7 +534,12 @@ func (p *ApplicationThreadProxy) ScheduleRegisteredReceiver(
 	_data.WriteInt32(sentFromUid)
 	_data.WriteString16(sentFromPackage)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleRegisteredReceiver"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleRegisteredReceiver")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -479,7 +549,12 @@ func (p *ApplicationThreadProxy) ScheduleLowMemory(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleLowMemory"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleLowMemory")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -497,7 +572,12 @@ func (p *ApplicationThreadProxy) ProfilerControl(
 	}
 	_data.WriteInt32(profileType)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "profilerControl"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "profilerControl")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -509,7 +589,12 @@ func (p *ApplicationThreadProxy) SetSchedulingGroup(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteInt32(group)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "setSchedulingGroup"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "setSchedulingGroup")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -526,7 +611,12 @@ func (p *ApplicationThreadProxy) ScheduleCreateBackupAgent(
 	_data.WriteInt32(userId)
 	_data.WriteInt32(operationType)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleCreateBackupAgent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleCreateBackupAgent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -539,7 +629,12 @@ func (p *ApplicationThreadProxy) ScheduleDestroyBackupAgent(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteInt32(userId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleDestroyBackupAgent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleDestroyBackupAgent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -555,7 +650,12 @@ func (p *ApplicationThreadProxy) ScheduleOnNewSceneTransitionInfo(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleOnNewSceneTransitionInfo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleOnNewSceneTransitionInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -565,7 +665,12 @@ func (p *ApplicationThreadProxy) ScheduleSuicide(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleSuicide"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleSuicide")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -586,7 +691,12 @@ func (p *ApplicationThreadProxy) DispatchPackageBroadcast(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "dispatchPackageBroadcast"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "dispatchPackageBroadcast")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -601,7 +711,12 @@ func (p *ApplicationThreadProxy) ScheduleCrash(
 	_data.WriteString16(msg)
 	_data.WriteInt32(typeId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleCrash"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleCrash")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -624,7 +739,12 @@ func (p *ApplicationThreadProxy) DumpHeap(
 	_data.WriteString16(path)
 	_data.WriteFileDescriptor(fd)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "dumpHeap"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "dumpHeap")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -649,7 +769,12 @@ func (p *ApplicationThreadProxy) DumpActivity(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "dumpActivity"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "dumpActivity")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -662,7 +787,12 @@ func (p *ApplicationThreadProxy) DumpResources(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteFileDescriptor(fd)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "dumpResources"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "dumpResources")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -672,7 +802,12 @@ func (p *ApplicationThreadProxy) ClearDnsCache(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "clearDnsCache"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "clearDnsCache")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -682,7 +817,12 @@ func (p *ApplicationThreadProxy) UpdateHttpProxy(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "updateHttpProxy"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "updateHttpProxy")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -693,7 +833,12 @@ func (p *ApplicationThreadProxy) SetCoreSettings(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "setCoreSettings"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "setCoreSettings")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -706,7 +851,12 @@ func (p *ApplicationThreadProxy) UpdatePackageCompatibilityInfo(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteString16(pkg)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "updatePackageCompatibilityInfo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "updatePackageCompatibilityInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -718,7 +868,12 @@ func (p *ApplicationThreadProxy) ScheduleTrimMemory(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteInt32(level)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleTrimMemory"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleTrimMemory")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -752,7 +907,12 @@ func (p *ApplicationThreadProxy) DumpMemInfo(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "dumpMemInfo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "dumpMemInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -782,7 +942,12 @@ func (p *ApplicationThreadProxy) DumpMemInfoProto(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "dumpMemInfoProto"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "dumpMemInfoProto")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -803,7 +968,12 @@ func (p *ApplicationThreadProxy) DumpGfxInfo(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "dumpGfxInfo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "dumpGfxInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -824,7 +994,12 @@ func (p *ApplicationThreadProxy) DumpCacheInfo(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "dumpCacheInfo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "dumpCacheInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -847,7 +1022,12 @@ func (p *ApplicationThreadProxy) DumpProvider(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "dumpProvider"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "dumpProvider")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -868,7 +1048,12 @@ func (p *ApplicationThreadProxy) DumpDbInfo(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "dumpDbInfo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "dumpDbInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -880,7 +1065,12 @@ func (p *ApplicationThreadProxy) UnstableProviderDied(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteStrongBinder(provider.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "unstableProviderDied"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "unstableProviderDied")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -900,7 +1090,12 @@ func (p *ApplicationThreadProxy) RequestAssistContextExtras(
 	_data.WriteInt32(sessionId)
 	_data.WriteInt32(flags)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "requestAssistContextExtras"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "requestAssistContextExtras")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -914,7 +1109,12 @@ func (p *ApplicationThreadProxy) ScheduleTranslucentConversionComplete(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteBool(timeout)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleTranslucentConversionComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleTranslucentConversionComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -926,7 +1126,12 @@ func (p *ApplicationThreadProxy) SetProcessState(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteInt32(state)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "setProcessState"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "setProcessState")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -937,7 +1142,12 @@ func (p *ApplicationThreadProxy) ScheduleInstallProvider(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleInstallProvider"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleInstallProvider")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -949,7 +1159,12 @@ func (p *ApplicationThreadProxy) UpdateTimePrefs(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteInt32(timeFormatPreference)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "updateTimePrefs"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "updateTimePrefs")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -961,7 +1176,12 @@ func (p *ApplicationThreadProxy) ScheduleEnterAnimationComplete(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteStrongBinder(token.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleEnterAnimationComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleEnterAnimationComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -980,7 +1200,12 @@ func (p *ApplicationThreadProxy) NotifyCleartextNetwork(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "notifyCleartextNetwork"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "notifyCleartextNetwork")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -990,7 +1215,12 @@ func (p *ApplicationThreadProxy) StartBinderTracking(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "startBinderTracking"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "startBinderTracking")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1002,7 +1232,12 @@ func (p *ApplicationThreadProxy) StopBinderTrackingAndDump(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteFileDescriptor(fd)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "stopBinderTrackingAndDump"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "stopBinderTrackingAndDump")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1015,7 +1250,12 @@ func (p *ApplicationThreadProxy) ScheduleLocalVoiceInteractionStarted(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteStrongBinder(token.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleLocalVoiceInteractionStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleLocalVoiceInteractionStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1025,7 +1265,12 @@ func (p *ApplicationThreadProxy) HandleTrustStorageUpdate(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "handleTrustStorageUpdate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "handleTrustStorageUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1037,7 +1282,12 @@ func (p *ApplicationThreadProxy) AttachAgent(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteString16(path)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "attachAgent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "attachAgent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1049,7 +1299,12 @@ func (p *ApplicationThreadProxy) AttachStartupAgents(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteString16(dataDir)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "attachStartupAgents"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "attachStartupAgents")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1060,7 +1315,12 @@ func (p *ApplicationThreadProxy) ScheduleApplicationInfoChanged(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleApplicationInfoChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleApplicationInfoChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1072,7 +1332,12 @@ func (p *ApplicationThreadProxy) SetNetworkBlockSeq(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteInt64(procStateSeq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "setNetworkBlockSeq"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "setNetworkBlockSeq")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1086,7 +1351,12 @@ func (p *ApplicationThreadProxy) ScheduleTransaction(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleTransaction"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleTransaction")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1098,7 +1368,12 @@ func (p *ApplicationThreadProxy) ScheduleTaskFragmentTransaction(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleTaskFragmentTransaction"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleTaskFragmentTransaction")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1113,7 +1388,12 @@ func (p *ApplicationThreadProxy) RequestDirectActions(
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteStrongBinder(activityToken.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "requestDirectActions"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "requestDirectActions")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1130,7 +1410,12 @@ func (p *ApplicationThreadProxy) PerformDirectAction(
 	_data.WriteStrongBinder(activityToken.Handle())
 	_data.WriteString16(actionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "performDirectAction"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "performDirectAction")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1150,7 +1435,12 @@ func (p *ApplicationThreadProxy) NotifyContentProviderPublishStatus(
 	_data.WriteInt32(userId)
 	_data.WriteBool(published)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "notifyContentProviderPublishStatus"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "notifyContentProviderPublishStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1167,7 +1457,12 @@ func (p *ApplicationThreadProxy) InstrumentWithoutRestart(
 	_data.WriteStrongBinder(instrumentationWatcher.AsBinder().Handle())
 	_data.WriteStrongBinder(instrumentationUiConnection.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "instrumentWithoutRestart"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "instrumentWithoutRestart")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1190,7 +1485,12 @@ func (p *ApplicationThreadProxy) UpdateUiTranslationState(
 		_data.WriteInt32(int32(len(viewIds)))
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "updateUiTranslationState"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "updateUiTranslationState")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1204,7 +1504,12 @@ func (p *ApplicationThreadProxy) ScheduleTimeoutService(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt32(startId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleTimeoutService"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleTimeoutService")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1220,7 +1525,12 @@ func (p *ApplicationThreadProxy) ScheduleTimeoutServiceForType(
 	_data.WriteInt32(startId)
 	_data.WriteInt32(fgsType)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleTimeoutServiceForType"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleTimeoutServiceForType")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1231,7 +1541,12 @@ func (p *ApplicationThreadProxy) SchedulePing(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "schedulePing"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "schedulePing")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1247,6 +1562,11 @@ func (p *ApplicationThreadProxy) GetExecutableMethodFileOffsets(
 	}
 	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIApplicationThread, "getExecutableMethodFileOffsets"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "getExecutableMethodFileOffsets")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

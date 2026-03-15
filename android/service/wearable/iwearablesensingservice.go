@@ -80,7 +80,12 @@ func (p *WearableSensingServiceProxy) ProvideSecureConnection(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWearableSensingService, "provideSecureConnection"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWearableSensingService, "provideSecureConnection")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -99,7 +104,12 @@ func (p *WearableSensingServiceProxy) ProvideConcurrentSecureConnection(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWearableSensingService, "provideConcurrentSecureConnection"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWearableSensingService, "provideConcurrentSecureConnection")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -116,7 +126,12 @@ func (p *WearableSensingServiceProxy) ProvideReadOnlyParcelFileDescriptor(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWearableSensingService, "provideReadOnlyParcelFileDescriptor"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWearableSensingService, "provideReadOnlyParcelFileDescriptor")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -134,7 +149,12 @@ func (p *WearableSensingServiceProxy) ProvideDataStream(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWearableSensingService, "provideDataStream"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWearableSensingService, "provideDataStream")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -153,7 +173,12 @@ func (p *WearableSensingServiceProxy) ProvideData(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWearableSensingService, "provideData"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWearableSensingService, "provideData")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -177,7 +202,12 @@ func (p *WearableSensingServiceProxy) RegisterDataRequestObserver(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWearableSensingService, "registerDataRequestObserver"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWearableSensingService, "registerDataRequestObserver")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -197,7 +227,12 @@ func (p *WearableSensingServiceProxy) UnregisterDataRequestObserver(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWearableSensingService, "unregisterDataRequestObserver"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWearableSensingService, "unregisterDataRequestObserver")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -215,7 +250,12 @@ func (p *WearableSensingServiceProxy) StartHotwordRecognition(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWearableSensingService, "startHotwordRecognition"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWearableSensingService, "startHotwordRecognition")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -229,7 +269,12 @@ func (p *WearableSensingServiceProxy) StopHotwordRecognition(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWearableSensingService, "stopHotwordRecognition"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWearableSensingService, "stopHotwordRecognition")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -239,7 +284,12 @@ func (p *WearableSensingServiceProxy) OnValidatedByHotwordDetectionService(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWearableSensingService)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWearableSensingService, "onValidatedByHotwordDetectionService"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWearableSensingService, "onValidatedByHotwordDetectionService")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -249,7 +299,12 @@ func (p *WearableSensingServiceProxy) StopActiveHotwordAudio(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWearableSensingService)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWearableSensingService, "stopActiveHotwordAudio"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWearableSensingService, "stopActiveHotwordAudio")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -273,7 +328,12 @@ func (p *WearableSensingServiceProxy) StartDetection(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWearableSensingService, "startDetection"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWearableSensingService, "startDetection")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -285,7 +345,12 @@ func (p *WearableSensingServiceProxy) StopDetection(
 	_data.WriteInterfaceToken(DescriptorIWearableSensingService)
 	_data.WriteString16(packageName)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWearableSensingService, "stopDetection"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWearableSensingService, "stopDetection")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -310,7 +375,12 @@ func (p *WearableSensingServiceProxy) QueryServiceStatus(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWearableSensingService, "queryServiceStatus"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWearableSensingService, "queryServiceStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -320,6 +390,11 @@ func (p *WearableSensingServiceProxy) KillProcess(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWearableSensingService)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWearableSensingService, "killProcess"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWearableSensingService, "killProcess")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

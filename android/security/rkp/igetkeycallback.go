@@ -50,7 +50,12 @@ func (p *GetKeyCallbackProxy) OnSuccess(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGetKeyCallback, "onSuccess"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGetKeyCallback, "onSuccess")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -60,7 +65,12 @@ func (p *GetKeyCallbackProxy) OnCancel(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGetKeyCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGetKeyCallback, "onCancel"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGetKeyCallback, "onCancel")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -74,6 +84,11 @@ func (p *GetKeyCallbackProxy) OnError(
 	_data.WriteInt32(int32(error_))
 	_data.WriteString16(description)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGetKeyCallback, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGetKeyCallback, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

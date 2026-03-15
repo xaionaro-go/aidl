@@ -55,7 +55,12 @@ func (p *msConfigListenerProxy) OnGetFeatureResponse(
 	_data.WriteInt32(value)
 	_data.WriteInt32(status)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorImsConfigListener, "onGetFeatureResponse"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorImsConfigListener, "onGetFeatureResponse")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -73,7 +78,12 @@ func (p *msConfigListenerProxy) OnSetFeatureResponse(
 	_data.WriteInt32(value)
 	_data.WriteInt32(status)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorImsConfigListener, "onSetFeatureResponse"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorImsConfigListener, "onSetFeatureResponse")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -87,7 +97,12 @@ func (p *msConfigListenerProxy) OnGetVideoQuality(
 	_data.WriteInt32(status)
 	_data.WriteInt32(quality)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorImsConfigListener, "onGetVideoQuality"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorImsConfigListener, "onGetVideoQuality")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -99,6 +114,11 @@ func (p *msConfigListenerProxy) OnSetVideoQuality(
 	_data.WriteInterfaceToken(DescriptorImsConfigListener)
 	_data.WriteInt32(status)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorImsConfigListener, "onSetVideoQuality"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorImsConfigListener, "onSetVideoQuality")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

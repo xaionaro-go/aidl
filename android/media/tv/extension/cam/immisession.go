@@ -49,7 +49,12 @@ func (p *MmiSessionProxy) SetMenuListAnswer(
 	_data.WriteInterfaceToken(DescriptorIMmiSession)
 	_data.WriteInt32(response)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMmiSession, "setMenuListAnswer"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMmiSession, "setMenuListAnswer")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -72,7 +77,12 @@ func (p *MmiSessionProxy) SetEnquiryAnswer(
 	_data.WriteInt32(answerId)
 	_data.WriteString16(answer)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMmiSession, "setEnquiryAnswer"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMmiSession, "setEnquiryAnswer")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -91,7 +101,12 @@ func (p *MmiSessionProxy) CloseMmi(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMmiSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMmiSession, "closeMmi"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMmiSession, "closeMmi")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -110,7 +125,12 @@ func (p *MmiSessionProxy) Close(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMmiSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMmiSession, "close"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMmiSession, "close")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

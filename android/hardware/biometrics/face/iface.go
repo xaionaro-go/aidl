@@ -44,7 +44,12 @@ func (p *FaceProxy) GetSensorProps(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFace)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFace, "getSensorProps"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFace, "getSensorProps")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -83,7 +88,12 @@ func (p *FaceProxy) CreateSession(
 	_data.WriteInt32(userId)
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFace, "createSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFace, "createSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

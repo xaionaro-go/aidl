@@ -49,7 +49,12 @@ func (p *HostapdCallbackProxy) OnApInstanceInfoChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHostapdCallback, "onApInstanceInfoChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHostapdCallback, "onApInstanceInfoChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -63,7 +68,12 @@ func (p *HostapdCallbackProxy) OnConnectedClientsChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHostapdCallback, "onConnectedClientsChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHostapdCallback, "onConnectedClientsChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -77,6 +87,11 @@ func (p *HostapdCallbackProxy) OnFailure(
 	_data.WriteString16(ifaceName)
 	_data.WriteString16(instanceName)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHostapdCallback, "onFailure"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHostapdCallback, "onFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

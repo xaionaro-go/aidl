@@ -50,7 +50,12 @@ func (p *IntrusionDetectionEventTransportProxy) Initialize(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIntrusionDetectionEventTransport, "initialize"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIntrusionDetectionEventTransport, "initialize")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -75,7 +80,12 @@ func (p *IntrusionDetectionEventTransportProxy) AddData(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIntrusionDetectionEventTransport, "addData"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIntrusionDetectionEventTransport, "addData")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -89,6 +99,11 @@ func (p *IntrusionDetectionEventTransportProxy) Release(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIntrusionDetectionEventTransport, "release"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIntrusionDetectionEventTransport, "release")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

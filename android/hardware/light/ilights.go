@@ -49,7 +49,12 @@ func (p *LightsProxy) SetLightState(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILights, "setLightState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILights, "setLightState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -69,7 +74,12 @@ func (p *LightsProxy) GetLights(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILights)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILights, "getLights"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILights, "getLights")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

@@ -58,7 +58,12 @@ func (p *EventDownloadSessionProxy) IsBarkerOrSequentialDownloadByServiceType(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEventDownloadSession, "isBarkerOrSequentialDownloadByServiceType"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEventDownloadSession, "isBarkerOrSequentialDownloadByServiceType")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -86,7 +91,12 @@ func (p *EventDownloadSessionProxy) IsBarkerOrSequentialDownloadByServiceRecord(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEventDownloadSession, "isBarkerOrSequentialDownloadByServiceRecord"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEventDownloadSession, "isBarkerOrSequentialDownloadByServiceRecord")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -113,7 +123,12 @@ func (p *EventDownloadSessionProxy) StartTuningMultiplex(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEventDownloadSession, "startTuningMultiplex"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEventDownloadSession, "startTuningMultiplex")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -143,7 +158,12 @@ func (p *EventDownloadSessionProxy) SetActiveWindowChannelInfo(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEventDownloadSession, "setActiveWindowChannelInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEventDownloadSession, "setActiveWindowChannelInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -162,7 +182,12 @@ func (p *EventDownloadSessionProxy) Cancel(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEventDownloadSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEventDownloadSession, "cancel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEventDownloadSession, "cancel")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -181,7 +206,12 @@ func (p *EventDownloadSessionProxy) Release(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEventDownloadSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEventDownloadSession, "release"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEventDownloadSession, "release")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

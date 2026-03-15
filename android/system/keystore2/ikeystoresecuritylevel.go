@@ -74,7 +74,12 @@ func (p *KeystoreSecurityLevelProxy) CreateOperation(
 	}
 	_data.WriteBool(forced)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeystoreSecurityLevel, "createOperation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeystoreSecurityLevel, "createOperation")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -131,7 +136,12 @@ func (p *KeystoreSecurityLevelProxy) GenerateKey(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeystoreSecurityLevel, "generateKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeystoreSecurityLevel, "generateKey")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -188,7 +198,12 @@ func (p *KeystoreSecurityLevelProxy) ImportKey(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeystoreSecurityLevel, "importKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeystoreSecurityLevel, "importKey")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -250,7 +265,12 @@ func (p *KeystoreSecurityLevelProxy) ImportWrappedKey(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeystoreSecurityLevel, "importWrappedKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeystoreSecurityLevel, "importWrappedKey")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -277,7 +297,12 @@ func (p *KeystoreSecurityLevelProxy) ConvertStorageKeyToEphemeral(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeystoreSecurityLevel, "convertStorageKeyToEphemeral"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeystoreSecurityLevel, "convertStorageKeyToEphemeral")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -303,7 +328,12 @@ func (p *KeystoreSecurityLevelProxy) DeleteKey(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeystoreSecurityLevel, "deleteKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeystoreSecurityLevel, "deleteKey")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

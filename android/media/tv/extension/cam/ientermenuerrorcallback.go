@@ -41,6 +41,11 @@ func (p *EnterMenuErrorCallbackProxy) OnAppInfoEnterMenuError(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEnterMenuErrorCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEnterMenuErrorCallback, "onAppInfoEnterMenuError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEnterMenuErrorCallback, "onAppInfoEnterMenuError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

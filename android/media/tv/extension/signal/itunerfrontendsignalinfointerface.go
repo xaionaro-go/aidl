@@ -47,7 +47,12 @@ func (p *TunerFrontendSignalInfoInterfaceProxy) GetFrontendSignalInfo(
 	_data.WriteInterfaceToken(DescriptorITunerFrontendSignalInfoInterface)
 	_data.WriteString16(sessionToken)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerFrontendSignalInfoInterface, "getFrontendSignalInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerFrontendSignalInfoInterface, "getFrontendSignalInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -71,7 +76,12 @@ func (p *TunerFrontendSignalInfoInterfaceProxy) SetFrontendSignalInfoListener(
 	_data.WriteInterfaceToken(DescriptorITunerFrontendSignalInfoInterface)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerFrontendSignalInfoInterface, "setFrontendSignalInfoListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerFrontendSignalInfoInterface, "setFrontendSignalInfoListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

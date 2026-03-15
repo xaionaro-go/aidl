@@ -116,7 +116,12 @@ func (p *VibratorProxy) GetCapabilities(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getCapabilities"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getCapabilities")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -139,7 +144,12 @@ func (p *VibratorProxy) Off(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "off"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "off")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -162,7 +172,12 @@ func (p *VibratorProxy) On(
 	_data.WriteInt32(timeoutMs)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "on"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "on")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -188,7 +203,12 @@ func (p *VibratorProxy) Perform(
 	_data.WritePaddedByte(byte(strength))
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "perform"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "perform")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -212,7 +232,12 @@ func (p *VibratorProxy) GetSupportedEffects(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getSupportedEffects"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getSupportedEffects")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -248,7 +273,12 @@ func (p *VibratorProxy) SetAmplitude(
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 	_data.WriteFloat32(amplitude)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "setAmplitude"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "setAmplitude")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -269,7 +299,12 @@ func (p *VibratorProxy) SetExternalControl(
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "setExternalControl"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "setExternalControl")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -289,7 +324,12 @@ func (p *VibratorProxy) GetCompositionDelayMax(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getCompositionDelayMax"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getCompositionDelayMax")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -313,7 +353,12 @@ func (p *VibratorProxy) GetCompositionSizeMax(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getCompositionSizeMax"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getCompositionSizeMax")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -337,7 +382,12 @@ func (p *VibratorProxy) GetSupportedPrimitives(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getSupportedPrimitives"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getSupportedPrimitives")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -374,7 +424,12 @@ func (p *VibratorProxy) GetPrimitiveDuration(
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 	_data.WriteInt32(int32(primitive))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getPrimitiveDuration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getPrimitiveDuration")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -410,7 +465,12 @@ func (p *VibratorProxy) Compose(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "compose"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "compose")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -430,7 +490,12 @@ func (p *VibratorProxy) GetSupportedAlwaysOnEffects(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getSupportedAlwaysOnEffects"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getSupportedAlwaysOnEffects")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -470,7 +535,12 @@ func (p *VibratorProxy) AlwaysOnEnable(
 	_data.WriteInt32(int32(effect))
 	_data.WritePaddedByte(byte(strength))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "alwaysOnEnable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "alwaysOnEnable")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -491,7 +561,12 @@ func (p *VibratorProxy) AlwaysOnDisable(
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 	_data.WriteInt32(id)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "alwaysOnDisable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "alwaysOnDisable")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -511,7 +586,12 @@ func (p *VibratorProxy) GetResonantFrequency(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getResonantFrequency"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getResonantFrequency")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -535,7 +615,12 @@ func (p *VibratorProxy) GetQFactor(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getQFactor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getQFactor")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -559,7 +644,12 @@ func (p *VibratorProxy) GetFrequencyResolution(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getFrequencyResolution"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getFrequencyResolution")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -583,7 +673,12 @@ func (p *VibratorProxy) GetFrequencyMinimum(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getFrequencyMinimum"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getFrequencyMinimum")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -607,7 +702,12 @@ func (p *VibratorProxy) GetBandwidthAmplitudeMap(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getBandwidthAmplitudeMap"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getBandwidthAmplitudeMap")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -641,7 +741,12 @@ func (p *VibratorProxy) GetPwlePrimitiveDurationMax(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getPwlePrimitiveDurationMax"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getPwlePrimitiveDurationMax")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -665,7 +770,12 @@ func (p *VibratorProxy) GetPwleCompositionSizeMax(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getPwleCompositionSizeMax"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getPwleCompositionSizeMax")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -689,7 +799,12 @@ func (p *VibratorProxy) GetSupportedBraking(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getSupportedBraking"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getSupportedBraking")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -736,7 +851,12 @@ func (p *VibratorProxy) ComposePwle(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "composePwle"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "composePwle")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -761,7 +881,12 @@ func (p *VibratorProxy) PerformVendorEffect(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "performVendorEffect"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "performVendorEffect")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -781,7 +906,12 @@ func (p *VibratorProxy) GetFrequencyToOutputAccelerationMap(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getFrequencyToOutputAccelerationMap"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getFrequencyToOutputAccelerationMap")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -814,7 +944,12 @@ func (p *VibratorProxy) GetPwleV2PrimitiveDurationMaxMillis(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getPwleV2PrimitiveDurationMaxMillis"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getPwleV2PrimitiveDurationMaxMillis")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -838,7 +973,12 @@ func (p *VibratorProxy) GetPwleV2CompositionSizeMax(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getPwleV2CompositionSizeMax"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getPwleV2CompositionSizeMax")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -862,7 +1002,12 @@ func (p *VibratorProxy) GetPwleV2PrimitiveDurationMinMillis(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "getPwleV2PrimitiveDurationMinMillis"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "getPwleV2PrimitiveDurationMinMillis")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -891,7 +1036,12 @@ func (p *VibratorProxy) ComposePwleV2(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrator, "composePwleV2"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "composePwleV2")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

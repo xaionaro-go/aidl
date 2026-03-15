@@ -17,14 +17,16 @@ type IBinder interface {
 
 	// ResolveCode maps an AIDL interface descriptor and method name
 	// to the correct TransactionCode for the target device.
+	// Returns an error if the method cannot be resolved (unsupported
+	// device version or unknown method).
 	ResolveCode(
 		descriptor string,
 		method string,
-	) TransactionCode
+	) (TransactionCode, error)
 
 	LinkToDeath(ctx context.Context, recipient DeathRecipient) (_err error)
 	UnlinkToDeath(ctx context.Context, recipient DeathRecipient) (_err error)
 	IsAlive(ctx context.Context) bool
 	Handle() uint32
-	Transport() Transport
+	Transport() VersionAwareTransport
 }

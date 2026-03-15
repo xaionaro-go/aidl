@@ -63,7 +63,12 @@ func (p *ComposerCallbackProxy) OnHotplug(
 	_data.WriteInt64(display)
 	_data.WriteBool(connected)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIComposerCallback, "onHotplug"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIComposerCallback, "onHotplug")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -84,7 +89,12 @@ func (p *ComposerCallbackProxy) OnRefresh(
 	_data.WriteInterfaceToken(DescriptorIComposerCallback)
 	_data.WriteInt64(display)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIComposerCallback, "onRefresh"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIComposerCallback, "onRefresh")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -96,7 +106,12 @@ func (p *ComposerCallbackProxy) OnSeamlessPossible(
 	_data.WriteInterfaceToken(DescriptorIComposerCallback)
 	_data.WriteInt64(display)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIComposerCallback, "onSeamlessPossible"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIComposerCallback, "onSeamlessPossible")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -112,7 +127,12 @@ func (p *ComposerCallbackProxy) OnVsync(
 	_data.WriteInt64(timestamp)
 	_data.WriteInt32(vsyncPeriodNanos)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIComposerCallback, "onVsync"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIComposerCallback, "onVsync")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -128,7 +148,12 @@ func (p *ComposerCallbackProxy) OnVsyncPeriodTimingChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIComposerCallback, "onVsyncPeriodTimingChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIComposerCallback, "onVsyncPeriodTimingChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -140,7 +165,12 @@ func (p *ComposerCallbackProxy) OnVsyncIdle(
 	_data.WriteInterfaceToken(DescriptorIComposerCallback)
 	_data.WriteInt64(display)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIComposerCallback, "onVsyncIdle"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIComposerCallback, "onVsyncIdle")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -154,7 +184,12 @@ func (p *ComposerCallbackProxy) OnRefreshRateChangedDebug(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIComposerCallback, "onRefreshRateChangedDebug"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIComposerCallback, "onRefreshRateChangedDebug")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -168,7 +203,12 @@ func (p *ComposerCallbackProxy) OnHotplugEvent(
 	_data.WriteInt64(display)
 	_data.WriteInt32(int32(event))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIComposerCallback, "onHotplugEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIComposerCallback, "onHotplugEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -193,6 +233,11 @@ func (p *ComposerCallbackProxy) OnHdcpLevelsChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIComposerCallback, "onHdcpLevelsChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIComposerCallback, "onHdcpLevelsChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

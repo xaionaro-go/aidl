@@ -58,7 +58,12 @@ func (p *BluetoothHciCallbacksProxy) AclDataReceived(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothHciCallbacks, "aclDataReceived"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHciCallbacks, "aclDataReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -86,7 +91,12 @@ func (p *BluetoothHciCallbacksProxy) HciEventReceived(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothHciCallbacks, "hciEventReceived"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHciCallbacks, "hciEventReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -107,7 +117,12 @@ func (p *BluetoothHciCallbacksProxy) InitializationComplete(
 	_data.WriteInterfaceToken(DescriptorIBluetoothHciCallbacks)
 	_data.WriteInt32(int32(status))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothHciCallbacks, "initializationComplete"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHciCallbacks, "initializationComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -135,7 +150,12 @@ func (p *BluetoothHciCallbacksProxy) IsoDataReceived(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothHciCallbacks, "isoDataReceived"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHciCallbacks, "isoDataReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -163,7 +183,12 @@ func (p *BluetoothHciCallbacksProxy) ScoDataReceived(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothHciCallbacks, "scoDataReceived"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHciCallbacks, "scoDataReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

@@ -42,6 +42,11 @@ func (p *AppOpsAsyncNotedCallbackProxy) OpNoted(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsAsyncNotedCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAppOpsAsyncNotedCallback, "opNoted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsAsyncNotedCallback, "opNoted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

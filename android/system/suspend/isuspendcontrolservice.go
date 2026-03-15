@@ -46,7 +46,12 @@ func (p *SuspendControlServiceProxy) RegisterCallback(
 	_data.WriteInterfaceToken(DescriptorISuspendControlService)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISuspendControlService, "registerCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISuspendControlService, "registerCallback")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -74,7 +79,12 @@ func (p *SuspendControlServiceProxy) RegisterWakelockCallback(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteString16(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISuspendControlService, "registerWakelockCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISuspendControlService, "registerWakelockCallback")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

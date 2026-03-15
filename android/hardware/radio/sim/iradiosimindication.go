@@ -64,7 +64,12 @@ func (p *RadioSimIndicationProxy) CarrierInfoForImsiEncryption(
 	_data.WriteInterfaceToken(DescriptorIRadioSimIndication)
 	_data.WriteInt32(int32(info))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioSimIndication, "carrierInfoForImsiEncryption"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioSimIndication, "carrierInfoForImsiEncryption")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -78,7 +83,12 @@ func (p *RadioSimIndicationProxy) CdmaSubscriptionSourceChanged(
 	_data.WriteInt32(int32(type_))
 	_data.WriteInt32(int32(cdmaSource))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioSimIndication, "cdmaSubscriptionSourceChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioSimIndication, "cdmaSubscriptionSourceChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -90,7 +100,12 @@ func (p *RadioSimIndicationProxy) SimPhonebookChanged(
 	_data.WriteInterfaceToken(DescriptorIRadioSimIndication)
 	_data.WriteInt32(int32(type_))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioSimIndication, "simPhonebookChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioSimIndication, "simPhonebookChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -115,7 +130,12 @@ func (p *RadioSimIndicationProxy) SimPhonebookRecordsReceived(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioSimIndication, "simPhonebookRecordsReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioSimIndication, "simPhonebookRecordsReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -131,7 +151,12 @@ func (p *RadioSimIndicationProxy) SimRefresh(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioSimIndication, "simRefresh"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioSimIndication, "simRefresh")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -143,7 +168,12 @@ func (p *RadioSimIndicationProxy) SimStatusChanged(
 	_data.WriteInterfaceToken(DescriptorIRadioSimIndication)
 	_data.WriteInt32(int32(type_))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioSimIndication, "simStatusChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioSimIndication, "simStatusChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -157,7 +187,12 @@ func (p *RadioSimIndicationProxy) StkEventNotify(
 	_data.WriteInt32(int32(type_))
 	_data.WriteString16(cmd)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioSimIndication, "stkEventNotify"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioSimIndication, "stkEventNotify")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -171,7 +206,12 @@ func (p *RadioSimIndicationProxy) StkProactiveCommand(
 	_data.WriteInt32(int32(type_))
 	_data.WriteString16(cmd)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioSimIndication, "stkProactiveCommand"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioSimIndication, "stkProactiveCommand")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -183,7 +223,12 @@ func (p *RadioSimIndicationProxy) StkSessionEnd(
 	_data.WriteInterfaceToken(DescriptorIRadioSimIndication)
 	_data.WriteInt32(int32(type_))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioSimIndication, "stkSessionEnd"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioSimIndication, "stkSessionEnd")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -197,7 +242,12 @@ func (p *RadioSimIndicationProxy) SubscriptionStatusChanged(
 	_data.WriteInt32(int32(type_))
 	_data.WriteBool(activate)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioSimIndication, "subscriptionStatusChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioSimIndication, "subscriptionStatusChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -211,6 +261,11 @@ func (p *RadioSimIndicationProxy) UiccApplicationsEnablementChanged(
 	_data.WriteInt32(int32(type_))
 	_data.WriteBool(enabled)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioSimIndication, "uiccApplicationsEnablementChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioSimIndication, "uiccApplicationsEnablementChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -51,7 +51,12 @@ func (p *CarrierMessagingCallbackProxy) OnFilterComplete(
 	_data.WriteInterfaceToken(DescriptorICarrierMessagingCallback)
 	_data.WriteInt32(result)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICarrierMessagingCallback, "onFilterComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICarrierMessagingCallback, "onFilterComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -65,7 +70,12 @@ func (p *CarrierMessagingCallbackProxy) OnSendSmsComplete(
 	_data.WriteInt32(result)
 	_data.WriteInt32(messageRef)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICarrierMessagingCallback, "onSendSmsComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICarrierMessagingCallback, "onSendSmsComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -86,7 +96,12 @@ func (p *CarrierMessagingCallbackProxy) OnSendMultipartSmsComplete(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICarrierMessagingCallback, "onSendMultipartSmsComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICarrierMessagingCallback, "onSendMultipartSmsComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -107,7 +122,12 @@ func (p *CarrierMessagingCallbackProxy) OnSendMmsComplete(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICarrierMessagingCallback, "onSendMmsComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICarrierMessagingCallback, "onSendMmsComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -119,6 +139,11 @@ func (p *CarrierMessagingCallbackProxy) OnDownloadMmsComplete(
 	_data.WriteInterfaceToken(DescriptorICarrierMessagingCallback)
 	_data.WriteInt32(result)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICarrierMessagingCallback, "onDownloadMmsComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICarrierMessagingCallback, "onDownloadMmsComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

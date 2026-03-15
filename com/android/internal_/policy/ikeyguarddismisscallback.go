@@ -45,7 +45,12 @@ func (p *KeyguardDismissCallbackProxy) OnDismissError(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyguardDismissCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyguardDismissCallback, "onDismissError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardDismissCallback, "onDismissError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -55,7 +60,12 @@ func (p *KeyguardDismissCallbackProxy) OnDismissSucceeded(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyguardDismissCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyguardDismissCallback, "onDismissSucceeded"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardDismissCallback, "onDismissSucceeded")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -65,6 +75,11 @@ func (p *KeyguardDismissCallbackProxy) OnDismissCancelled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyguardDismissCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyguardDismissCallback, "onDismissCancelled"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardDismissCallback, "onDismissCancelled")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -80,7 +80,12 @@ func (p *TunerProxy) Close(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITuner)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "close"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "close")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -100,7 +105,12 @@ func (p *TunerProxy) IsClosed(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITuner)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "isClosed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "isClosed")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -127,7 +137,12 @@ func (p *TunerProxy) SetConfiguration(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "setConfiguration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "setConfiguration")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -147,7 +162,12 @@ func (p *TunerProxy) GetConfiguration(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITuner)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "getConfiguration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "getConfiguration")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -171,7 +191,12 @@ func (p *TunerProxy) SetMuted(
 	_data.WriteInterfaceToken(DescriptorITuner)
 	_data.WriteBool(mute)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "setMuted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "setMuted")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -191,7 +216,12 @@ func (p *TunerProxy) IsMuted(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITuner)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "isMuted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "isMuted")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -218,7 +248,12 @@ func (p *TunerProxy) Step(
 	_data.WriteBool(directionDown)
 	_data.WriteBool(skipSubChannel)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "step"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "step")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -241,7 +276,12 @@ func (p *TunerProxy) Seek(
 	_data.WriteBool(directionDown)
 	_data.WriteBool(skipSubChannel)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "seek"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "seek")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -264,7 +304,12 @@ func (p *TunerProxy) Tune(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "tune"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "tune")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -283,7 +328,12 @@ func (p *TunerProxy) Cancel(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITuner)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "cancel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "cancel")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -302,7 +352,12 @@ func (p *TunerProxy) CancelAnnouncement(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITuner)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "cancelAnnouncement"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "cancelAnnouncement")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -324,7 +379,12 @@ func (p *TunerProxy) GetImage(
 	_data.WriteInterfaceToken(DescriptorITuner)
 	_data.WriteInt32(id)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "getImage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "getImage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -347,7 +407,12 @@ func (p *TunerProxy) StartBackgroundScan(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITuner)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "startBackgroundScan"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "startBackgroundScan")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -374,7 +439,12 @@ func (p *TunerProxy) StartProgramListUpdates(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "startProgramListUpdates"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "startProgramListUpdates")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -393,7 +463,12 @@ func (p *TunerProxy) StopProgramListUpdates(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITuner)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "stopProgramListUpdates"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "stopProgramListUpdates")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -415,7 +490,12 @@ func (p *TunerProxy) IsConfigFlagSupported(
 	_data.WriteInterfaceToken(DescriptorITuner)
 	_data.WriteInt32(flag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "isConfigFlagSupported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "isConfigFlagSupported")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -441,7 +521,12 @@ func (p *TunerProxy) IsConfigFlagSet(
 	_data.WriteInterfaceToken(DescriptorITuner)
 	_data.WriteInt32(flag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "isConfigFlagSet"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "isConfigFlagSet")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -468,7 +553,12 @@ func (p *TunerProxy) SetConfigFlag(
 	_data.WriteInt32(flag)
 	_data.WriteBool(value)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "setConfigFlag"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "setConfigFlag")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -498,7 +588,12 @@ func (p *TunerProxy) SetParameters(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "setParameters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "setParameters")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -545,7 +640,12 @@ func (p *TunerProxy) GetParameters(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITuner, "getParameters"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITuner, "getParameters")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

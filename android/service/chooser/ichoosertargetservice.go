@@ -52,6 +52,11 @@ func (p *ChooserTargetServiceProxy) GetChooserTargets(
 	}
 	_data.WriteStrongBinder(result.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIChooserTargetService, "getChooserTargets"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIChooserTargetService, "getChooserTargets")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

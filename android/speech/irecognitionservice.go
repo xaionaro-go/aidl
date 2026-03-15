@@ -53,7 +53,12 @@ func (p *RecognitionServiceProxy) StartListening(
 	_data.WriteInterfaceToken(DescriptorIRecognitionService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecognitionService, "startListening"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionService, "startListening")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -65,7 +70,12 @@ func (p *RecognitionServiceProxy) StopListening(
 	_data.WriteInterfaceToken(DescriptorIRecognitionService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecognitionService, "stopListening"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionService, "stopListening")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -79,7 +89,12 @@ func (p *RecognitionServiceProxy) Cancel(
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteBool(isShutdown)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecognitionService, "cancel"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionService, "cancel")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -93,7 +108,12 @@ func (p *RecognitionServiceProxy) CheckRecognitionSupport(
 	_data.WriteInterfaceToken(DescriptorIRecognitionService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecognitionService, "checkRecognitionSupport"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionService, "checkRecognitionSupport")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -107,6 +127,11 @@ func (p *RecognitionServiceProxy) TriggerModelDownload(
 	_data.WriteInterfaceToken(DescriptorIRecognitionService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecognitionService, "triggerModelDownload"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionService, "triggerModelDownload")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

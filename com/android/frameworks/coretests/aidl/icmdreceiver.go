@@ -47,7 +47,12 @@ func (p *CmdReceiverProxy) DoSomeWork(
 	_data.WriteInterfaceToken(DescriptorICmdReceiver)
 	_data.WriteInt32(durationMs)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICmdReceiver, "doSomeWork"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICmdReceiver, "doSomeWork")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -66,7 +71,12 @@ func (p *CmdReceiverProxy) ShowApplicationOverlay(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICmdReceiver)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICmdReceiver, "showApplicationOverlay"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICmdReceiver, "showApplicationOverlay")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -85,7 +95,12 @@ func (p *CmdReceiverProxy) FinishHost(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICmdReceiver)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICmdReceiver, "finishHost"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICmdReceiver, "finishHost")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

@@ -47,7 +47,12 @@ func (p *TargetRegionProxy) GetTargetRegions(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITargetRegion)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITargetRegion, "getTargetRegions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITargetRegion, "getTargetRegions")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -84,7 +89,12 @@ func (p *TargetRegionProxy) SetTargetRegion(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITargetRegion, "setTargetRegion"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITargetRegion, "setTargetRegion")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -110,7 +120,12 @@ func (p *TargetRegionProxy) SetListener(
 	_data.WriteInterfaceToken(DescriptorITargetRegion)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITargetRegion, "setListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITargetRegion, "setListener")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

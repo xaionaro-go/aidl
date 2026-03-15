@@ -80,7 +80,12 @@ func (p *ImsUtProxy) Close(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsUt)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "close"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "close")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -102,7 +107,12 @@ func (p *ImsUtProxy) QueryCallBarring(
 	_data.WriteInterfaceToken(DescriptorIImsUt)
 	_data.WriteInt32(cbType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "queryCallBarring"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "queryCallBarring")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -130,7 +140,12 @@ func (p *ImsUtProxy) QueryCallForward(
 	_data.WriteInt32(condition)
 	_data.WriteString16(number)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "queryCallForward"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "queryCallForward")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -154,7 +169,12 @@ func (p *ImsUtProxy) QueryCallWaiting(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsUt)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "queryCallWaiting"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "queryCallWaiting")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -178,7 +198,12 @@ func (p *ImsUtProxy) QueryCLIR(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsUt)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "queryCLIR"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "queryCLIR")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -202,7 +227,12 @@ func (p *ImsUtProxy) QueryCLIP(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsUt)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "queryCLIP"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "queryCLIP")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -226,7 +256,12 @@ func (p *ImsUtProxy) QueryCOLR(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsUt)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "queryCOLR"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "queryCOLR")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -250,7 +285,12 @@ func (p *ImsUtProxy) QueryCOLP(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsUt)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "queryCOLP"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "queryCOLP")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -278,7 +318,12 @@ func (p *ImsUtProxy) Transact(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "transact"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "transact")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -315,7 +360,12 @@ func (p *ImsUtProxy) UpdateCallBarring(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "updateCallBarring"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "updateCallBarring")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -349,7 +399,12 @@ func (p *ImsUtProxy) UpdateCallForward(
 	_data.WriteInt32(serviceClass)
 	_data.WriteInt32(timeSeconds)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "updateCallForward"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "updateCallForward")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -377,7 +432,12 @@ func (p *ImsUtProxy) UpdateCallWaiting(
 	_data.WriteBool(enable)
 	_data.WriteInt32(serviceClass)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "updateCallWaiting"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "updateCallWaiting")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -403,7 +463,12 @@ func (p *ImsUtProxy) UpdateCLIR(
 	_data.WriteInterfaceToken(DescriptorIImsUt)
 	_data.WriteInt32(clirMode)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "updateCLIR"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "updateCLIR")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -429,7 +494,12 @@ func (p *ImsUtProxy) UpdateCLIP(
 	_data.WriteInterfaceToken(DescriptorIImsUt)
 	_data.WriteBool(enable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "updateCLIP"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "updateCLIP")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -455,7 +525,12 @@ func (p *ImsUtProxy) UpdateCOLR(
 	_data.WriteInterfaceToken(DescriptorIImsUt)
 	_data.WriteInt32(presentation)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "updateCOLR"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "updateCOLR")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -481,7 +556,12 @@ func (p *ImsUtProxy) UpdateCOLP(
 	_data.WriteInterfaceToken(DescriptorIImsUt)
 	_data.WriteBool(enable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "updateCOLP"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "updateCOLP")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -506,7 +586,12 @@ func (p *ImsUtProxy) SetListener(
 	_data.WriteInterfaceToken(DescriptorIImsUt)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "setListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "setListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -530,7 +615,12 @@ func (p *ImsUtProxy) QueryCallBarringForServiceClass(
 	_data.WriteInt32(cbType)
 	_data.WriteInt32(serviceClass)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "queryCallBarringForServiceClass"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "queryCallBarringForServiceClass")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -569,7 +659,12 @@ func (p *ImsUtProxy) UpdateCallBarringForServiceClass(
 	}
 	_data.WriteInt32(serviceClass)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "updateCallBarringForServiceClass"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "updateCallBarringForServiceClass")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -610,7 +705,12 @@ func (p *ImsUtProxy) UpdateCallBarringWithPassword(
 	_data.WriteInt32(serviceClass)
 	_data.WriteString16(password)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsUt, "updateCallBarringWithPassword"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "updateCallBarringWithPassword")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

@@ -68,7 +68,12 @@ func (p *RingtonePlayerProxy) Play(
 	_data.WriteFloat32(volume)
 	_data.WriteBool(looping)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRingtonePlayer, "play"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRingtonePlayer, "play")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -97,7 +102,12 @@ func (p *RingtonePlayerProxy) PlayWithVolumeShaping(
 		_data.WriteInt32(-1)
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRingtonePlayer, "playWithVolumeShaping"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRingtonePlayer, "playWithVolumeShaping")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -109,7 +119,12 @@ func (p *RingtonePlayerProxy) Stop(
 	_data.WriteInterfaceToken(DescriptorIRingtonePlayer)
 	_data.WriteStrongBinder(token.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRingtonePlayer, "stop"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRingtonePlayer, "stop")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -122,7 +137,12 @@ func (p *RingtonePlayerProxy) IsPlaying(
 	_data.WriteInterfaceToken(DescriptorIRingtonePlayer)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRingtonePlayer, "isPlaying"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRingtonePlayer, "isPlaying")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -153,7 +173,12 @@ func (p *RingtonePlayerProxy) SetPlaybackProperties(
 	_data.WriteBool(looping)
 	_data.WriteBool(hapticGeneratorEnabled)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRingtonePlayer, "setPlaybackProperties"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRingtonePlayer, "setPlaybackProperties")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -173,7 +198,12 @@ func (p *RingtonePlayerProxy) PlayAsync(
 	}
 	_data.WriteFloat32(volume)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRingtonePlayer, "playAsync"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRingtonePlayer, "playAsync")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -183,7 +213,12 @@ func (p *RingtonePlayerProxy) StopAsync(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRingtonePlayer)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRingtonePlayer, "stopAsync"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRingtonePlayer, "stopAsync")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -195,7 +230,12 @@ func (p *RingtonePlayerProxy) GetTitle(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRingtonePlayer)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRingtonePlayer, "getTitle"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRingtonePlayer, "getTitle")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -220,7 +260,12 @@ func (p *RingtonePlayerProxy) OpenRingtone(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRingtonePlayer)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRingtonePlayer, "openRingtone"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRingtonePlayer, "openRingtone")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

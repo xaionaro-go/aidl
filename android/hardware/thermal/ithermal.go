@@ -64,7 +64,12 @@ func (p *ThermalProxy) GetCoolingDevices(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIThermal)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIThermal, "getCoolingDevices"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIThermal, "getCoolingDevices")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -99,7 +104,12 @@ func (p *ThermalProxy) GetCoolingDevicesWithType(
 	_data.WriteInterfaceToken(DescriptorIThermal)
 	_data.WriteInt32(int32(type_))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIThermal, "getCoolingDevicesWithType"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIThermal, "getCoolingDevicesWithType")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -132,7 +142,12 @@ func (p *ThermalProxy) GetTemperatures(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIThermal)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIThermal, "getTemperatures"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIThermal, "getTemperatures")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -167,7 +182,12 @@ func (p *ThermalProxy) GetTemperaturesWithType(
 	_data.WriteInterfaceToken(DescriptorIThermal)
 	_data.WriteInt32(int32(type_))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIThermal, "getTemperaturesWithType"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIThermal, "getTemperaturesWithType")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -200,7 +220,12 @@ func (p *ThermalProxy) GetTemperatureThresholds(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIThermal)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIThermal, "getTemperatureThresholds"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIThermal, "getTemperatureThresholds")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -235,7 +260,12 @@ func (p *ThermalProxy) GetTemperatureThresholdsWithType(
 	_data.WriteInterfaceToken(DescriptorIThermal)
 	_data.WriteInt32(int32(type_))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIThermal, "getTemperatureThresholdsWithType"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIThermal, "getTemperatureThresholdsWithType")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -269,7 +299,12 @@ func (p *ThermalProxy) RegisterThermalChangedCallback(
 	_data.WriteInterfaceToken(DescriptorIThermal)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIThermal, "registerThermalChangedCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIThermal, "registerThermalChangedCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -292,7 +327,12 @@ func (p *ThermalProxy) RegisterThermalChangedCallbackWithType(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteInt32(int32(type_))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIThermal, "registerThermalChangedCallbackWithType"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIThermal, "registerThermalChangedCallbackWithType")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -313,7 +353,12 @@ func (p *ThermalProxy) UnregisterThermalChangedCallback(
 	_data.WriteInterfaceToken(DescriptorIThermal)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIThermal, "unregisterThermalChangedCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIThermal, "unregisterThermalChangedCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -336,7 +381,12 @@ func (p *ThermalProxy) RegisterCoolingDeviceChangedCallbackWithType(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteInt32(int32(type_))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIThermal, "registerCoolingDeviceChangedCallbackWithType"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIThermal, "registerCoolingDeviceChangedCallbackWithType")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -357,7 +407,12 @@ func (p *ThermalProxy) UnregisterCoolingDeviceChangedCallback(
 	_data.WriteInterfaceToken(DescriptorIThermal)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIThermal, "unregisterCoolingDeviceChangedCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIThermal, "unregisterCoolingDeviceChangedCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -379,7 +434,12 @@ func (p *ThermalProxy) ForecastSkinTemperature(
 	_data.WriteInterfaceToken(DescriptorIThermal)
 	_data.WriteInt32(forecastSeconds)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIThermal, "forecastSkinTemperature"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIThermal, "forecastSkinTemperature")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

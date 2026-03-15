@@ -43,6 +43,11 @@ func (p *UnhandledDragCallbackProxy) NotifyUnhandledDropComplete(
 	_data.WriteInterfaceToken(DescriptorIUnhandledDragCallback)
 	_data.WriteBool(handled)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUnhandledDragCallback, "notifyUnhandledDropComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUnhandledDragCallback, "notifyUnhandledDropComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

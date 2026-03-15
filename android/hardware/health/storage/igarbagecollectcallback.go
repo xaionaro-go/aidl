@@ -43,6 +43,11 @@ func (p *GarbageCollectCallbackProxy) OnFinish(
 	_data.WriteInterfaceToken(DescriptorIGarbageCollectCallback)
 	_data.WriteInt32(int32(result))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGarbageCollectCallback, "onFinish"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGarbageCollectCallback, "onFinish")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

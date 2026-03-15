@@ -48,7 +48,12 @@ func (p *CrossUserContentServiceProxy) UpdateContent(
 	_data.WriteString16(key)
 	_data.WriteInt32(value)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICrossUserContentService, "updateContent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICrossUserContentService, "updateContent")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -70,7 +75,12 @@ func (p *CrossUserContentServiceProxy) NotifyForUriAsUser(
 	_data.WriteInterfaceToken(DescriptorICrossUserContentService)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICrossUserContentService, "notifyForUriAsUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICrossUserContentService, "notifyForUriAsUser")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

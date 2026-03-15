@@ -47,7 +47,12 @@ func (p *InstrumentationWatcherProxy) InstrumentationStatus(
 	_data.WriteInterfaceToken(DescriptorIInstrumentationWatcher)
 	_data.WriteInt32(resultCode)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInstrumentationWatcher, "instrumentationStatus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInstrumentationWatcher, "instrumentationStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -70,7 +75,12 @@ func (p *InstrumentationWatcherProxy) InstrumentationFinished(
 	_data.WriteInterfaceToken(DescriptorIInstrumentationWatcher)
 	_data.WriteInt32(resultCode)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInstrumentationWatcher, "instrumentationFinished"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInstrumentationWatcher, "instrumentationFinished")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

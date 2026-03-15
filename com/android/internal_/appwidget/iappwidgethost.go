@@ -55,7 +55,12 @@ func (p *AppWidgetHostProxy) UpdateAppWidgetDeferred(
 	_data.WriteInterfaceToken(DescriptorIAppWidgetHost)
 	_data.WriteInt32(appWidgetId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAppWidgetHost, "updateAppWidgetDeferred"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetHost, "updateAppWidgetDeferred")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -71,7 +76,12 @@ func (p *AppWidgetHostProxy) UpdateAppWidget(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAppWidgetHost, "updateAppWidget"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetHost, "updateAppWidget")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -87,7 +97,12 @@ func (p *AppWidgetHostProxy) ProviderChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAppWidgetHost, "providerChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetHost, "providerChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -97,7 +112,12 @@ func (p *AppWidgetHostProxy) ProvidersChanged(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetHost)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAppWidgetHost, "providersChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetHost, "providersChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -111,7 +131,12 @@ func (p *AppWidgetHostProxy) ViewDataChanged(
 	_data.WriteInt32(appWidgetId)
 	_data.WriteInt32(viewId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAppWidgetHost, "viewDataChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetHost, "viewDataChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -123,6 +148,11 @@ func (p *AppWidgetHostProxy) AppWidgetRemoved(
 	_data.WriteInterfaceToken(DescriptorIAppWidgetHost)
 	_data.WriteInt32(appWidgetId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAppWidgetHost, "appWidgetRemoved"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetHost, "appWidgetRemoved")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

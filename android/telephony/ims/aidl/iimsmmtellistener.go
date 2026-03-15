@@ -70,7 +70,12 @@ func (p *ImsMmTelListenerProxy) OnIncomingCall(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelListener, "onIncomingCall"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelListener, "onIncomingCall")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -102,7 +107,12 @@ func (p *ImsMmTelListenerProxy) OnRejectedCall(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelListener, "onRejectedCall"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelListener, "onRejectedCall")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -123,7 +133,12 @@ func (p *ImsMmTelListenerProxy) OnVoiceMessageCountUpdate(
 	_data.WriteInterfaceToken(DescriptorIImsMmTelListener)
 	_data.WriteInt32(count)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelListener, "onVoiceMessageCountUpdate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelListener, "onVoiceMessageCountUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -135,7 +150,12 @@ func (p *ImsMmTelListenerProxy) OnAudioModeIsVoipChanged(
 	_data.WriteInterfaceToken(DescriptorIImsMmTelListener)
 	_data.WriteInt32(imsAudioHandler)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelListener, "onAudioModeIsVoipChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelListener, "onAudioModeIsVoipChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -147,7 +167,12 @@ func (p *ImsMmTelListenerProxy) OnTriggerEpsFallback(
 	_data.WriteInterfaceToken(DescriptorIImsMmTelListener)
 	_data.WriteInt32(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelListener, "onTriggerEpsFallback"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelListener, "onTriggerEpsFallback")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -167,7 +192,12 @@ func (p *ImsMmTelListenerProxy) OnStartImsTrafficSession(
 	_data.WriteInt32(trafficDirection)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelListener, "onStartImsTrafficSession"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelListener, "onStartImsTrafficSession")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -181,7 +211,12 @@ func (p *ImsMmTelListenerProxy) OnModifyImsTrafficSession(
 	_data.WriteInt32(token)
 	_data.WriteInt32(accessNetworkType)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelListener, "onModifyImsTrafficSession"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelListener, "onModifyImsTrafficSession")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -193,7 +228,12 @@ func (p *ImsMmTelListenerProxy) OnStopImsTrafficSession(
 	_data.WriteInterfaceToken(DescriptorIImsMmTelListener)
 	_data.WriteInt32(token)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelListener, "onStopImsTrafficSession"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelListener, "onStopImsTrafficSession")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -207,6 +247,11 @@ func (p *ImsMmTelListenerProxy) OnMediaQualityStatusChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMmTelListener, "onMediaQualityStatusChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelListener, "onMediaQualityStatusChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

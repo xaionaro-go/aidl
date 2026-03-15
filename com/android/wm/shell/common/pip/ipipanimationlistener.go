@@ -45,7 +45,12 @@ func (p *PipAnimationListenerProxy) OnPipAnimationStarted(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPipAnimationListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPipAnimationListener, "onPipAnimationStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPipAnimationListener, "onPipAnimationStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -59,7 +64,12 @@ func (p *PipAnimationListenerProxy) OnPipResourceDimensionsChanged(
 	_data.WriteInt32(cornerRadius)
 	_data.WriteInt32(shadowRadius)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPipAnimationListener, "onPipResourceDimensionsChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPipAnimationListener, "onPipResourceDimensionsChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -69,6 +79,11 @@ func (p *PipAnimationListenerProxy) OnExpandPip(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPipAnimationListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPipAnimationListener, "onExpandPip"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPipAnimationListener, "onExpandPip")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -49,7 +49,12 @@ func (p *AccessibilityManagerClientProxy) SetState(
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManagerClient)
 	_data.WriteInt32(stateFlags)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAccessibilityManagerClient, "setState"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManagerClient, "setState")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -61,7 +66,12 @@ func (p *AccessibilityManagerClientProxy) NotifyServicesStateChanged(
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManagerClient)
 	_data.WriteInt64(updatedUiTimeout)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAccessibilityManagerClient, "notifyServicesStateChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManagerClient, "notifyServicesStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -73,7 +83,12 @@ func (p *AccessibilityManagerClientProxy) SetRelevantEventTypes(
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManagerClient)
 	_data.WriteInt32(eventTypes)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAccessibilityManagerClient, "setRelevantEventTypes"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManagerClient, "setRelevantEventTypes")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -87,6 +102,11 @@ func (p *AccessibilityManagerClientProxy) SetFocusAppearance(
 	_data.WriteInt32(strokeWidth)
 	_data.WriteInt32(color)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAccessibilityManagerClient, "setFocusAppearance"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManagerClient, "setFocusAppearance")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

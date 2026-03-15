@@ -45,7 +45,12 @@ func (p *NumberVerificationCallbackProxy) OnCallReceived(
 	_data.WriteInterfaceToken(DescriptorINumberVerificationCallback)
 	_data.WriteString16(phoneNumber)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINumberVerificationCallback, "onCallReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINumberVerificationCallback, "onCallReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -57,6 +62,11 @@ func (p *NumberVerificationCallbackProxy) OnVerificationFailed(
 	_data.WriteInterfaceToken(DescriptorINumberVerificationCallback)
 	_data.WriteInt32(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINumberVerificationCallback, "onVerificationFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINumberVerificationCallback, "onVerificationFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

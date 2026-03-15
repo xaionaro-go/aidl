@@ -55,7 +55,12 @@ func (p *GatekeeperProxy) DeleteAllUsers(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGatekeeper)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGatekeeper, "deleteAllUsers"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGatekeeper, "deleteAllUsers")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -76,7 +81,12 @@ func (p *GatekeeperProxy) DeleteUser(
 	_data.WriteInterfaceToken(DescriptorIGatekeeper)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGatekeeper, "deleteUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGatekeeper, "deleteUser")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -125,7 +135,12 @@ func (p *GatekeeperProxy) Enroll(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGatekeeper, "enroll"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGatekeeper, "enroll")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -170,7 +185,12 @@ func (p *GatekeeperProxy) Verify(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGatekeeper, "verify"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGatekeeper, "verify")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

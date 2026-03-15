@@ -43,6 +43,11 @@ func (p *OnKeyguardExitResultProxy) OnKeyguardExitResult(
 	_data.WriteInterfaceToken(DescriptorIOnKeyguardExitResult)
 	_data.WriteBool(success)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOnKeyguardExitResult, "onKeyguardExitResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOnKeyguardExitResult, "onKeyguardExitResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

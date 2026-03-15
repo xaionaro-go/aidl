@@ -43,7 +43,12 @@ func (p *InputMonitorHostProxy) PilferPointers(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMonitorHost)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMonitorHost, "pilferPointers"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMonitorHost, "pilferPointers")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -53,6 +58,11 @@ func (p *InputMonitorHostProxy) Dispose(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMonitorHost)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputMonitorHost, "dispose"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputMonitorHost, "dispose")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

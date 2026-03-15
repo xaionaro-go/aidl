@@ -50,7 +50,12 @@ func (p *CustomVibratorProxy) GetVendorCapabilities(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICustomVibrator)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICustomVibrator, "getVendorCapabilities"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICustomVibrator, "getVendorCapabilities")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -75,7 +80,12 @@ func (p *CustomVibratorProxy) SetDirectionality(
 	_data.WriteInterfaceToken(DescriptorICustomVibrator)
 	_data.WriteInt32(int32(directionality))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICustomVibrator, "setDirectionality"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICustomVibrator, "setDirectionality")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -98,7 +108,12 @@ func (p *CustomVibratorProxy) Perform(
 	_data.WriteInterfaceToken(DescriptorICustomVibrator)
 	_data.WriteInt32(int32(effect))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICustomVibrator, "perform"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICustomVibrator, "perform")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

@@ -43,7 +43,12 @@ func (p *GetInfoRecordedContentsCallbackProxy) OnRecordedContentsGetInfo(
 	_data.WriteInterfaceToken(DescriptorIGetInfoRecordedContentsCallback)
 	_data.WriteInt32(result)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGetInfoRecordedContentsCallback, "onRecordedContentsGetInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGetInfoRecordedContentsCallback, "onRecordedContentsGetInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

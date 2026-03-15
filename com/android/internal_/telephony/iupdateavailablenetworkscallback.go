@@ -43,6 +43,11 @@ func (p *UpdateAvailableNetworksCallbackProxy) OnComplete(
 	_data.WriteInterfaceToken(DescriptorIUpdateAvailableNetworksCallback)
 	_data.WriteInt32(result)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUpdateAvailableNetworksCallback, "onComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUpdateAvailableNetworksCallback, "onComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

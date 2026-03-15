@@ -43,6 +43,11 @@ func (p *SatelliteSupportedStateCallbackProxy) OnSatelliteSupportedStateChanged(
 	_data.WriteInterfaceToken(DescriptorISatelliteSupportedStateCallback)
 	_data.WriteBool(supported)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISatelliteSupportedStateCallback, "onSatelliteSupportedStateChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISatelliteSupportedStateCallback, "onSatelliteSupportedStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

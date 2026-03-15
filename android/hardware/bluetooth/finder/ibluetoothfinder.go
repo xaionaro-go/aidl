@@ -56,7 +56,12 @@ func (p *BluetoothFinderProxy) SendEids(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothFinder, "sendEids"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothFinder, "sendEids")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -77,7 +82,12 @@ func (p *BluetoothFinderProxy) SetPoweredOffFinderMode(
 	_data.WriteInterfaceToken(DescriptorIBluetoothFinder)
 	_data.WriteBool(enable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothFinder, "setPoweredOffFinderMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothFinder, "setPoweredOffFinderMode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -97,7 +107,12 @@ func (p *BluetoothFinderProxy) GetPoweredOffFinderMode(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothFinder)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothFinder, "getPoweredOffFinderMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothFinder, "getPoweredOffFinderMode")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

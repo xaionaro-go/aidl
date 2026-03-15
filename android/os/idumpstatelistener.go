@@ -60,7 +60,12 @@ func (p *DumpstateListenerProxy) OnProgress(
 	_data.WriteInterfaceToken(DescriptorIDumpstateListener)
 	_data.WriteInt32(progress)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDumpstateListener, "onProgress"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDumpstateListener, "onProgress")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -72,7 +77,12 @@ func (p *DumpstateListenerProxy) OnError(
 	_data.WriteInterfaceToken(DescriptorIDumpstateListener)
 	_data.WriteInt32(errorCode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDumpstateListener, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDumpstateListener, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -84,7 +94,12 @@ func (p *DumpstateListenerProxy) OnFinished(
 	_data.WriteInterfaceToken(DescriptorIDumpstateListener)
 	_data.WriteString16(bugreportFile)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDumpstateListener, "onFinished"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDumpstateListener, "onFinished")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -96,7 +111,12 @@ func (p *DumpstateListenerProxy) OnScreenshotTaken(
 	_data.WriteInterfaceToken(DescriptorIDumpstateListener)
 	_data.WriteBool(success)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDumpstateListener, "onScreenshotTaken"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDumpstateListener, "onScreenshotTaken")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -106,6 +126,11 @@ func (p *DumpstateListenerProxy) OnUiIntensiveBugreportDumpsFinished(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDumpstateListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDumpstateListener, "onUiIntensiveBugreportDumpsFinished"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDumpstateListener, "onUiIntensiveBugreportDumpsFinished")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -49,7 +49,12 @@ func (p *IntrusionDetectionServiceProxy) AddStateCallback(
 	_data.WriteInterfaceToken(DescriptorIIntrusionDetectionService)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIntrusionDetectionService, "addStateCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIntrusionDetectionService, "addStateCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -70,7 +75,12 @@ func (p *IntrusionDetectionServiceProxy) RemoveStateCallback(
 	_data.WriteInterfaceToken(DescriptorIIntrusionDetectionService)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIntrusionDetectionService, "removeStateCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIntrusionDetectionService, "removeStateCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -91,7 +101,12 @@ func (p *IntrusionDetectionServiceProxy) Enable(
 	_data.WriteInterfaceToken(DescriptorIIntrusionDetectionService)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIntrusionDetectionService, "enable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIntrusionDetectionService, "enable")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -112,7 +127,12 @@ func (p *IntrusionDetectionServiceProxy) Disable(
 	_data.WriteInterfaceToken(DescriptorIIntrusionDetectionService)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIntrusionDetectionService, "disable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIntrusionDetectionService, "disable")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

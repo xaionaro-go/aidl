@@ -198,16 +198,27 @@ func writeProxyMethod(
 	// Use ResolveCode so the proxy asks the transport for the correct
 	// transaction code instead of relying on a compile-time constant.
 	f.P("")
+	f.P("\t_code, _err := p.remote.ResolveCode(%s, %q)", descriptorConst, m.MethodName)
+	if hasReturn {
+		f.P("\tif _err != nil {")
+		f.P("\t\treturn _result, _err")
+		f.P("\t}")
+	} else {
+		f.P("\tif _err != nil {")
+		f.P("\t\treturn _err")
+		f.P("\t}")
+	}
+	f.P("")
 	if isOneway {
 		// Oneway methods do not receive a reply from the kernel.
-		f.P("\t_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(%s, %q), %s, _data)", descriptorConst, m.MethodName, flags)
+		f.P("\t_, _err = p.remote.Transact(ctx, _code, %s, _data)", flags)
 		if hasReturn {
 			f.P("\treturn _result, _err")
 		} else {
 			f.P("\treturn _err")
 		}
 	} else {
-		f.P("\t_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(%s, %q), %s, _data)", descriptorConst, m.MethodName, flags)
+		f.P("\t_reply, _err := p.remote.Transact(ctx, _code, %s, _data)", flags)
 		if hasReturn {
 			f.P("\tif _err != nil {")
 			f.P("\t\treturn _result, _err")

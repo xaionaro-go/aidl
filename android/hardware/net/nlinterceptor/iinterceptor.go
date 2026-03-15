@@ -54,7 +54,12 @@ func (p *InterceptorProxy) CreateSocket(
 	_data.WriteInt32(clientNlPid)
 	_data.WriteString16(clientName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInterceptor, "createSocket"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInterceptor, "createSocket")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -80,7 +85,12 @@ func (p *InterceptorProxy) CloseSocket(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInterceptor, "closeSocket"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInterceptor, "closeSocket")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -105,7 +115,12 @@ func (p *InterceptorProxy) SubscribeGroup(
 	}
 	_data.WriteInt32(nlGroup)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInterceptor, "subscribeGroup"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInterceptor, "subscribeGroup")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -130,7 +145,12 @@ func (p *InterceptorProxy) UnsubscribeGroup(
 	}
 	_data.WriteInt32(nlGroup)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInterceptor, "unsubscribeGroup"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInterceptor, "unsubscribeGroup")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

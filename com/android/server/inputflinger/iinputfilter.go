@@ -50,7 +50,12 @@ func (p *InputFilterProxy) IsEnabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputFilter)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputFilter, "isEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputFilter, "isEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -77,7 +82,12 @@ func (p *InputFilterProxy) NotifyKey(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputFilter, "notifyKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputFilter, "notifyKey")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -107,7 +117,12 @@ func (p *InputFilterProxy) NotifyInputDevicesChanged(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputFilter, "notifyInputDevicesChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputFilter, "notifyInputDevicesChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -130,7 +145,12 @@ func (p *InputFilterProxy) NotifyConfigurationChanged(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputFilter, "notifyConfigurationChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputFilter, "notifyConfigurationChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -150,7 +170,12 @@ func (p *InputFilterProxy) DumpFilter(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputFilter)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputFilter, "dumpFilter"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputFilter, "dumpFilter")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

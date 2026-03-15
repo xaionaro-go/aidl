@@ -41,6 +41,11 @@ func (p *KeyguardDrawnCallbackProxy) OnDrawn(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyguardDrawnCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIKeyguardDrawnCallback, "onDrawn"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardDrawnCallback, "onDrawn")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

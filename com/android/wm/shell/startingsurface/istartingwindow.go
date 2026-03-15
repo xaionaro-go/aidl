@@ -43,6 +43,11 @@ func (p *StartingWindowProxy) SetStartingWindowListener(
 	_data.WriteInterfaceToken(DescriptorIStartingWindow)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIStartingWindow, "setStartingWindowListener"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIStartingWindow, "setStartingWindowListener")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

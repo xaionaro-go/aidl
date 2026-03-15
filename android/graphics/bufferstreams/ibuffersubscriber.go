@@ -51,7 +51,12 @@ func (p *BufferSubscriberProxy) OnSubscribe(
 	_data.WriteInterfaceToken(DescriptorIBufferSubscriber)
 	_data.WriteStrongBinder(subscription.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBufferSubscriber, "onSubscribe"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBufferSubscriber, "onSubscribe")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -65,7 +70,12 @@ func (p *BufferSubscriberProxy) OnBufferCacheUpdate(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBufferSubscriber, "onBufferCacheUpdate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBufferSubscriber, "onBufferCacheUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -79,7 +89,12 @@ func (p *BufferSubscriberProxy) OnNext(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBufferSubscriber, "onNext"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBufferSubscriber, "onNext")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -89,7 +104,12 @@ func (p *BufferSubscriberProxy) OnError(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBufferSubscriber)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBufferSubscriber, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBufferSubscriber, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -99,6 +119,11 @@ func (p *BufferSubscriberProxy) OnComplete(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBufferSubscriber)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBufferSubscriber, "onComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBufferSubscriber, "onComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

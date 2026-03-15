@@ -95,7 +95,12 @@ func (p *UiModeManagerProxy) AddCallback(
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "addCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "addCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -120,7 +125,12 @@ func (p *UiModeManagerProxy) EnableCarMode(
 	_data.WriteInt32(priority)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "enableCarMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "enableCarMode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -141,7 +151,12 @@ func (p *UiModeManagerProxy) DisableCarMode(
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 	_data.WriteInt32(flags)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "disableCarMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "disableCarMode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -164,7 +179,12 @@ func (p *UiModeManagerProxy) DisableCarModeByCallingPackage(
 	_data.WriteInt32(flags)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "disableCarModeByCallingPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "disableCarModeByCallingPackage")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -184,7 +204,12 @@ func (p *UiModeManagerProxy) GetCurrentModeType(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "getCurrentModeType"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "getCurrentModeType")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -209,7 +234,12 @@ func (p *UiModeManagerProxy) SetNightMode(
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 	_data.WriteInt32(mode)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "setNightMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "setNightMode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -229,7 +259,12 @@ func (p *UiModeManagerProxy) GetNightMode(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "getNightMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "getNightMode")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -254,7 +289,12 @@ func (p *UiModeManagerProxy) SetNightModeCustomType(
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 	_data.WriteInt32(nightModeCustomType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "setNightModeCustomType"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "setNightModeCustomType")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -274,7 +314,12 @@ func (p *UiModeManagerProxy) GetNightModeCustomType(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "getNightModeCustomType"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "getNightModeCustomType")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -299,7 +344,12 @@ func (p *UiModeManagerProxy) SetAttentionModeThemeOverlay(
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 	_data.WriteInt32(attentionModeThemeOverlayType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "setAttentionModeThemeOverlay"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "setAttentionModeThemeOverlay")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -319,7 +369,12 @@ func (p *UiModeManagerProxy) GetAttentionModeThemeOverlay(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "getAttentionModeThemeOverlay"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "getAttentionModeThemeOverlay")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -344,7 +399,12 @@ func (p *UiModeManagerProxy) SetApplicationNightMode(
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 	_data.WriteInt32(mode)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "setApplicationNightMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "setApplicationNightMode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -364,7 +424,12 @@ func (p *UiModeManagerProxy) IsUiModeLocked(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "isUiModeLocked"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "isUiModeLocked")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -388,7 +453,12 @@ func (p *UiModeManagerProxy) IsNightModeLocked(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "isNightModeLocked"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "isNightModeLocked")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -416,7 +486,12 @@ func (p *UiModeManagerProxy) SetNightModeActivatedForCustomMode(
 	_data.WriteInt32(nightModeCustom)
 	_data.WriteBool(active)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "setNightModeActivatedForCustomMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "setNightModeActivatedForCustomMode")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -442,7 +517,12 @@ func (p *UiModeManagerProxy) SetNightModeActivated(
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 	_data.WriteBool(active)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "setNightModeActivated"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "setNightModeActivated")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -466,7 +546,12 @@ func (p *UiModeManagerProxy) GetCustomNightModeStart(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "getCustomNightModeStart"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "getCustomNightModeStart")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -491,7 +576,12 @@ func (p *UiModeManagerProxy) SetCustomNightModeStart(
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 	_data.WriteInt64(time)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "setCustomNightModeStart"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "setCustomNightModeStart")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -511,7 +601,12 @@ func (p *UiModeManagerProxy) GetCustomNightModeEnd(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "getCustomNightModeEnd"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "getCustomNightModeEnd")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -536,7 +631,12 @@ func (p *UiModeManagerProxy) SetCustomNightModeEnd(
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 	_data.WriteInt64(time)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "setCustomNightModeEnd"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "setCustomNightModeEnd")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -562,7 +662,12 @@ func (p *UiModeManagerProxy) RequestProjection(
 	_data.WriteInt32(projectionType)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "requestProjection"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "requestProjection")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -590,7 +695,12 @@ func (p *UiModeManagerProxy) ReleaseProjection(
 	_data.WriteInt32(projectionType)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "releaseProjection"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "releaseProjection")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -617,7 +727,12 @@ func (p *UiModeManagerProxy) AddOnProjectionStateChangedListener(
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteInt32(projectionType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "addOnProjectionStateChangedListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "addOnProjectionStateChangedListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -638,7 +753,12 @@ func (p *UiModeManagerProxy) RemoveOnProjectionStateChangedListener(
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "removeOnProjectionStateChangedListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "removeOnProjectionStateChangedListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -660,7 +780,12 @@ func (p *UiModeManagerProxy) GetProjectingPackages(
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 	_data.WriteInt32(projectionType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "getProjectingPackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "getProjectingPackages")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -694,7 +819,12 @@ func (p *UiModeManagerProxy) GetActiveProjectionTypes(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "getActiveProjectionTypes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "getActiveProjectionTypes")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -718,7 +848,12 @@ func (p *UiModeManagerProxy) GetContrast(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUiModeManager, "getContrast"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "getContrast")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

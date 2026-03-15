@@ -63,7 +63,12 @@ func (p *ContentCaptureServiceProxy) OnConnected(
 	_data.WriteBool(verbose)
 	_data.WriteBool(debug)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureService, "onConnected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureService, "onConnected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -73,7 +78,12 @@ func (p *ContentCaptureServiceProxy) OnDisconnected(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentCaptureService)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureService, "onDisconnected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureService, "onDisconnected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -95,7 +105,12 @@ func (p *ContentCaptureServiceProxy) OnSessionStarted(
 	_data.WriteStrongBinder(clientReceiver.AsBinder().Handle())
 	_data.WriteInt32(initialState)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureService, "onSessionStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureService, "onSessionStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -107,7 +122,12 @@ func (p *ContentCaptureServiceProxy) OnSessionFinished(
 	_data.WriteInterfaceToken(DescriptorIContentCaptureService)
 	_data.WriteInt32(sessionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureService, "onSessionFinished"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureService, "onSessionFinished")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -123,7 +143,12 @@ func (p *ContentCaptureServiceProxy) OnActivitySnapshot(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureService, "onActivitySnapshot"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureService, "onActivitySnapshot")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -137,7 +162,12 @@ func (p *ContentCaptureServiceProxy) OnDataRemovalRequest(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureService, "onDataRemovalRequest"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureService, "onDataRemovalRequest")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -153,7 +183,12 @@ func (p *ContentCaptureServiceProxy) OnDataShared(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureService, "onDataShared"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureService, "onDataShared")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -167,6 +202,11 @@ func (p *ContentCaptureServiceProxy) OnActivityEvent(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIContentCaptureService, "onActivityEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureService, "onActivityEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

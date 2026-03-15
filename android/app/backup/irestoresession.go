@@ -54,7 +54,12 @@ func (p *RestoreSessionProxy) GetAvailableRestoreSets(
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
 	_data.WriteStrongBinder(monitor.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRestoreSession, "getAvailableRestoreSets"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRestoreSession, "getAvailableRestoreSets")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -84,7 +89,12 @@ func (p *RestoreSessionProxy) RestoreAll(
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
 	_data.WriteStrongBinder(monitor.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRestoreSession, "restoreAll"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRestoreSession, "restoreAll")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -123,7 +133,12 @@ func (p *RestoreSessionProxy) RestorePackages(
 	}
 	_data.WriteStrongBinder(monitor.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRestoreSession, "restorePackages"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRestoreSession, "restorePackages")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -153,7 +168,12 @@ func (p *RestoreSessionProxy) RestorePackage(
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
 	_data.WriteStrongBinder(monitor.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRestoreSession, "restorePackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRestoreSession, "restorePackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -176,7 +196,12 @@ func (p *RestoreSessionProxy) EndRestoreSession(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRestoreSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRestoreSession, "endRestoreSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRestoreSession, "endRestoreSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

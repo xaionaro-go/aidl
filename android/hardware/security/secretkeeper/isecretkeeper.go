@@ -57,7 +57,12 @@ func (p *SecretkeeperProxy) GetAuthGraphKe(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISecretkeeper)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISecretkeeper, "getAuthGraphKe"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISecretkeeper, "getAuthGraphKe")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -91,7 +96,12 @@ func (p *SecretkeeperProxy) ProcessSecretManagementRequest(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISecretkeeper, "processSecretManagementRequest"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISecretkeeper, "processSecretManagementRequest")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -135,7 +145,12 @@ func (p *SecretkeeperProxy) DeleteIds(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISecretkeeper, "deleteIds"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISecretkeeper, "deleteIds")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -154,7 +169,12 @@ func (p *SecretkeeperProxy) DeleteAll(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISecretkeeper)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISecretkeeper, "deleteAll"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISecretkeeper, "deleteAll")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -174,7 +194,12 @@ func (p *SecretkeeperProxy) GetSecretkeeperIdentity(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISecretkeeper)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISecretkeeper, "getSecretkeeperIdentity"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISecretkeeper, "getSecretkeeperIdentity")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

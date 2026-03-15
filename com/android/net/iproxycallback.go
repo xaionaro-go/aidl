@@ -43,6 +43,11 @@ func (p *ProxyCallbackProxy) GetProxyPort(
 	_data.WriteInterfaceToken(DescriptorIProxyCallback)
 	_data.WriteStrongBinder(callback.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIProxyCallback, "getProxyPort"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIProxyCallback, "getProxyPort")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

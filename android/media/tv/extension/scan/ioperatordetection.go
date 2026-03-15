@@ -49,7 +49,12 @@ func (p *OperatorDetectionProxy) SetOperatorDetection(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOperatorDetection, "setOperatorDetection"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOperatorDetection, "setOperatorDetection")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -75,7 +80,12 @@ func (p *OperatorDetectionProxy) SetListener(
 	_data.WriteInterfaceToken(DescriptorIOperatorDetection)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOperatorDetection, "setListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOperatorDetection, "setListener")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

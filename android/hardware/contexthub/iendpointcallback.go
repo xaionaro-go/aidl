@@ -64,7 +64,12 @@ func (p *EndpointCallbackProxy) OnEndpointStarted(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEndpointCallback, "onEndpointStarted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEndpointCallback, "onEndpointStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -96,7 +101,12 @@ func (p *EndpointCallbackProxy) OnEndpointStopped(
 	}
 	_data.WritePaddedByte(byte(reason))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEndpointCallback, "onEndpointStopped"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEndpointCallback, "onEndpointStopped")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -121,7 +131,12 @@ func (p *EndpointCallbackProxy) OnMessageReceived(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEndpointCallback, "onMessageReceived"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEndpointCallback, "onMessageReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -146,7 +161,12 @@ func (p *EndpointCallbackProxy) OnMessageDeliveryStatusReceived(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEndpointCallback, "onMessageDeliveryStatusReceived"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEndpointCallback, "onMessageDeliveryStatusReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -177,7 +197,12 @@ func (p *EndpointCallbackProxy) OnEndpointSessionOpenRequest(
 	}
 	_data.WriteString16(serviceDescriptor)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEndpointCallback, "onEndpointSessionOpenRequest"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEndpointCallback, "onEndpointSessionOpenRequest")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -200,7 +225,12 @@ func (p *EndpointCallbackProxy) OnCloseEndpointSession(
 	_data.WriteInt32(sessionId)
 	_data.WritePaddedByte(byte(reason))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEndpointCallback, "onCloseEndpointSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEndpointCallback, "onCloseEndpointSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -221,7 +251,12 @@ func (p *EndpointCallbackProxy) OnEndpointSessionOpenComplete(
 	_data.WriteInterfaceToken(DescriptorIEndpointCallback)
 	_data.WriteInt32(sessionId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEndpointCallback, "onEndpointSessionOpenComplete"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEndpointCallback, "onEndpointSessionOpenComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

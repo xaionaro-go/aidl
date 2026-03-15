@@ -55,7 +55,12 @@ func (p *VoiceInteractionSoundTriggerSessionProxy) GetDspModuleProperties(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSoundTriggerSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSoundTriggerSession, "getDspModuleProperties"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSoundTriggerSession, "getDspModuleProperties")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -90,7 +95,12 @@ func (p *VoiceInteractionSoundTriggerSessionProxy) StartRecognition(
 	}
 	_data.WriteBool(runInBatterySaver)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSoundTriggerSession, "startRecognition"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSoundTriggerSession, "startRecognition")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -118,7 +128,12 @@ func (p *VoiceInteractionSoundTriggerSessionProxy) StopRecognition(
 	_data.WriteInt32(keyphraseId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSoundTriggerSession, "stopRecognition"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSoundTriggerSession, "stopRecognition")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -148,7 +163,12 @@ func (p *VoiceInteractionSoundTriggerSessionProxy) SetParameter(
 	_data.WriteInt32(int32(modelParam))
 	_data.WriteInt32(value)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSoundTriggerSession, "setParameter"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSoundTriggerSession, "setParameter")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -176,7 +196,12 @@ func (p *VoiceInteractionSoundTriggerSessionProxy) GetParameter(
 	_data.WriteInt32(keyphraseId)
 	_data.WriteInt32(int32(modelParam))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSoundTriggerSession, "getParameter"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSoundTriggerSession, "getParameter")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -204,7 +229,12 @@ func (p *VoiceInteractionSoundTriggerSessionProxy) QueryParameter(
 	_data.WriteInt32(keyphraseId)
 	_data.WriteInt32(int32(modelParam))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSoundTriggerSession, "queryParameter"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSoundTriggerSession, "queryParameter")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -226,7 +256,12 @@ func (p *VoiceInteractionSoundTriggerSessionProxy) Detach(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSoundTriggerSession)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSoundTriggerSession, "detach"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSoundTriggerSession, "detach")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

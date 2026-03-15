@@ -52,7 +52,12 @@ func (p *BinderRpcBenchmarkProxy) RepeatString(
 	_data.WriteInterfaceToken(DescriptorIBinderRpcBenchmark)
 	_data.WriteString16(str)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcBenchmark, "repeatString"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcBenchmark, "repeatString")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -78,7 +83,12 @@ func (p *BinderRpcBenchmarkProxy) RepeatBinder(
 	_data.WriteInterfaceToken(DescriptorIBinderRpcBenchmark)
 	_data.WriteStrongBinder(binder_.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcBenchmark, "repeatBinder"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcBenchmark, "repeatBinder")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -112,7 +122,12 @@ func (p *BinderRpcBenchmarkProxy) RepeatBytes(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcBenchmark, "repeatBytes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcBenchmark, "repeatBytes")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -146,7 +161,12 @@ func (p *BinderRpcBenchmarkProxy) GimmeBinder(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcBenchmark)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcBenchmark, "gimmeBinder"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcBenchmark, "gimmeBinder")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -170,7 +190,12 @@ func (p *BinderRpcBenchmarkProxy) WaitGimmesDestroyed(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcBenchmark)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBinderRpcBenchmark, "waitGimmesDestroyed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcBenchmark, "waitGimmesDestroyed")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

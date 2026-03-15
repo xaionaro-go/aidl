@@ -52,7 +52,12 @@ func (p *ObbBackupServiceProxy) BackupObbs(
 	_data.WriteInt32(token)
 	_data.WriteStrongBinder(callbackBinder.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIObbBackupService, "backupObbs"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIObbBackupService, "backupObbs")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -80,6 +85,11 @@ func (p *ObbBackupServiceProxy) RestoreObbFile(
 	_data.WriteInt32(token)
 	_data.WriteStrongBinder(callbackBinder.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIObbBackupService, "restoreObbFile"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIObbBackupService, "restoreObbFile")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

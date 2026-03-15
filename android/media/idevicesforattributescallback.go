@@ -58,6 +58,11 @@ func (p *DevicesForAttributesCallbackProxy) OnDevicesForAttributesChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDevicesForAttributesCallback, "onDevicesForAttributesChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDevicesForAttributesCallback, "onDevicesForAttributesChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

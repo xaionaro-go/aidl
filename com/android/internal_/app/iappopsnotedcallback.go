@@ -55,6 +55,11 @@ func (p *AppOpsNotedCallbackProxy) OpNoted(
 	_data.WriteInt32(flags)
 	_data.WriteInt32(mode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAppOpsNotedCallback, "opNoted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsNotedCallback, "opNoted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

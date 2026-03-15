@@ -60,7 +60,12 @@ func (p *PresenceServiceProxy) GetVersion(
 	_data.WriteInterfaceToken(DescriptorIPresenceService)
 	_data.WriteInt32(presenceServiceHdl)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPresenceService, "getVersion"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPresenceService, "getVersion")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -93,7 +98,12 @@ func (p *PresenceServiceProxy) AddListener(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPresenceService, "addListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPresenceService, "addListener")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -127,7 +137,12 @@ func (p *PresenceServiceProxy) RemoveListener(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPresenceService, "removeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPresenceService, "removeListener")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -156,7 +171,12 @@ func (p *PresenceServiceProxy) ReenableService(
 	_data.WriteInt32(presenceServiceHdl)
 	_data.WriteInt32(userData)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPresenceService, "reenableService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPresenceService, "reenableService")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -189,7 +209,12 @@ func (p *PresenceServiceProxy) PublishMyCap(
 	}
 	_data.WriteInt32(userData)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPresenceService, "publishMyCap"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPresenceService, "publishMyCap")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -220,7 +245,12 @@ func (p *PresenceServiceProxy) GetContactCap(
 	_data.WriteString16(remoteUri)
 	_data.WriteInt32(userData)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPresenceService, "getContactCap"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPresenceService, "getContactCap")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -258,7 +288,12 @@ func (p *PresenceServiceProxy) GetContactListCap(
 	}
 	_data.WriteInt32(userData)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPresenceService, "getContactListCap"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPresenceService, "getContactListCap")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -293,7 +328,12 @@ func (p *PresenceServiceProxy) SetNewFeatureTag(
 	}
 	_data.WriteInt32(userData)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPresenceService, "setNewFeatureTag"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPresenceService, "setNewFeatureTag")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

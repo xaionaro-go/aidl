@@ -43,7 +43,12 @@ func (p *DreamOverlayCallbackProxy) OnExitRequested(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDreamOverlayCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDreamOverlayCallback, "onExitRequested"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDreamOverlayCallback, "onExitRequested")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -55,6 +60,11 @@ func (p *DreamOverlayCallbackProxy) OnRedirectWake(
 	_data.WriteInterfaceToken(DescriptorIDreamOverlayCallback)
 	_data.WriteBool(redirect)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDreamOverlayCallback, "onRedirectWake"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDreamOverlayCallback, "onRedirectWake")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

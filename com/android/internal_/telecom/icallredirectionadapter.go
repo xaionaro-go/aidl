@@ -47,7 +47,12 @@ func (p *CallRedirectionAdapterProxy) CancelCall(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICallRedirectionAdapter)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallRedirectionAdapter, "cancelCall"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallRedirectionAdapter, "cancelCall")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -57,7 +62,12 @@ func (p *CallRedirectionAdapterProxy) PlaceCallUnmodified(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICallRedirectionAdapter)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallRedirectionAdapter, "placeCallUnmodified"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallRedirectionAdapter, "placeCallUnmodified")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -77,6 +87,11 @@ func (p *CallRedirectionAdapterProxy) RedirectCall(
 	}
 	_data.WriteBool(confirmFirst)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICallRedirectionAdapter, "redirectCall"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICallRedirectionAdapter, "redirectCall")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

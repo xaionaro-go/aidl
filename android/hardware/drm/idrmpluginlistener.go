@@ -67,7 +67,12 @@ func (p *DrmPluginListenerProxy) OnEvent(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDrmPluginListener, "onEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDrmPluginListener, "onEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -88,7 +93,12 @@ func (p *DrmPluginListenerProxy) OnExpirationUpdate(
 	}
 	_data.WriteInt64(expiryTimeInMS)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDrmPluginListener, "onExpirationUpdate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDrmPluginListener, "onExpirationUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -120,7 +130,12 @@ func (p *DrmPluginListenerProxy) OnKeysChange(
 	}
 	_data.WriteBool(hasNewUsableKey)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDrmPluginListener, "onKeysChange"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDrmPluginListener, "onKeysChange")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -139,6 +154,11 @@ func (p *DrmPluginListenerProxy) OnSessionLostState(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDrmPluginListener, "onSessionLostState"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDrmPluginListener, "onSessionLostState")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

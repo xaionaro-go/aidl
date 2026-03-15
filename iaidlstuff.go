@@ -43,7 +43,12 @@ func (p *AidlStuffProxy) CallLocal(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAidlStuff)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlStuff, "callLocal"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlStuff, "callLocal")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -64,7 +69,12 @@ func (p *AidlStuffProxy) Call(
 	_data.WriteInterfaceToken(DescriptorIAidlStuff)
 	_data.WriteInt32(idx)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAidlStuff, "call"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAidlStuff, "call")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

@@ -43,6 +43,11 @@ func (p *AudioModeDispatcherProxy) DispatchAudioModeChanged(
 	_data.WriteInterfaceToken(DescriptorIAudioModeDispatcher)
 	_data.WriteInt32(mode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAudioModeDispatcher, "dispatchAudioModeChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAudioModeDispatcher, "dispatchAudioModeChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

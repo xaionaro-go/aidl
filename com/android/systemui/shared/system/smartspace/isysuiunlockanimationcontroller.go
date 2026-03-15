@@ -47,7 +47,12 @@ func (p *SysuiUnlockAnimationControllerProxy) SetLauncherUnlockController(
 	_data.WriteString16(activityClass)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISysuiUnlockAnimationController, "setLauncherUnlockController"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISysuiUnlockAnimationController, "setLauncherUnlockController")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -61,6 +66,11 @@ func (p *SysuiUnlockAnimationControllerProxy) OnLauncherSmartspaceStateUpdated(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISysuiUnlockAnimationController, "onLauncherSmartspaceStateUpdated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISysuiUnlockAnimationController, "onLauncherSmartspaceStateUpdated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

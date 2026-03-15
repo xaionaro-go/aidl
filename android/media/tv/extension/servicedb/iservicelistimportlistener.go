@@ -45,7 +45,12 @@ func (p *ServiceListImportListenerProxy) OnImported(
 	_data.WriteInterfaceToken(DescriptorIServiceListImportListener)
 	_data.WriteInt32(importResult)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceListImportListener, "onImported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceListImportListener, "onImported")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -66,7 +71,12 @@ func (p *ServiceListImportListenerProxy) OnPreloaded(
 	_data.WriteInterfaceToken(DescriptorIServiceListImportListener)
 	_data.WriteInt32(preloadResult)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIServiceListImportListener, "onPreloaded"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIServiceListImportListener, "onPreloaded")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

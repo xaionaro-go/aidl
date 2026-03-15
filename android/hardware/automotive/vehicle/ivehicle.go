@@ -67,7 +67,12 @@ func (p *VehicleProxy) GetAllPropConfigs(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVehicle)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVehicle, "getAllPropConfigs"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVehicle, "getAllPropConfigs")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -99,7 +104,12 @@ func (p *VehicleProxy) GetPropConfigs(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVehicle, "getPropConfigs"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVehicle, "getPropConfigs")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -127,7 +137,12 @@ func (p *VehicleProxy) GetValues(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVehicle, "getValues"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVehicle, "getValues")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -152,7 +167,12 @@ func (p *VehicleProxy) SetValues(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVehicle, "setValues"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVehicle, "setValues")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -186,7 +206,12 @@ func (p *VehicleProxy) Subscribe(
 	}
 	_data.WriteInt32(maxSharedMemoryFileCount)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVehicle, "subscribe"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVehicle, "subscribe")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -216,7 +241,12 @@ func (p *VehicleProxy) Unsubscribe(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVehicle, "unsubscribe"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVehicle, "unsubscribe")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -239,7 +269,12 @@ func (p *VehicleProxy) ReturnSharedMemory(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteInt64(sharedMemoryId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVehicle, "returnSharedMemory"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVehicle, "returnSharedMemory")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -270,7 +305,12 @@ func (p *VehicleProxy) GetSupportedValuesLists(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVehicle, "getSupportedValuesLists"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVehicle, "getSupportedValuesLists")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -304,7 +344,12 @@ func (p *VehicleProxy) GetMinMaxSupportedValue(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVehicle, "getMinMaxSupportedValue"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVehicle, "getMinMaxSupportedValue")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -339,7 +384,12 @@ func (p *VehicleProxy) RegisterSupportedValueChangeCallback(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVehicle, "registerSupportedValueChangeCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVehicle, "registerSupportedValueChangeCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -371,7 +421,12 @@ func (p *VehicleProxy) UnregisterSupportedValueChangeCallback(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVehicle, "unregisterSupportedValueChangeCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVehicle, "unregisterSupportedValueChangeCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

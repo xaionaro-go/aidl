@@ -54,7 +54,12 @@ func (p *OemLockServiceProxy) GetLockName(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOemLockService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOemLockService, "getLockName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOemLockService, "getLockName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -88,7 +93,12 @@ func (p *OemLockServiceProxy) SetOemUnlockAllowedByCarrier(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOemLockService, "setOemUnlockAllowedByCarrier"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOemLockService, "setOemUnlockAllowedByCarrier")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -108,7 +118,12 @@ func (p *OemLockServiceProxy) IsOemUnlockAllowedByCarrier(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOemLockService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOemLockService, "isOemUnlockAllowedByCarrier"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOemLockService, "isOemUnlockAllowedByCarrier")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -133,7 +148,12 @@ func (p *OemLockServiceProxy) SetOemUnlockAllowedByUser(
 	_data.WriteInterfaceToken(DescriptorIOemLockService)
 	_data.WriteBool(allowed)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOemLockService, "setOemUnlockAllowedByUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOemLockService, "setOemUnlockAllowedByUser")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -153,7 +173,12 @@ func (p *OemLockServiceProxy) IsOemUnlockAllowedByUser(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOemLockService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOemLockService, "isOemUnlockAllowedByUser"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOemLockService, "isOemUnlockAllowedByUser")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -177,7 +202,12 @@ func (p *OemLockServiceProxy) IsOemUnlockAllowed(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOemLockService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOemLockService, "isOemUnlockAllowed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOemLockService, "isOemUnlockAllowed")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -201,7 +231,12 @@ func (p *OemLockServiceProxy) IsDeviceOemUnlocked(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOemLockService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIOemLockService, "isDeviceOemUnlocked"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIOemLockService, "isDeviceOemUnlocked")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

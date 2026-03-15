@@ -48,7 +48,12 @@ func (p *BluetoothA2dpProxy) IsEnabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothA2dp)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothA2dp, "isEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothA2dp, "isEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -73,7 +78,12 @@ func (p *BluetoothA2dpProxy) SetEnabled(
 	_data.WriteInterfaceToken(DescriptorIBluetoothA2dp)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothA2dp, "setEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothA2dp, "setEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -93,7 +103,12 @@ func (p *BluetoothA2dpProxy) SupportsOffloadReconfiguration(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothA2dp)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothA2dp, "supportsOffloadReconfiguration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothA2dp, "supportsOffloadReconfiguration")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -127,7 +142,12 @@ func (p *BluetoothA2dpProxy) ReconfigureOffload(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothA2dp, "reconfigureOffload"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothA2dp, "reconfigureOffload")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

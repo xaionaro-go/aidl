@@ -41,7 +41,12 @@ func (p *ResourcesReclaimListenerProxy) OnReclaimResources(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIResourcesReclaimListener)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIResourcesReclaimListener, "onReclaimResources"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIResourcesReclaimListener, "onReclaimResources")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

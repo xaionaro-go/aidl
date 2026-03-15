@@ -56,7 +56,12 @@ func (p *SessionManagerProxy) AssociateSessionToLayers(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISessionManager, "associateSessionToLayers"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISessionManager, "associateSessionToLayers")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -75,6 +80,11 @@ func (p *SessionManagerProxy) TrackedSessionsDied(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISessionManager, "trackedSessionsDied"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISessionManager, "trackedSessionsDied")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -45,7 +45,12 @@ func (p *RecognitionServiceManagerCallbackProxy) OnSuccess(
 	_data.WriteInterfaceToken(DescriptorIRecognitionServiceManagerCallback)
 	_data.WriteStrongBinder(service.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecognitionServiceManagerCallback, "onSuccess"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionServiceManagerCallback, "onSuccess")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -57,6 +62,11 @@ func (p *RecognitionServiceManagerCallbackProxy) OnError(
 	_data.WriteInterfaceToken(DescriptorIRecognitionServiceManagerCallback)
 	_data.WriteInt32(errorCode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecognitionServiceManagerCallback, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionServiceManagerCallback, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

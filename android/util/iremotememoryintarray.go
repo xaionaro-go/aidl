@@ -58,7 +58,12 @@ func (p *RemoteMemoryIntArrayProxy) PeekInstance(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteMemoryIntArray)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "peekInstance"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "peekInstance")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -82,7 +87,12 @@ func (p *RemoteMemoryIntArrayProxy) Create(
 	_data.WriteInterfaceToken(DescriptorIRemoteMemoryIntArray)
 	_data.WriteInt32(size)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "create"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "create")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -102,7 +112,12 @@ func (p *RemoteMemoryIntArrayProxy) IsWritable(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteMemoryIntArray)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "isWritable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "isWritable")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -128,7 +143,12 @@ func (p *RemoteMemoryIntArrayProxy) Get(
 	_data.WriteInterfaceToken(DescriptorIRemoteMemoryIntArray)
 	_data.WriteInt32(index)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "get"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "get")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -155,7 +175,12 @@ func (p *RemoteMemoryIntArrayProxy) Set(
 	_data.WriteInt32(index)
 	_data.WriteInt32(value)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "set"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "set")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -175,7 +200,12 @@ func (p *RemoteMemoryIntArrayProxy) Size(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteMemoryIntArray)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "size"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "size")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -198,7 +228,12 @@ func (p *RemoteMemoryIntArrayProxy) Close(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteMemoryIntArray)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "close"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "close")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -218,7 +253,12 @@ func (p *RemoteMemoryIntArrayProxy) IsClosed(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteMemoryIntArray)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "isClosed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "isClosed")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -245,7 +285,12 @@ func (p *RemoteMemoryIntArrayProxy) AccessLastElementInRemoteProcess(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "accessLastElementInRemoteProcess"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRemoteMemoryIntArray, "accessLastElementInRemoteProcess")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

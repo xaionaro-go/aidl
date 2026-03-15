@@ -43,6 +43,11 @@ func (p *HdmiCecSettingChangeListenerProxy) OnChange(
 	_data.WriteInterfaceToken(DescriptorIHdmiCecSettingChangeListener)
 	_data.WriteString16(setting)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiCecSettingChangeListener, "onChange"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiCecSettingChangeListener, "onChange")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

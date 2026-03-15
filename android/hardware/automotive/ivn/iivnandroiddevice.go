@@ -52,7 +52,12 @@ func (p *IvnAndroidDeviceProxy) GetMyDeviceId(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIvnAndroidDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIvnAndroidDevice, "getMyDeviceId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIvnAndroidDevice, "getMyDeviceId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -76,7 +81,12 @@ func (p *IvnAndroidDeviceProxy) GetOtherDeviceIds(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIvnAndroidDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIvnAndroidDevice, "getOtherDeviceIds"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIvnAndroidDevice, "getOtherDeviceIds")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -112,7 +122,12 @@ func (p *IvnAndroidDeviceProxy) GetDeviceIdForOccupantZone(
 	_data.WriteInterfaceToken(DescriptorIIvnAndroidDevice)
 	_data.WriteInt32(zoneId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIvnAndroidDevice, "getDeviceIdForOccupantZone"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIvnAndroidDevice, "getDeviceIdForOccupantZone")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -138,7 +153,12 @@ func (p *IvnAndroidDeviceProxy) GetOccupantZonesForDevice(
 	_data.WriteInterfaceToken(DescriptorIIvnAndroidDevice)
 	_data.WriteInt32(androidDeviceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIvnAndroidDevice, "getOccupantZonesForDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIvnAndroidDevice, "getOccupantZonesForDevice")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -171,7 +191,12 @@ func (p *IvnAndroidDeviceProxy) GetMyEndpointInfo(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIvnAndroidDevice)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIvnAndroidDevice, "getMyEndpointInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIvnAndroidDevice, "getMyEndpointInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -196,7 +221,12 @@ func (p *IvnAndroidDeviceProxy) GetEndpointInfoForDevice(
 	_data.WriteInterfaceToken(DescriptorIIvnAndroidDevice)
 	_data.WriteInt32(androidDeviceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIIvnAndroidDevice, "getEndpointInfoForDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIIvnAndroidDevice, "getEndpointInfoForDevice")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

@@ -46,7 +46,12 @@ func (p *NetInitiatedListenerProxy) SendNiResponse(
 	_data.WriteInt32(notifId)
 	_data.WriteInt32(userResponse)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetInitiatedListener, "sendNiResponse"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetInitiatedListener, "sendNiResponse")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

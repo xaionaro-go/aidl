@@ -49,7 +49,12 @@ func (p *TimeZoneProviderProxy) StartUpdates(
 	_data.WriteInt64(initializationTimeoutMillis)
 	_data.WriteInt64(eventFilteringAgeThresholdMillis)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITimeZoneProvider, "startUpdates"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITimeZoneProvider, "startUpdates")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -59,6 +64,11 @@ func (p *TimeZoneProviderProxy) StopUpdates(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITimeZoneProvider)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITimeZoneProvider, "stopUpdates"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITimeZoneProvider, "stopUpdates")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

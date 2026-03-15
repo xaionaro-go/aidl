@@ -49,7 +49,12 @@ func (p *WifiEventCallbackProxy) OnFailure(
 	_data.WriteInterfaceToken(DescriptorIWifiEventCallback)
 	_data.WriteInt32(int32(status))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiEventCallback, "onFailure"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiEventCallback, "onFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -59,7 +64,12 @@ func (p *WifiEventCallbackProxy) OnStart(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiEventCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiEventCallback, "onStart"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiEventCallback, "onStart")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -69,7 +79,12 @@ func (p *WifiEventCallbackProxy) OnStop(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiEventCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiEventCallback, "onStop"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiEventCallback, "onStop")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -81,6 +96,11 @@ func (p *WifiEventCallbackProxy) OnSubsystemRestart(
 	_data.WriteInterfaceToken(DescriptorIWifiEventCallback)
 	_data.WriteInt32(int32(status))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiEventCallback, "onSubsystemRestart"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiEventCallback, "onSubsystemRestart")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

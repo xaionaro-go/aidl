@@ -46,7 +46,12 @@ func (p *SuggestionServiceProxy) GetSuggestions(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISuggestionService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISuggestionService, "getSuggestions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISuggestionService, "getSuggestions")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -82,7 +87,12 @@ func (p *SuggestionServiceProxy) DismissSuggestion(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISuggestionService, "dismissSuggestion"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISuggestionService, "dismissSuggestion")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -105,7 +115,12 @@ func (p *SuggestionServiceProxy) LaunchSuggestion(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISuggestionService, "launchSuggestion"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISuggestionService, "launchSuggestion")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

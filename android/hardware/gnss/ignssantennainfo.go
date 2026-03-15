@@ -45,7 +45,12 @@ func (p *GnssAntennaInfoProxy) SetCallback(
 	_data.WriteInterfaceToken(DescriptorIGnssAntennaInfo)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGnssAntennaInfo, "setCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGnssAntennaInfo, "setCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -64,7 +69,12 @@ func (p *GnssAntennaInfoProxy) Close(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGnssAntennaInfo)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGnssAntennaInfo, "close"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGnssAntennaInfo, "close")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

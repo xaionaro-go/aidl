@@ -58,7 +58,12 @@ func (p *HdmiVendorCommandListenerProxy) OnReceived(
 	}
 	_data.WriteBool(hasVendorId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiVendorCommandListener, "onReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiVendorCommandListener, "onReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -72,6 +77,11 @@ func (p *HdmiVendorCommandListenerProxy) OnControlStateChanged(
 	_data.WriteBool(enabled)
 	_data.WriteInt32(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHdmiVendorCommandListener, "onControlStateChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHdmiVendorCommandListener, "onControlStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

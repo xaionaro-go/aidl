@@ -63,7 +63,12 @@ func (p *ShellTransitionsProxy) RegisterRemote(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShellTransitions, "registerRemote"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShellTransitions, "registerRemote")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -77,7 +82,12 @@ func (p *ShellTransitionsProxy) UnregisterRemote(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShellTransitions, "unregisterRemote"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShellTransitions, "unregisterRemote")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -88,7 +98,12 @@ func (p *ShellTransitionsProxy) GetShellApplyToken(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShellTransitions)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShellTransitions, "getShellApplyToken"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShellTransitions, "getShellApplyToken")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -114,7 +129,12 @@ func (p *ShellTransitionsProxy) SetHomeTransitionListener(
 	_data.WriteInterfaceToken(DescriptorIShellTransitions)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShellTransitions, "setHomeTransitionListener"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShellTransitions, "setHomeTransitionListener")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -125,7 +145,12 @@ func (p *ShellTransitionsProxy) GetHomeTaskOverlayContainer(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShellTransitions)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShellTransitions, "getHomeTaskOverlayContainer"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShellTransitions, "getHomeTaskOverlayContainer")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -155,7 +180,12 @@ func (p *ShellTransitionsProxy) RegisterRemoteForTakeover(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShellTransitions, "registerRemoteForTakeover"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShellTransitions, "registerRemoteForTakeover")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -167,6 +197,11 @@ func (p *ShellTransitionsProxy) SetFocusTransitionListener(
 	_data.WriteInterfaceToken(DescriptorIShellTransitions)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShellTransitions, "setFocusTransitionListener"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShellTransitions, "setFocusTransitionListener")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

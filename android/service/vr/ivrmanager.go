@@ -64,7 +64,12 @@ func (p *VrManagerProxy) RegisterListener(
 	_data.WriteInterfaceToken(DescriptorIVrManager)
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVrManager, "registerListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVrManager, "registerListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -85,7 +90,12 @@ func (p *VrManagerProxy) UnregisterListener(
 	_data.WriteInterfaceToken(DescriptorIVrManager)
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVrManager, "unregisterListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVrManager, "unregisterListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -106,7 +116,12 @@ func (p *VrManagerProxy) RegisterPersistentVrStateListener(
 	_data.WriteInterfaceToken(DescriptorIVrManager)
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVrManager, "registerPersistentVrStateListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVrManager, "registerPersistentVrStateListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -127,7 +142,12 @@ func (p *VrManagerProxy) UnregisterPersistentVrStateListener(
 	_data.WriteInterfaceToken(DescriptorIVrManager)
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVrManager, "unregisterPersistentVrStateListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVrManager, "unregisterPersistentVrStateListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -147,7 +167,12 @@ func (p *VrManagerProxy) GetVrModeState(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVrManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVrManager, "getVrModeState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVrManager, "getVrModeState")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -171,7 +196,12 @@ func (p *VrManagerProxy) GetPersistentVrModeEnabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVrManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVrManager, "getPersistentVrModeEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVrManager, "getPersistentVrModeEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -196,7 +226,12 @@ func (p *VrManagerProxy) SetPersistentVrModeEnabled(
 	_data.WriteInterfaceToken(DescriptorIVrManager)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVrManager, "setPersistentVrModeEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVrManager, "setPersistentVrModeEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -219,7 +254,12 @@ func (p *VrManagerProxy) SetVr2dDisplayProperties(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVrManager, "setVr2dDisplayProperties"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVrManager, "setVr2dDisplayProperties")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -239,7 +279,12 @@ func (p *VrManagerProxy) GetVr2dDisplayId(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVrManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVrManager, "getVr2dDisplayId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVrManager, "getVr2dDisplayId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -264,7 +309,12 @@ func (p *VrManagerProxy) SetAndBindCompositor(
 	_data.WriteInterfaceToken(DescriptorIVrManager)
 	_data.WriteString16(componentName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVrManager, "setAndBindCompositor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVrManager, "setAndBindCompositor")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -285,7 +335,12 @@ func (p *VrManagerProxy) SetStandbyEnabled(
 	_data.WriteInterfaceToken(DescriptorIVrManager)
 	_data.WriteBool(standby)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVrManager, "setStandbyEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVrManager, "setStandbyEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

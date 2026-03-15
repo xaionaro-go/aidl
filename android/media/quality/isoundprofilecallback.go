@@ -55,7 +55,12 @@ func (p *SoundProfileCallbackProxy) OnSoundProfileAdded(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundProfileCallback, "onSoundProfileAdded"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundProfileCallback, "onSoundProfileAdded")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -71,7 +76,12 @@ func (p *SoundProfileCallbackProxy) OnSoundProfileUpdated(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundProfileCallback, "onSoundProfileUpdated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundProfileCallback, "onSoundProfileUpdated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -87,7 +97,12 @@ func (p *SoundProfileCallbackProxy) OnSoundProfileRemoved(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundProfileCallback, "onSoundProfileRemoved"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundProfileCallback, "onSoundProfileRemoved")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -110,7 +125,12 @@ func (p *SoundProfileCallbackProxy) OnParamCapabilitiesChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundProfileCallback, "onParamCapabilitiesChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundProfileCallback, "onParamCapabilitiesChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -124,6 +144,11 @@ func (p *SoundProfileCallbackProxy) OnError(
 	_data.WriteString16(id)
 	_data.WriteInt32(err)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundProfileCallback, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundProfileCallback, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

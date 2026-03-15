@@ -65,7 +65,12 @@ func (p *VoiceInteractionSessionProxy) Show(
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSession)
 	_data.WriteInt32(flags)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "show"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "show")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -75,7 +80,12 @@ func (p *VoiceInteractionSessionProxy) Hide(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSession)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "hide"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "hide")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -102,7 +112,12 @@ func (p *VoiceInteractionSessionProxy) HandleAssist(
 	_data.WriteInt32(index)
 	_data.WriteInt32(count)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "handleAssist"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "handleAssist")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -116,7 +131,12 @@ func (p *VoiceInteractionSessionProxy) HandleScreenshot(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "handleScreenshot"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "handleScreenshot")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -129,7 +149,12 @@ func (p *VoiceInteractionSessionProxy) TaskStarted(
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSession)
 	_data.WriteInt32(taskId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "taskStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "taskStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -142,7 +167,12 @@ func (p *VoiceInteractionSessionProxy) TaskFinished(
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSession)
 	_data.WriteInt32(taskId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "taskFinished"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "taskFinished")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -152,7 +182,12 @@ func (p *VoiceInteractionSessionProxy) CloseSystemDialogs(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSession)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "closeSystemDialogs"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "closeSystemDialogs")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -162,7 +197,12 @@ func (p *VoiceInteractionSessionProxy) OnLockscreenShown(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSession)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "onLockscreenShown"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "onLockscreenShown")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -172,7 +212,12 @@ func (p *VoiceInteractionSessionProxy) Destroy(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSession)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "destroy"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "destroy")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -188,6 +233,11 @@ func (p *VoiceInteractionSessionProxy) NotifyVisibleActivityInfoChanged(
 	}
 	_data.WriteInt32(type_)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "notifyVisibleActivityInfoChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "notifyVisibleActivityInfoChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

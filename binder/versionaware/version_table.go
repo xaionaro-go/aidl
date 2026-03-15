@@ -5,8 +5,13 @@ import "github.com/xaionaro-go/aidl/binder"
 // VersionTable maps descriptor -> methodName -> transaction code.
 type VersionTable map[string]map[string]binder.TransactionCode
 
-// MultiVersionTable maps API level -> VersionTable.
-type MultiVersionTable map[int]VersionTable
+// MultiVersionTable maps version ID -> VersionTable.
+// Version IDs are like "34.r1", "35.r1", "36.r1", "36.r3", "36.r4".
+type MultiVersionTable map[string]VersionTable
+
+// APIRevisions maps API level -> list of version IDs (for probing order).
+// Within an API level, later revisions are listed first (more likely match).
+type APIRevisions map[int][]string
 
 // Resolve looks up the transaction code for a method.
 // Returns 0 if not found.

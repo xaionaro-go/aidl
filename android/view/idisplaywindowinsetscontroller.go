@@ -55,7 +55,12 @@ func (p *DisplayWindowInsetsControllerProxy) TopFocusedWindowChanged(
 	_data.WriteInterfaceToken(DescriptorIDisplayWindowInsetsController)
 	_data.WriteInt32(requestedVisibleTypes)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDisplayWindowInsetsController, "topFocusedWindowChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDisplayWindowInsetsController, "topFocusedWindowChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -69,7 +74,12 @@ func (p *DisplayWindowInsetsControllerProxy) InsetsChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDisplayWindowInsetsController, "insetsChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDisplayWindowInsetsController, "insetsChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -94,7 +104,12 @@ func (p *DisplayWindowInsetsControllerProxy) InsetsControlChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDisplayWindowInsetsController, "insetsControlChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDisplayWindowInsetsController, "insetsControlChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -116,7 +131,12 @@ func (p *DisplayWindowInsetsControllerProxy) ShowInsets(
 		_data.WriteInt32(-1)
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDisplayWindowInsetsController, "showInsets"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDisplayWindowInsetsController, "showInsets")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -138,7 +158,12 @@ func (p *DisplayWindowInsetsControllerProxy) HideInsets(
 		_data.WriteInt32(-1)
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDisplayWindowInsetsController, "hideInsets"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDisplayWindowInsetsController, "hideInsets")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -154,6 +179,11 @@ func (p *DisplayWindowInsetsControllerProxy) SetImeInputTargetRequestedVisibilit
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDisplayWindowInsetsController, "setImeInputTargetRequestedVisibility"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDisplayWindowInsetsController, "setImeInputTargetRequestedVisibility")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

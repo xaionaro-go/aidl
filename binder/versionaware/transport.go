@@ -2,73 +2,219 @@ package versionaware
 
 import (
 	"context"
+	"fmt"
+	"sort"
 
+	"github.com/facebookincubator/go-belt/tool/logger"
 	"github.com/xaionaro-go/aidl/binder"
 	"github.com/xaionaro-go/aidl/parcel"
 )
 
 // Transport wraps a binder.Transport and adds version-aware
 // transaction code resolution via ResolveCode.
+//
+// All version detection (API level + revision probing) happens
+// eagerly in NewTransport. If the device version cannot be
+// determined or is unsupported, NewTransport returns an error.
 type Transport struct {
 	inner    binder.Transport
 	apiLevel int
 	table    VersionTable
+	version  string
 }
 
 // DetectAPILevel returns the Android API level of the running device.
-// Call this BEFORE opening /dev/binder, because the detection may fork
-// a child process (getprop), and forking after mmap-ing the binder
-// driver corrupts its state.
+// Reads /etc/build_flags.json (no fork, no binder dependency).
+// Returns 0 if detection fails.
 func DetectAPILevel() int {
 	return detectAPILevel()
 }
 
 // NewTransport creates a version-aware Transport wrapping inner.
-// If targetAPI > 0, uses that API level's table directly.
-// If targetAPI == 0, auto-detects via DetectAPILevel().
 //
-// IMPORTANT: DetectAPILevel() may fork a child process (getprop).
-// Forking after mmap-ing /dev/binder corrupts the driver state.
-// Callers MUST either:
-//   - Call DetectAPILevel() BEFORE opening the binder driver and pass the result, or
-//   - Ensure the binder fd has not been opened yet when NewTransport is called with targetAPI=0.
+// targetAPI is the Android API level (e.g., 36). If 0, auto-detects
+// from /etc/build_flags.json.
+//
+// Returns an error if:
+//   - the API level cannot be detected (targetAPI==0 and detection fails)
+//   - the API level has no compiled version tables
+//   - revision probing fails (when multiple revisions exist)
+//
+// If multiple AOSP revisions exist for the API level, NewTransport
+// probes the device via binder transactions to determine which
+// revision matches. This requires the binder driver to be open.
 func NewTransport(
+	ctx context.Context,
 	inner binder.Transport,
 	targetAPI int,
-) *Transport {
+) (*Transport, error) {
 	if targetAPI <= 0 {
 		targetAPI = detectAPILevel()
 	}
 	if targetAPI <= 0 {
-		targetAPI = DefaultAPILevel
+		return nil, fmt.Errorf("versionaware: unable to detect Android API level; pass --target-api explicitly or ensure /etc/build_flags.json is readable; supported API levels: %v", supportedAPILevels())
 	}
+
+	revisions := Revisions[targetAPI]
+	if len(revisions) == 0 {
+		return nil, fmt.Errorf("versionaware: API level %d is not supported; supported API levels: %v", targetAPI, supportedAPILevels())
+	}
+
+	var version string
+	switch len(revisions) {
+	case 1:
+		version = revisions[0]
+	default:
+		var err error
+		version, err = probeRevision(ctx, inner, targetAPI)
+		if err != nil {
+			return nil, fmt.Errorf("versionaware: probing revision for API %d: %w", targetAPI, err)
+		}
+	}
+
+	table, ok := Tables[version]
+	if !ok {
+		return nil, fmt.Errorf("versionaware: no transaction code table for version %q", version)
+	}
+
+	logger.Debugf(ctx, "versionaware: detected version %s (%d interfaces)", version, len(table))
+
 	return &Transport{
 		inner:    inner,
 		apiLevel: targetAPI,
-		table:    tableForAPI(targetAPI),
-	}
+		table:    table,
+		version:  version,
+	}, nil
 }
 
 // ResolveCode resolves an AIDL method name to the correct transaction code
-// for the target device's API level.
+// for the detected device version.
+//
+// Returns an error if the method is not found in the version table
+// (e.g., calling a method that does not exist on the device's API level).
 func (t *Transport) ResolveCode(
 	descriptor string,
 	method string,
-) binder.TransactionCode {
-	return t.table.Resolve(descriptor, method)
+) (binder.TransactionCode, error) {
+	code := t.table.Resolve(descriptor, method)
+	if code == 0 {
+		return 0, fmt.Errorf("versionaware: method %s.%s not found in version %s", descriptor, method, t.version)
+	}
+	return code, nil
 }
 
-// tableForAPI returns the VersionTable for the given API level.
-// Falls back to the closest known API level.
-func tableForAPI(apiLevel int) VersionTable {
-	if table, ok := Tables[apiLevel]; ok {
-		return table
+// supportedAPILevels returns the list of API levels that have version tables.
+func supportedAPILevels() []int {
+	levels := make([]int, 0, len(Revisions))
+	for level := range Revisions {
+		levels = append(levels, level)
 	}
-	// Fall back to default.
-	if table, ok := Tables[DefaultAPILevel]; ok {
-		return table
+	sort.Ints(levels)
+	return levels
+}
+
+const (
+	serviceManagerHandle     = uint32(0)
+	serviceManagerDescriptor = "android.os.IServiceManager"
+
+	// checkService is transaction code 2 in IServiceManager.aidl.
+	smTransactionCheckService = binder.FirstCallTransaction + 2
+
+	activityManagerDescriptor = "android.app.IActivityManager"
+)
+
+// probeRevision determines which revision of the given API level matches
+// the running device by calling a distinguishing method on IActivityManager.
+//
+// Strategy: for each candidate revision, look up the transaction code for
+// "isUserAMonkey" on IActivityManager. This method returns a bool (status
+// int32 + bool int32 = 8 bytes). If we call the wrong transaction code,
+// we either get an error or a different reply size. The first revision
+// whose code produces a valid 8-byte reply wins.
+func probeRevision(
+	ctx context.Context,
+	inner binder.Transport,
+	apiLevel int,
+) (string, error) {
+	logger.Debugf(ctx, "probing revision for API %d", apiLevel)
+
+	revisions := Revisions[apiLevel]
+	if len(revisions) == 0 {
+		return "", fmt.Errorf("no revisions for API %d", apiLevel)
 	}
-	return nil
+	if len(revisions) == 1 {
+		return revisions[0], nil
+	}
+
+	// Get the activity service handle via raw ServiceManager CheckService.
+	activityHandle, err := rawCheckService(ctx, inner, "activity")
+	if err != nil {
+		return "", fmt.Errorf("cannot look up activity service for probing: %w", err)
+	}
+
+	// Try each revision's code for isUserAMonkey and check reply size.
+	for _, rev := range revisions {
+		table := Tables[rev]
+		if table == nil {
+			continue
+		}
+		code := table.Resolve(activityManagerDescriptor, "isUserAMonkey")
+		if code == 0 {
+			continue
+		}
+
+		data := parcel.New()
+		data.WriteInterfaceToken(activityManagerDescriptor)
+		reply, err := inner.Transact(ctx, activityHandle, code, 0, data)
+		if err != nil {
+			logger.Debugf(ctx, "probeRevision: %s code %d: transact error: %v", rev, code, err)
+			continue
+		}
+
+		replyLen := reply.Len()
+		reply.Recycle()
+
+		// isUserAMonkey returns: exception code (int32) + bool (int32) = 8 bytes.
+		if replyLen == 8 {
+			logger.Debugf(ctx, "probeRevision: matched %s (code %d, reply %d bytes)", rev, code, replyLen)
+			return rev, nil
+		}
+
+		logger.Debugf(ctx, "probeRevision: %s code %d: unexpected reply size %d", rev, code, replyLen)
+	}
+
+	return "", fmt.Errorf("no revision matched for API %d across %d candidates; the device firmware may be newer than the compiled AIDL snapshots", apiLevel, len(revisions))
+}
+
+// rawCheckService performs a raw ServiceManager CheckService transaction
+// to look up a service handle without going through the versionaware layer.
+func rawCheckService(
+	ctx context.Context,
+	inner binder.Transport,
+	serviceName string,
+) (uint32, error) {
+	data := parcel.New()
+	data.WriteInterfaceToken(serviceManagerDescriptor)
+	data.WriteString16(serviceName)
+
+	reply, err := inner.Transact(ctx, serviceManagerHandle, smTransactionCheckService, 0, data)
+	if err != nil {
+		return 0, fmt.Errorf("CheckService(%q): transact: %w", serviceName, err)
+	}
+
+	if err := binder.ReadStatus(reply); err != nil {
+		return 0, fmt.Errorf("CheckService(%q): status: %w", serviceName, err)
+	}
+
+	handle, ok, err := reply.ReadNullableStrongBinder()
+	if err != nil {
+		return 0, fmt.Errorf("CheckService(%q): reading binder: %w", serviceName, err)
+	}
+	if !ok {
+		return 0, fmt.Errorf("CheckService(%q): service not found", serviceName)
+	}
+
+	return handle, nil
 }
 
 // DefaultAPILevel is the API level that the compiled proxy code was
@@ -78,6 +224,10 @@ var DefaultAPILevel int
 // Tables holds multi-version transaction code tables.
 // Populated by generated code (codes_gen.go).
 var Tables = MultiVersionTable{}
+
+// Revisions maps API level -> list of version IDs (latest first).
+// Populated by generated code (codes_gen.go).
+var Revisions = APIRevisions{}
 
 // --- Delegate all Transport methods to inner ---
 
@@ -125,6 +275,5 @@ func (t *Transport) Close(ctx context.Context) error {
 	return t.inner.Close(ctx)
 }
 
-// Verify Transport implements binder.Transport and binder.CodeResolver.
-var _ binder.Transport = (*Transport)(nil)
-var _ binder.CodeResolver = (*Transport)(nil)
+// Verify Transport implements binder.VersionAwareTransport.
+var _ binder.VersionAwareTransport = (*Transport)(nil)

@@ -50,7 +50,12 @@ func (p *ControlsProviderProxy) Load(
 	_data.WriteInterfaceToken(DescriptorIControlsProvider)
 	_data.WriteStrongBinder(subscriber.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIControlsProvider, "load"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIControlsProvider, "load")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -62,7 +67,12 @@ func (p *ControlsProviderProxy) LoadSuggested(
 	_data.WriteInterfaceToken(DescriptorIControlsProvider)
 	_data.WriteStrongBinder(subscriber.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIControlsProvider, "loadSuggested"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIControlsProvider, "loadSuggested")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -83,7 +93,12 @@ func (p *ControlsProviderProxy) Subscribe(
 	}
 	_data.WriteStrongBinder(subscriber.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIControlsProvider, "subscribe"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIControlsProvider, "subscribe")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -101,6 +116,11 @@ func (p *ControlsProviderProxy) Action(
 	}
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIControlsProvider, "action"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIControlsProvider, "action")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

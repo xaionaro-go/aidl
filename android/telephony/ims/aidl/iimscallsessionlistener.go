@@ -132,7 +132,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionInitiating(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionInitiating"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionInitiating")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -146,7 +151,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionInitiatingFailed(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionInitiatingFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionInitiatingFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -160,7 +170,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionProgressing(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionProgressing"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionProgressing")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -174,7 +189,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionInitiated(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionInitiated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionInitiated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -188,7 +208,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionInitiatedFailed(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionInitiatedFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionInitiatedFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -202,7 +227,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionTerminated(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionTerminated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionTerminated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -216,7 +246,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionHeld(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionHeld"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionHeld")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -230,7 +265,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionHoldFailed(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionHoldFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionHoldFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -244,7 +284,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionHoldReceived(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionHoldReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionHoldReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -258,7 +303,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionResumed(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionResumed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionResumed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -272,7 +322,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionResumeFailed(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionResumeFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionResumeFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -286,7 +341,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionResumeReceived(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionResumeReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionResumeReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -302,7 +362,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionMergeStarted(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionMergeStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionMergeStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -314,7 +379,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionMergeComplete(
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
 	_data.WriteStrongBinder(session.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionMergeComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionMergeComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -328,7 +398,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionMergeFailed(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionMergeFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionMergeFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -342,7 +417,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionUpdated(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionUpdated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionUpdated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -356,7 +436,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionUpdateFailed(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionUpdateFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionUpdateFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -370,7 +455,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionUpdateReceived(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionUpdateReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionUpdateReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -386,7 +476,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionConferenceExtended(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionConferenceExtended"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionConferenceExtended")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -400,7 +495,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionConferenceExtendFailed(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionConferenceExtendFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionConferenceExtendFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -416,7 +516,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionConferenceExtendReceived(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionConferenceExtendReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionConferenceExtendReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -426,7 +531,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionInviteParticipantsRequestDelive
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionInviteParticipantsRequestDelivered"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionInviteParticipantsRequestDelivered")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -440,7 +550,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionInviteParticipantsRequestFailed
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionInviteParticipantsRequestFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionInviteParticipantsRequestFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -450,7 +565,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionRemoveParticipantsRequestDelive
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionRemoveParticipantsRequestDelivered"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionRemoveParticipantsRequestDelivered")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -464,7 +584,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionRemoveParticipantsRequestFailed
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionRemoveParticipantsRequestFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionRemoveParticipantsRequestFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -478,7 +603,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionConferenceStateUpdated(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionConferenceStateUpdated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionConferenceStateUpdated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -492,7 +622,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionUssdMessageReceived(
 	_data.WriteInt32(mode)
 	_data.WriteString16(ussdMessage)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionUssdMessageReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionUssdMessageReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -510,7 +645,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionHandover(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionHandover"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionHandover")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -528,7 +668,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionHandoverFailed(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionHandoverFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionHandoverFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -542,7 +687,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionMayHandover(
 	_data.WriteInt32(srcNetworkType)
 	_data.WriteInt32(targetNetworkType)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionMayHandover"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionMayHandover")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -554,7 +704,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionTtyModeReceived(
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
 	_data.WriteInt32(mode)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionTtyModeReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionTtyModeReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -566,7 +721,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionMultipartyStateChanged(
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
 	_data.WriteBool(isMultiParty)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionMultipartyStateChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionMultipartyStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -580,7 +740,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionSuppServiceReceived(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionSuppServiceReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionSuppServiceReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -594,7 +759,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionRttModifyRequestReceived(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionRttModifyRequestReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionRttModifyRequestReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -606,7 +776,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionRttModifyResponseReceived(
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
 	_data.WriteInt32(status)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionRttModifyResponseReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionRttModifyResponseReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -618,7 +793,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionRttMessageReceived(
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
 	_data.WriteString16(rttMessage)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionRttMessageReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionRttMessageReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -632,7 +812,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionRttAudioIndicatorChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionRttAudioIndicatorChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionRttAudioIndicatorChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -642,7 +827,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionTransferred(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionTransferred"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionTransferred")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -656,7 +846,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionTransferFailed(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionTransferFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionTransferFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -668,7 +863,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionDtmfReceived(
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
 	_data.WriteInt32(int32(dtmf))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionDtmfReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionDtmfReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -682,7 +882,12 @@ func (p *ImsCallSessionListenerProxy) CallQualityChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callQualityChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callQualityChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -703,7 +908,12 @@ func (p *ImsCallSessionListenerProxy) CallSessionRtpHeaderExtensionsReceived(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionRtpHeaderExtensionsReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionRtpHeaderExtensionsReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -719,6 +929,11 @@ func (p *ImsCallSessionListenerProxy) CallSessionSendAnbrQuery(
 	_data.WriteInt32(direction)
 	_data.WriteInt32(bitsPerSecond)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionSendAnbrQuery"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionSendAnbrQuery")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -47,7 +47,12 @@ func (p *CamProfileInterfaceProxy) GetCamServiceUpdateInfo(
 	_data.WriteInterfaceToken(DescriptorICamProfileInterface)
 	_data.WriteInt32(slotNumber)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICamProfileInterface, "getCamServiceUpdateInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICamProfileInterface, "getCamServiceUpdateInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -69,7 +74,12 @@ func (p *CamProfileInterfaceProxy) RequestResendProfileInfoBroadcastACON(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICamProfileInterface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICamProfileInterface, "requestResendProfileInfoBroadcastACON"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICamProfileInterface, "requestResendProfileInfoBroadcastACON")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

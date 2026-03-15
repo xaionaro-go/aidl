@@ -46,7 +46,12 @@ func (p *ConsumerIrServiceProxy) HasIrEmitter(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIConsumerIrService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIConsumerIrService, "hasIrEmitter"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIConsumerIrService, "hasIrEmitter")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -82,7 +87,12 @@ func (p *ConsumerIrServiceProxy) Transmit(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIConsumerIrService, "transmit"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIConsumerIrService, "transmit")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -102,7 +112,12 @@ func (p *ConsumerIrServiceProxy) GetCarrierFrequencies(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIConsumerIrService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIConsumerIrService, "getCarrierFrequencies"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIConsumerIrService, "getCarrierFrequencies")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

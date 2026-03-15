@@ -196,7 +196,12 @@ func (p *InputManagerProxy) GetVelocityTrackerStrategy(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getVelocityTrackerStrategy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getVelocityTrackerStrategy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -222,7 +227,12 @@ func (p *InputManagerProxy) GetInputDevice(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(deviceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getInputDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getInputDevice")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -245,7 +255,12 @@ func (p *InputManagerProxy) GetInputDeviceIds(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getInputDeviceIds"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getInputDeviceIds")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -280,7 +295,12 @@ func (p *InputManagerProxy) EnableInputDevice(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(deviceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "enableInputDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "enableInputDevice")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -301,7 +321,12 @@ func (p *InputManagerProxy) DisableInputDevice(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(deviceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "disableInputDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "disableInputDevice")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -335,7 +360,12 @@ func (p *InputManagerProxy) HasKeys(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "hasKeys"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "hasKeys")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -376,7 +406,12 @@ func (p *InputManagerProxy) GetKeyCodeForKeyLocation(
 	_data.WriteInt32(deviceId)
 	_data.WriteInt32(locationKeyCode)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getKeyCodeForKeyLocation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getKeyCodeForKeyLocation")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -402,7 +437,12 @@ func (p *InputManagerProxy) GetKeyCharacterMap(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteString16(layoutDescriptor)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getKeyCharacterMap"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getKeyCharacterMap")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -425,7 +465,12 @@ func (p *InputManagerProxy) GetMousePointerSpeed(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getMousePointerSpeed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getMousePointerSpeed")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -450,7 +495,12 @@ func (p *InputManagerProxy) TryPointerSpeed(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(speed)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "tryPointerSpeed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "tryPointerSpeed")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -476,7 +526,12 @@ func (p *InputManagerProxy) InjectInputEvent(
 	}
 	_data.WriteInt32(mode)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "injectInputEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "injectInputEvent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -508,7 +563,12 @@ func (p *InputManagerProxy) InjectInputEventToTarget(
 	_data.WriteInt32(mode)
 	_data.WriteInt32(targetUid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "injectInputEventToTarget"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "injectInputEventToTarget")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -536,7 +596,12 @@ func (p *InputManagerProxy) VerifyInputEvent(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "verifyInputEvent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "verifyInputEvent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -563,7 +628,12 @@ func (p *InputManagerProxy) GetTouchCalibrationForInputDevice(
 	_data.WriteString16(inputDeviceDescriptor)
 	_data.WriteInt32(rotation)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getTouchCalibrationForInputDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getTouchCalibrationForInputDevice")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -593,7 +663,12 @@ func (p *InputManagerProxy) SetTouchCalibrationForInputDevice(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "setTouchCalibrationForInputDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "setTouchCalibrationForInputDevice")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -613,7 +688,12 @@ func (p *InputManagerProxy) GetKeyboardLayouts(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getKeyboardLayouts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getKeyboardLayouts")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -648,7 +728,12 @@ func (p *InputManagerProxy) GetKeyboardLayout(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteString16(keyboardLayoutDescriptor)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getKeyboardLayout"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getKeyboardLayout")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -685,7 +770,12 @@ func (p *InputManagerProxy) GetKeyboardLayoutForInputDevice(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getKeyboardLayoutForInputDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getKeyboardLayoutForInputDevice")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -723,7 +813,12 @@ func (p *InputManagerProxy) SetKeyboardLayoutForInputDevice(
 	}
 	_data.WriteString16(keyboardLayoutDescriptor)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "setKeyboardLayoutForInputDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "setKeyboardLayoutForInputDevice")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -757,7 +852,12 @@ func (p *InputManagerProxy) GetKeyboardLayoutListForInputDevice(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getKeyboardLayoutListForInputDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getKeyboardLayoutListForInputDevice")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -793,7 +893,12 @@ func (p *InputManagerProxy) RemapModifierKey(
 	_data.WriteInt32(fromKey)
 	_data.WriteInt32(toKey)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "remapModifierKey"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "remapModifierKey")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -812,7 +917,12 @@ func (p *InputManagerProxy) ClearAllModifierKeyRemappings(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "clearAllModifierKeyRemappings"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "clearAllModifierKeyRemappings")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -832,7 +942,12 @@ func (p *InputManagerProxy) GetModifierKeyRemapping(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getModifierKeyRemapping"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getModifierKeyRemapping")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -871,7 +986,12 @@ func (p *InputManagerProxy) RegisterInputDevicesChangedListener(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "registerInputDevicesChangedListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerInputDevicesChangedListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -891,7 +1011,12 @@ func (p *InputManagerProxy) IsInTabletMode(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "isInTabletMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "isInTabletMode")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -916,7 +1041,12 @@ func (p *InputManagerProxy) RegisterTabletModeChangedListener(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "registerTabletModeChangedListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerTabletModeChangedListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -936,7 +1066,12 @@ func (p *InputManagerProxy) IsMicMuted(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "isMicMuted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "isMicMuted")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -967,7 +1102,12 @@ func (p *InputManagerProxy) Vibrate(
 	}
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "vibrate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "vibrate")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -994,7 +1134,12 @@ func (p *InputManagerProxy) VibrateCombined(
 	}
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "vibrateCombined"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "vibrateCombined")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1017,7 +1162,12 @@ func (p *InputManagerProxy) CancelVibrate(
 	_data.WriteInt32(deviceId)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "cancelVibrate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "cancelVibrate")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1039,7 +1189,12 @@ func (p *InputManagerProxy) GetVibratorIds(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(deviceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getVibratorIds"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getVibratorIds")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1075,7 +1230,12 @@ func (p *InputManagerProxy) IsVibrating(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(deviceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "isVibrating"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "isVibrating")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1103,7 +1263,12 @@ func (p *InputManagerProxy) RegisterVibratorStateListener(
 	_data.WriteInt32(deviceId)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "registerVibratorStateListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerVibratorStateListener")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1131,7 +1296,12 @@ func (p *InputManagerProxy) UnregisterVibratorStateListener(
 	_data.WriteInt32(deviceId)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "unregisterVibratorStateListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "unregisterVibratorStateListener")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1157,7 +1327,12 @@ func (p *InputManagerProxy) GetBatteryState(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(deviceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getBatteryState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getBatteryState")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1192,7 +1367,12 @@ func (p *InputManagerProxy) SetPointerIcon(
 	_data.WriteInt32(pointerId)
 	_data.WriteStrongBinder(inputToken.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "setPointerIcon"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "setPointerIcon")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1219,7 +1399,12 @@ func (p *InputManagerProxy) RequestPointerCapture(
 	_data.WriteStrongBinder(inputChannelToken.Handle())
 	_data.WriteBool(enabled)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "requestPointerCapture"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "requestPointerCapture")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -1236,7 +1421,12 @@ func (p *InputManagerProxy) MonitorGestureInput(
 	_data.WriteString16(name)
 	_data.WriteInt32(displayId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "monitorGestureInput"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "monitorGestureInput")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1262,7 +1452,12 @@ func (p *InputManagerProxy) AddPortAssociation(
 	_data.WriteString16(inputPort)
 	_data.WriteInt32(displayPort)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "addPortAssociation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "addPortAssociation")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1283,7 +1478,12 @@ func (p *InputManagerProxy) RemovePortAssociation(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteString16(inputPort)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "removePortAssociation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "removePortAssociation")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1306,7 +1506,12 @@ func (p *InputManagerProxy) AddUniqueIdAssociationByDescriptor(
 	_data.WriteString16(inputDeviceDescriptor)
 	_data.WriteString16(displayUniqueId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "addUniqueIdAssociationByDescriptor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "addUniqueIdAssociationByDescriptor")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1327,7 +1532,12 @@ func (p *InputManagerProxy) RemoveUniqueIdAssociationByDescriptor(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteString16(inputDeviceDescriptor)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "removeUniqueIdAssociationByDescriptor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "removeUniqueIdAssociationByDescriptor")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1350,7 +1560,12 @@ func (p *InputManagerProxy) AddUniqueIdAssociationByPort(
 	_data.WriteString16(inputPort)
 	_data.WriteString16(displayUniqueId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "addUniqueIdAssociationByPort"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "addUniqueIdAssociationByPort")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1371,7 +1586,12 @@ func (p *InputManagerProxy) RemoveUniqueIdAssociationByPort(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteString16(inputPort)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "removeUniqueIdAssociationByPort"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "removeUniqueIdAssociationByPort")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1393,7 +1613,12 @@ func (p *InputManagerProxy) GetSensorList(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(deviceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getSensorList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getSensorList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1428,7 +1653,12 @@ func (p *InputManagerProxy) RegisterSensorListener(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "registerSensorListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerSensorListener")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1453,7 +1683,12 @@ func (p *InputManagerProxy) UnregisterSensorListener(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "unregisterSensorListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "unregisterSensorListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1481,7 +1716,12 @@ func (p *InputManagerProxy) EnableSensor(
 	_data.WriteInt32(samplingPeriodUs)
 	_data.WriteInt32(maxBatchReportLatencyUs)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "enableSensor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "enableSensor")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1508,7 +1748,12 @@ func (p *InputManagerProxy) DisableSensor(
 	_data.WriteInt32(deviceId)
 	_data.WriteInt32(sensorType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "disableSensor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "disableSensor")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1532,7 +1777,12 @@ func (p *InputManagerProxy) FlushSensor(
 	_data.WriteInt32(deviceId)
 	_data.WriteInt32(sensorType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "flushSensor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "flushSensor")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1558,7 +1808,12 @@ func (p *InputManagerProxy) GetLights(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(deviceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getLights"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getLights")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1595,7 +1850,12 @@ func (p *InputManagerProxy) GetLightState(
 	_data.WriteInt32(deviceId)
 	_data.WriteInt32(lightId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getLightState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getLightState")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1641,7 +1901,12 @@ func (p *InputManagerProxy) SetLightStates(
 	}
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "setLightStates"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "setLightStates")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1666,7 +1931,12 @@ func (p *InputManagerProxy) OpenLightSession(
 	_data.WriteString16(opPkg)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "openLightSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "openLightSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1689,7 +1959,12 @@ func (p *InputManagerProxy) CloseLightSession(
 	_data.WriteInt32(deviceId)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "closeLightSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "closeLightSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1708,7 +1983,12 @@ func (p *InputManagerProxy) CancelCurrentTouch(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "cancelCurrentTouch"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "cancelCurrentTouch")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1731,7 +2011,12 @@ func (p *InputManagerProxy) RegisterBatteryListener(
 	_data.WriteInt32(deviceId)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "registerBatteryListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerBatteryListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1754,7 +2039,12 @@ func (p *InputManagerProxy) UnregisterBatteryListener(
 	_data.WriteInt32(deviceId)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "unregisterBatteryListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "unregisterBatteryListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1776,7 +2066,12 @@ func (p *InputManagerProxy) GetInputDeviceBluetoothAddress(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(deviceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getInputDeviceBluetoothAddress"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getInputDeviceBluetoothAddress")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1801,7 +2096,12 @@ func (p *InputManagerProxy) PilferPointers(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteStrongBinder(inputChannelToken.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "pilferPointers"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "pilferPointers")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1822,7 +2122,12 @@ func (p *InputManagerProxy) RegisterKeyboardBacklightListener(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "registerKeyboardBacklightListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerKeyboardBacklightListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1843,7 +2148,12 @@ func (p *InputManagerProxy) UnregisterKeyboardBacklightListener(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "unregisterKeyboardBacklightListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "unregisterKeyboardBacklightListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1865,7 +2175,12 @@ func (p *InputManagerProxy) GetHostUsiVersionFromDisplayConfig(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(displayId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getHostUsiVersionFromDisplayConfig"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getHostUsiVersionFromDisplayConfig")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1889,7 +2204,12 @@ func (p *InputManagerProxy) RegisterStickyModifierStateListener(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "registerStickyModifierStateListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerStickyModifierStateListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1910,7 +2230,12 @@ func (p *InputManagerProxy) UnregisterStickyModifierStateListener(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "unregisterStickyModifierStateListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "unregisterStickyModifierStateListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1932,7 +2257,12 @@ func (p *InputManagerProxy) GetKeyGlyphMap(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(deviceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getKeyGlyphMap"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getKeyGlyphMap")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1956,7 +2286,12 @@ func (p *InputManagerProxy) RegisterKeyGestureEventListener(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "registerKeyGestureEventListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerKeyGestureEventListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1977,7 +2312,12 @@ func (p *InputManagerProxy) UnregisterKeyGestureEventListener(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "unregisterKeyGestureEventListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "unregisterKeyGestureEventListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1998,7 +2338,12 @@ func (p *InputManagerProxy) RegisterKeyGestureHandler(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteStrongBinder(handler.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "registerKeyGestureHandler"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerKeyGestureHandler")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2019,7 +2364,12 @@ func (p *InputManagerProxy) UnregisterKeyGestureHandler(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteStrongBinder(handler.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "unregisterKeyGestureHandler"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "unregisterKeyGestureHandler")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2045,7 +2395,12 @@ func (p *InputManagerProxy) AddCustomInputGesture(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "addCustomInputGesture"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "addCustomInputGesture")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2075,7 +2430,12 @@ func (p *InputManagerProxy) RemoveCustomInputGesture(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "removeCustomInputGesture"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "removeCustomInputGesture")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2102,7 +2462,12 @@ func (p *InputManagerProxy) RemoveAllCustomInputGestures(
 	_data.WriteInt32(userId)
 	_data.WriteInt32(tag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "removeAllCustomInputGestures"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "removeAllCustomInputGestures")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2126,7 +2491,12 @@ func (p *InputManagerProxy) GetCustomInputGestures(
 	_data.WriteInt32(userId)
 	_data.WriteInt32(tag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getCustomInputGestures"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getCustomInputGestures")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2159,7 +2529,12 @@ func (p *InputManagerProxy) GetAppLaunchBookmarks(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "getAppLaunchBookmarks"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getAppLaunchBookmarks")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -2191,7 +2566,12 @@ func (p *InputManagerProxy) ResetLockedModifierState(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputManager, "resetLockedModifierState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "resetLockedModifierState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

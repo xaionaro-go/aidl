@@ -43,6 +43,11 @@ func (p *BooleanListenerProxy) OnResult(
 	_data.WriteInterfaceToken(DescriptorIBooleanListener)
 	_data.WriteBool(value)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBooleanListener, "onResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBooleanListener, "onResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

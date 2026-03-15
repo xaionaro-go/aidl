@@ -74,7 +74,12 @@ func (p *HintManagerProxy) CreateHintSessionWithConfig(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHintManager, "createHintSessionWithConfig"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHintManager, "createHintSessionWithConfig")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -102,7 +107,12 @@ func (p *HintManagerProxy) GetHintSessionPreferredRate(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHintManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHintManager, "getHintSessionPreferredRate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHintManager, "getHintSessionPreferredRate")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -136,7 +146,12 @@ func (p *HintManagerProxy) SetHintSessionThreads(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHintManager, "setHintSessionThreads"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHintManager, "setHintSessionThreads")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -158,7 +173,12 @@ func (p *HintManagerProxy) GetHintSessionThreadIds(
 	_data.WriteInterfaceToken(DescriptorIHintManager)
 	_data.WriteStrongBinder(hintSession.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHintManager, "getHintSessionThreadIds"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHintManager, "getHintSessionThreadIds")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -194,7 +214,12 @@ func (p *HintManagerProxy) GetSessionChannel(
 	_data.WriteInterfaceToken(DescriptorIHintManager)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHintManager, "getSessionChannel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHintManager, "getSessionChannel")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -213,7 +238,12 @@ func (p *HintManagerProxy) CloseSessionChannel(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHintManager)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHintManager, "closeSessionChannel"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHintManager, "closeSessionChannel")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -228,7 +258,12 @@ func (p *HintManagerProxy) GetCpuHeadroom(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHintManager, "getCpuHeadroom"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHintManager, "getCpuHeadroom")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -251,7 +286,12 @@ func (p *HintManagerProxy) GetCpuHeadroomMinIntervalMillis(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHintManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHintManager, "getCpuHeadroomMinIntervalMillis"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHintManager, "getCpuHeadroomMinIntervalMillis")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -279,7 +319,12 @@ func (p *HintManagerProxy) GetGpuHeadroom(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHintManager, "getGpuHeadroom"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHintManager, "getGpuHeadroom")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -302,7 +347,12 @@ func (p *HintManagerProxy) GetGpuHeadroomMinIntervalMillis(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHintManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHintManager, "getGpuHeadroomMinIntervalMillis"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHintManager, "getGpuHeadroomMinIntervalMillis")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -326,7 +376,12 @@ func (p *HintManagerProxy) GetMaxGraphicsPipelineThreadsCount(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHintManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHintManager, "getMaxGraphicsPipelineThreadsCount"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHintManager, "getMaxGraphicsPipelineThreadsCount")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -351,6 +406,11 @@ func (p *HintManagerProxy) PassSessionManagerBinder(
 	_data.WriteInterfaceToken(DescriptorIHintManager)
 	_data.WriteStrongBinder(sessionManager.Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHintManager, "passSessionManagerBinder"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHintManager, "passSessionManagerBinder")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

@@ -48,7 +48,12 @@ func (p *DomainSelectorProxy) ReselectDomain(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDomainSelector, "reselectDomain"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDomainSelector, "reselectDomain")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -58,6 +63,11 @@ func (p *DomainSelectorProxy) FinishSelection(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDomainSelector)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIDomainSelector, "finishSelection"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIDomainSelector, "finishSelection")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

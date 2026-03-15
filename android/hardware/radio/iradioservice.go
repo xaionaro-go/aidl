@@ -46,7 +46,12 @@ func (p *RadioServiceProxy) ListModules(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRadioService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioService, "listModules"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioService, "listModules")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -89,7 +94,12 @@ func (p *RadioServiceProxy) OpenTuner(
 	_data.WriteBool(withAudio)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioService, "openTuner"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioService, "openTuner")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -125,7 +135,12 @@ func (p *RadioServiceProxy) AddAnnouncementListener(
 	}
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRadioService, "addAnnouncementListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRadioService, "addAnnouncementListener")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

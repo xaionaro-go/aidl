@@ -57,7 +57,12 @@ func (p *AGnssRilProxy) SetCallback(
 	_data.WriteInterfaceToken(DescriptorIAGnssRil)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAGnssRil, "setCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAGnssRil, "setCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -80,7 +85,12 @@ func (p *AGnssRilProxy) SetRefLocation(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAGnssRil, "setRefLocation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAGnssRil, "setRefLocation")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -103,7 +113,12 @@ func (p *AGnssRilProxy) SetSetId(
 	_data.WriteInt32(int32(type_))
 	_data.WriteString(setid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAGnssRil, "setSetId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAGnssRil, "setSetId")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -126,7 +141,12 @@ func (p *AGnssRilProxy) UpdateNetworkState(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAGnssRil, "updateNetworkState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAGnssRil, "updateNetworkState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -156,7 +176,12 @@ func (p *AGnssRilProxy) InjectNiSuplMessageData(
 	}
 	_data.WriteInt32(slotIndex)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAGnssRil, "injectNiSuplMessageData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAGnssRil, "injectNiSuplMessageData")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

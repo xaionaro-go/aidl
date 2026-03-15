@@ -54,7 +54,12 @@ func (p *QuickAccessWalletServiceCallbacksProxy) OnGetWalletCardsSuccess(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQuickAccessWalletServiceCallbacks, "onGetWalletCardsSuccess"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQuickAccessWalletServiceCallbacks, "onGetWalletCardsSuccess")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -68,7 +73,12 @@ func (p *QuickAccessWalletServiceCallbacksProxy) OnGetWalletCardsFailure(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQuickAccessWalletServiceCallbacks, "onGetWalletCardsFailure"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQuickAccessWalletServiceCallbacks, "onGetWalletCardsFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -82,7 +92,12 @@ func (p *QuickAccessWalletServiceCallbacksProxy) OnWalletServiceEvent(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQuickAccessWalletServiceCallbacks, "onWalletServiceEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQuickAccessWalletServiceCallbacks, "onWalletServiceEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -96,7 +111,12 @@ func (p *QuickAccessWalletServiceCallbacksProxy) OnTargetActivityPendingIntentRe
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQuickAccessWalletServiceCallbacks, "onTargetActivityPendingIntentReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQuickAccessWalletServiceCallbacks, "onTargetActivityPendingIntentReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -110,6 +130,11 @@ func (p *QuickAccessWalletServiceCallbacksProxy) OnGestureTargetActivityPendingI
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIQuickAccessWalletServiceCallbacks, "onGestureTargetActivityPendingIntentReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIQuickAccessWalletServiceCallbacks, "onGestureTargetActivityPendingIntentReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

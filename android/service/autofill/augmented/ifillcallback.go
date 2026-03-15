@@ -52,7 +52,12 @@ func (p *FillCallbackProxy) OnCancellable(
 	_data.WriteInterfaceToken(DescriptorIFillCallback)
 	_data.WriteStrongBinder(cancellation.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFillCallback, "onCancellable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFillCallback, "onCancellable")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -92,7 +97,12 @@ func (p *FillCallbackProxy) OnSuccess(
 	}
 	_data.WriteBool(showingFillWindow)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFillCallback, "onSuccess"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFillCallback, "onSuccess")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -112,7 +122,12 @@ func (p *FillCallbackProxy) IsCompleted(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFillCallback)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFillCallback, "isCompleted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFillCallback, "isCompleted")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -135,7 +150,12 @@ func (p *FillCallbackProxy) Cancel(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFillCallback)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFillCallback, "cancel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFillCallback, "cancel")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

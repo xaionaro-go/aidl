@@ -57,7 +57,12 @@ func (p *SoundTriggerCallbackProxy) OnRecognition(
 	}
 	_data.WriteInt32(captureSession)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerCallback, "onRecognition"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerCallback, "onRecognition")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -75,7 +80,12 @@ func (p *SoundTriggerCallbackProxy) OnPhraseRecognition(
 	}
 	_data.WriteInt32(captureSession)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerCallback, "onPhraseRecognition"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerCallback, "onPhraseRecognition")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -85,7 +95,12 @@ func (p *SoundTriggerCallbackProxy) OnResourcesAvailable(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerCallback, "onResourcesAvailable"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerCallback, "onResourcesAvailable")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -97,7 +112,12 @@ func (p *SoundTriggerCallbackProxy) OnModelUnloaded(
 	_data.WriteInterfaceToken(DescriptorISoundTriggerCallback)
 	_data.WriteInt32(modelHandle)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerCallback, "onModelUnloaded"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerCallback, "onModelUnloaded")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -107,6 +127,11 @@ func (p *SoundTriggerCallbackProxy) OnModuleDied(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISoundTriggerCallback, "onModuleDied"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerCallback, "onModuleDied")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

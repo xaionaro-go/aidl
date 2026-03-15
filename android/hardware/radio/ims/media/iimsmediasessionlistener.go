@@ -61,7 +61,12 @@ func (p *ImsMediaSessionListenerProxy) OnModifySessionResponse(
 	}
 	_data.WriteInt32(int32(error_))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMediaSessionListener, "onModifySessionResponse"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMediaSessionListener, "onModifySessionResponse")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -75,7 +80,12 @@ func (p *ImsMediaSessionListenerProxy) OnFirstMediaPacketReceived(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMediaSessionListener, "onFirstMediaPacketReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMediaSessionListener, "onFirstMediaPacketReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -96,7 +106,12 @@ func (p *ImsMediaSessionListenerProxy) OnHeaderExtensionReceived(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMediaSessionListener, "onHeaderExtensionReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMediaSessionListener, "onHeaderExtensionReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -110,7 +125,12 @@ func (p *ImsMediaSessionListenerProxy) NotifyMediaQualityStatus(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMediaSessionListener, "notifyMediaQualityStatus"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMediaSessionListener, "notifyMediaQualityStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -124,7 +144,12 @@ func (p *ImsMediaSessionListenerProxy) TriggerAnbrQuery(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMediaSessionListener, "triggerAnbrQuery"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMediaSessionListener, "triggerAnbrQuery")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -138,7 +163,12 @@ func (p *ImsMediaSessionListenerProxy) OnDtmfReceived(
 	_data.WriteInt32(int32(dtmfDigit))
 	_data.WriteInt32(durationMs)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMediaSessionListener, "onDtmfReceived"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMediaSessionListener, "onDtmfReceived")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -152,7 +182,12 @@ func (p *ImsMediaSessionListenerProxy) OnCallQualityChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMediaSessionListener, "onCallQualityChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMediaSessionListener, "onCallQualityChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -166,6 +201,11 @@ func (p *ImsMediaSessionListenerProxy) NotifyRtpReceptionStats(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsMediaSessionListener, "notifyRtpReceptionStats"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsMediaSessionListener, "notifyRtpReceptionStats")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

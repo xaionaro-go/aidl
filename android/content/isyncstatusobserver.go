@@ -43,6 +43,11 @@ func (p *SyncStatusObserverProxy) OnStatusChanged(
 	_data.WriteInterfaceToken(DescriptorISyncStatusObserver)
 	_data.WriteInt32(which)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISyncStatusObserver, "onStatusChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISyncStatusObserver, "onStatusChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

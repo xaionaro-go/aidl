@@ -65,7 +65,12 @@ func (p *ImsRegistrationListenerProxy) RegistrationConnected(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRegistrationListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationConnected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationConnected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -75,7 +80,12 @@ func (p *ImsRegistrationListenerProxy) RegistrationProgressing(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRegistrationListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationProgressing"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationProgressing")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -87,7 +97,12 @@ func (p *ImsRegistrationListenerProxy) RegistrationConnectedWithRadioTech(
 	_data.WriteInterfaceToken(DescriptorIImsRegistrationListener)
 	_data.WriteInt32(imsRadioTech)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationConnectedWithRadioTech"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationConnectedWithRadioTech")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -99,7 +114,12 @@ func (p *ImsRegistrationListenerProxy) RegistrationProgressingWithRadioTech(
 	_data.WriteInterfaceToken(DescriptorIImsRegistrationListener)
 	_data.WriteInt32(imsRadioTech)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationProgressingWithRadioTech"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationProgressingWithRadioTech")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -113,7 +133,12 @@ func (p *ImsRegistrationListenerProxy) RegistrationDisconnected(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationDisconnected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationDisconnected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -123,7 +148,12 @@ func (p *ImsRegistrationListenerProxy) RegistrationResumed(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRegistrationListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationResumed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationResumed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -133,7 +163,12 @@ func (p *ImsRegistrationListenerProxy) RegistrationSuspended(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRegistrationListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationSuspended"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationSuspended")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -147,7 +182,12 @@ func (p *ImsRegistrationListenerProxy) RegistrationServiceCapabilityChanged(
 	_data.WriteInt32(serviceClass)
 	_data.WriteInt32(event)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationServiceCapabilityChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationServiceCapabilityChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -177,7 +217,12 @@ func (p *ImsRegistrationListenerProxy) RegistrationFeatureCapabilityChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationFeatureCapabilityChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationFeatureCapabilityChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -189,7 +234,12 @@ func (p *ImsRegistrationListenerProxy) VoiceMessageCountUpdate(
 	_data.WriteInterfaceToken(DescriptorIImsRegistrationListener)
 	_data.WriteInt32(count)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationListener, "voiceMessageCountUpdate"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationListener, "voiceMessageCountUpdate")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -210,7 +260,12 @@ func (p *ImsRegistrationListenerProxy) RegistrationAssociatedUriChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationAssociatedUriChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationAssociatedUriChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -226,6 +281,11 @@ func (p *ImsRegistrationListenerProxy) RegistrationChangeFailed(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationChangeFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistrationListener, "registrationChangeFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

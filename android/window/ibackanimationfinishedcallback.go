@@ -43,7 +43,12 @@ func (p *BackAnimationFinishedCallbackProxy) OnAnimationFinished(
 	_data.WriteInterfaceToken(DescriptorIBackAnimationFinishedCallback)
 	_data.WriteBool(triggerBack)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBackAnimationFinishedCallback, "onAnimationFinished"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBackAnimationFinishedCallback, "onAnimationFinished")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

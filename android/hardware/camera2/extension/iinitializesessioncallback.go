@@ -43,7 +43,12 @@ func (p *InitializeSessionCallbackProxy) OnSuccess(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInitializeSessionCallback)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInitializeSessionCallback, "onSuccess"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInitializeSessionCallback, "onSuccess")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -62,7 +67,12 @@ func (p *InitializeSessionCallbackProxy) OnFailure(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInitializeSessionCallback)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInitializeSessionCallback, "onFailure"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInitializeSessionCallback, "onFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

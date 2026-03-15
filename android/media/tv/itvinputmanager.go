@@ -183,7 +183,12 @@ func (p *TvInputManagerProxy) GetTvInputList(
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "getTvInputList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getTvInputList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -220,7 +225,12 @@ func (p *TvInputManagerProxy) GetTvInputInfo(
 	_data.WriteString16(inputId)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "getTvInputInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getTvInputInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -248,7 +258,12 @@ func (p *TvInputManagerProxy) UpdateTvInputInfo(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "updateTvInputInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "updateTvInputInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -272,7 +287,12 @@ func (p *TvInputManagerProxy) GetTvInputState(
 	_data.WriteString16(inputId)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "getTvInputState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getTvInputState")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -300,7 +320,12 @@ func (p *TvInputManagerProxy) GetAvailableExtensionInterfaceNames(
 	_data.WriteString16(inputId)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "getAvailableExtensionInterfaceNames"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getAvailableExtensionInterfaceNames")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -340,7 +365,12 @@ func (p *TvInputManagerProxy) GetExtensionInterface(
 	_data.WriteString16(name)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "getExtensionInterface"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getExtensionInterface")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -367,7 +397,12 @@ func (p *TvInputManagerProxy) GetTvContentRatingSystemList(
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "getTvContentRatingSystemList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getTvContentRatingSystemList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -403,7 +438,12 @@ func (p *TvInputManagerProxy) RegisterCallback(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "registerCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "registerCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -426,7 +466,12 @@ func (p *TvInputManagerProxy) UnregisterCallback(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "unregisterCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "unregisterCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -448,7 +493,12 @@ func (p *TvInputManagerProxy) IsParentalControlsEnabled(
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "isParentalControlsEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "isParentalControlsEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -475,7 +525,12 @@ func (p *TvInputManagerProxy) SetParentalControlsEnabled(
 	_data.WriteBool(enabled)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "setParentalControlsEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "setParentalControlsEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -499,7 +554,12 @@ func (p *TvInputManagerProxy) IsRatingBlocked(
 	_data.WriteString16(rating)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "isRatingBlocked"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "isRatingBlocked")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -525,7 +585,12 @@ func (p *TvInputManagerProxy) GetBlockedRatings(
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "getBlockedRatings"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getBlockedRatings")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -562,7 +627,12 @@ func (p *TvInputManagerProxy) AddBlockedRating(
 	_data.WriteString16(rating)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "addBlockedRating"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "addBlockedRating")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -585,7 +655,12 @@ func (p *TvInputManagerProxy) RemoveBlockedRating(
 	_data.WriteString16(rating)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "removeBlockedRating"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "removeBlockedRating")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -618,7 +693,12 @@ func (p *TvInputManagerProxy) CreateSession(
 	_data.WriteInt32(seq)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "createSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "createSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -641,7 +721,12 @@ func (p *TvInputManagerProxy) ReleaseSession(
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "releaseSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "releaseSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -663,7 +748,12 @@ func (p *TvInputManagerProxy) GetClientPid(
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteString16(sessionId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "getClientPid"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getClientPid")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -691,7 +781,12 @@ func (p *TvInputManagerProxy) GetClientPriority(
 	_data.WriteInt32(useCase)
 	_data.WriteString16(sessionId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "getClientPriority"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getClientPriority")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -717,7 +812,12 @@ func (p *TvInputManagerProxy) GetClientUserId(
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteString16(sessionId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "getClientUserId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getClientUserId")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -744,7 +844,12 @@ func (p *TvInputManagerProxy) SetMainSession(
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "setMainSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "setMainSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -768,7 +873,12 @@ func (p *TvInputManagerProxy) SetSurface(
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "setSurface"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "setSurface")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -797,7 +907,12 @@ func (p *TvInputManagerProxy) DispatchSurfaceChanged(
 	_data.WriteInt32(height)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "dispatchSurfaceChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "dispatchSurfaceChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -822,7 +937,12 @@ func (p *TvInputManagerProxy) SetVolume(
 	_data.WriteFloat32(volume)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "setVolume"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "setVolume")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -853,7 +973,12 @@ func (p *TvInputManagerProxy) Tune(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "tune"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "tune")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -878,7 +1003,12 @@ func (p *TvInputManagerProxy) SetCaptionEnabled(
 	_data.WriteBool(enabled)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "setCaptionEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "setCaptionEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -905,7 +1035,12 @@ func (p *TvInputManagerProxy) SelectTrack(
 	_data.WriteString16(trackId)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "selectTrack"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "selectTrack")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -932,7 +1067,12 @@ func (p *TvInputManagerProxy) SelectAudioPresentation(
 	_data.WriteInt32(programId)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "selectAudioPresentation"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "selectAudioPresentation")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -957,7 +1097,12 @@ func (p *TvInputManagerProxy) SetInteractiveAppNotificationEnabled(
 	_data.WriteBool(enabled)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "setInteractiveAppNotificationEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "setInteractiveAppNotificationEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -986,7 +1131,12 @@ func (p *TvInputManagerProxy) SendAppPrivateCommand(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "sendAppPrivateCommand"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "sendAppPrivateCommand")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1015,7 +1165,12 @@ func (p *TvInputManagerProxy) CreateOverlayView(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "createOverlayView"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "createOverlayView")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1042,7 +1197,12 @@ func (p *TvInputManagerProxy) RelayoutOverlayView(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "relayoutOverlayView"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "relayoutOverlayView")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1065,7 +1225,12 @@ func (p *TvInputManagerProxy) RemoveOverlayView(
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "removeOverlayView"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "removeOverlayView")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1090,7 +1255,12 @@ func (p *TvInputManagerProxy) UnblockContent(
 	_data.WriteString16(unblockedRating)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "unblockContent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "unblockContent")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1117,7 +1287,12 @@ func (p *TvInputManagerProxy) TimeShiftPlay(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftPlay"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftPlay")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1140,7 +1315,12 @@ func (p *TvInputManagerProxy) TimeShiftPause(
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftPause"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftPause")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1163,7 +1343,12 @@ func (p *TvInputManagerProxy) TimeShiftResume(
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftResume"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftResume")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1188,7 +1373,12 @@ func (p *TvInputManagerProxy) TimeShiftSeekTo(
 	_data.WriteInt64(timeMs)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftSeekTo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftSeekTo")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1215,7 +1405,12 @@ func (p *TvInputManagerProxy) TimeShiftSetPlaybackParams(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftSetPlaybackParams"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftSetPlaybackParams")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1240,7 +1435,12 @@ func (p *TvInputManagerProxy) TimeShiftSetMode(
 	_data.WriteInt32(mode)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftSetMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftSetMode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1265,7 +1465,12 @@ func (p *TvInputManagerProxy) TimeShiftEnablePositionTracking(
 	_data.WriteBool(enable)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftEnablePositionTracking"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftEnablePositionTracking")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1287,7 +1492,12 @@ func (p *TvInputManagerProxy) GetCurrentTunedInfos(
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "getCurrentTunedInfos"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getCurrentTunedInfos")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1331,7 +1541,12 @@ func (p *TvInputManagerProxy) StartRecording(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "startRecording"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "startRecording")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1354,7 +1569,12 @@ func (p *TvInputManagerProxy) StopRecording(
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "stopRecording"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "stopRecording")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1381,7 +1601,12 @@ func (p *TvInputManagerProxy) PauseRecording(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "pauseRecording"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "pauseRecording")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1408,7 +1633,12 @@ func (p *TvInputManagerProxy) ResumeRecording(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "resumeRecording"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "resumeRecording")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1431,7 +1661,12 @@ func (p *TvInputManagerProxy) ResumePlayback(
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "resumePlayback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "resumePlayback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1456,7 +1691,12 @@ func (p *TvInputManagerProxy) StopPlayback(
 	_data.WriteInt32(mode)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "stopPlayback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "stopPlayback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1483,7 +1723,12 @@ func (p *TvInputManagerProxy) RequestBroadcastInfo(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "requestBroadcastInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "requestBroadcastInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1508,7 +1753,12 @@ func (p *TvInputManagerProxy) RemoveBroadcastInfo(
 	_data.WriteInt32(id)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "removeBroadcastInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "removeBroadcastInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1535,7 +1785,12 @@ func (p *TvInputManagerProxy) RequestAd(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "requestAd"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "requestAd")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1562,7 +1817,12 @@ func (p *TvInputManagerProxy) NotifyAdBufferReady(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "notifyAdBufferReady"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "notifyAdBufferReady")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1591,7 +1851,12 @@ func (p *TvInputManagerProxy) NotifyTvMessage(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "notifyTvMessage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "notifyTvMessage")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1618,7 +1883,12 @@ func (p *TvInputManagerProxy) SetTvMessageEnabled(
 	_data.WriteBool(enabled)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "setTvMessageEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "setTvMessageEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1638,7 +1908,12 @@ func (p *TvInputManagerProxy) GetHardwareList(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "getHardwareList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getHardwareList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1685,7 +1960,12 @@ func (p *TvInputManagerProxy) AcquireTvInputHardware(
 	_data.WriteString16(tvInputSessionId)
 	_data.WriteInt32(priorityHint)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "acquireTvInputHardware"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "acquireTvInputHardware")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1715,7 +1995,12 @@ func (p *TvInputManagerProxy) ReleaseTvInputHardware(
 	_data.WriteStrongBinder(hardware.AsBinder().Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "releaseTvInputHardware"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "releaseTvInputHardware")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1739,7 +2024,12 @@ func (p *TvInputManagerProxy) GetAvailableTvStreamConfigList(
 	_data.WriteString16(inputId)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "getAvailableTvStreamConfigList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getAvailableTvStreamConfigList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1781,7 +2071,12 @@ func (p *TvInputManagerProxy) CaptureFrame(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "captureFrame"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "captureFrame")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1807,7 +2102,12 @@ func (p *TvInputManagerProxy) IsSingleSessionActive(
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "isSingleSessionActive"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "isSingleSessionActive")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1831,7 +2131,12 @@ func (p *TvInputManagerProxy) GetDvbDeviceList(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "getDvbDeviceList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getDvbDeviceList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1870,7 +2175,12 @@ func (p *TvInputManagerProxy) OpenDvbDevice(
 	}
 	_data.WriteInt32(device)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "openDvbDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "openDvbDevice")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1899,7 +2209,12 @@ func (p *TvInputManagerProxy) SendTvInputNotifyIntent(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "sendTvInputNotifyIntent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "sendTvInputNotifyIntent")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1924,7 +2239,12 @@ func (p *TvInputManagerProxy) RequestChannelBrowsable(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "requestChannelBrowsable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "requestChannelBrowsable")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1945,7 +2265,12 @@ func (p *TvInputManagerProxy) AddHardwareDevice(
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteInt32(deviceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "addHardwareDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "addHardwareDevice")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1966,7 +2291,12 @@ func (p *TvInputManagerProxy) RemoveHardwareDevice(
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteInt32(deviceId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "removeHardwareDevice"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "removeHardwareDevice")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -1991,7 +2321,12 @@ func (p *TvInputManagerProxy) SetVideoFrozen(
 	_data.WriteBool(isFrozen)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "setVideoFrozen"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "setVideoFrozen")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -2020,7 +2355,12 @@ func (p *TvInputManagerProxy) NotifyTvAdSessionData(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputManager, "notifyTvAdSessionData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "notifyTvAdSessionData")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

@@ -53,7 +53,12 @@ func (p *PlatformCompatNativeProxy) ReportChangeByPackageName(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPlatformCompatNative, "reportChangeByPackageName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPlatformCompatNative, "reportChangeByPackageName")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -76,7 +81,12 @@ func (p *PlatformCompatNativeProxy) ReportChangeByUid(
 	_data.WriteInt64(changeId)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPlatformCompatNative, "reportChangeByUid"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPlatformCompatNative, "reportChangeByUid")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -102,7 +112,12 @@ func (p *PlatformCompatNativeProxy) IsChangeEnabledByPackageName(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPlatformCompatNative, "isChangeEnabledByPackageName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPlatformCompatNative, "isChangeEnabledByPackageName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -130,7 +145,12 @@ func (p *PlatformCompatNativeProxy) IsChangeEnabledByUid(
 	_data.WriteInt64(changeId)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPlatformCompatNative, "isChangeEnabledByUid"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPlatformCompatNative, "isChangeEnabledByUid")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

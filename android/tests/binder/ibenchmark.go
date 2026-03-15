@@ -53,7 +53,12 @@ func (p *BenchmarkProxy) SendVec(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBenchmark, "sendVec"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBenchmark, "sendVec")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -96,7 +101,12 @@ func (p *BenchmarkProxy) SendBinderVec(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBenchmark, "sendBinderVec"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBenchmark, "sendBinderVec")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

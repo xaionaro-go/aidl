@@ -65,7 +65,12 @@ func (p *BurstProxy) ExecuteSynchronously(
 	_data.WriteInt64(deadlineNs)
 	_data.WriteInt64(loopTimeoutDurationNs)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBurst, "executeSynchronously"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBurst, "executeSynchronously")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -89,7 +94,12 @@ func (p *BurstProxy) ReleaseMemoryResource(
 	_data.WriteInterfaceToken(DescriptorIBurst)
 	_data.WriteInt64(memoryIdentifierToken)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBurst, "releaseMemoryResource"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBurst, "releaseMemoryResource")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -128,7 +138,12 @@ func (p *BurstProxy) ExecuteSynchronouslyWithConfig(
 	}
 	_data.WriteInt64(deadlineNs)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBurst, "executeSynchronouslyWithConfig"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBurst, "executeSynchronouslyWithConfig")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

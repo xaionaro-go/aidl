@@ -47,7 +47,12 @@ func (p *WindowIdProxy) RegisterFocusObserver(
 	_data.WriteInterfaceToken(DescriptorIWindowId)
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindowId, "registerFocusObserver"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindowId, "registerFocusObserver")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -68,7 +73,12 @@ func (p *WindowIdProxy) UnregisterFocusObserver(
 	_data.WriteInterfaceToken(DescriptorIWindowId)
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindowId, "unregisterFocusObserver"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindowId, "unregisterFocusObserver")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -88,7 +98,12 @@ func (p *WindowIdProxy) IsFocused(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWindowId, "isFocused"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWindowId, "isFocused")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

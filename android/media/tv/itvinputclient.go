@@ -113,7 +113,12 @@ func (p *TvInputClientProxy) OnSessionCreated(
 	}
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onSessionCreated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onSessionCreated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -125,7 +130,12 @@ func (p *TvInputClientProxy) OnSessionReleased(
 	_data.WriteInterfaceToken(DescriptorITvInputClient)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onSessionReleased"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onSessionReleased")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -143,7 +153,12 @@ func (p *TvInputClientProxy) OnSessionEvent(
 	}
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onSessionEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onSessionEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -159,7 +174,12 @@ func (p *TvInputClientProxy) OnChannelRetuned(
 	}
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onChannelRetuned"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onChannelRetuned")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -182,7 +202,12 @@ func (p *TvInputClientProxy) OnAudioPresentationsChanged(
 	}
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onAudioPresentationsChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onAudioPresentationsChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -198,7 +223,12 @@ func (p *TvInputClientProxy) OnAudioPresentationSelected(
 	_data.WriteInt32(programId)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onAudioPresentationSelected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onAudioPresentationSelected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -221,7 +251,12 @@ func (p *TvInputClientProxy) OnTracksChanged(
 	}
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onTracksChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onTracksChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -237,7 +272,12 @@ func (p *TvInputClientProxy) OnTrackSelected(
 	_data.WriteString16(trackId)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onTrackSelected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onTrackSelected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -249,7 +289,12 @@ func (p *TvInputClientProxy) OnVideoAvailable(
 	_data.WriteInterfaceToken(DescriptorITvInputClient)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onVideoAvailable"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onVideoAvailable")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -263,7 +308,12 @@ func (p *TvInputClientProxy) OnVideoUnavailable(
 	_data.WriteInt32(reason)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onVideoUnavailable"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onVideoUnavailable")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -277,7 +327,12 @@ func (p *TvInputClientProxy) OnVideoFreezeUpdated(
 	_data.WriteBool(isFrozen)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onVideoFreezeUpdated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onVideoFreezeUpdated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -289,7 +344,12 @@ func (p *TvInputClientProxy) OnContentAllowed(
 	_data.WriteInterfaceToken(DescriptorITvInputClient)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onContentAllowed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onContentAllowed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -303,7 +363,12 @@ func (p *TvInputClientProxy) OnContentBlocked(
 	_data.WriteString16(rating)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onContentBlocked"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onContentBlocked")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -323,7 +388,12 @@ func (p *TvInputClientProxy) OnLayoutSurface(
 	_data.WriteInt32(bottom)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onLayoutSurface"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onLayoutSurface")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -337,7 +407,12 @@ func (p *TvInputClientProxy) OnTimeShiftStatusChanged(
 	_data.WriteInt32(status)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onTimeShiftStatusChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onTimeShiftStatusChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -351,7 +426,12 @@ func (p *TvInputClientProxy) OnTimeShiftStartPositionChanged(
 	_data.WriteInt64(timeMs)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onTimeShiftStartPositionChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onTimeShiftStartPositionChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -365,7 +445,12 @@ func (p *TvInputClientProxy) OnTimeShiftCurrentPositionChanged(
 	_data.WriteInt64(timeMs)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onTimeShiftCurrentPositionChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onTimeShiftCurrentPositionChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -381,7 +466,12 @@ func (p *TvInputClientProxy) OnAitInfoUpdated(
 	}
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onAitInfoUpdated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onAitInfoUpdated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -395,7 +485,12 @@ func (p *TvInputClientProxy) OnSignalStrength(
 	_data.WriteInt32(stength)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onSignalStrength"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onSignalStrength")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -409,7 +504,12 @@ func (p *TvInputClientProxy) OnCueingMessageAvailability(
 	_data.WriteBool(available)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onCueingMessageAvailability"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onCueingMessageAvailability")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -423,7 +523,12 @@ func (p *TvInputClientProxy) OnTimeShiftMode(
 	_data.WriteInt32(mode)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onTimeShiftMode"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onTimeShiftMode")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -444,7 +549,12 @@ func (p *TvInputClientProxy) OnAvailableSpeeds(
 	}
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onAvailableSpeeds"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onAvailableSpeeds")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -462,7 +572,12 @@ func (p *TvInputClientProxy) OnTvMessage(
 	}
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onTvMessage"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onTvMessage")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -478,7 +593,12 @@ func (p *TvInputClientProxy) OnTuned(
 	}
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onTuned"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onTuned")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -494,7 +614,12 @@ func (p *TvInputClientProxy) OnRecordingStopped(
 	}
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onRecordingStopped"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onRecordingStopped")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -508,7 +633,12 @@ func (p *TvInputClientProxy) OnError(
 	_data.WriteInt32(error_)
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -524,7 +654,12 @@ func (p *TvInputClientProxy) OnBroadcastInfoResponse(
 	}
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onBroadcastInfoResponse"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onBroadcastInfoResponse")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -540,7 +675,12 @@ func (p *TvInputClientProxy) OnAdResponse(
 	}
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onAdResponse"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onAdResponse")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -556,7 +696,12 @@ func (p *TvInputClientProxy) OnAdBufferConsumed(
 	}
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onAdBufferConsumed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onAdBufferConsumed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -574,6 +719,11 @@ func (p *TvInputClientProxy) OnTvInputSessionData(
 	}
 	_data.WriteInt32(seq)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvInputClient, "onTvInputSessionData"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvInputClient, "onTvInputSessionData")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

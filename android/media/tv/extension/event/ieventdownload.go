@@ -49,7 +49,12 @@ func (p *EventDownloadProxy) CreateSession(
 	}
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEventDownload, "createSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEventDownload, "createSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

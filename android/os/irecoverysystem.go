@@ -62,7 +62,12 @@ func (p *RecoverySystemProxy) AllocateSpaceForUpdate(
 	_data.WriteInterfaceToken(DescriptorIRecoverySystem)
 	_data.WriteString16(packageFilePath)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecoverySystem, "allocateSpaceForUpdate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecoverySystem, "allocateSpaceForUpdate")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -90,7 +95,12 @@ func (p *RecoverySystemProxy) Uncrypt(
 	_data.WriteString16(packageFile)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecoverySystem, "uncrypt"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecoverySystem, "uncrypt")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -116,7 +126,12 @@ func (p *RecoverySystemProxy) SetupBcb(
 	_data.WriteInterfaceToken(DescriptorIRecoverySystem)
 	_data.WriteString16(command)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecoverySystem, "setupBcb"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecoverySystem, "setupBcb")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -140,7 +155,12 @@ func (p *RecoverySystemProxy) ClearBcb(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecoverySystem)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecoverySystem, "clearBcb"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecoverySystem, "clearBcb")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -165,7 +185,12 @@ func (p *RecoverySystemProxy) RebootRecoveryWithCommand(
 	_data.WriteInterfaceToken(DescriptorIRecoverySystem)
 	_data.WriteString16(command)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecoverySystem, "rebootRecoveryWithCommand"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecoverySystem, "rebootRecoveryWithCommand")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -188,7 +213,12 @@ func (p *RecoverySystemProxy) RequestLskf(
 	_data.WriteInterfaceToken(DescriptorIRecoverySystem)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecoverySystem, "requestLskf"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecoverySystem, "requestLskf")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -214,7 +244,12 @@ func (p *RecoverySystemProxy) ClearLskf(
 	_data.WriteInterfaceToken(DescriptorIRecoverySystem)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecoverySystem, "clearLskf"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecoverySystem, "clearLskf")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -240,7 +275,12 @@ func (p *RecoverySystemProxy) IsLskfCaptured(
 	_data.WriteInterfaceToken(DescriptorIRecoverySystem)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecoverySystem, "isLskfCaptured"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecoverySystem, "isLskfCaptured")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -268,7 +308,12 @@ func (p *RecoverySystemProxy) RebootWithLskfAssumeSlotSwitch(
 	_data.WriteString16(packageName)
 	_data.WriteString16(reason)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecoverySystem, "rebootWithLskfAssumeSlotSwitch"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecoverySystem, "rebootWithLskfAssumeSlotSwitch")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -298,7 +343,12 @@ func (p *RecoverySystemProxy) RebootWithLskf(
 	_data.WriteString16(reason)
 	_data.WriteBool(slotSwitch)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIRecoverySystem, "rebootWithLskf"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIRecoverySystem, "rebootWithLskf")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

@@ -65,7 +65,12 @@ func (p *SecureElementProxy) CloseChannel(
 	_data.WriteInterfaceToken(DescriptorISecureElement)
 	_data.WritePaddedByte(channelNumber)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISecureElement, "closeChannel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISecureElement, "closeChannel")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -85,7 +90,12 @@ func (p *SecureElementProxy) GetAtr(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISecureElement)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISecureElement, "getAtr"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISecureElement, "getAtr")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -120,7 +130,12 @@ func (p *SecureElementProxy) Init(
 	_data.WriteInterfaceToken(DescriptorISecureElement)
 	_data.WriteStrongBinder(clientCallback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISecureElement, "init"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISecureElement, "init")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -140,7 +155,12 @@ func (p *SecureElementProxy) IsCardPresent(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISecureElement)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISecureElement, "isCardPresent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISecureElement, "isCardPresent")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -175,7 +195,12 @@ func (p *SecureElementProxy) OpenBasicChannel(
 	}
 	_data.WritePaddedByte(p2)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISecureElement, "openBasicChannel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISecureElement, "openBasicChannel")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -220,7 +245,12 @@ func (p *SecureElementProxy) OpenLogicalChannel(
 	}
 	_data.WritePaddedByte(p2)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISecureElement, "openLogicalChannel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISecureElement, "openLogicalChannel")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -242,7 +272,12 @@ func (p *SecureElementProxy) Reset(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISecureElement)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISecureElement, "reset"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISecureElement, "reset")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -271,7 +306,12 @@ func (p *SecureElementProxy) Transmit(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISecureElement, "transmit"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISecureElement, "transmit")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

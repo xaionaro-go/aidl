@@ -58,7 +58,12 @@ func (p *CameraDeviceCallbackProxy) Notify(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraDeviceCallback, "notify"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraDeviceCallback, "notify")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -88,7 +93,12 @@ func (p *CameraDeviceCallbackProxy) ProcessCaptureResult(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraDeviceCallback, "processCaptureResult"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraDeviceCallback, "processCaptureResult")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -120,7 +130,12 @@ func (p *CameraDeviceCallbackProxy) RequestStreamBuffers(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraDeviceCallback, "requestStreamBuffers"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraDeviceCallback, "requestStreamBuffers")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -167,7 +182,12 @@ func (p *CameraDeviceCallbackProxy) ReturnStreamBuffers(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraDeviceCallback, "returnStreamBuffers"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraDeviceCallback, "returnStreamBuffers")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

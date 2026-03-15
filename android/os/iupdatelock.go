@@ -47,7 +47,12 @@ func (p *UpdateLockProxy) AcquireUpdateLock(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteString16(tag)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUpdateLock, "acquireUpdateLock"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUpdateLock, "acquireUpdateLock")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -68,7 +73,12 @@ func (p *UpdateLockProxy) ReleaseUpdateLock(
 	_data.WriteInterfaceToken(DescriptorIUpdateLock)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUpdateLock, "releaseUpdateLock"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUpdateLock, "releaseUpdateLock")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

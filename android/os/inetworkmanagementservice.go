@@ -100,7 +100,12 @@ func (p *NetworkManagementServiceProxy) RegisterObserver(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "registerObserver"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "registerObserver")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -120,7 +125,12 @@ func (p *NetworkManagementServiceProxy) UnregisterObserver(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "unregisterObserver"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "unregisterObserver")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -140,7 +150,12 @@ func (p *NetworkManagementServiceProxy) ListInterfaces(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "listInterfaces"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "listInterfaces")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -176,7 +191,12 @@ func (p *NetworkManagementServiceProxy) GetInterfaceConfig(
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 	_data.WriteString16(iface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "getInterfaceConfig"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "getInterfaceConfig")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -198,7 +218,12 @@ func (p *NetworkManagementServiceProxy) SetInterfaceConfig(
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 	_data.WriteString16(iface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "setInterfaceConfig"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "setInterfaceConfig")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -219,7 +244,12 @@ func (p *NetworkManagementServiceProxy) ClearInterfaceAddresses(
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 	_data.WriteString16(iface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "clearInterfaceAddresses"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "clearInterfaceAddresses")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -240,7 +270,12 @@ func (p *NetworkManagementServiceProxy) SetInterfaceDown(
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 	_data.WriteString16(iface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "setInterfaceDown"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "setInterfaceDown")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -261,7 +296,12 @@ func (p *NetworkManagementServiceProxy) SetInterfaceUp(
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 	_data.WriteString16(iface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "setInterfaceUp"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "setInterfaceUp")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -284,7 +324,12 @@ func (p *NetworkManagementServiceProxy) SetInterfaceIpv6PrivacyExtensions(
 	_data.WriteString16(iface)
 	_data.WriteBool(enable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "setInterfaceIpv6PrivacyExtensions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "setInterfaceIpv6PrivacyExtensions")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -305,7 +350,12 @@ func (p *NetworkManagementServiceProxy) DisableIpv6(
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 	_data.WriteString16(iface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "disableIpv6"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "disableIpv6")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -326,7 +376,12 @@ func (p *NetworkManagementServiceProxy) EnableIpv6(
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 	_data.WriteString16(iface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "enableIpv6"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "enableIpv6")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -349,7 +404,12 @@ func (p *NetworkManagementServiceProxy) SetIPv6AddrGenMode(
 	_data.WriteString16(iface)
 	_data.WriteInt32(mode)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "setIPv6AddrGenMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "setIPv6AddrGenMode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -368,7 +428,12 @@ func (p *NetworkManagementServiceProxy) Shutdown(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "shutdown"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "shutdown")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -391,7 +456,12 @@ func (p *NetworkManagementServiceProxy) SetInterfaceQuota(
 	_data.WriteString16(iface)
 	_data.WriteInt64(quotaBytes)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "setInterfaceQuota"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "setInterfaceQuota")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -412,7 +482,12 @@ func (p *NetworkManagementServiceProxy) RemoveInterfaceQuota(
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 	_data.WriteString16(iface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "removeInterfaceQuota"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "removeInterfaceQuota")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -435,7 +510,12 @@ func (p *NetworkManagementServiceProxy) SetInterfaceAlert(
 	_data.WriteString16(iface)
 	_data.WriteInt64(alertBytes)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "setInterfaceAlert"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "setInterfaceAlert")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -456,7 +536,12 @@ func (p *NetworkManagementServiceProxy) RemoveInterfaceAlert(
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 	_data.WriteString16(iface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "removeInterfaceAlert"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "removeInterfaceAlert")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -479,7 +564,12 @@ func (p *NetworkManagementServiceProxy) SetUidOnMeteredNetworkDenylist(
 	_data.WriteInt32(uid)
 	_data.WriteBool(enable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "setUidOnMeteredNetworkDenylist"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "setUidOnMeteredNetworkDenylist")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -502,7 +592,12 @@ func (p *NetworkManagementServiceProxy) SetUidOnMeteredNetworkAllowlist(
 	_data.WriteInt32(uid)
 	_data.WriteBool(enable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "setUidOnMeteredNetworkAllowlist"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "setUidOnMeteredNetworkAllowlist")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -524,7 +619,12 @@ func (p *NetworkManagementServiceProxy) SetDataSaverModeEnabled(
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 	_data.WriteBool(enable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "setDataSaverModeEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "setDataSaverModeEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -551,7 +651,12 @@ func (p *NetworkManagementServiceProxy) SetUidCleartextNetworkPolicy(
 	_data.WriteInt32(uid)
 	_data.WriteInt32(policy)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "setUidCleartextNetworkPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "setUidCleartextNetworkPolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -571,7 +676,12 @@ func (p *NetworkManagementServiceProxy) IsBandwidthControlEnabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "isBandwidthControlEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "isBandwidthControlEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -596,7 +706,12 @@ func (p *NetworkManagementServiceProxy) SetFirewallEnabled(
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "setFirewallEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "setFirewallEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -616,7 +731,12 @@ func (p *NetworkManagementServiceProxy) IsFirewallEnabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "isFirewallEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "isFirewallEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -645,7 +765,12 @@ func (p *NetworkManagementServiceProxy) SetFirewallUidRule(
 	_data.WriteInt32(uid)
 	_data.WriteInt32(rule)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "setFirewallUidRule"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "setFirewallUidRule")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -684,7 +809,12 @@ func (p *NetworkManagementServiceProxy) SetFirewallUidRules(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "setFirewallUidRules"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "setFirewallUidRules")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -707,7 +837,12 @@ func (p *NetworkManagementServiceProxy) SetFirewallChainEnabled(
 	_data.WriteInt32(chain)
 	_data.WriteBool(enable)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "setFirewallChainEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "setFirewallChainEnabled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -728,7 +863,12 @@ func (p *NetworkManagementServiceProxy) AllowProtect(
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "allowProtect"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "allowProtect")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -749,7 +889,12 @@ func (p *NetworkManagementServiceProxy) DenyProtect(
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "denyProtect"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "denyProtect")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -771,7 +916,12 @@ func (p *NetworkManagementServiceProxy) IsNetworkRestricted(
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkManagementService, "isNetworkRestricted"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "isNetworkRestricted")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

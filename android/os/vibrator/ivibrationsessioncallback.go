@@ -47,7 +47,12 @@ func (p *VibrationSessionCallbackProxy) OnStarted(
 	_data.WriteInterfaceToken(DescriptorIVibrationSessionCallback)
 	_data.WriteStrongBinder(session.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrationSessionCallback, "onStarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrationSessionCallback, "onStarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -57,7 +62,12 @@ func (p *VibrationSessionCallbackProxy) OnFinishing(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrationSessionCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrationSessionCallback, "onFinishing"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrationSessionCallback, "onFinishing")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -69,6 +79,11 @@ func (p *VibrationSessionCallbackProxy) OnFinished(
 	_data.WriteInterfaceToken(DescriptorIVibrationSessionCallback)
 	_data.WriteInt32(status)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIVibrationSessionCallback, "onFinished"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIVibrationSessionCallback, "onFinished")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

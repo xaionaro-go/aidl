@@ -42,7 +42,12 @@ func (p *ComponentInterfaceProxy) GetConfigurable(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIComponentInterface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIComponentInterface, "getConfigurable"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIComponentInterface, "getConfigurable")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

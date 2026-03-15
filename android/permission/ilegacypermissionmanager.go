@@ -68,7 +68,12 @@ func (p *LegacyPermissionManagerProxy) CheckDeviceIdentifierAccess(
 	_data.WriteInt32(pid)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILegacyPermissionManager, "checkDeviceIdentifierAccess"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILegacyPermissionManager, "checkDeviceIdentifierAccess")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -102,7 +107,12 @@ func (p *LegacyPermissionManagerProxy) CheckPhoneNumberAccess(
 	_data.WriteInt32(pid)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILegacyPermissionManager, "checkPhoneNumberAccess"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILegacyPermissionManager, "checkPhoneNumberAccess")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -136,7 +146,12 @@ func (p *LegacyPermissionManagerProxy) GrantDefaultPermissionsToEnabledCarrierAp
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILegacyPermissionManager, "grantDefaultPermissionsToEnabledCarrierApps"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILegacyPermissionManager, "grantDefaultPermissionsToEnabledCarrierApps")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -166,7 +181,12 @@ func (p *LegacyPermissionManagerProxy) GrantDefaultPermissionsToEnabledImsServic
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILegacyPermissionManager, "grantDefaultPermissionsToEnabledImsServices"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILegacyPermissionManager, "grantDefaultPermissionsToEnabledImsServices")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -196,7 +216,12 @@ func (p *LegacyPermissionManagerProxy) GrantDefaultPermissionsToEnabledTelephony
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILegacyPermissionManager, "grantDefaultPermissionsToEnabledTelephonyDataServices"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILegacyPermissionManager, "grantDefaultPermissionsToEnabledTelephonyDataServices")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -226,7 +251,12 @@ func (p *LegacyPermissionManagerProxy) RevokeDefaultPermissionsFromDisabledTelep
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILegacyPermissionManager, "revokeDefaultPermissionsFromDisabledTelephonyDataServices"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILegacyPermissionManager, "revokeDefaultPermissionsFromDisabledTelephonyDataServices")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -249,7 +279,12 @@ func (p *LegacyPermissionManagerProxy) GrantDefaultPermissionsToActiveLuiApp(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILegacyPermissionManager, "grantDefaultPermissionsToActiveLuiApp"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILegacyPermissionManager, "grantDefaultPermissionsToActiveLuiApp")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -279,7 +314,12 @@ func (p *LegacyPermissionManagerProxy) RevokeDefaultPermissionsFromLuiApps(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILegacyPermissionManager, "revokeDefaultPermissionsFromLuiApps"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILegacyPermissionManager, "revokeDefaultPermissionsFromLuiApps")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -302,7 +342,12 @@ func (p *LegacyPermissionManagerProxy) GrantDefaultPermissionsToCarrierServiceAp
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorILegacyPermissionManager, "grantDefaultPermissionsToCarrierServiceApp"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorILegacyPermissionManager, "grantDefaultPermissionsToCarrierServiceApp")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

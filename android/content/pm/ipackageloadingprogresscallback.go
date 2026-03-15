@@ -43,6 +43,11 @@ func (p *PackageLoadingProgressCallbackProxy) OnPackageLoadingProgressChanged(
 	_data.WriteInterfaceToken(DescriptorIPackageLoadingProgressCallback)
 	_data.WriteFloat32(progress)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageLoadingProgressCallback, "onPackageLoadingProgressChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageLoadingProgressCallback, "onPackageLoadingProgressChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

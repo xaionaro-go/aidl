@@ -58,7 +58,12 @@ func (p *TaskFragmentOrganizerControllerProxy) RegisterOrganizer(
 	_data.WriteStrongBinder(organizer.AsBinder().Handle())
 	_data.WriteBool(isSystemOrganizer)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITaskFragmentOrganizerController, "registerOrganizer"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITaskFragmentOrganizerController, "registerOrganizer")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -79,7 +84,12 @@ func (p *TaskFragmentOrganizerControllerProxy) UnregisterOrganizer(
 	_data.WriteInterfaceToken(DescriptorITaskFragmentOrganizerController)
 	_data.WriteStrongBinder(organizer.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITaskFragmentOrganizerController, "unregisterOrganizer"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITaskFragmentOrganizerController, "unregisterOrganizer")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -101,7 +111,12 @@ func (p *TaskFragmentOrganizerControllerProxy) RegisterRemoteAnimations(
 	_data.WriteInterfaceToken(DescriptorITaskFragmentOrganizerController)
 	_data.WriteStrongBinder(organizer.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITaskFragmentOrganizerController, "registerRemoteAnimations"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITaskFragmentOrganizerController, "registerRemoteAnimations")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -122,7 +137,12 @@ func (p *TaskFragmentOrganizerControllerProxy) UnregisterRemoteAnimations(
 	_data.WriteInterfaceToken(DescriptorITaskFragmentOrganizerController)
 	_data.WriteStrongBinder(organizer.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITaskFragmentOrganizerController, "unregisterRemoteAnimations"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITaskFragmentOrganizerController, "unregisterRemoteAnimations")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -144,7 +164,12 @@ func (p *TaskFragmentOrganizerControllerProxy) SetSavedState(
 	_data.WriteInterfaceToken(DescriptorITaskFragmentOrganizerController)
 	_data.WriteStrongBinder(organizer.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITaskFragmentOrganizerController, "setSavedState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITaskFragmentOrganizerController, "setSavedState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -173,7 +198,12 @@ func (p *TaskFragmentOrganizerControllerProxy) OnTransactionHandled(
 	_data.WriteInt32(transitionType)
 	_data.WriteBool(shouldApplyIndependently)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITaskFragmentOrganizerController, "onTransactionHandled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITaskFragmentOrganizerController, "onTransactionHandled")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -204,7 +234,12 @@ func (p *TaskFragmentOrganizerControllerProxy) ApplyTransaction(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITaskFragmentOrganizerController, "applyTransaction"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITaskFragmentOrganizerController, "applyTransaction")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

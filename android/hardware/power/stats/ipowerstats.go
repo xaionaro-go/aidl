@@ -52,7 +52,12 @@ func (p *PowerStatsProxy) GetPowerEntityInfo(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPowerStats)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPowerStats, "getPowerEntityInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPowerStats, "getPowerEntityInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -94,7 +99,12 @@ func (p *PowerStatsProxy) GetStateResidency(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPowerStats, "getStateResidency"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPowerStats, "getStateResidency")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -127,7 +137,12 @@ func (p *PowerStatsProxy) GetEnergyConsumerInfo(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPowerStats)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPowerStats, "getEnergyConsumerInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPowerStats, "getEnergyConsumerInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -169,7 +184,12 @@ func (p *PowerStatsProxy) GetEnergyConsumed(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPowerStats, "getEnergyConsumed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPowerStats, "getEnergyConsumed")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -202,7 +222,12 @@ func (p *PowerStatsProxy) GetEnergyMeterInfo(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPowerStats)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPowerStats, "getEnergyMeterInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPowerStats, "getEnergyMeterInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -244,7 +269,12 @@ func (p *PowerStatsProxy) ReadEnergyMeter(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPowerStats, "readEnergyMeter"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPowerStats, "readEnergyMeter")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

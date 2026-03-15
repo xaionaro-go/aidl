@@ -72,7 +72,12 @@ func (p *HotwordRecognitionStatusCallbackProxy) OnKeyphraseDetected(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onKeyphraseDetected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onKeyphraseDetected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -83,7 +88,12 @@ func (p *HotwordRecognitionStatusCallbackProxy) OnKeyphraseDetectedFromExternalS
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHotwordRecognitionStatusCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onKeyphraseDetectedFromExternalSource"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onKeyphraseDetectedFromExternalSource")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -97,7 +107,12 @@ func (p *HotwordRecognitionStatusCallbackProxy) OnGenericSoundTriggerDetected(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onGenericSoundTriggerDetected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onGenericSoundTriggerDetected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -108,7 +123,12 @@ func (p *HotwordRecognitionStatusCallbackProxy) OnRejected(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHotwordRecognitionStatusCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onRejected"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onRejected")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -119,7 +139,12 @@ func (p *HotwordRecognitionStatusCallbackProxy) OnHotwordDetectionServiceFailure
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHotwordRecognitionStatusCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onHotwordDetectionServiceFailure"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onHotwordDetectionServiceFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -130,7 +155,12 @@ func (p *HotwordRecognitionStatusCallbackProxy) OnVisualQueryDetectionServiceFai
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHotwordRecognitionStatusCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onVisualQueryDetectionServiceFailure"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onVisualQueryDetectionServiceFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -141,7 +171,12 @@ func (p *HotwordRecognitionStatusCallbackProxy) OnSoundTriggerFailure(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHotwordRecognitionStatusCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onSoundTriggerFailure"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onSoundTriggerFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -153,7 +188,12 @@ func (p *HotwordRecognitionStatusCallbackProxy) OnUnknownFailure(
 	_data.WriteInterfaceToken(DescriptorIHotwordRecognitionStatusCallback)
 	_data.WriteString16(errorMessage)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onUnknownFailure"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onUnknownFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -163,7 +203,12 @@ func (p *HotwordRecognitionStatusCallbackProxy) OnRecognitionPaused(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHotwordRecognitionStatusCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onRecognitionPaused"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onRecognitionPaused")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -173,7 +218,12 @@ func (p *HotwordRecognitionStatusCallbackProxy) OnRecognitionResumed(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHotwordRecognitionStatusCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onRecognitionResumed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onRecognitionResumed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -185,7 +235,12 @@ func (p *HotwordRecognitionStatusCallbackProxy) OnStatusReported(
 	_data.WriteInterfaceToken(DescriptorIHotwordRecognitionStatusCallback)
 	_data.WriteInt32(status)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onStatusReported"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onStatusReported")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -195,7 +250,12 @@ func (p *HotwordRecognitionStatusCallbackProxy) OnProcessRestarted(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHotwordRecognitionStatusCallback)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onProcessRestarted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onProcessRestarted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -211,6 +271,11 @@ func (p *HotwordRecognitionStatusCallbackProxy) OnOpenFile(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onOpenFile"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIHotwordRecognitionStatusCallback, "onOpenFile")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

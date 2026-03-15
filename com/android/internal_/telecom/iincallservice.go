@@ -77,7 +77,12 @@ func (p *InCallServiceProxy) SetInCallAdapter(
 	_data.WriteInterfaceToken(DescriptorIInCallService)
 	_data.WriteStrongBinder(inCallAdapter.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInCallService, "setInCallAdapter"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "setInCallAdapter")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -91,7 +96,12 @@ func (p *InCallServiceProxy) AddCall(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInCallService, "addCall"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "addCall")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -105,7 +115,12 @@ func (p *InCallServiceProxy) UpdateCall(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInCallService, "updateCall"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "updateCall")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -119,7 +134,12 @@ func (p *InCallServiceProxy) SetPostDial(
 	_data.WriteString16(callId)
 	_data.WriteString16(remaining)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInCallService, "setPostDial"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "setPostDial")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -133,7 +153,12 @@ func (p *InCallServiceProxy) SetPostDialWait(
 	_data.WriteString16(callId)
 	_data.WriteString16(remaining)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInCallService, "setPostDialWait"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "setPostDialWait")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -147,7 +172,12 @@ func (p *InCallServiceProxy) OnCallAudioStateChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInCallService, "onCallAudioStateChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "onCallAudioStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -161,7 +191,12 @@ func (p *InCallServiceProxy) OnCallEndpointChanged(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInCallService, "onCallEndpointChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "onCallEndpointChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -182,7 +217,12 @@ func (p *InCallServiceProxy) OnAvailableCallEndpointsChanged(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInCallService, "onAvailableCallEndpointsChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "onAvailableCallEndpointsChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -194,7 +234,12 @@ func (p *InCallServiceProxy) OnMuteStateChanged(
 	_data.WriteInterfaceToken(DescriptorIInCallService)
 	_data.WriteBool(isMuted)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInCallService, "onMuteStateChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "onMuteStateChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -206,7 +251,12 @@ func (p *InCallServiceProxy) BringToForeground(
 	_data.WriteInterfaceToken(DescriptorIInCallService)
 	_data.WriteBool(showDialpad)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInCallService, "bringToForeground"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "bringToForeground")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -218,7 +268,12 @@ func (p *InCallServiceProxy) OnCanAddCallChanged(
 	_data.WriteInterfaceToken(DescriptorIInCallService)
 	_data.WriteBool(canAddCall)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInCallService, "onCanAddCallChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "onCanAddCallChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -228,7 +283,12 @@ func (p *InCallServiceProxy) SilenceRinger(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInCallService)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInCallService, "silenceRinger"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "silenceRinger")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -246,7 +306,12 @@ func (p *InCallServiceProxy) OnConnectionEvent(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInCallService, "onConnectionEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "onConnectionEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -260,7 +325,12 @@ func (p *InCallServiceProxy) OnRttUpgradeRequest(
 	_data.WriteString16(callId)
 	_data.WriteInt32(id)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInCallService, "onRttUpgradeRequest"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "onRttUpgradeRequest")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -274,7 +344,12 @@ func (p *InCallServiceProxy) OnRttInitiationFailure(
 	_data.WriteString16(callId)
 	_data.WriteInt32(reason)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInCallService, "onRttInitiationFailure"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "onRttInitiationFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -288,7 +363,12 @@ func (p *InCallServiceProxy) OnHandoverFailed(
 	_data.WriteString16(callId)
 	_data.WriteInt32(error_)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInCallService, "onHandoverFailed"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "onHandoverFailed")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -300,6 +380,11 @@ func (p *InCallServiceProxy) OnHandoverComplete(
 	_data.WriteInterfaceToken(DescriptorIInCallService)
 	_data.WriteString16(callId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInCallService, "onHandoverComplete"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "onHandoverComplete")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

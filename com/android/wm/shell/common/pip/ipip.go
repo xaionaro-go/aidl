@@ -79,7 +79,12 @@ func (p *PipProxy) StartSwipePipToHome(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPip, "startSwipePipToHome"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPip, "startSwipePipToHome")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -123,7 +128,12 @@ func (p *PipProxy) StopSwipePipToHome(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPip, "stopSwipePipToHome"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPip, "stopSwipePipToHome")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -139,7 +149,12 @@ func (p *PipProxy) AbortSwipePipToHome(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPip, "abortSwipePipToHome"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPip, "abortSwipePipToHome")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -151,7 +166,12 @@ func (p *PipProxy) SetPipAnimationListener(
 	_data.WriteInterfaceToken(DescriptorIPip)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPip, "setPipAnimationListener"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPip, "setPipAnimationListener")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -165,7 +185,12 @@ func (p *PipProxy) SetShelfHeight(
 	_data.WriteBool(visible)
 	_data.WriteInt32(shelfHeight)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPip, "setShelfHeight"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPip, "setShelfHeight")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -175,7 +200,12 @@ func (p *PipProxy) SetPipAnimationTypeToAlpha(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPip)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPip, "setPipAnimationTypeToAlpha"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPip, "setPipAnimationTypeToAlpha")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -189,7 +219,12 @@ func (p *PipProxy) SetLauncherKeepClearAreaHeight(
 	_data.WriteBool(visible)
 	_data.WriteInt32(height)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPip, "setLauncherKeepClearAreaHeight"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPip, "setLauncherKeepClearAreaHeight")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -201,6 +236,11 @@ func (p *PipProxy) SetLauncherAppIconSize(
 	_data.WriteInterfaceToken(DescriptorIPip)
 	_data.WriteInt32(iconSizePx)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPip, "setLauncherAppIconSize"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPip, "setLauncherAppIconSize")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

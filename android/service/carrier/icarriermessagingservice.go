@@ -64,7 +64,12 @@ func (p *CarrierMessagingServiceProxy) FilterSms(
 	_data.WriteInt32(subId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICarrierMessagingService, "filterSms"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICarrierMessagingService, "filterSms")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -84,7 +89,12 @@ func (p *CarrierMessagingServiceProxy) SendTextSms(
 	_data.WriteInt32(sendSmsFlag)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICarrierMessagingService, "sendTextSms"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICarrierMessagingService, "sendTextSms")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -113,7 +123,12 @@ func (p *CarrierMessagingServiceProxy) SendDataSms(
 	_data.WriteInt32(sendSmsFlag)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICarrierMessagingService, "sendDataSms"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICarrierMessagingService, "sendDataSms")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -140,7 +155,12 @@ func (p *CarrierMessagingServiceProxy) SendMultipartTextSms(
 	_data.WriteInt32(sendSmsFlag)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICarrierMessagingService, "sendMultipartTextSms"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICarrierMessagingService, "sendMultipartTextSms")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -162,7 +182,12 @@ func (p *CarrierMessagingServiceProxy) SendMms(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICarrierMessagingService, "sendMms"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICarrierMessagingService, "sendMms")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -184,6 +209,11 @@ func (p *CarrierMessagingServiceProxy) DownloadMms(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICarrierMessagingService, "downloadMms"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICarrierMessagingService, "downloadMms")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

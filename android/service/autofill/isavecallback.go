@@ -44,7 +44,12 @@ func (p *SaveCallbackProxy) OnSuccess(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISaveCallback)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISaveCallback, "onSuccess"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISaveCallback, "onSuccess")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -64,7 +69,12 @@ func (p *SaveCallbackProxy) OnFailure(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISaveCallback)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorISaveCallback, "onFailure"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorISaveCallback, "onFailure")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

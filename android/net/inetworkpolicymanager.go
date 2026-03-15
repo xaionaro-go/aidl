@@ -95,7 +95,12 @@ func (p *NetworkPolicyManagerProxy) SetUidPolicy(
 	_data.WriteInt32(uid)
 	_data.WriteInt32(policy)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "setUidPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "setUidPolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -118,7 +123,12 @@ func (p *NetworkPolicyManagerProxy) AddUidPolicy(
 	_data.WriteInt32(uid)
 	_data.WriteInt32(policy)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "addUidPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "addUidPolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -141,7 +151,12 @@ func (p *NetworkPolicyManagerProxy) RemoveUidPolicy(
 	_data.WriteInt32(uid)
 	_data.WriteInt32(policy)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "removeUidPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "removeUidPolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -163,7 +178,12 @@ func (p *NetworkPolicyManagerProxy) GetUidPolicy(
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getUidPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getUidPolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -189,7 +209,12 @@ func (p *NetworkPolicyManagerProxy) GetUidsWithPolicy(
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 	_data.WriteInt32(policy)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getUidsWithPolicy"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getUidsWithPolicy")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -224,7 +249,12 @@ func (p *NetworkPolicyManagerProxy) RegisterListener(
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "registerListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "registerListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -245,7 +275,12 @@ func (p *NetworkPolicyManagerProxy) UnregisterListener(
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "unregisterListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "unregisterListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -275,7 +310,12 @@ func (p *NetworkPolicyManagerProxy) SetNetworkPolicies(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "setNetworkPolicies"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "setNetworkPolicies")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -297,7 +337,12 @@ func (p *NetworkPolicyManagerProxy) GetNetworkPolicies(
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getNetworkPolicies"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getNetworkPolicies")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -330,7 +375,12 @@ func (p *NetworkPolicyManagerProxy) SnoozeLimit(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "snoozeLimit"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "snoozeLimit")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -351,7 +401,12 @@ func (p *NetworkPolicyManagerProxy) SetRestrictBackground(
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 	_data.WriteBool(restrictBackground)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "setRestrictBackground"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "setRestrictBackground")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -371,7 +426,12 @@ func (p *NetworkPolicyManagerProxy) GetRestrictBackground(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getRestrictBackground"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getRestrictBackground")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -395,7 +455,12 @@ func (p *NetworkPolicyManagerProxy) GetRestrictBackgroundByCaller(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getRestrictBackgroundByCaller"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getRestrictBackgroundByCaller")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -421,7 +486,12 @@ func (p *NetworkPolicyManagerProxy) GetRestrictBackgroundStatus(
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getRestrictBackgroundStatus"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getRestrictBackgroundStatus")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -446,7 +516,12 @@ func (p *NetworkPolicyManagerProxy) SetDeviceIdleMode(
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "setDeviceIdleMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "setDeviceIdleMode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -469,7 +544,12 @@ func (p *NetworkPolicyManagerProxy) SetWifiMeteredOverride(
 	_data.WriteString16(networkId)
 	_data.WriteInt32(meteredOverride)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "setWifiMeteredOverride"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "setWifiMeteredOverride")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -490,7 +570,12 @@ func (p *NetworkPolicyManagerProxy) GetMultipathPreference(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getMultipathPreference"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getMultipathPreference")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -515,7 +600,12 @@ func (p *NetworkPolicyManagerProxy) GetSubscriptionPlan(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getSubscriptionPlan"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getSubscriptionPlan")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -534,7 +624,12 @@ func (p *NetworkPolicyManagerProxy) NotifyStatsProviderWarningOrLimitReached(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "notifyStatsProviderWarningOrLimitReached"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "notifyStatsProviderWarningOrLimitReached")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -558,7 +653,12 @@ func (p *NetworkPolicyManagerProxy) GetSubscriptionPlans(
 	_data.WriteInt32(subId)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getSubscriptionPlans"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getSubscriptionPlans")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -599,7 +699,12 @@ func (p *NetworkPolicyManagerProxy) SetSubscriptionPlans(
 	_data.WriteInt64(expirationDurationMillis)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "setSubscriptionPlans"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "setSubscriptionPlans")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -621,7 +726,12 @@ func (p *NetworkPolicyManagerProxy) GetSubscriptionPlansOwner(
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 	_data.WriteInt32(subId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getSubscriptionPlansOwner"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getSubscriptionPlansOwner")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -663,7 +773,12 @@ func (p *NetworkPolicyManagerProxy) SetSubscriptionOverride(
 	_data.WriteInt64(expirationDurationMillis)
 	_data.WriteString16(callingPackage)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "setSubscriptionOverride"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "setSubscriptionOverride")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -684,7 +799,12 @@ func (p *NetworkPolicyManagerProxy) FactoryReset(
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 	_data.WriteString16(subscriber)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "factoryReset"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "factoryReset")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -708,7 +828,12 @@ func (p *NetworkPolicyManagerProxy) IsUidNetworkingBlocked(
 	_data.WriteInt32(uid)
 	_data.WriteBool(meteredNetwork)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "isUidNetworkingBlocked"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "isUidNetworkingBlocked")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -734,7 +859,12 @@ func (p *NetworkPolicyManagerProxy) IsUidRestrictedOnMeteredNetworks(
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 	_data.WriteInt32(uid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorINetworkPolicyManager, "isUidRestrictedOnMeteredNetworks"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "isUidRestrictedOnMeteredNetworks")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

@@ -57,7 +57,12 @@ func (p *AccessibilityInteractionConnectionCallbackProxy) SetFindAccessibilityNo
 	}
 	_data.WriteInt32(interactionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAccessibilityInteractionConnectionCallback, "setFindAccessibilityNodeInfoResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityInteractionConnectionCallback, "setFindAccessibilityNodeInfoResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -80,7 +85,12 @@ func (p *AccessibilityInteractionConnectionCallbackProxy) SetFindAccessibilityNo
 	}
 	_data.WriteInt32(interactionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAccessibilityInteractionConnectionCallback, "setFindAccessibilityNodeInfosResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityInteractionConnectionCallback, "setFindAccessibilityNodeInfosResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -103,7 +113,12 @@ func (p *AccessibilityInteractionConnectionCallbackProxy) SetPrefetchAccessibili
 	}
 	_data.WriteInt32(interactionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAccessibilityInteractionConnectionCallback, "setPrefetchAccessibilityNodeInfoResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityInteractionConnectionCallback, "setPrefetchAccessibilityNodeInfoResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -117,7 +132,12 @@ func (p *AccessibilityInteractionConnectionCallbackProxy) SetPerformAccessibilit
 	_data.WriteBool(succeeded)
 	_data.WriteInt32(interactionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAccessibilityInteractionConnectionCallback, "setPerformAccessibilityActionResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityInteractionConnectionCallback, "setPerformAccessibilityActionResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -131,7 +151,12 @@ func (p *AccessibilityInteractionConnectionCallbackProxy) SendTakeScreenshotOfWi
 	_data.WriteInt32(errorCode)
 	_data.WriteInt32(interactionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAccessibilityInteractionConnectionCallback, "sendTakeScreenshotOfWindowError"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityInteractionConnectionCallback, "sendTakeScreenshotOfWindowError")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -145,6 +170,11 @@ func (p *AccessibilityInteractionConnectionCallbackProxy) SendAttachOverlayResul
 	_data.WriteInt32(result)
 	_data.WriteInt32(interactionId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAccessibilityInteractionConnectionCallback, "sendAttachOverlayResult"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityInteractionConnectionCallback, "sendAttachOverlayResult")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

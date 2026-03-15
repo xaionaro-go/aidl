@@ -76,7 +76,12 @@ func (p *GameManagerServiceProxy) GetGameMode(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameManagerService, "getGameMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "getGameMode")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -105,7 +110,12 @@ func (p *GameManagerServiceProxy) SetGameMode(
 	_data.WriteInt32(gameMode)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameManagerService, "setGameMode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "setGameMode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -129,7 +139,12 @@ func (p *GameManagerServiceProxy) GetAvailableGameModes(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameManagerService, "getAvailableGameModes"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "getAvailableGameModes")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -167,7 +182,12 @@ func (p *GameManagerServiceProxy) IsAngleEnabled(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameManagerService, "isAngleEnabled"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "isAngleEnabled")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -194,7 +214,12 @@ func (p *GameManagerServiceProxy) NotifyGraphicsEnvironmentSetup(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameManagerService, "notifyGraphicsEnvironmentSetup"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "notifyGraphicsEnvironmentSetup")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -221,7 +246,12 @@ func (p *GameManagerServiceProxy) SetGameState(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameManagerService, "setGameState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "setGameState")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -245,7 +275,12 @@ func (p *GameManagerServiceProxy) GetGameModeInfo(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameManagerService, "getGameModeInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "getGameModeInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -269,7 +304,12 @@ func (p *GameManagerServiceProxy) SetGameServiceProvider(
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
 	_data.WriteString16(packageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameManagerService, "setGameServiceProvider"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "setGameServiceProvider")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -296,7 +336,12 @@ func (p *GameManagerServiceProxy) UpdateResolutionScalingFactor(
 	_data.WriteFloat32(scalingFactor)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameManagerService, "updateResolutionScalingFactor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "updateResolutionScalingFactor")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -322,7 +367,12 @@ func (p *GameManagerServiceProxy) GetResolutionScalingFactor(
 	_data.WriteInt32(gameMode)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameManagerService, "getResolutionScalingFactor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "getResolutionScalingFactor")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -353,7 +403,12 @@ func (p *GameManagerServiceProxy) UpdateCustomGameModeConfiguration(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameManagerService, "updateCustomGameModeConfiguration"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "updateCustomGameModeConfiguration")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -374,7 +429,12 @@ func (p *GameManagerServiceProxy) AddGameModeListener(
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
 	_data.WriteStrongBinder(gameModeListener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameManagerService, "addGameModeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "addGameModeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -395,7 +455,12 @@ func (p *GameManagerServiceProxy) RemoveGameModeListener(
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
 	_data.WriteStrongBinder(gameModeListener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameManagerService, "removeGameModeListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "removeGameModeListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -416,7 +481,12 @@ func (p *GameManagerServiceProxy) AddGameStateListener(
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
 	_data.WriteStrongBinder(gameStateListener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameManagerService, "addGameStateListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "addGameStateListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -437,7 +507,12 @@ func (p *GameManagerServiceProxy) RemoveGameStateListener(
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
 	_data.WriteStrongBinder(gameStateListener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameManagerService, "removeGameStateListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "removeGameStateListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -458,7 +533,12 @@ func (p *GameManagerServiceProxy) ToggleGameDefaultFrameRate(
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
 	_data.WriteBool(isEnabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGameManagerService, "toggleGameDefaultFrameRate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "toggleGameDefaultFrameRate")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

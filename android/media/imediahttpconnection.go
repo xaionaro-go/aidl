@@ -56,7 +56,12 @@ func (p *MediaHTTPConnectionProxy) Connect(
 	_data.WriteString16(uri)
 	_data.WriteString16(headers)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaHTTPConnection, "connect"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaHTTPConnection, "connect")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -80,7 +85,12 @@ func (p *MediaHTTPConnectionProxy) Disconnect(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaHTTPConnection)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaHTTPConnection, "disconnect"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaHTTPConnection, "disconnect")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -104,7 +114,12 @@ func (p *MediaHTTPConnectionProxy) ReadAt(
 	_data.WriteInt64(offset)
 	_data.WriteInt32(size)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaHTTPConnection, "readAt"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaHTTPConnection, "readAt")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -128,7 +143,12 @@ func (p *MediaHTTPConnectionProxy) GetSize(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaHTTPConnection)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaHTTPConnection, "getSize"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaHTTPConnection, "getSize")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -152,7 +172,12 @@ func (p *MediaHTTPConnectionProxy) GetMIMEType(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaHTTPConnection)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaHTTPConnection, "getMIMEType"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaHTTPConnection, "getMIMEType")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -176,7 +201,12 @@ func (p *MediaHTTPConnectionProxy) GetUri(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaHTTPConnection)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaHTTPConnection, "getUri"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaHTTPConnection, "getUri")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

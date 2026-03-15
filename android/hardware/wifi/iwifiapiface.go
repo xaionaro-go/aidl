@@ -54,7 +54,12 @@ func (p *WifiApIfaceProxy) GetName(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiApIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiApIface, "getName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiApIface, "getName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -78,7 +83,12 @@ func (p *WifiApIfaceProxy) GetBridgedInstances(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiApIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiApIface, "getBridgedInstances"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiApIface, "getBridgedInstances")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -112,7 +122,12 @@ func (p *WifiApIfaceProxy) GetFactoryMacAddress(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiApIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiApIface, "getFactoryMacAddress"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiApIface, "getFactoryMacAddress")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -154,7 +169,12 @@ func (p *WifiApIfaceProxy) SetCountryCode(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiApIface, "setCountryCode"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiApIface, "setCountryCode")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -173,7 +193,12 @@ func (p *WifiApIfaceProxy) ResetToFactoryMacAddress(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiApIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiApIface, "resetToFactoryMacAddress"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiApIface, "resetToFactoryMacAddress")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -201,7 +226,12 @@ func (p *WifiApIfaceProxy) SetMacAddress(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiApIface, "setMacAddress"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiApIface, "setMacAddress")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -221,7 +251,12 @@ func (p *WifiApIfaceProxy) UsesMlo(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiApIface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIWifiApIface, "usesMlo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIWifiApIface, "usesMlo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

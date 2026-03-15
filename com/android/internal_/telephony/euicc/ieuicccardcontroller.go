@@ -91,7 +91,12 @@ func (p *EuiccCardControllerProxy) GetAllProfiles(
 	_data.WriteString16(cardId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "getAllProfiles"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getAllProfiles")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -109,7 +114,12 @@ func (p *EuiccCardControllerProxy) GetProfile(
 	_data.WriteString16(iccid)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "getProfile"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getProfile")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -127,7 +137,12 @@ func (p *EuiccCardControllerProxy) GetEnabledProfile(
 	_data.WriteInt32(portIndex)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "getEnabledProfile"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getEnabledProfile")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -147,7 +162,12 @@ func (p *EuiccCardControllerProxy) DisableProfile(
 	_data.WriteBool(refresh)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "disableProfile"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "disableProfile")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -169,7 +189,12 @@ func (p *EuiccCardControllerProxy) SwitchToProfile(
 	_data.WriteBool(refresh)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "switchToProfile"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "switchToProfile")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -189,7 +214,12 @@ func (p *EuiccCardControllerProxy) SetNickname(
 	_data.WriteString16(nickname)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "setNickname"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "setNickname")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -207,7 +237,12 @@ func (p *EuiccCardControllerProxy) DeleteProfile(
 	_data.WriteString16(iccid)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "deleteProfile"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "deleteProfile")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -225,7 +260,12 @@ func (p *EuiccCardControllerProxy) ResetMemory(
 	_data.WriteInt32(options)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "resetMemory"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "resetMemory")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -241,7 +281,12 @@ func (p *EuiccCardControllerProxy) GetDefaultSmdpAddress(
 	_data.WriteString16(cardId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "getDefaultSmdpAddress"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getDefaultSmdpAddress")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -257,7 +302,12 @@ func (p *EuiccCardControllerProxy) GetSmdsAddress(
 	_data.WriteString16(cardId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "getSmdsAddress"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getSmdsAddress")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -275,7 +325,12 @@ func (p *EuiccCardControllerProxy) SetDefaultSmdpAddress(
 	_data.WriteString16(address)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "setDefaultSmdpAddress"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "setDefaultSmdpAddress")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -291,7 +346,12 @@ func (p *EuiccCardControllerProxy) GetRulesAuthTable(
 	_data.WriteString16(cardId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "getRulesAuthTable"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getRulesAuthTable")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -307,7 +367,12 @@ func (p *EuiccCardControllerProxy) GetEuiccChallenge(
 	_data.WriteString16(cardId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "getEuiccChallenge"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getEuiccChallenge")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -323,7 +388,12 @@ func (p *EuiccCardControllerProxy) GetEuiccInfo1(
 	_data.WriteString16(cardId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "getEuiccInfo1"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getEuiccInfo1")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -339,7 +409,12 @@ func (p *EuiccCardControllerProxy) GetEuiccInfo2(
 	_data.WriteString16(cardId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "getEuiccInfo2"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getEuiccInfo2")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -393,7 +468,12 @@ func (p *EuiccCardControllerProxy) AuthenticateServer(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "authenticateServer"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "authenticateServer")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -445,7 +525,12 @@ func (p *EuiccCardControllerProxy) PrepareDownload(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "prepareDownload"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "prepareDownload")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -470,7 +555,12 @@ func (p *EuiccCardControllerProxy) LoadBoundProfilePackage(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "loadBoundProfilePackage"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "loadBoundProfilePackage")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -497,7 +587,12 @@ func (p *EuiccCardControllerProxy) CancelSession(
 	_data.WriteInt32(reason)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "cancelSession"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "cancelSession")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -515,7 +610,12 @@ func (p *EuiccCardControllerProxy) ListNotifications(
 	_data.WriteInt32(events)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "listNotifications"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "listNotifications")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -533,7 +633,12 @@ func (p *EuiccCardControllerProxy) RetrieveNotificationList(
 	_data.WriteInt32(events)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "retrieveNotificationList"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "retrieveNotificationList")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -551,7 +656,12 @@ func (p *EuiccCardControllerProxy) RetrieveNotification(
 	_data.WriteInt32(seqNumber)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "retrieveNotification"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "retrieveNotification")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -569,6 +679,11 @@ func (p *EuiccCardControllerProxy) RemoveNotificationFromList(
 	_data.WriteInt32(seqNumber)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEuiccCardController, "removeNotificationFromList"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "removeNotificationFromList")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

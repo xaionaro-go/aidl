@@ -64,7 +64,12 @@ func (p *BluetoothLmpEventCallbackProxy) OnEventGenerated(
 	_data.WritePaddedByte(byte(lmpEventId))
 	_data.WriteInt32(int32(connEventCounter))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothLmpEventCallback, "onEventGenerated"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothLmpEventCallback, "onEventGenerated")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -85,7 +90,12 @@ func (p *BluetoothLmpEventCallbackProxy) OnRegistered(
 	_data.WriteInterfaceToken(DescriptorIBluetoothLmpEventCallback)
 	_data.WriteBool(status)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIBluetoothLmpEventCallback, "onRegistered"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothLmpEventCallback, "onRegistered")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

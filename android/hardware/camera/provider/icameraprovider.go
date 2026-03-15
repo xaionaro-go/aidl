@@ -64,7 +64,12 @@ func (p *CameraProviderProxy) SetCallback(
 	_data.WriteInterfaceToken(DescriptorICameraProvider)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraProvider, "setCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraProvider, "setCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -84,7 +89,12 @@ func (p *CameraProviderProxy) GetVendorTags(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraProvider)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraProvider, "getVendorTags"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraProvider, "getVendorTags")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -117,7 +127,12 @@ func (p *CameraProviderProxy) GetCameraIdList(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraProvider)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraProvider, "getCameraIdList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraProvider, "getCameraIdList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -153,7 +168,12 @@ func (p *CameraProviderProxy) GetCameraDeviceInterface(
 	_data.WriteInterfaceToken(DescriptorICameraProvider)
 	_data.WriteString16(cameraDeviceName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraProvider, "getCameraDeviceInterface"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraProvider, "getCameraDeviceInterface")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -179,7 +199,12 @@ func (p *CameraProviderProxy) NotifyDeviceStateChange(
 	_data.WriteInterfaceToken(DescriptorICameraProvider)
 	_data.WriteInt64(deviceState)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraProvider, "notifyDeviceStateChange"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraProvider, "notifyDeviceStateChange")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -199,7 +224,12 @@ func (p *CameraProviderProxy) GetConcurrentCameraIds(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraProvider)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraProvider, "getConcurrentCameraIds"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraProvider, "getConcurrentCameraIds")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -243,7 +273,12 @@ func (p *CameraProviderProxy) IsConcurrentStreamCombinationSupported(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorICameraProvider, "isConcurrentStreamCombinationSupported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorICameraProvider, "isConcurrentStreamCombinationSupported")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

@@ -97,7 +97,12 @@ func (p *ShortcutServiceProxy) SetDynamicShortcuts(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "setDynamicShortcuts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "setDynamicShortcuts")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -129,7 +134,12 @@ func (p *ShortcutServiceProxy) AddDynamicShortcuts(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "addDynamicShortcuts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "addDynamicShortcuts")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -165,7 +175,12 @@ func (p *ShortcutServiceProxy) RemoveDynamicShortcuts(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "removeDynamicShortcuts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "removeDynamicShortcuts")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -188,7 +203,12 @@ func (p *ShortcutServiceProxy) RemoveAllDynamicShortcuts(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "removeAllDynamicShortcuts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "removeAllDynamicShortcuts")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -216,7 +236,12 @@ func (p *ShortcutServiceProxy) UpdateShortcuts(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "updateShortcuts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "updateShortcuts")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -252,7 +277,12 @@ func (p *ShortcutServiceProxy) RequestPinShortcut(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "requestPinShortcut"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "requestPinShortcut")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -283,7 +313,12 @@ func (p *ShortcutServiceProxy) CreateShortcutResultIntent(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "createShortcutResultIntent"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "createShortcutResultIntent")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -318,7 +353,12 @@ func (p *ShortcutServiceProxy) DisableShortcuts(
 	_data.WriteInt32(disabledMessageResId)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "disableShortcuts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "disableShortcuts")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -350,7 +390,12 @@ func (p *ShortcutServiceProxy) EnableShortcuts(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "enableShortcuts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "enableShortcuts")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -374,7 +419,12 @@ func (p *ShortcutServiceProxy) GetMaxShortcutCountPerActivity(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "getMaxShortcutCountPerActivity"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "getMaxShortcutCountPerActivity")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -402,7 +452,12 @@ func (p *ShortcutServiceProxy) GetRemainingCallCount(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "getRemainingCallCount"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "getRemainingCallCount")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -430,7 +485,12 @@ func (p *ShortcutServiceProxy) GetRateLimitResetTime(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "getRateLimitResetTime"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "getRateLimitResetTime")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -458,7 +518,12 @@ func (p *ShortcutServiceProxy) GetIconMaxDimensions(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "getIconMaxDimensions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "getIconMaxDimensions")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -487,7 +552,12 @@ func (p *ShortcutServiceProxy) ReportShortcutUsed(
 	_data.WriteString16(shortcutId)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "reportShortcutUsed"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "reportShortcutUsed")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -506,7 +576,12 @@ func (p *ShortcutServiceProxy) ResetThrottling(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "resetThrottling"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "resetThrottling")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -529,7 +604,12 @@ func (p *ShortcutServiceProxy) OnApplicationActive(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "onApplicationActive"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "onApplicationActive")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -542,7 +622,12 @@ func (p *ShortcutServiceProxy) GetBackupPayload(
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteInt32(user)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "getBackupPayload"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "getBackupPayload")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -586,7 +671,12 @@ func (p *ShortcutServiceProxy) ApplyRestore(
 	}
 	_data.WriteInt32(user)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "applyRestore"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "applyRestore")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -610,7 +700,12 @@ func (p *ShortcutServiceProxy) IsRequestPinItemSupported(
 	_data.WriteInt32(user)
 	_data.WriteInt32(requestType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "isRequestPinItemSupported"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "isRequestPinItemSupported")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -639,7 +734,12 @@ func (p *ShortcutServiceProxy) GetShareTargets(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "getShareTargets"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "getShareTargets")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -668,7 +768,12 @@ func (p *ShortcutServiceProxy) HasShareTargets(
 	_data.WriteString16(packageToCheck)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "hasShareTargets"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "hasShareTargets")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -704,7 +809,12 @@ func (p *ShortcutServiceProxy) RemoveLongLivedShortcuts(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "removeLongLivedShortcuts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "removeLongLivedShortcuts")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -730,7 +840,12 @@ func (p *ShortcutServiceProxy) GetShortcuts(
 	_data.WriteInt32(matchFlags)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "getShortcuts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "getShortcuts")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -760,7 +875,12 @@ func (p *ShortcutServiceProxy) PushDynamicShortcut(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIShortcutService, "pushDynamicShortcut"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "pushDynamicShortcut")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

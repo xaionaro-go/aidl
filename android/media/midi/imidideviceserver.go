@@ -58,7 +58,12 @@ func (p *MidiDeviceServerProxy) OpenInputPort(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt32(portNumber)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMidiDeviceServer, "openInputPort"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMidiDeviceServer, "openInputPort")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -82,7 +87,12 @@ func (p *MidiDeviceServerProxy) OpenOutputPort(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt32(portNumber)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMidiDeviceServer, "openOutputPort"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMidiDeviceServer, "openOutputPort")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -103,7 +113,12 @@ func (p *MidiDeviceServerProxy) ClosePort(
 	_data.WriteInterfaceToken(DescriptorIMidiDeviceServer)
 	_data.WriteStrongBinder(token.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMidiDeviceServer, "closePort"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMidiDeviceServer, "closePort")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -122,7 +137,12 @@ func (p *MidiDeviceServerProxy) CloseDevice(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiDeviceServer)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMidiDeviceServer, "closeDevice"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMidiDeviceServer, "closeDevice")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -138,7 +158,12 @@ func (p *MidiDeviceServerProxy) ConnectPorts(
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt32(outputPortNumber)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMidiDeviceServer, "connectPorts"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMidiDeviceServer, "connectPorts")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -162,7 +187,12 @@ func (p *MidiDeviceServerProxy) GetDeviceInfo(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiDeviceServer)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMidiDeviceServer, "getDeviceInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMidiDeviceServer, "getDeviceInfo")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -182,6 +212,11 @@ func (p *MidiDeviceServerProxy) SetDeviceInfo(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiDeviceServer)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMidiDeviceServer, "setDeviceInfo"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMidiDeviceServer, "setDeviceInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

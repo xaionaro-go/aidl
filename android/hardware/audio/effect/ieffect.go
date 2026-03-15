@@ -59,7 +59,12 @@ func (p *EffectProxy) Open(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEffect)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEffect, "open"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEffect, "open")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -81,7 +86,12 @@ func (p *EffectProxy) Close(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEffect)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEffect, "close"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEffect, "close")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -101,7 +111,12 @@ func (p *EffectProxy) GetDescriptor(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEffect)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEffect, "getDescriptor"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEffect, "getDescriptor")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -125,7 +140,12 @@ func (p *EffectProxy) Command(
 	_data.WriteInterfaceToken(DescriptorIEffect)
 	_data.WriteInt32(int32(commandId))
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEffect, "command"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEffect, "command")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -145,7 +165,12 @@ func (p *EffectProxy) GetState(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEffect)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEffect, "getState"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEffect, "getState")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -173,7 +198,12 @@ func (p *EffectProxy) SetParameter(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEffect, "setParameter"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEffect, "setParameter")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -194,7 +224,12 @@ func (p *EffectProxy) GetParameter(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEffect)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEffect, "getParameter"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEffect, "getParameter")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -217,7 +252,12 @@ func (p *EffectProxy) Reopen(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEffect)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIEffect, "reopen"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIEffect, "reopen")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

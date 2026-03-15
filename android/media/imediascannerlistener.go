@@ -44,6 +44,11 @@ func (p *MediaScannerListenerProxy) ScanCompleted(
 	_data.WriteInterfaceToken(DescriptorIMediaScannerListener)
 	_data.WriteString16(path)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIMediaScannerListener, "scanCompleted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIMediaScannerListener, "scanCompleted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

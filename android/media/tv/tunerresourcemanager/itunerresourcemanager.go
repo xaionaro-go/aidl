@@ -114,7 +114,12 @@ func (p *TunerResourceManagerProxy) RegisterClientProfile(
 	}
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "registerClientProfile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "registerClientProfile")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -148,7 +153,12 @@ func (p *TunerResourceManagerProxy) UnregisterClientProfile(
 	_data.WriteInterfaceToken(DescriptorITunerResourceManager)
 	_data.WriteInt32(clientId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "unregisterClientProfile"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "unregisterClientProfile")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -174,7 +184,12 @@ func (p *TunerResourceManagerProxy) UpdateClientPriority(
 	_data.WriteInt32(priority)
 	_data.WriteInt32(niceValue)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "updateClientPriority"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "updateClientPriority")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -200,7 +215,12 @@ func (p *TunerResourceManagerProxy) HasUnusedFrontend(
 	_data.WriteInterfaceToken(DescriptorITunerResourceManager)
 	_data.WriteInt32(frontendType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "hasUnusedFrontend"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "hasUnusedFrontend")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -228,7 +248,12 @@ func (p *TunerResourceManagerProxy) IsLowestPriority(
 	_data.WriteInt32(clientId)
 	_data.WriteInt32(frontendType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "isLowestPriority"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "isLowestPriority")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -262,7 +287,12 @@ func (p *TunerResourceManagerProxy) SetFrontendInfoList(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "setFrontendInfoList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "setFrontendInfoList")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -285,7 +315,12 @@ func (p *TunerResourceManagerProxy) UpdateCasInfo(
 	_data.WriteInt32(casSystemId)
 	_data.WriteInt32(maxSessionNum)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "updateCasInfo"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "updateCasInfo")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -315,7 +350,12 @@ func (p *TunerResourceManagerProxy) SetDemuxInfoList(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "setDemuxInfoList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "setDemuxInfoList")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -343,7 +383,12 @@ func (p *TunerResourceManagerProxy) SetLnbInfoList(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "setLnbInfoList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "setLnbInfoList")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -366,7 +411,12 @@ func (p *TunerResourceManagerProxy) SetResourceOwnershipRetention(
 	_data.WriteInt32(clientId)
 	_data.WriteBool(enabled)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "setResourceOwnershipRetention"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "setResourceOwnershipRetention")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -391,7 +441,12 @@ func (p *TunerResourceManagerProxy) RequestFrontend(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "requestFrontend"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "requestFrontend")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -432,7 +487,12 @@ func (p *TunerResourceManagerProxy) SetMaxNumberOfFrontends(
 	_data.WriteInt32(frontendType)
 	_data.WriteInt32(maxNum)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "setMaxNumberOfFrontends"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "setMaxNumberOfFrontends")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -458,7 +518,12 @@ func (p *TunerResourceManagerProxy) GetMaxNumberOfFrontends(
 	_data.WriteInterfaceToken(DescriptorITunerResourceManager)
 	_data.WriteInt32(frontendType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "getMaxNumberOfFrontends"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "getMaxNumberOfFrontends")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -485,7 +550,12 @@ func (p *TunerResourceManagerProxy) ShareFrontend(
 	_data.WriteInt32(selfClientId)
 	_data.WriteInt32(targetClientId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "shareFrontend"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "shareFrontend")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -511,7 +581,12 @@ func (p *TunerResourceManagerProxy) TransferOwner(
 	_data.WriteInt32(currentOwnerId)
 	_data.WriteInt32(newOwnerId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "transferOwner"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "transferOwner")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -540,7 +615,12 @@ func (p *TunerResourceManagerProxy) RequestDemux(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "requestDemux"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "requestDemux")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -582,7 +662,12 @@ func (p *TunerResourceManagerProxy) RequestDescrambler(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "requestDescrambler"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "requestDescrambler")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -624,7 +709,12 @@ func (p *TunerResourceManagerProxy) RequestCasSession(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "requestCasSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "requestCasSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -666,7 +756,12 @@ func (p *TunerResourceManagerProxy) RequestCiCam(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "requestCiCam"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "requestCiCam")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -708,7 +803,12 @@ func (p *TunerResourceManagerProxy) RequestLnb(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "requestLnb"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "requestLnb")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -748,7 +848,12 @@ func (p *TunerResourceManagerProxy) ReleaseFrontend(
 	_data.WriteInt64(frontendHandle)
 	_data.WriteInt32(clientId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "releaseFrontend"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "releaseFrontend")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -771,7 +876,12 @@ func (p *TunerResourceManagerProxy) ReleaseDemux(
 	_data.WriteInt64(demuxHandle)
 	_data.WriteInt32(clientId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "releaseDemux"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "releaseDemux")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -794,7 +904,12 @@ func (p *TunerResourceManagerProxy) ReleaseDescrambler(
 	_data.WriteInt64(descramblerHandle)
 	_data.WriteInt32(clientId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "releaseDescrambler"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "releaseDescrambler")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -817,7 +932,12 @@ func (p *TunerResourceManagerProxy) ReleaseCasSession(
 	_data.WriteInt64(casSessionHandle)
 	_data.WriteInt32(clientId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "releaseCasSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "releaseCasSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -840,7 +960,12 @@ func (p *TunerResourceManagerProxy) ReleaseCiCam(
 	_data.WriteInt64(ciCamHandle)
 	_data.WriteInt32(clientId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "releaseCiCam"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "releaseCiCam")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -863,7 +988,12 @@ func (p *TunerResourceManagerProxy) ReleaseLnb(
 	_data.WriteInt64(lnbHandle)
 	_data.WriteInt32(clientId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "releaseLnb"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "releaseLnb")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -891,7 +1021,12 @@ func (p *TunerResourceManagerProxy) IsHigherPriority(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "isHigherPriority"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "isHigherPriority")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -916,7 +1051,12 @@ func (p *TunerResourceManagerProxy) StoreResourceMap(
 	_data.WriteInterfaceToken(DescriptorITunerResourceManager)
 	_data.WriteInt32(resourceType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "storeResourceMap"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "storeResourceMap")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -937,7 +1077,12 @@ func (p *TunerResourceManagerProxy) ClearResourceMap(
 	_data.WriteInterfaceToken(DescriptorITunerResourceManager)
 	_data.WriteInt32(resourceType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "clearResourceMap"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "clearResourceMap")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -958,7 +1103,12 @@ func (p *TunerResourceManagerProxy) RestoreResourceMap(
 	_data.WriteInterfaceToken(DescriptorITunerResourceManager)
 	_data.WriteInt32(resourceType)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "restoreResourceMap"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "restoreResourceMap")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -982,7 +1132,12 @@ func (p *TunerResourceManagerProxy) AcquireLock(
 	_data.WriteInt32(clientId)
 	_data.WriteInt64(clientThreadId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "acquireLock"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "acquireLock")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1008,7 +1163,12 @@ func (p *TunerResourceManagerProxy) ReleaseLock(
 	_data.WriteInterfaceToken(DescriptorITunerResourceManager)
 	_data.WriteInt32(clientId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "releaseLock"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "releaseLock")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1036,7 +1196,12 @@ func (p *TunerResourceManagerProxy) GetClientPriority(
 	_data.WriteInt32(useCase)
 	_data.WriteInt32(pid)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "getClientPriority"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "getClientPriority")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -1064,7 +1229,12 @@ func (p *TunerResourceManagerProxy) GetConfigPriority(
 	_data.WriteInt32(useCase)
 	_data.WriteBool(isForeground)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITunerResourceManager, "getConfigPriority"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "getConfigPriority")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

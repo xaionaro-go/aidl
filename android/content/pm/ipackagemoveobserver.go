@@ -46,7 +46,12 @@ func (p *PackageMoveObserverProxy) OnCreated(
 	_data.WriteInterfaceToken(DescriptorIPackageMoveObserver)
 	_data.WriteInt32(moveId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageMoveObserver, "onCreated"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageMoveObserver, "onCreated")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -62,6 +67,11 @@ func (p *PackageMoveObserverProxy) OnStatusChanged(
 	_data.WriteInt32(status)
 	_data.WriteInt64(estMillis)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageMoveObserver, "onStatusChanged"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageMoveObserver, "onStatusChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

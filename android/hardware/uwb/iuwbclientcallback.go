@@ -52,7 +52,12 @@ func (p *UwbClientCallbackProxy) OnUciMessage(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUwbClientCallback, "onUciMessage"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUwbClientCallback, "onUciMessage")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -66,6 +71,11 @@ func (p *UwbClientCallbackProxy) OnHalEvent(
 	_data.WriteInt32(int32(event))
 	_data.WriteInt32(int32(status))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIUwbClientCallback, "onHalEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIUwbClientCallback, "onHalEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

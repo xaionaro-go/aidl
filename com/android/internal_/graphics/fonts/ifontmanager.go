@@ -46,7 +46,12 @@ func (p *FontManagerProxy) GetFontConfig(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFontManager)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFontManager, "getFontConfig"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFontManager, "getFontConfig")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -82,7 +87,12 @@ func (p *FontManagerProxy) UpdateFontFamily(
 	}
 	_data.WriteInt32(baseVersion)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFontManager, "updateFontFamily"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFontManager, "updateFontFamily")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

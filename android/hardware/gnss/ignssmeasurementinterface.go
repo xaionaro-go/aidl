@@ -52,7 +52,12 @@ func (p *GnssMeasurementInterfaceProxy) SetCallback(
 	_data.WriteBool(enableFullTracking)
 	_data.WriteBool(enableCorrVecOutputs)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGnssMeasurementInterface, "setCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGnssMeasurementInterface, "setCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -71,7 +76,12 @@ func (p *GnssMeasurementInterfaceProxy) Close(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGnssMeasurementInterface)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGnssMeasurementInterface, "close"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGnssMeasurementInterface, "close")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -96,7 +106,12 @@ func (p *GnssMeasurementInterfaceProxy) SetCallbackWithOptions(
 		return _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIGnssMeasurementInterface, "setCallbackWithOptions"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIGnssMeasurementInterface, "setCallbackWithOptions")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}

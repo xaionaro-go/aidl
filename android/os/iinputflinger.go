@@ -49,7 +49,12 @@ func (p *InputFlingerProxy) CreateInputChannel(
 	_data.WriteInterfaceToken(DescriptorIInputFlinger)
 	_data.WriteString(name)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputFlinger, "createInputChannel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputFlinger, "createInputChannel")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -73,7 +78,12 @@ func (p *InputFlingerProxy) RemoveInputChannel(
 	_data.WriteInterfaceToken(DescriptorIInputFlinger)
 	_data.WriteStrongBinder(connectionToken.Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputFlinger, "removeInputChannel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputFlinger, "removeInputChannel")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -96,6 +106,11 @@ func (p *InputFlingerProxy) SetFocusedWindow(
 		return _err
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIInputFlinger, "setFocusedWindow"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIInputFlinger, "setFocusedWindow")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

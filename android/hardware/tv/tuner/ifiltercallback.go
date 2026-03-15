@@ -54,7 +54,12 @@ func (p *FilterCallbackProxy) OnFilterEvent(
 		}
 	}
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFilterCallback, "onFilterEvent"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFilterCallback, "onFilterEvent")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -66,6 +71,11 @@ func (p *FilterCallbackProxy) OnFilterStatus(
 	_data.WriteInterfaceToken(DescriptorIFilterCallback)
 	_data.WritePaddedByte(byte(status))
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIFilterCallback, "onFilterStatus"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIFilterCallback, "onFilterStatus")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

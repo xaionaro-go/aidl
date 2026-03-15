@@ -44,7 +44,12 @@ func (p *PackageDeleteObserver2Proxy) OnUserActionRequired(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageDeleteObserver2)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageDeleteObserver2, "onUserActionRequired"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageDeleteObserver2, "onUserActionRequired")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -60,6 +65,11 @@ func (p *PackageDeleteObserver2Proxy) OnPackageDeleted(
 	_data.WriteInt32(returnCode)
 	_data.WriteString16(msg)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIPackageDeleteObserver2, "onPackageDeleted"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIPackageDeleteObserver2, "onPackageDeleted")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

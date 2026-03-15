@@ -41,6 +41,11 @@ func (p *TimeZoneDetectorListenerProxy) OnChange(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITimeZoneDetectorListener)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITimeZoneDetectorListener, "onChange"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITimeZoneDetectorListener, "onChange")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

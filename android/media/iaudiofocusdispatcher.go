@@ -47,7 +47,12 @@ func (p *AudioFocusDispatcherProxy) DispatchAudioFocusChange(
 	_data.WriteInt32(focusChange)
 	_data.WriteString16(clientId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAudioFocusDispatcher, "dispatchAudioFocusChange"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAudioFocusDispatcher, "dispatchAudioFocusChange")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }
 
@@ -61,6 +66,11 @@ func (p *AudioFocusDispatcherProxy) DispatchFocusResultFromExtPolicy(
 	_data.WriteInt32(requestResult)
 	_data.WriteString16(clientId)
 
-	_, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAudioFocusDispatcher, "dispatchFocusResultFromExtPolicy"), binder.FlagOneway, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAudioFocusDispatcher, "dispatchFocusResultFromExtPolicy")
+	if _err != nil {
+		return _err
+	}
+
+	_, _err = p.remote.Transact(ctx, _code, binder.FlagOneway, _data)
 	return _err
 }

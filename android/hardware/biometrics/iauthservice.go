@@ -82,7 +82,12 @@ func (p *AuthServiceProxy) CreateTestSession(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteString16(opPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "createTestSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "createTestSession")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -109,7 +114,12 @@ func (p *AuthServiceProxy) GetSensorProperties(
 	_data.WriteInterfaceToken(DescriptorIAuthService)
 	_data.WriteString16(opPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "getSensorProperties"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "getSensorProperties")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -142,7 +152,12 @@ func (p *AuthServiceProxy) GetUiPackage(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "getUiPackage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "getUiPackage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -180,7 +195,12 @@ func (p *AuthServiceProxy) Authenticate(
 		return _result, _err
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "authenticate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "authenticate")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -209,7 +229,12 @@ func (p *AuthServiceProxy) CancelAuthentication(
 	_data.WriteString16(opPackageName)
 	_data.WriteInt64(requestId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "cancelAuthentication"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "cancelAuthentication")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -235,7 +260,12 @@ func (p *AuthServiceProxy) CanAuthenticate(
 	_data.WriteInt32(userId)
 	_data.WriteInt32(authenticators)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "canAuthenticate"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "canAuthenticate")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -263,7 +293,12 @@ func (p *AuthServiceProxy) GetLastAuthenticationTime(
 	_data.WriteInt32(userId)
 	_data.WriteInt32(authenticators)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "getLastAuthenticationTime"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "getLastAuthenticationTime")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -291,7 +326,12 @@ func (p *AuthServiceProxy) HasEnrolledBiometrics(
 	_data.WriteInt32(userId)
 	_data.WriteString16(opPackageName)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "hasEnrolledBiometrics"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "hasEnrolledBiometrics")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -316,7 +356,12 @@ func (p *AuthServiceProxy) RegisterEnabledOnKeyguardCallback(
 	_data.WriteInterfaceToken(DescriptorIAuthService)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "registerEnabledOnKeyguardCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "registerEnabledOnKeyguardCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -337,7 +382,12 @@ func (p *AuthServiceProxy) RegisterAuthenticationStateListener(
 	_data.WriteInterfaceToken(DescriptorIAuthService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "registerAuthenticationStateListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "registerAuthenticationStateListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -358,7 +408,12 @@ func (p *AuthServiceProxy) UnregisterAuthenticationStateListener(
 	_data.WriteInterfaceToken(DescriptorIAuthService)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "unregisterAuthenticationStateListener"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "unregisterAuthenticationStateListener")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -383,7 +438,12 @@ func (p *AuthServiceProxy) InvalidateAuthenticatorIds(
 	_data.WriteInt32(fromSensorId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "invalidateAuthenticatorIds"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "invalidateAuthenticatorIds")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -405,7 +465,12 @@ func (p *AuthServiceProxy) GetAuthenticatorIds(
 	_data.WriteInterfaceToken(DescriptorIAuthService)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "getAuthenticatorIds"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "getAuthenticatorIds")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -455,7 +520,12 @@ func (p *AuthServiceProxy) ResetLockoutTimeBound(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "resetLockoutTimeBound"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "resetLockoutTimeBound")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -485,7 +555,12 @@ func (p *AuthServiceProxy) ResetLockout(
 		}
 	}
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "resetLockout"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "resetLockout")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -511,7 +586,12 @@ func (p *AuthServiceProxy) GetButtonLabel(
 	_data.WriteString16(opPackageName)
 	_data.WriteInt32(authenticators)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "getButtonLabel"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "getButtonLabel")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -537,7 +617,12 @@ func (p *AuthServiceProxy) GetPromptMessage(
 	_data.WriteString16(opPackageName)
 	_data.WriteInt32(authenticators)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "getPromptMessage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "getPromptMessage")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -563,7 +648,12 @@ func (p *AuthServiceProxy) GetSettingName(
 	_data.WriteString16(opPackageName)
 	_data.WriteInt32(authenticators)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorIAuthService, "getSettingName"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "getSettingName")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}

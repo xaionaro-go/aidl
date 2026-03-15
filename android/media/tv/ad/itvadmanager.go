@@ -90,7 +90,12 @@ func (p *TvAdManagerProxy) GetTvAdServiceList(
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "getTvAdServiceList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "getTvAdServiceList")
+	if _err != nil {
+		return _result, _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _result, _err
 	}
@@ -130,7 +135,12 @@ func (p *TvAdManagerProxy) SendAppLinkCommand(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "sendAppLinkCommand"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "sendAppLinkCommand")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -159,7 +169,12 @@ func (p *TvAdManagerProxy) CreateSession(
 	_data.WriteInt32(seq)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "createSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "createSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -182,7 +197,12 @@ func (p *TvAdManagerProxy) ReleaseSession(
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "releaseSession"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "releaseSession")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -205,7 +225,12 @@ func (p *TvAdManagerProxy) StartAdService(
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "startAdService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "startAdService")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -228,7 +253,12 @@ func (p *TvAdManagerProxy) StopAdService(
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "stopAdService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "stopAdService")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -251,7 +281,12 @@ func (p *TvAdManagerProxy) ResetAdService(
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "resetAdService"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "resetAdService")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -275,7 +310,12 @@ func (p *TvAdManagerProxy) SetSurface(
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "setSurface"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "setSurface")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -304,7 +344,12 @@ func (p *TvAdManagerProxy) DispatchSurfaceChanged(
 	_data.WriteInt32(height)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "dispatchSurfaceChanged"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "dispatchSurfaceChanged")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -331,7 +376,12 @@ func (p *TvAdManagerProxy) SendCurrentVideoBounds(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "sendCurrentVideoBounds"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "sendCurrentVideoBounds")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -358,7 +408,12 @@ func (p *TvAdManagerProxy) SendCurrentChannelUri(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "sendCurrentChannelUri"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "sendCurrentChannelUri")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -392,7 +447,12 @@ func (p *TvAdManagerProxy) SendTrackInfoList(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "sendTrackInfoList"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "sendTrackInfoList")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -417,7 +477,12 @@ func (p *TvAdManagerProxy) SendCurrentTvInputId(
 	_data.WriteString16(inputId)
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "sendCurrentTvInputId"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "sendCurrentTvInputId")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -451,7 +516,12 @@ func (p *TvAdManagerProxy) SendSigningResult(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "sendSigningResult"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "sendSigningResult")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -480,7 +550,12 @@ func (p *TvAdManagerProxy) NotifyError(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "notifyError"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "notifyError")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -509,7 +584,12 @@ func (p *TvAdManagerProxy) NotifyTvMessage(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "notifyTvMessage"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "notifyTvMessage")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -532,7 +612,12 @@ func (p *TvAdManagerProxy) RegisterCallback(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "registerCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "registerCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -555,7 +640,12 @@ func (p *TvAdManagerProxy) UnregisterCallback(
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "unregisterCallback"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "unregisterCallback")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -584,7 +674,12 @@ func (p *TvAdManagerProxy) CreateMediaView(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "createMediaView"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "createMediaView")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -611,7 +706,12 @@ func (p *TvAdManagerProxy) RelayoutMediaView(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "relayoutMediaView"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "relayoutMediaView")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -634,7 +734,12 @@ func (p *TvAdManagerProxy) RemoveMediaView(
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "removeMediaView"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "removeMediaView")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
@@ -663,7 +768,12 @@ func (p *TvAdManagerProxy) NotifyTvInputSessionData(
 	}
 	_data.WriteInt32(userId)
 
-	_reply, _err := p.remote.Transact(ctx, p.remote.ResolveCode(DescriptorITvAdManager, "notifyTvInputSessionData"), 0, _data)
+	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "notifyTvInputSessionData")
+	if _err != nil {
+		return _err
+	}
+
+	_reply, _err := p.remote.Transact(ctx, _code, 0, _data)
 	if _err != nil {
 		return _err
 	}
