@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"runtime/pprof"
 	"strings"
+	"sync"
+	"sync/atomic"
 
 	"github.com/xaionaro-go/binder/tools/pkg/parcelspec"
 	"gopkg.in/yaml.v3"
@@ -46,14 +49,21 @@ func main() {
 	}
 }
 
+type fileWork struct {
+	path        string
+	packageName string
+	src         []byte
+}
+
 func run(
 	frameworksBase string,
 	outputDir string,
 ) error {
-	generated := 0
-	skipped := 0
-	extractor := parcelspec.NewJavaExtractor()
+	var generated atomic.Int64
+	var skipped atomic.Int64
 
+	// Collect files to process.
+	var files []fileWork
 	err := filepath.Walk(frameworksBase, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -78,26 +88,56 @@ func run(
 			return nil
 		}
 
-		specs := extractor.ExtractSpecs(string(src), packageName)
-		for _, spec := range specs {
-			if len(spec.Fields) == 0 {
-				skipped++
-				continue
-			}
-
-			if err := writeSpec(outputDir, spec); err != nil {
-				return fmt.Errorf("writing spec for %s.%s: %w", spec.Package, spec.Type, err)
-			}
-			generated++
-		}
-
+		files = append(files, fileWork{path: path, packageName: packageName, src: src})
 		return nil
 	})
 	if err != nil {
 		return fmt.Errorf("walking %s: %w", frameworksBase, err)
 	}
 
-	fmt.Fprintf(os.Stderr, "genparcelspec: generated %d specs, skipped %d empty specs\n", generated, skipped)
+	// Process files in parallel. Each worker has its own ANTLR parser
+	// (not thread-safe), fed from a shared channel.
+	work := make(chan fileWork, len(files))
+	for _, f := range files {
+		work <- f
+	}
+	close(work)
+
+	numWorkers := runtime.NumCPU()
+	var wg sync.WaitGroup
+	var firstErr atomic.Value
+
+	for range numWorkers {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			extractor := parcelspec.NewJavaExtractor()
+
+			for fw := range work {
+				specs := extractor.ExtractSpecs(string(fw.src), fw.packageName)
+				for _, spec := range specs {
+					if len(spec.Fields) == 0 {
+						skipped.Add(1)
+						continue
+					}
+
+					if err := writeSpec(outputDir, spec); err != nil {
+						firstErr.CompareAndSwap(nil, fmt.Errorf("writing spec for %s.%s: %w", spec.Package, spec.Type, err))
+						return
+					}
+					generated.Add(1)
+				}
+			}
+		}()
+	}
+
+	wg.Wait()
+
+	if v := firstErr.Load(); v != nil {
+		return v.(error)
+	}
+
+	fmt.Fprintf(os.Stderr, "genparcelspec: generated %d specs, skipped %d empty specs\n", generated.Load(), skipped.Load())
 	return nil
 }
 
