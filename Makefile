@@ -1,5 +1,5 @@
 .PHONY: generate genversions test e2e e2e-bindercli vet build build-examples lint clean readme smoke \
-       bindercli genbindercli genservicemap genaccessors list-commands check-generated release
+       bindercli genbindercli genservicemap genaccessors genparcelspec genparcelgo list-commands check-generated release
 
 # Generated top-level directories.
 GENERATED_DIRS := android com fuzztest libgui_test_server parcelables src
@@ -74,6 +74,18 @@ genaccessors:
 		-service-map /tmp/servicemap.json \
 		-output .
 
+# Extract Java Parcelable wire formats into YAML specs.
+genparcelspec:
+	go run ./tools/cmd/genparcelspec \
+		-frameworks-base tools/pkg/3rdparty/frameworks-base \
+		-output parcelspecs/
+
+# Generate Go marshal/unmarshal from Parcelable specs.
+genparcelgo:
+	go run ./tools/cmd/genparcelgo \
+		-specs parcelspecs/ \
+		-output .
+
 # Regenerate bindercli registry and command dispatch code.
 genbindercli:
 	go run ./tools/cmd/genbindercli
@@ -91,6 +103,8 @@ list-commands:
 check-generated:
 	make clean
 	make generate
+	make genparcelspec
+	make genparcelgo
 	make genservicemap
 	make genaccessors
 	make smoke
@@ -99,6 +113,6 @@ check-generated:
 
 # Remove all generated code.
 clean:
-	rm -rf $(GENERATED_DIRS)
+	rm -rf $(GENERATED_DIRS) parcelspecs
 	find . -maxdepth 1 -name '*.go' -exec grep -l 'Code generated' {} \; | xargs -r rm -f
 	rm -f servicemanager/service_names_gen.go

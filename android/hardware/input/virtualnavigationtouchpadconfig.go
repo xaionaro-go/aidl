@@ -34,5 +34,14 @@ func (s *VirtualNavigationTouchpadConfig) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
+	{
+		_opaqueLen, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueLen > 0 {
+			p.SetPosition(p.Position() + int(_opaqueLen))
+		}
+	}
 	return nil
 }

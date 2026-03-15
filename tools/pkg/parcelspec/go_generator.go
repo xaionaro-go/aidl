@@ -131,6 +131,19 @@ func GenerateGo(
 			buf.WriteString("\t}\n")
 		}
 	}
+	// Skip opaque fields by reading and discarding their length-prefixed data.
+	// Android's writeBundle/writeParcelable format: int32 length, then <length> bytes.
+	for range opaqueFields {
+		buf.WriteString("\t{\n")
+		buf.WriteString("\t\t_opaqueLen, _opaqueErr := p.ReadInt32()\n")
+		buf.WriteString("\t\tif _opaqueErr != nil {\n")
+		buf.WriteString("\t\t\treturn _opaqueErr\n")
+		buf.WriteString("\t\t}\n")
+		buf.WriteString("\t\tif _opaqueLen > 0 {\n")
+		buf.WriteString("\t\t\tp.SetPosition(p.Position() + int(_opaqueLen))\n")
+		buf.WriteString("\t\t}\n")
+		buf.WriteString("\t}\n")
+	}
 	buf.WriteString("\treturn nil\n")
 	buf.WriteString("}\n")
 
