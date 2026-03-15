@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime/pprof"
 	"strings"
 
 	"github.com/xaionaro-go/binder/tools/pkg/parcelspec"
@@ -14,11 +15,34 @@ import (
 func main() {
 	frameworksBase := flag.String("frameworks-base", "tools/pkg/3rdparty/frameworks-base", "Path to the AOSP frameworks-base directory")
 	output := flag.String("output", "parcelspecs", "Output directory for YAML spec files")
+	cpuProfile := flag.String("cpuprofile", "", "Write CPU profile to file")
+	memProfile := flag.String("memprofile", "", "Write memory profile to file")
 	flag.Parse()
+
+	if *cpuProfile != "" {
+		f, err := os.Create(*cpuProfile)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error creating CPU profile: %v\n", err)
+			os.Exit(1)
+		}
+		defer f.Close()
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
+	}
 
 	if err := run(*frameworksBase, *output); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
+	}
+
+	if *memProfile != "" {
+		f, err := os.Create(*memProfile)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error creating memory profile: %v\n", err)
+			os.Exit(1)
+		}
+		defer f.Close()
+		pprof.WriteHeapProfile(f)
 	}
 }
 
