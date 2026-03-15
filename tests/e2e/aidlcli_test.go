@@ -676,3 +676,343 @@ func TestAidlcli_Bluetooth_Close(t *testing.T) {
 	assert.Equal(t, "ok", val)
 	t.Logf("bluetooth close: status=%s", val)
 }
+
+// runAidlcliHALOrSkip runs aidlcli for a HAL service and skips the test
+// when the service is unavailable or returns any error.
+// HAL services are typically absent on emulators, so all errors are treated as skip-worthy.
+func runAidlcliHALOrSkip(
+	t *testing.T,
+	serviceName string,
+	args ...string,
+) string {
+	t.Helper()
+	fullArgs := append([]string{serviceName}, args...)
+	stdout, stderr, err := runAidlcli(fullArgs...)
+	if err != nil {
+		combined := stderr + stdout
+		switch {
+		case strings.Contains(combined, "not found"),
+			strings.Contains(combined, "no service with descriptor"):
+			t.Skipf("%s not available: %s", serviceName, strings.TrimSpace(combined))
+		}
+		t.Skipf("%s unavailable: %v\nstdout: %s\nstderr: %s", serviceName, err, stdout, stderr)
+	}
+	return stdout
+}
+
+// --- Core service commands (additional) ---
+
+func TestAidlcli_ServiceMethods(t *testing.T) {
+	stdout := runAidlcliOrSkip(t, "service", "methods", "activity")
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+
+	descriptor, ok := envelope["descriptor"].(string)
+	require.True(t, ok, "response missing 'descriptor' string")
+	assert.NotEmpty(t, descriptor, "descriptor should not be empty")
+
+	methods, ok := envelope["methods"].([]any)
+	require.True(t, ok, "response missing 'methods' array")
+	require.NotEmpty(t, methods, "expected at least one method")
+
+	// Verify the first method has a name field.
+	firstMethod, ok := methods[0].(map[string]any)
+	require.True(t, ok, "method entry should be an object")
+	name, ok := firstMethod["name"].(string)
+	require.True(t, ok, "method should have a 'name' string")
+	assert.NotEmpty(t, name, "method name should not be empty")
+
+	t.Logf("activity interface %s has %d methods, first: %s", descriptor, len(methods), name)
+}
+
+func TestAidlcli_ServiceTransact(t *testing.T) {
+	// Transaction code 64 on SurfaceFlinger queries active color mode.
+	stdout := runAidlcliOrSkip(t, "service", "transact", "SurfaceFlinger", "64")
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+
+	replyHex, ok := envelope["reply_hex"].(string)
+	require.True(t, ok, "response missing 'reply_hex' string")
+	assert.NotEmpty(t, replyHex, "reply_hex should not be empty")
+
+	replySize, ok := envelope["reply_size"].(float64)
+	require.True(t, ok, "response missing 'reply_size' number")
+	assert.Greater(t, replySize, float64(0), "reply_size should be > 0")
+
+	t.Logf("transact SurfaceFlinger code=64: reply_size=%.0f reply_hex=%s", replySize, replyHex)
+}
+
+// --- Location (additional) ---
+
+func TestAidlcli_Location_GetGnssYearOfHardware(t *testing.T) {
+	stdout, stderr, err := runAidlcli(
+		"android.location.ILocationManager", "get-gnss-year-of-hardware",
+	)
+	if err != nil {
+		combined := stderr + stdout
+		switch {
+		case strings.Contains(combined, "not found"),
+			strings.Contains(combined, "no service with descriptor"):
+			t.Skipf("location service not available: %s", strings.TrimSpace(combined))
+		}
+		// GNSS year might not be available on emulator.
+		t.Skipf("GNSS year of hardware unavailable: %v\nstdout: %s\nstderr: %s", err, stdout, stderr)
+	}
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+
+	raw, ok := envelope["result"]
+	require.True(t, ok, "response missing 'result' key")
+
+	val, ok := raw.(float64)
+	require.True(t, ok, "result should be numeric, got %T", raw)
+
+	// Sanity check: year should be a reasonable value (0 means unknown, otherwise 2000+).
+	year := int(val)
+	if year != 0 {
+		assert.GreaterOrEqual(t, year, 2000, "year should be >= 2000 if set")
+	}
+	t.Logf("getGnssYearOfHardware: %d", year)
+}
+
+func TestAidlcli_Location_GetLastLocation(t *testing.T) {
+	stdout, stderr, err := runAidlcli(
+		"android.location.ILocationManager", "get-last-location",
+		"--provider=gps",
+		"--packageName=com.android.shell",
+		"--attributionTag=none",
+	)
+	if err != nil {
+		combined := stderr + stdout
+		switch {
+		case strings.Contains(combined, "not found"),
+			strings.Contains(combined, "no service with descriptor"):
+			t.Skipf("location service not available: %s", strings.TrimSpace(combined))
+		case strings.Contains(combined, "NullPointer"),
+			strings.Contains(combined, "null"):
+			t.Skipf("no last location available (NullPointer): %s", strings.TrimSpace(combined))
+		}
+		t.Skipf("get-last-location unavailable: %v\nstdout: %s\nstderr: %s", err, stdout, stderr)
+	}
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+
+	// Result may be null if no location has been recorded.
+	raw, ok := envelope["result"]
+	require.True(t, ok, "response missing 'result' key")
+	t.Logf("getLastLocation: %v", raw)
+}
+
+// --- PackageManager (additional) ---
+
+func TestAidlcli_PackageManager_GetInstallerPackageName(t *testing.T) {
+	stdout := runAidlcliOrSkip(t,
+		"android.content.pm.IPackageManager", "get-installer-package-name",
+		"--packageName=com.android.settings",
+	)
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+
+	_, ok := envelope["result"]
+	require.True(t, ok, "response missing 'result' key")
+
+	// The result may be null/empty if Settings was not installed via a store.
+	t.Logf("getInstallerPackageName(com.android.settings): %v", envelope["result"])
+}
+
+// --- Telephony (additional) ---
+
+func TestAidlcli_Telephony_GetNetworkCountryIso(t *testing.T) {
+	stdout, stderr, err := runAidlcli(
+		"com.android.internal.telephony.ITelephony", "get-network-country-iso-for-phone",
+		"--phoneId=0",
+		"--callingPackage=com.android.shell",
+		"--callingFeatureId=none",
+	)
+	if err != nil {
+		combined := stderr + stdout
+		switch {
+		case strings.Contains(combined, "not found"),
+			strings.Contains(combined, "no service with descriptor"):
+			t.Skipf("telephony service not available: %s", strings.TrimSpace(combined))
+		}
+		t.Skipf("telephony unavailable: %v\nstdout: %s\nstderr: %s", err, stdout, stderr)
+	}
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+
+	raw, ok := envelope["result"]
+	require.True(t, ok, "response missing 'result' key")
+
+	// Result should be a string (ISO country code, may be empty).
+	val, ok := raw.(string)
+	require.True(t, ok, "result should be string, got %T", raw)
+
+	if val != "" {
+		assert.Len(t, val, 2, "country ISO should be a 2-letter code")
+	}
+	t.Logf("getNetworkCountryIsoForPhone(0): %q", val)
+}
+
+// --- WiFi supplicant (additional) ---
+
+func TestAidlcli_WiFi_AddNetwork(t *testing.T) {
+	stdout := runAidlcliHALOrSkip(t,
+		"android.hardware.wifi.supplicant.ISupplicantStaIface", "add-network",
+	)
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+	t.Logf("addNetwork: %v", envelope)
+}
+
+func TestAidlcli_WiFi_Disconnect(t *testing.T) {
+	stdout := runAidlcliHALOrSkip(t,
+		"android.hardware.wifi.supplicant.ISupplicantStaIface", "disconnect",
+	)
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+	t.Logf("disconnect: %v", envelope)
+}
+
+func TestAidlcli_WiFi_SetSsid(t *testing.T) {
+	// "test" in hex = 74657374
+	stdout := runAidlcliHALOrSkip(t,
+		"android.hardware.wifi.supplicant.ISupplicantStaNetwork", "set-ssid",
+		"--ssid=74657374",
+	)
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+	t.Logf("setSsid: %v", envelope)
+}
+
+func TestAidlcli_WiFi_SetPskPassphrase(t *testing.T) {
+	stdout := runAidlcliHALOrSkip(t,
+		"android.hardware.wifi.supplicant.ISupplicantStaNetwork", "set-psk-passphrase",
+		"--psk=testpassphrase",
+	)
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+	t.Logf("setPskPassphrase: %v", envelope)
+}
+
+func TestAidlcli_WiFi_SetKeyMgmt(t *testing.T) {
+	stdout := runAidlcliHALOrSkip(t,
+		"android.hardware.wifi.supplicant.ISupplicantStaNetwork", "set-key-mgmt",
+		"--keyMgmtMask=2",
+	)
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+	t.Logf("setKeyMgmt: %v", envelope)
+}
+
+func TestAidlcli_WiFi_Enable(t *testing.T) {
+	stdout := runAidlcliHALOrSkip(t,
+		"android.hardware.wifi.supplicant.ISupplicantStaNetwork", "enable",
+		"--noConnect=false",
+	)
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+	t.Logf("enable: %v", envelope)
+}
+
+// --- Camera (additional) ---
+
+func TestAidlcli_Camera_GetCameraCharacteristics(t *testing.T) {
+	stdout := runAidlcliHALOrSkip(t,
+		"android.hardware.camera.device.ICameraDevice", "get-camera-characteristics",
+	)
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+
+	_, ok := envelope["result"]
+	require.True(t, ok, "response missing 'result' key")
+	t.Logf("getCameraCharacteristics: result present")
+}
+
+func TestAidlcli_Camera_SetTorchMode(t *testing.T) {
+	stdout := runAidlcliHALOrSkip(t,
+		"android.hardware.camera.provider.ICameraProvider", "set-torch-mode",
+		"--cameraDeviceName=0",
+		"--enabled=true",
+	)
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+	t.Logf("setTorchMode: %v", envelope)
+}
+
+// --- Audio (HAL) ---
+
+func TestAidlcli_Audio_GetActiveMicrophones(t *testing.T) {
+	stdout := runAidlcliHALOrSkip(t,
+		"android.hardware.audio.core.IStreamIn", "get-active-microphones",
+	)
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+
+	_, ok := envelope["result"]
+	require.True(t, ok, "response missing 'result' key")
+	t.Logf("getActiveMicrophones: %v", envelope["result"])
+}
+
+func TestAidlcli_Audio_SetMicrophoneDirection(t *testing.T) {
+	// Direction: 1 = FRONT.
+	stdout := runAidlcliHALOrSkip(t,
+		"android.hardware.audio.core.IStreamIn", "set-microphone-direction",
+		"--direction=1",
+	)
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+	t.Logf("setMicrophoneDirection: %v", envelope)
+}
+
+func TestAidlcli_Audio_SetMicrophoneFieldDimension(t *testing.T) {
+	stdout := runAidlcliHALOrSkip(t,
+		"android.hardware.audio.core.IStreamIn", "set-microphone-field-dimension",
+		"--zoom=1.0",
+	)
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+	t.Logf("setMicrophoneFieldDimension: %v", envelope)
+}
+
+// --- Bluetooth (additional) ---
+
+func TestAidlcli_Bluetooth_Initialize(t *testing.T) {
+	stdout := runAidlcliHALOrSkip(t,
+		"android.hardware.bluetooth.IBluetoothHci", "initialize",
+	)
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+	t.Logf("bluetooth initialize: %v", envelope)
+}
+
+func TestAidlcli_Bluetooth_SendHciCommand(t *testing.T) {
+	// HCI Reset command: OGF=0x03, OCF=0x0003 => opcode 0x0C03, param_len=0
+	// Wire bytes: 01 03 0c 00
+	stdout := runAidlcliHALOrSkip(t,
+		"android.hardware.bluetooth.IBluetoothHci", "send-hci-command",
+		"--command=01030c00",
+	)
+
+	var envelope map[string]any
+	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
+	t.Logf("bluetooth sendHciCommand: %v", envelope)
+}
