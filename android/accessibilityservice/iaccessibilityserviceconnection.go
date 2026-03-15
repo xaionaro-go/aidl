@@ -179,11 +179,11 @@ func (p *AccessibilityServiceConnectionProxy) SetServiceInfo(
 
 func (p *AccessibilityServiceConnectionProxy) SetAttributionTag(
 	ctx context.Context,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityServiceConnection)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "setAttributionTag")
 	if _err != nil {
@@ -1531,9 +1531,9 @@ func (p *AccessibilityServiceConnectionProxy) LogTrace(
 	callingParams string,
 	processId int32,
 	threadId int64,
-	callingUid int32,
 	serializedCallingStackInBundle interface{},
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityServiceConnection)
 	_data.WriteInt64(timestamp)
@@ -1542,7 +1542,7 @@ func (p *AccessibilityServiceConnectionProxy) LogTrace(
 	_data.WriteString16(callingParams)
 	_data.WriteInt32(processId)
 	_data.WriteInt64(threadId)
-	_data.WriteInt32(callingUid)
+	_data.WriteInt32(_identity.UID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "logTrace")
 	if _err != nil {

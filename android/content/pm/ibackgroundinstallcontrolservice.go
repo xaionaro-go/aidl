@@ -42,13 +42,13 @@ var _ IBackgroundInstallControlService = (*BackgroundInstallControlServiceProxy)
 func (p *BackgroundInstallControlServiceProxy) GetBackgroundInstalledPackages(
 	ctx context.Context,
 	flags int64,
-	userId int32,
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackgroundInstallControlService)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackgroundInstallControlService, "getBackgroundInstalledPackages")
 	if _err != nil {

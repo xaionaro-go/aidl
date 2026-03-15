@@ -117,13 +117,13 @@ func (p *UiModeManagerProxy) EnableCarMode(
 	ctx context.Context,
 	flags int32,
 	priority int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 	_data.WriteInt32(flags)
 	_data.WriteInt32(priority)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "enableCarMode")
 	if _err != nil {
@@ -172,12 +172,12 @@ func (p *UiModeManagerProxy) DisableCarMode(
 func (p *UiModeManagerProxy) DisableCarModeByCallingPackage(
 	ctx context.Context,
 	flags int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 	_data.WriteInt32(flags)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "disableCarModeByCallingPackage")
 	if _err != nil {
@@ -653,14 +653,14 @@ func (p *UiModeManagerProxy) RequestProjection(
 	ctx context.Context,
 	binder_ binder.IBinder,
 	projectionType int32,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 	_data.WriteStrongBinder(binder_.Handle())
 	_data.WriteInt32(projectionType)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "requestProjection")
 	if _err != nil {
@@ -687,13 +687,13 @@ func (p *UiModeManagerProxy) RequestProjection(
 func (p *UiModeManagerProxy) ReleaseProjection(
 	ctx context.Context,
 	projectionType int32,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
 	_data.WriteInt32(projectionType)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "releaseProjection")
 	if _err != nil {

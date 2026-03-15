@@ -110,14 +110,14 @@ func (p *TaskStackListenerProxy) OnTaskStackChanged(
 func (p *TaskStackListenerProxy) OnActivityPinned(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	taskId int32,
 	stackId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITaskStackListener)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(taskId)
 	_data.WriteInt32(stackId)
 
@@ -368,15 +368,15 @@ func (p *TaskStackListenerProxy) OnTaskRemovalStarted(
 func (p *TaskStackListenerProxy) OnTaskProfileLocked(
 	ctx context.Context,
 	taskInfo ActivityManagerRunningTaskInfo,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITaskStackListener)
 	_data.WriteInt32(1)
 	if _err := taskInfo.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITaskStackListener, "onTaskProfileLocked")
 	if _err != nil {

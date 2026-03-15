@@ -118,17 +118,16 @@ func (p *UsageStatsManagerProxy) QueryUsageStats(
 	bucketType int32,
 	beginTime int64,
 	endTime int64,
-	callingPackage string,
-	userId int32,
 ) (pm.ParceledListSlice, error) {
 	var _result pm.ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteInt32(bucketType)
 	_data.WriteInt64(beginTime)
 	_data.WriteInt64(endTime)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryUsageStats")
 	if _err != nil {
@@ -162,15 +161,15 @@ func (p *UsageStatsManagerProxy) QueryConfigurationStats(
 	bucketType int32,
 	beginTime int64,
 	endTime int64,
-	callingPackage string,
 ) (pm.ParceledListSlice, error) {
 	var _result pm.ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteInt32(bucketType)
 	_data.WriteInt64(beginTime)
 	_data.WriteInt64(endTime)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryConfigurationStats")
 	if _err != nil {
@@ -204,15 +203,15 @@ func (p *UsageStatsManagerProxy) QueryEventStats(
 	bucketType int32,
 	beginTime int64,
 	endTime int64,
-	callingPackage string,
 ) (pm.ParceledListSlice, error) {
 	var _result pm.ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteInt32(bucketType)
 	_data.WriteInt64(beginTime)
 	_data.WriteInt64(endTime)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEventStats")
 	if _err != nil {
@@ -245,14 +244,14 @@ func (p *UsageStatsManagerProxy) QueryEvents(
 	ctx context.Context,
 	beginTime int64,
 	endTime int64,
-	callingPackage string,
 ) (UsageEvents, error) {
 	var _result UsageEvents
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteInt64(beginTime)
 	_data.WriteInt64(endTime)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEvents")
 	if _err != nil {
@@ -285,14 +284,14 @@ func (p *UsageStatsManagerProxy) QueryEventsForPackage(
 	ctx context.Context,
 	beginTime int64,
 	endTime int64,
-	callingPackage string,
 ) (UsageEvents, error) {
 	var _result UsageEvents
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteInt64(beginTime)
 	_data.WriteInt64(endTime)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEventsForPackage")
 	if _err != nil {
@@ -325,16 +324,15 @@ func (p *UsageStatsManagerProxy) QueryEventsForUser(
 	ctx context.Context,
 	beginTime int64,
 	endTime int64,
-	userId int32,
-	callingPackage string,
 ) (UsageEvents, error) {
 	var _result UsageEvents
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteInt64(beginTime)
 	_data.WriteInt64(endTime)
-	_data.WriteInt32(userId)
-	_data.WriteString16(callingPackage)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEventsForUser")
 	if _err != nil {
@@ -367,18 +365,17 @@ func (p *UsageStatsManagerProxy) QueryEventsForPackageForUser(
 	ctx context.Context,
 	beginTime int64,
 	endTime int64,
-	userId int32,
 	pkg string,
-	callingPackage string,
 ) (UsageEvents, error) {
 	var _result UsageEvents
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteInt64(beginTime)
 	_data.WriteInt64(endTime)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(pkg)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEventsForPackageForUser")
 	if _err != nil {
@@ -410,16 +407,16 @@ func (p *UsageStatsManagerProxy) QueryEventsForPackageForUser(
 func (p *UsageStatsManagerProxy) QueryEventsWithFilter(
 	ctx context.Context,
 	query UsageEventsQuery,
-	callingPackage string,
 ) (UsageEvents, error) {
 	var _result UsageEvents
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteInt32(1)
 	if _err := query.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryEventsWithFilter")
 	if _err != nil {
@@ -452,13 +449,13 @@ func (p *UsageStatsManagerProxy) SetAppInactive(
 	ctx context.Context,
 	packageName string,
 	inactive bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteString16(packageName)
 	_data.WriteBool(inactive)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "setAppInactive")
 	if _err != nil {
@@ -510,15 +507,14 @@ func (p *UsageStatsManagerProxy) IsAppStandbyEnabled(
 func (p *UsageStatsManagerProxy) IsAppInactive(
 	ctx context.Context,
 	packageName string,
-	userId int32,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
-	_data.WriteString16(callingPackage)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "isAppInactive")
 	if _err != nil {
@@ -569,15 +565,15 @@ func (p *UsageStatsManagerProxy) OnCarrierPrivilegedAppsChanged(
 func (p *UsageStatsManagerProxy) ReportChooserSelection(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	contentType string,
 	annotations []string,
 	action string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(contentType)
 	if annotations == nil {
 		_data.WriteInt32(-1)
@@ -610,15 +606,14 @@ func (p *UsageStatsManagerProxy) ReportChooserSelection(
 func (p *UsageStatsManagerProxy) GetAppStandbyBucket(
 	ctx context.Context,
 	packageName string,
-	callingPackage string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteString16(packageName)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "getAppStandbyBucket")
 	if _err != nil {
@@ -646,13 +641,13 @@ func (p *UsageStatsManagerProxy) SetAppStandbyBucket(
 	ctx context.Context,
 	packageName string,
 	bucket int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(bucket)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "setAppStandbyBucket")
 	if _err != nil {
@@ -674,14 +669,13 @@ func (p *UsageStatsManagerProxy) SetAppStandbyBucket(
 
 func (p *UsageStatsManagerProxy) GetAppStandbyBuckets(
 	ctx context.Context,
-	callingPackage string,
-	userId int32,
 ) (pm.ParceledListSlice, error) {
 	var _result pm.ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "getAppStandbyBuckets")
 	if _err != nil {
@@ -713,15 +707,15 @@ func (p *UsageStatsManagerProxy) GetAppStandbyBuckets(
 func (p *UsageStatsManagerProxy) SetAppStandbyBuckets(
 	ctx context.Context,
 	appBuckets pm.ParceledListSlice,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteInt32(1)
 	if _err := appBuckets.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "setAppStandbyBuckets")
 	if _err != nil {
@@ -744,15 +738,14 @@ func (p *UsageStatsManagerProxy) SetAppStandbyBuckets(
 func (p *UsageStatsManagerProxy) GetAppMinStandbyBucket(
 	ctx context.Context,
 	packageName string,
-	callingPackage string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteString16(packageName)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "getAppMinStandbyBucket")
 	if _err != nil {
@@ -780,13 +773,13 @@ func (p *UsageStatsManagerProxy) SetEstimatedLaunchTime(
 	ctx context.Context,
 	packageName string,
 	estimatedLaunchTime int64,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt64(estimatedLaunchTime)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "setEstimatedLaunchTime")
 	if _err != nil {
@@ -809,15 +802,15 @@ func (p *UsageStatsManagerProxy) SetEstimatedLaunchTime(
 func (p *UsageStatsManagerProxy) SetEstimatedLaunchTimes(
 	ctx context.Context,
 	appLaunchTimes pm.ParceledListSlice,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteInt32(1)
 	if _err := appLaunchTimes.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "setEstimatedLaunchTimes")
 	if _err != nil {
@@ -843,8 +836,8 @@ func (p *UsageStatsManagerProxy) RegisterAppUsageObserver(
 	packages []string,
 	timeLimitMs int64,
 	callback app.PendingIntent,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteInt32(observerId)
@@ -861,7 +854,7 @@ func (p *UsageStatsManagerProxy) RegisterAppUsageObserver(
 	if _err := callback.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "registerAppUsageObserver")
 	if _err != nil {
@@ -884,12 +877,12 @@ func (p *UsageStatsManagerProxy) RegisterAppUsageObserver(
 func (p *UsageStatsManagerProxy) UnregisterAppUsageObserver(
 	ctx context.Context,
 	observerId int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteInt32(observerId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "unregisterAppUsageObserver")
 	if _err != nil {
@@ -917,8 +910,8 @@ func (p *UsageStatsManagerProxy) RegisterUsageSessionObserver(
 	sessionThresholdTimeMs int64,
 	limitReachedCallbackIntent app.PendingIntent,
 	sessionEndCallbackIntent app.PendingIntent,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteInt32(sessionObserverId)
@@ -940,7 +933,7 @@ func (p *UsageStatsManagerProxy) RegisterUsageSessionObserver(
 	if _err := sessionEndCallbackIntent.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "registerUsageSessionObserver")
 	if _err != nil {
@@ -963,12 +956,12 @@ func (p *UsageStatsManagerProxy) RegisterUsageSessionObserver(
 func (p *UsageStatsManagerProxy) UnregisterUsageSessionObserver(
 	ctx context.Context,
 	sessionObserverId int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteInt32(sessionObserverId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "unregisterUsageSessionObserver")
 	if _err != nil {
@@ -995,8 +988,8 @@ func (p *UsageStatsManagerProxy) RegisterAppUsageLimitObserver(
 	timeLimitMs int64,
 	timeUsedMs int64,
 	callback app.PendingIntent,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteInt32(observerId)
@@ -1014,7 +1007,7 @@ func (p *UsageStatsManagerProxy) RegisterAppUsageLimitObserver(
 	if _err := callback.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "registerAppUsageLimitObserver")
 	if _err != nil {
@@ -1037,12 +1030,12 @@ func (p *UsageStatsManagerProxy) RegisterAppUsageLimitObserver(
 func (p *UsageStatsManagerProxy) UnregisterAppUsageLimitObserver(
 	ctx context.Context,
 	observerId int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteInt32(observerId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "unregisterAppUsageLimitObserver")
 	if _err != nil {
@@ -1066,13 +1059,13 @@ func (p *UsageStatsManagerProxy) ReportUsageStart(
 	ctx context.Context,
 	activity binder.IBinder,
 	token string,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteStrongBinder(activity.Handle())
 	_data.WriteString16(token)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "reportUsageStart")
 	if _err != nil {
@@ -1097,14 +1090,14 @@ func (p *UsageStatsManagerProxy) ReportPastUsageStart(
 	activity binder.IBinder,
 	token string,
 	timeAgoMs int64,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteStrongBinder(activity.Handle())
 	_data.WriteString16(token)
 	_data.WriteInt64(timeAgoMs)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "reportPastUsageStart")
 	if _err != nil {
@@ -1128,13 +1121,13 @@ func (p *UsageStatsManagerProxy) ReportUsageStop(
 	ctx context.Context,
 	activity binder.IBinder,
 	token string,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteStrongBinder(activity.Handle())
 	_data.WriteString16(token)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "reportUsageStop")
 	if _err != nil {
@@ -1157,12 +1150,12 @@ func (p *UsageStatsManagerProxy) ReportUsageStop(
 func (p *UsageStatsManagerProxy) ReportUserInteraction(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "reportUserInteraction")
 	if _err != nil {
@@ -1185,13 +1178,13 @@ func (p *UsageStatsManagerProxy) ReportUserInteraction(
 func (p *UsageStatsManagerProxy) ReportUserInteractionWithBundle(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	eventExtras interface{},
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "reportUserInteractionWithBundle")
 	if _err != nil {
@@ -1267,13 +1260,13 @@ func (p *UsageStatsManagerProxy) ForceUsageSourceSettingRead(
 func (p *UsageStatsManagerProxy) GetLastTimeAnyComponentUsed(
 	ctx context.Context,
 	packageName string,
-	callingPackage string,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteString16(packageName)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "getLastTimeAnyComponentUsed")
 	if _err != nil {
@@ -1301,16 +1294,15 @@ func (p *UsageStatsManagerProxy) QueryBroadcastResponseStats(
 	ctx context.Context,
 	packageName string,
 	id int64,
-	callingPackage string,
-	userId int32,
 ) (BroadcastResponseStatsList, error) {
 	var _result BroadcastResponseStatsList
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt64(id)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "queryBroadcastResponseStats")
 	if _err != nil {
@@ -1343,15 +1335,14 @@ func (p *UsageStatsManagerProxy) ClearBroadcastResponseStats(
 	ctx context.Context,
 	packageName string,
 	id int64,
-	callingPackage string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt64(id)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "clearBroadcastResponseStats")
 	if _err != nil {
@@ -1373,13 +1364,12 @@ func (p *UsageStatsManagerProxy) ClearBroadcastResponseStats(
 
 func (p *UsageStatsManagerProxy) ClearBroadcastEvents(
 	ctx context.Context,
-	callingPackage string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "clearBroadcastEvents")
 	if _err != nil {
@@ -1402,13 +1392,13 @@ func (p *UsageStatsManagerProxy) ClearBroadcastEvents(
 func (p *UsageStatsManagerProxy) IsPackageExemptedFromBroadcastResponseStats(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsageStatsManager, "isPackageExemptedFromBroadcastResponseStats")
 	if _err != nil {

@@ -120,9 +120,8 @@ func (p *CompanionDeviceManagerProxy) Associate(
 	ctx context.Context,
 	request AssociationRequest,
 	callback IAssociationRequestCallback,
-	callingPackage string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteInt32(1)
@@ -130,8 +129,8 @@ func (p *CompanionDeviceManagerProxy) Associate(
 		return _err
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "associate")
 	if _err != nil {
@@ -153,14 +152,13 @@ func (p *CompanionDeviceManagerProxy) Associate(
 
 func (p *CompanionDeviceManagerProxy) GetAssociations(
 	ctx context.Context,
-	callingPackage string,
-	userId int32,
 ) ([]AssociationInfo, error) {
 	var _result []AssociationInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "getAssociations")
 	if _err != nil {
@@ -195,12 +193,12 @@ func (p *CompanionDeviceManagerProxy) GetAssociations(
 
 func (p *CompanionDeviceManagerProxy) GetAllAssociationsForUser(
 	ctx context.Context,
-	userId int32,
 ) ([]AssociationInfo, error) {
 	var _result []AssociationInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "getAllAssociationsForUser")
 	if _err != nil {
@@ -236,14 +234,13 @@ func (p *CompanionDeviceManagerProxy) GetAllAssociationsForUser(
 func (p *CompanionDeviceManagerProxy) LegacyDisassociate(
 	ctx context.Context,
 	deviceMacAddress string,
-	callingPackage string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteString16(deviceMacAddress)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "legacyDisassociate")
 	if _err != nil {
@@ -326,16 +323,16 @@ func (p *CompanionDeviceManagerProxy) HasNotificationAccess(
 func (p *CompanionDeviceManagerProxy) RequestNotificationAccess(
 	ctx context.Context,
 	component content.ComponentName,
-	userId int32,
 ) (app.PendingIntent, error) {
 	var _result app.PendingIntent
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteInt32(1)
 	if _err := component.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "requestNotificationAccess")
 	if _err != nil {
@@ -368,14 +365,14 @@ func (p *CompanionDeviceManagerProxy) IsDeviceAssociatedForWifiConnection(
 	ctx context.Context,
 	packageName string,
 	macAddress string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteString16(packageName)
 	_data.WriteString16(macAddress)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "isDeviceAssociatedForWifiConnection")
 	if _err != nil {
@@ -402,14 +399,13 @@ func (p *CompanionDeviceManagerProxy) IsDeviceAssociatedForWifiConnection(
 func (p *CompanionDeviceManagerProxy) LegacyStartObservingDevicePresence(
 	ctx context.Context,
 	deviceAddress string,
-	callingPackage string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteString16(deviceAddress)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "legacyStartObservingDevicePresence")
 	if _err != nil {
@@ -432,14 +428,13 @@ func (p *CompanionDeviceManagerProxy) LegacyStartObservingDevicePresence(
 func (p *CompanionDeviceManagerProxy) LegacyStopObservingDevicePresence(
 	ctx context.Context,
 	deviceAddress string,
-	callingPackage string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteString16(deviceAddress)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "legacyStopObservingDevicePresence")
 	if _err != nil {
@@ -463,8 +458,8 @@ func (p *CompanionDeviceManagerProxy) StartObservingDevicePresence(
 	ctx context.Context,
 	request ObservingDevicePresenceRequest,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteInt32(1)
@@ -472,7 +467,7 @@ func (p *CompanionDeviceManagerProxy) StartObservingDevicePresence(
 		return _err
 	}
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "startObservingDevicePresence")
 	if _err != nil {
@@ -496,8 +491,8 @@ func (p *CompanionDeviceManagerProxy) StopObservingDevicePresence(
 	ctx context.Context,
 	request ObservingDevicePresenceRequest,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteInt32(1)
@@ -505,7 +500,7 @@ func (p *CompanionDeviceManagerProxy) StopObservingDevicePresence(
 		return _err
 	}
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "stopObservingDevicePresence")
 	if _err != nil {
@@ -529,14 +524,14 @@ func (p *CompanionDeviceManagerProxy) CanPairWithoutPrompt(
 	ctx context.Context,
 	packageName string,
 	deviceMacAddress string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteString16(packageName)
 	_data.WriteString16(deviceMacAddress)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "canPairWithoutPrompt")
 	if _err != nil {
@@ -564,14 +559,14 @@ func (p *CompanionDeviceManagerProxy) CreateAssociation(
 	ctx context.Context,
 	packageName string,
 	macAddress string,
-	userId int32,
 	certificate []byte,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteString16(packageName)
 	_data.WriteString16(macAddress)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if certificate == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -602,12 +597,12 @@ func (p *CompanionDeviceManagerProxy) CreateAssociation(
 func (p *CompanionDeviceManagerProxy) AddOnAssociationsChangedListener(
 	ctx context.Context,
 	listener IOnAssociationsChangedListener,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "addOnAssociationsChangedListener")
 	if _err != nil {
@@ -630,12 +625,12 @@ func (p *CompanionDeviceManagerProxy) AddOnAssociationsChangedListener(
 func (p *CompanionDeviceManagerProxy) RemoveOnAssociationsChangedListener(
 	ctx context.Context,
 	listener IOnAssociationsChangedListener,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "removeOnAssociationsChangedListener")
 	if _err != nil {
@@ -861,15 +856,14 @@ func (p *CompanionDeviceManagerProxy) NotifySelfManagedDeviceDisappeared(
 
 func (p *CompanionDeviceManagerProxy) BuildPermissionTransferUserConsentIntent(
 	ctx context.Context,
-	callingPackage string,
-	userId int32,
 	associationId int32,
 ) (app.PendingIntent, error) {
 	var _result app.PendingIntent
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(associationId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "buildPermissionTransferUserConsentIntent")
@@ -901,15 +895,14 @@ func (p *CompanionDeviceManagerProxy) BuildPermissionTransferUserConsentIntent(
 
 func (p *CompanionDeviceManagerProxy) IsPermissionTransferUserConsented(
 	ctx context.Context,
-	callingPackage string,
-	userId int32,
 	associationId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(associationId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "isPermissionTransferUserConsented")
@@ -937,14 +930,14 @@ func (p *CompanionDeviceManagerProxy) IsPermissionTransferUserConsented(
 func (p *CompanionDeviceManagerProxy) StartSystemDataTransfer(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	associationId int32,
 	callback ISystemDataTransferCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(associationId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
@@ -969,14 +962,14 @@ func (p *CompanionDeviceManagerProxy) StartSystemDataTransfer(
 func (p *CompanionDeviceManagerProxy) AttachSystemDataTransport(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	associationId int32,
 	fd int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(associationId)
 	_data.WriteFileDescriptor(fd)
 
@@ -1001,13 +994,13 @@ func (p *CompanionDeviceManagerProxy) AttachSystemDataTransport(
 func (p *CompanionDeviceManagerProxy) DetachSystemDataTransport(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	associationId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(associationId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "detachSystemDataTransport")
@@ -1031,13 +1024,13 @@ func (p *CompanionDeviceManagerProxy) DetachSystemDataTransport(
 func (p *CompanionDeviceManagerProxy) IsCompanionApplicationBound(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "isCompanionApplicationBound")
 	if _err != nil {
@@ -1063,14 +1056,13 @@ func (p *CompanionDeviceManagerProxy) IsCompanionApplicationBound(
 
 func (p *CompanionDeviceManagerProxy) BuildAssociationCancellationIntent(
 	ctx context.Context,
-	callingPackage string,
-	userId int32,
 ) (app.PendingIntent, error) {
 	var _result app.PendingIntent
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "buildAssociationCancellationIntent")
 	if _err != nil {
@@ -1302,12 +1294,12 @@ func (p *CompanionDeviceManagerProxy) SetDeviceId(
 
 func (p *CompanionDeviceManagerProxy) GetBackupPayload(
 	ctx context.Context,
-	userId int32,
 ) ([]byte, error) {
 	var _result []byte
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "getBackupPayload")
 	if _err != nil {
@@ -1344,8 +1336,8 @@ func (p *CompanionDeviceManagerProxy) GetBackupPayload(
 func (p *CompanionDeviceManagerProxy) ApplyRestoredPayload(
 	ctx context.Context,
 	payload []byte,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	if payload == nil {
@@ -1356,7 +1348,7 @@ func (p *CompanionDeviceManagerProxy) ApplyRestoredPayload(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "applyRestoredPayload")
 	if _err != nil {
@@ -1380,14 +1372,14 @@ func (p *CompanionDeviceManagerProxy) RemoveBond(
 	ctx context.Context,
 	associationId int32,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteInt32(associationId)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "removeBond")
 	if _err != nil {

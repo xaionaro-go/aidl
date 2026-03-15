@@ -115,9 +115,9 @@ func (p *SecureElementServiceProxy) IsNfcEventAllowed(
 	reader string,
 	aid []byte,
 	packageNames []string,
-	userId int32,
 ) ([]bool, error) {
 	var _result []bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISecureElementService)
 	_data.WriteString16(reader)
@@ -137,7 +137,7 @@ func (p *SecureElementServiceProxy) IsNfcEventAllowed(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISecureElementService, "isNfcEventAllowed")
 	if _err != nil {

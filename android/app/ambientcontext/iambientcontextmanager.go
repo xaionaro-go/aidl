@@ -119,11 +119,11 @@ func (p *AmbientContextManagerProxy) RegisterObserverWithCallback(
 
 func (p *AmbientContextManagerProxy) UnregisterObserver(
 	ctx context.Context,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAmbientContextManager)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAmbientContextManager, "unregisterObserver")
 	if _err != nil {
@@ -146,9 +146,9 @@ func (p *AmbientContextManagerProxy) UnregisterObserver(
 func (p *AmbientContextManagerProxy) QueryServiceStatus(
 	ctx context.Context,
 	eventTypes []int32,
-	callingPackage string,
 	statusCallback os.RemoteCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAmbientContextManager)
 	if eventTypes == nil {
@@ -159,7 +159,7 @@ func (p *AmbientContextManagerProxy) QueryServiceStatus(
 			_data.WriteInt32(_item)
 		}
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := statusCallback.MarshalParcel(_data); _err != nil {
 		return _err
@@ -186,8 +186,8 @@ func (p *AmbientContextManagerProxy) QueryServiceStatus(
 func (p *AmbientContextManagerProxy) StartConsentActivity(
 	ctx context.Context,
 	eventTypes []int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAmbientContextManager)
 	if eventTypes == nil {
@@ -198,7 +198,7 @@ func (p *AmbientContextManagerProxy) StartConsentActivity(
 			_data.WriteInt32(_item)
 		}
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAmbientContextManager, "startConsentActivity")
 	if _err != nil {

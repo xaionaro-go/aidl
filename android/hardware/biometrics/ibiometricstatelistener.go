@@ -75,13 +75,13 @@ func (p *BiometricStateListenerProxy) OnBiometricAction(
 
 func (p *BiometricStateListenerProxy) OnEnrollmentsChanged(
 	ctx context.Context,
-	userId int32,
 	sensorId int32,
 	hasEnrollments bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricStateListener)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(sensorId)
 	_data.WriteBool(hasEnrollments)
 

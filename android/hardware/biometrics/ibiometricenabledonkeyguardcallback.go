@@ -38,12 +38,12 @@ var _ IBiometricEnabledOnKeyguardCallback = (*BiometricEnabledOnKeyguardCallback
 func (p *BiometricEnabledOnKeyguardCallbackProxy) OnChanged(
 	ctx context.Context,
 	enabled bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricEnabledOnKeyguardCallback)
 	_data.WriteBool(enabled)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricEnabledOnKeyguardCallback, "onChanged")
 	if _err != nil {

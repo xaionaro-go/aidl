@@ -460,13 +460,13 @@ func (p *UiAutomationConnectionProxy) GrantRuntimePermission(
 	ctx context.Context,
 	packageName string,
 	permission string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 	_data.WriteString16(packageName)
 	_data.WriteString16(permission)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "grantRuntimePermission")
 	if _err != nil {
@@ -490,13 +490,13 @@ func (p *UiAutomationConnectionProxy) RevokeRuntimePermission(
 	ctx context.Context,
 	packageName string,
 	permission string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 	_data.WriteString16(packageName)
 	_data.WriteString16(permission)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "revokeRuntimePermission")
 	if _err != nil {

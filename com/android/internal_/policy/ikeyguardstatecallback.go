@@ -44,12 +44,12 @@ var _ IKeyguardStateCallback = (*KeyguardStateCallbackProxy)(nil)
 func (p *KeyguardStateCallbackProxy) OnShowingStateChanged(
 	ctx context.Context,
 	showing bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyguardStateCallback)
 	_data.WriteBool(showing)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardStateCallback, "onShowingStateChanged")
 	if _err != nil {

@@ -191,18 +191,18 @@ func (p *AppOpsServiceProxy) NoteOperation(
 	code int32,
 	uid int32,
 	packageName string,
-	attributionTag string,
 	shouldCollectAsyncNotedOp bool,
 	message string,
 	shouldCollectMessage bool,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteInt32(code)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteBool(shouldCollectAsyncNotedOp)
 	_data.WriteString16(message)
 	_data.WriteBool(shouldCollectMessage)
@@ -231,7 +231,6 @@ func (p *AppOpsServiceProxy) StartOperation(
 	code int32,
 	uid int32,
 	packageName string,
-	attributionTag string,
 	startIfModeDefault bool,
 	shouldCollectAsyncNotedOp bool,
 	message string,
@@ -240,13 +239,14 @@ func (p *AppOpsServiceProxy) StartOperation(
 	attributionChainId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteStrongBinder(clientId.Handle())
 	_data.WriteInt32(code)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteBool(startIfModeDefault)
 	_data.WriteBool(shouldCollectAsyncNotedOp)
 	_data.WriteString16(message)
@@ -278,15 +278,15 @@ func (p *AppOpsServiceProxy) FinishOperation(
 	code int32,
 	uid int32,
 	packageName string,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteStrongBinder(clientId.Handle())
 	_data.WriteInt32(code)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "finishOperation")
 	if _err != nil {
@@ -825,7 +825,6 @@ func (p *AppOpsServiceProxy) GetHistoricalOps(
 	ctx context.Context,
 	uid int32,
 	packageName string,
-	attributionTag string,
 	ops []string,
 	historyFlags int32,
 	filter int32,
@@ -834,11 +833,12 @@ func (p *AppOpsServiceProxy) GetHistoricalOps(
 	flags int32,
 	callback interface{},
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	if ops == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -875,7 +875,6 @@ func (p *AppOpsServiceProxy) GetHistoricalOpsFromDiskRaw(
 	ctx context.Context,
 	uid int32,
 	packageName string,
-	attributionTag string,
 	ops []string,
 	historyFlags int32,
 	filter int32,
@@ -884,11 +883,12 @@ func (p *AppOpsServiceProxy) GetHistoricalOpsFromDiskRaw(
 	flags int32,
 	callback interface{},
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	if ops == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1283,12 +1283,12 @@ func (p *AppOpsServiceProxy) SetUserRestrictions(
 	ctx context.Context,
 	restrictions interface{},
 	token binder.IBinder,
-	userHandle int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteStrongBinder(token.Handle())
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "setUserRestrictions")
 	if _err != nil {
@@ -1313,15 +1313,15 @@ func (p *AppOpsServiceProxy) SetUserRestriction(
 	code int32,
 	restricted bool,
 	token binder.IBinder,
-	userHandle int32,
 	excludedPackageTags interface{},
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteInt32(code)
 	_data.WriteBool(restricted)
 	_data.WriteStrongBinder(token.Handle())
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "setUserRestriction")
 	if _err != nil {
@@ -1343,11 +1343,11 @@ func (p *AppOpsServiceProxy) SetUserRestriction(
 
 func (p *AppOpsServiceProxy) RemoveUser(
 	ctx context.Context,
-	userHandle int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "removeUser")
 	if _err != nil {
@@ -1722,15 +1722,15 @@ func (p *AppOpsServiceProxy) CheckOperationRaw(
 	code int32,
 	uid int32,
 	packageName string,
-	attributionTag string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteInt32(code)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "checkOperationRaw")
 	if _err != nil {
@@ -1928,16 +1928,16 @@ func (p *AppOpsServiceProxy) CheckOperationRawForDevice(
 	code int32,
 	uid int32,
 	packageName string,
-	attributionTag string,
 	virtualDeviceId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteInt32(code)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt32(virtualDeviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "checkOperationRawForDevice")
@@ -1967,16 +1967,16 @@ func (p *AppOpsServiceProxy) CheckOperationForDevice(
 	code int32,
 	uid int32,
 	packageName string,
-	attributionTag string,
 	virtualDeviceId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteInt32(code)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt32(virtualDeviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "checkOperationForDevice")
@@ -2006,19 +2006,19 @@ func (p *AppOpsServiceProxy) NoteOperationForDevice(
 	code int32,
 	uid int32,
 	packageName string,
-	attributionTag string,
 	virtualDeviceId int32,
 	shouldCollectAsyncNotedOp bool,
 	message string,
 	shouldCollectMessage bool,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteInt32(code)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt32(virtualDeviceId)
 	_data.WriteBool(shouldCollectAsyncNotedOp)
 	_data.WriteString16(message)
@@ -2048,7 +2048,6 @@ func (p *AppOpsServiceProxy) StartOperationForDevice(
 	code int32,
 	uid int32,
 	packageName string,
-	attributionTag string,
 	virtualDeviceId int32,
 	startIfModeDefault bool,
 	shouldCollectAsyncNotedOp bool,
@@ -2058,13 +2057,14 @@ func (p *AppOpsServiceProxy) StartOperationForDevice(
 	attributionChainId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteStrongBinder(clientId.Handle())
 	_data.WriteInt32(code)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt32(virtualDeviceId)
 	_data.WriteBool(startIfModeDefault)
 	_data.WriteBool(shouldCollectAsyncNotedOp)
@@ -2097,16 +2097,16 @@ func (p *AppOpsServiceProxy) FinishOperationForDevice(
 	code int32,
 	uid int32,
 	packageName string,
-	attributionTag string,
 	virtualDeviceId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteStrongBinder(clientId.Handle())
 	_data.WriteInt32(code)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt32(virtualDeviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "finishOperationForDevice")

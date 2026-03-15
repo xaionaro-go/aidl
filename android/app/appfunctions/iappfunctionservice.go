@@ -38,17 +38,17 @@ var _ IAppFunctionService = (*AppFunctionServiceProxy)(nil)
 func (p *AppFunctionServiceProxy) ExecuteAppFunction(
 	ctx context.Context,
 	request ExecuteAppFunctionRequest,
-	callingPackage string,
 	cancellationCallback ICancellationCallback,
 	callback IExecuteAppFunctionCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppFunctionService)
 	_data.WriteInt32(1)
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteStrongBinder(cancellationCallback.AsBinder().Handle())
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 

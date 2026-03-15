@@ -56,19 +56,17 @@ var _ ICrossProfileApps = (*CrossProfileAppsProxy)(nil)
 func (p *CrossProfileAppsProxy) StartActivityAsUser(
 	ctx context.Context,
 	caller interface{},
-	callingPackage string,
-	callingFeatureId string,
 	component interface{},
-	userId int32,
 	launchMainActivity bool,
 	task binder.IBinder,
 	options interface{},
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICrossProfileApps)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(launchMainActivity)
 	_data.WriteStrongBinder(task.Handle())
 
@@ -93,18 +91,16 @@ func (p *CrossProfileAppsProxy) StartActivityAsUser(
 func (p *CrossProfileAppsProxy) StartActivityAsUserByIntent(
 	ctx context.Context,
 	caller interface{},
-	callingPackage string,
-	callingFeatureId string,
 	intent interface{},
-	userId int32,
 	callingActivity binder.IBinder,
 	options interface{},
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICrossProfileApps)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(callingActivity.Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICrossProfileApps, "startActivityAsUserByIntent")
@@ -127,12 +123,12 @@ func (p *CrossProfileAppsProxy) StartActivityAsUserByIntent(
 
 func (p *CrossProfileAppsProxy) GetTargetUserProfiles(
 	ctx context.Context,
-	callingPackage string,
 ) ([]interface{}, error) {
 	var _result []interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICrossProfileApps)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICrossProfileApps, "getTargetUserProfiles")
 	if _err != nil {
@@ -164,12 +160,12 @@ func (p *CrossProfileAppsProxy) GetTargetUserProfiles(
 
 func (p *CrossProfileAppsProxy) CanInteractAcrossProfiles(
 	ctx context.Context,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICrossProfileApps)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICrossProfileApps, "canInteractAcrossProfiles")
 	if _err != nil {
@@ -195,12 +191,12 @@ func (p *CrossProfileAppsProxy) CanInteractAcrossProfiles(
 
 func (p *CrossProfileAppsProxy) CanRequestInteractAcrossProfiles(
 	ctx context.Context,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICrossProfileApps)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICrossProfileApps, "canRequestInteractAcrossProfiles")
 	if _err != nil {
@@ -226,13 +222,13 @@ func (p *CrossProfileAppsProxy) CanRequestInteractAcrossProfiles(
 
 func (p *CrossProfileAppsProxy) SetInteractAcrossProfilesAppOp(
 	ctx context.Context,
-	userId int32,
 	packageName string,
 	newMode int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICrossProfileApps)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(newMode)
 
@@ -256,13 +252,13 @@ func (p *CrossProfileAppsProxy) SetInteractAcrossProfilesAppOp(
 
 func (p *CrossProfileAppsProxy) CanConfigureInteractAcrossProfiles(
 	ctx context.Context,
-	userId int32,
 	packageName string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICrossProfileApps)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(packageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICrossProfileApps, "canConfigureInteractAcrossProfiles")
@@ -289,13 +285,13 @@ func (p *CrossProfileAppsProxy) CanConfigureInteractAcrossProfiles(
 
 func (p *CrossProfileAppsProxy) CanUserAttemptToConfigureInteractAcrossProfiles(
 	ctx context.Context,
-	userId int32,
 	packageName string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICrossProfileApps)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(packageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICrossProfileApps, "canUserAttemptToConfigureInteractAcrossProfiles")
@@ -322,12 +318,12 @@ func (p *CrossProfileAppsProxy) CanUserAttemptToConfigureInteractAcrossProfiles(
 
 func (p *CrossProfileAppsProxy) ResetInteractAcrossProfilesAppOps(
 	ctx context.Context,
-	userId int32,
 	packageNames []string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICrossProfileApps)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if packageNames == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -357,11 +353,11 @@ func (p *CrossProfileAppsProxy) ResetInteractAcrossProfilesAppOps(
 
 func (p *CrossProfileAppsProxy) ClearInteractAcrossProfilesAppOps(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICrossProfileApps)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICrossProfileApps, "clearInteractAcrossProfilesAppOps")
 	if _err != nil {

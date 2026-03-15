@@ -686,13 +686,13 @@ func (p *WindowManagerProxy) SetForcedDisplayDensityForUser(
 	ctx context.Context,
 	displayId int32,
 	density int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
 	_data.WriteInt32(displayId)
 	_data.WriteInt32(density)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "setForcedDisplayDensityForUser")
 	if _err != nil {
@@ -715,12 +715,12 @@ func (p *WindowManagerProxy) SetForcedDisplayDensityForUser(
 func (p *WindowManagerProxy) ClearForcedDisplayDensityForUser(
 	ctx context.Context,
 	displayId int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
 	_data.WriteInt32(displayId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "clearForcedDisplayDensityForUser")
 	if _err != nil {
@@ -1122,13 +1122,13 @@ func (p *WindowManagerProxy) DisableKeyguard(
 	ctx context.Context,
 	token binder.IBinder,
 	tag string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteString16(tag)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "disableKeyguard")
 	if _err != nil {
@@ -1151,12 +1151,12 @@ func (p *WindowManagerProxy) DisableKeyguard(
 func (p *WindowManagerProxy) ReenableKeyguard(
 	ctx context.Context,
 	token binder.IBinder,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
 	_data.WriteStrongBinder(token.Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "reenableKeyguard")
 	if _err != nil {
@@ -1233,12 +1233,12 @@ func (p *WindowManagerProxy) IsKeyguardLocked(
 
 func (p *WindowManagerProxy) IsKeyguardSecure(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "isKeyguardSecure")
 	if _err != nil {

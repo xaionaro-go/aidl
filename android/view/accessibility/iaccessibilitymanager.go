@@ -131,11 +131,11 @@ var _ IAccessibilityManager = (*AccessibilityManagerProxy)(nil)
 
 func (p *AccessibilityManagerProxy) Interrupt(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManager, "interrupt")
 	if _err != nil {
@@ -149,15 +149,15 @@ func (p *AccessibilityManagerProxy) Interrupt(
 func (p *AccessibilityManagerProxy) SendAccessibilityEvent(
 	ctx context.Context,
 	uiEvent AccessibilityEvent,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
 	_data.WriteInt32(1)
 	if _err := uiEvent.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManager, "sendAccessibilityEvent")
 	if _err != nil {
@@ -171,13 +171,13 @@ func (p *AccessibilityManagerProxy) SendAccessibilityEvent(
 func (p *AccessibilityManagerProxy) AddClient(
 	ctx context.Context,
 	client IAccessibilityManagerClient,
-	userId int32,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
 	_data.WriteStrongBinder(client.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManager, "addClient")
 	if _err != nil {
@@ -204,13 +204,13 @@ func (p *AccessibilityManagerProxy) AddClient(
 func (p *AccessibilityManagerProxy) RemoveClient(
 	ctx context.Context,
 	client IAccessibilityManagerClient,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
 	_data.WriteStrongBinder(client.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManager, "removeClient")
 	if _err != nil {
@@ -236,12 +236,12 @@ func (p *AccessibilityManagerProxy) RemoveClient(
 
 func (p *AccessibilityManagerProxy) GetInstalledAccessibilityServiceList(
 	ctx context.Context,
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManager, "getInstalledAccessibilityServiceList")
 	if _err != nil {
@@ -264,13 +264,13 @@ func (p *AccessibilityManagerProxy) GetInstalledAccessibilityServiceList(
 func (p *AccessibilityManagerProxy) GetEnabledAccessibilityServiceList(
 	ctx context.Context,
 	feedbackType int32,
-	userId int32,
 ) ([]interface{}, error) {
 	var _result []interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
 	_data.WriteInt32(feedbackType)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManager, "getEnabledAccessibilityServiceList")
 	if _err != nil {
@@ -306,15 +306,15 @@ func (p *AccessibilityManagerProxy) AddAccessibilityInteractionConnection(
 	leashToken binder.IBinder,
 	connection IAccessibilityInteractionConnection,
 	packageName string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
 	_data.WriteStrongBinder(leashToken.Handle())
 	_data.WriteStrongBinder(connection.AsBinder().Handle())
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManager, "addAccessibilityInteractionConnection")
 	if _err != nil {
@@ -394,13 +394,13 @@ func (p *AccessibilityManagerProxy) RegisterUiTestAutomationService(
 	owner binder.IBinder,
 	client interface{},
 	info interface{},
-	userId int32,
 	flags int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
 	_data.WriteStrongBinder(owner.Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManager, "registerUiTestAutomationService")
@@ -449,13 +449,13 @@ func (p *AccessibilityManagerProxy) UnregisterUiTestAutomationService(
 func (p *AccessibilityManagerProxy) GetWindowToken(
 	ctx context.Context,
 	windowId int32,
-	userId int32,
 ) (binder.IBinder, error) {
 	var _result binder.IBinder
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
 	_data.WriteInt32(windowId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManager, "getWindowToken")
 	if _err != nil {
@@ -918,12 +918,12 @@ func (p *AccessibilityManagerProxy) IsAudioDescriptionByDefaultEnabled(
 func (p *AccessibilityManagerProxy) SetSystemAudioCaptioningEnabled(
 	ctx context.Context,
 	isEnabled bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
 	_data.WriteBool(isEnabled)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManager, "setSystemAudioCaptioningEnabled")
 	if _err != nil {
@@ -945,12 +945,12 @@ func (p *AccessibilityManagerProxy) SetSystemAudioCaptioningEnabled(
 
 func (p *AccessibilityManagerProxy) IsSystemAudioCaptioningUiEnabled(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManager, "isSystemAudioCaptioningUiEnabled")
 	if _err != nil {
@@ -977,12 +977,12 @@ func (p *AccessibilityManagerProxy) IsSystemAudioCaptioningUiEnabled(
 func (p *AccessibilityManagerProxy) SetSystemAudioCaptioningUiEnabled(
 	ctx context.Context,
 	isEnabled bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
 	_data.WriteBool(isEnabled)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManager, "setSystemAudioCaptioningUiEnabled")
 	if _err != nil {
@@ -1006,14 +1006,14 @@ func (p *AccessibilityManagerProxy) SetAccessibilityWindowAttributes(
 	ctx context.Context,
 	displayId int32,
 	windowId int32,
-	userId int32,
 	attributes AccessibilityWindowAttributes,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
 	_data.WriteInt32(displayId)
 	_data.WriteInt32(windowId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := attributes.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1221,14 +1221,14 @@ func (p *AccessibilityManagerProxy) IsAccessibilityTargetAllowed(
 	ctx context.Context,
 	packageName string,
 	uid int32,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(uid)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManager, "isAccessibilityTargetAllowed")
 	if _err != nil {
@@ -1256,14 +1256,14 @@ func (p *AccessibilityManagerProxy) SendRestrictedDialogIntent(
 	ctx context.Context,
 	packageName string,
 	uid int32,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(uid)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManager, "sendRestrictedDialogIntent")
 	if _err != nil {
@@ -1373,12 +1373,12 @@ func (p *AccessibilityManagerProxy) AttachAccessibilityOverlayToDisplay(
 
 func (p *AccessibilityManagerProxy) NotifyQuickSettingsTilesChanged(
 	ctx context.Context,
-	userId int32,
 	tileComponentNames []interface{},
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if tileComponentNames == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1399,8 +1399,8 @@ func (p *AccessibilityManagerProxy) EnableShortcutsForTargets(
 	enable bool,
 	shortcutTypes int32,
 	shortcutTargets []string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
 	_data.WriteBool(enable)
@@ -1413,7 +1413,7 @@ func (p *AccessibilityManagerProxy) EnableShortcutsForTargets(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManager, "enableShortcutsForTargets")
 	if _err != nil {
@@ -1426,12 +1426,12 @@ func (p *AccessibilityManagerProxy) EnableShortcutsForTargets(
 
 func (p *AccessibilityManagerProxy) GetA11yFeatureToTileMap(
 	ctx context.Context,
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManager, "getA11yFeatureToTileMap")
 	if _err != nil {

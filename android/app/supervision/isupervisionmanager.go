@@ -37,12 +37,12 @@ var _ ISupervisionManager = (*SupervisionManagerProxy)(nil)
 
 func (p *SupervisionManagerProxy) IsSupervisionEnabledForUser(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISupervisionManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISupervisionManager, "isSupervisionEnabledForUser")
 	if _err != nil {

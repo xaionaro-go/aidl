@@ -57,11 +57,11 @@ var _ IDumpstate = (*DumpstateProxy)(nil)
 
 func (p *DumpstateProxy) PreDumpUiData(
 	ctx context.Context,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDumpstate)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDumpstate, "preDumpUiData")
 	if _err != nil {
@@ -83,8 +83,6 @@ func (p *DumpstateProxy) PreDumpUiData(
 
 func (p *DumpstateProxy) StartBugreport(
 	ctx context.Context,
-	callingUid int32,
-	callingPackage string,
 	bugreportFd interface{},
 	screenshotFd interface{},
 	bugreportMode int32,
@@ -93,10 +91,11 @@ func (p *DumpstateProxy) StartBugreport(
 	isScreenshotRequested bool,
 	skipUserConsent bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDumpstate)
-	_data.WriteInt32(callingUid)
-	_data.WriteString16(callingPackage)
+	_data.WriteInt32(_identity.UID)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(bugreportMode)
 	_data.WriteInt32(bugreportFlags)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
@@ -123,13 +122,12 @@ func (p *DumpstateProxy) StartBugreport(
 
 func (p *DumpstateProxy) CancelBugreport(
 	ctx context.Context,
-	callingUid int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDumpstate)
-	_data.WriteInt32(callingUid)
-	_data.WriteString16(callingPackage)
+	_data.WriteInt32(_identity.UID)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDumpstate, "cancelBugreport")
 	if _err != nil {
@@ -151,20 +149,18 @@ func (p *DumpstateProxy) CancelBugreport(
 
 func (p *DumpstateProxy) RetrieveBugreport(
 	ctx context.Context,
-	callingUid int32,
-	callingPackage string,
-	userId int32,
 	bugreportFd interface{},
 	bugreportFile string,
 	keepBugreportOnRetrieval bool,
 	skipUserConsent bool,
 	listener IDumpstateListener,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDumpstate)
-	_data.WriteInt32(callingUid)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UID)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(bugreportFile)
 	_data.WriteBool(keepBugreportOnRetrieval)
 	_data.WriteBool(skipUserConsent)

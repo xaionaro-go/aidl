@@ -1285,16 +1285,16 @@ func (p *SmsProxy) CheckSmsShortCodeDestination(
 	ctx context.Context,
 	subId int32,
 	callingApk string,
-	callingFeatureId string,
 	destAddress string,
 	countryIso string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISms)
 	_data.WriteInt32(subId)
 	_data.WriteString16(callingApk)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(destAddress)
 	_data.WriteString16(countryIso)
 
@@ -1323,13 +1323,13 @@ func (p *SmsProxy) CheckSmsShortCodeDestination(
 func (p *SmsProxy) GetSmscAddressFromIccEfForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISms)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISms, "getSmscAddressFromIccEfForSubscriber")
 	if _err != nil {
@@ -1357,14 +1357,14 @@ func (p *SmsProxy) SetSmscAddressOnIccEfForSubscriber(
 	ctx context.Context,
 	smsc string,
 	subId int32,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISms)
 	_data.WriteString16(smsc)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISms, "setSmscAddressOnIccEfForSubscriber")
 	if _err != nil {

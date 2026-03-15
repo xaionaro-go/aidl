@@ -108,15 +108,15 @@ var _ IAppWidgetService = (*AppWidgetServiceProxy)(nil)
 func (p *AppWidgetServiceProxy) StartListening(
 	ctx context.Context,
 	host IAppWidgetHost,
-	callingPackage string,
 	hostId int32,
 	appWidgetIds []int32,
 ) (pm.ParceledListSlice, error) {
 	var _result pm.ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
 	_data.WriteStrongBinder(host.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(hostId)
 	if appWidgetIds == nil {
 		_data.WriteInt32(-1)
@@ -156,12 +156,12 @@ func (p *AppWidgetServiceProxy) StartListening(
 
 func (p *AppWidgetServiceProxy) StopListening(
 	ctx context.Context,
-	callingPackage string,
 	hostId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(hostId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetService, "stopListening")
@@ -184,13 +184,13 @@ func (p *AppWidgetServiceProxy) StopListening(
 
 func (p *AppWidgetServiceProxy) AllocateAppWidgetId(
 	ctx context.Context,
-	callingPackage string,
 	hostId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(hostId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetService, "allocateAppWidgetId")
@@ -217,12 +217,12 @@ func (p *AppWidgetServiceProxy) AllocateAppWidgetId(
 
 func (p *AppWidgetServiceProxy) DeleteAppWidgetId(
 	ctx context.Context,
-	callingPackage string,
 	appWidgetId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(appWidgetId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetService, "deleteAppWidgetId")
@@ -297,13 +297,13 @@ func (p *AppWidgetServiceProxy) DeleteAllHosts(
 
 func (p *AppWidgetServiceProxy) GetAppWidgetViews(
 	ctx context.Context,
-	callingPackage string,
 	appWidgetId int32,
 ) (widget.RemoteViews, error) {
 	var _result widget.RemoteViews
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(appWidgetId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetService, "getAppWidgetViews")
@@ -335,13 +335,13 @@ func (p *AppWidgetServiceProxy) GetAppWidgetViews(
 
 func (p *AppWidgetServiceProxy) GetAppWidgetIdsForHost(
 	ctx context.Context,
-	callingPackage string,
 	hostId int32,
 ) ([]int32, error) {
 	var _result []int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(hostId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetService, "getAppWidgetIdsForHost")
@@ -378,12 +378,12 @@ func (p *AppWidgetServiceProxy) GetAppWidgetIdsForHost(
 
 func (p *AppWidgetServiceProxy) SetAppWidgetHidden(
 	ctx context.Context,
-	callingPackage string,
 	hostId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(hostId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetService, "setAppWidgetHidden")
@@ -406,14 +406,14 @@ func (p *AppWidgetServiceProxy) SetAppWidgetHidden(
 
 func (p *AppWidgetServiceProxy) CreateAppWidgetConfigIntentSender(
 	ctx context.Context,
-	callingPackage string,
 	appWidgetId int32,
 	intentFlags int32,
 ) (content.IntentSender, error) {
 	var _result content.IntentSender
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(appWidgetId)
 	_data.WriteInt32(intentFlags)
 
@@ -446,13 +446,13 @@ func (p *AppWidgetServiceProxy) CreateAppWidgetConfigIntentSender(
 
 func (p *AppWidgetServiceProxy) UpdateAppWidgetIds(
 	ctx context.Context,
-	callingPackage string,
 	appWidgetIds []int32,
 	views widget.RemoteViews,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	if appWidgetIds == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -486,13 +486,13 @@ func (p *AppWidgetServiceProxy) UpdateAppWidgetIds(
 
 func (p *AppWidgetServiceProxy) UpdateAppWidgetOptions(
 	ctx context.Context,
-	callingPackage string,
 	appWidgetId int32,
 	extras os.Bundle,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(appWidgetId)
 	_data.WriteInt32(1)
 	if _err := extras.MarshalParcel(_data); _err != nil {
@@ -519,13 +519,13 @@ func (p *AppWidgetServiceProxy) UpdateAppWidgetOptions(
 
 func (p *AppWidgetServiceProxy) GetAppWidgetOptions(
 	ctx context.Context,
-	callingPackage string,
 	appWidgetId int32,
 ) (os.Bundle, error) {
 	var _result os.Bundle
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(appWidgetId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetService, "getAppWidgetOptions")
@@ -557,13 +557,13 @@ func (p *AppWidgetServiceProxy) GetAppWidgetOptions(
 
 func (p *AppWidgetServiceProxy) PartiallyUpdateAppWidgetIds(
 	ctx context.Context,
-	callingPackage string,
 	appWidgetIds []int32,
 	views widget.RemoteViews,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	if appWidgetIds == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -739,13 +739,13 @@ func (p *AppWidgetServiceProxy) GetInstalledProvidersForProfile(
 
 func (p *AppWidgetServiceProxy) GetAppWidgetInfo(
 	ctx context.Context,
-	callingPackage string,
 	appWidgetId int32,
 ) (androidAppwidget.AppWidgetProviderInfo, error) {
 	var _result androidAppwidget.AppWidgetProviderInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(appWidgetId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetService, "getAppWidgetInfo")
@@ -778,13 +778,13 @@ func (p *AppWidgetServiceProxy) GetAppWidgetInfo(
 func (p *AppWidgetServiceProxy) HasBindAppWidgetPermission(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetService, "hasBindAppWidgetPermission")
 	if _err != nil {
@@ -811,13 +811,13 @@ func (p *AppWidgetServiceProxy) HasBindAppWidgetPermission(
 func (p *AppWidgetServiceProxy) SetBindAppWidgetPermission(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	permission bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(permission)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetService, "setBindAppWidgetPermission")
@@ -840,16 +840,16 @@ func (p *AppWidgetServiceProxy) SetBindAppWidgetPermission(
 
 func (p *AppWidgetServiceProxy) BindAppWidgetId(
 	ctx context.Context,
-	callingPackage string,
 	appWidgetId int32,
 	providerProfileId int32,
 	providerComponent content.ComponentName,
 	options os.Bundle,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(appWidgetId)
 	_data.WriteInt32(providerProfileId)
 	_data.WriteInt32(1)
@@ -885,7 +885,6 @@ func (p *AppWidgetServiceProxy) BindAppWidgetId(
 
 func (p *AppWidgetServiceProxy) BindRemoteViewsService(
 	ctx context.Context,
-	callingPackage string,
 	appWidgetId int32,
 	intent content.Intent,
 	caller app.IApplicationThread,
@@ -894,9 +893,10 @@ func (p *AppWidgetServiceProxy) BindRemoteViewsService(
 	flags int64,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(appWidgetId)
 	_data.WriteInt32(1)
 	if _err := intent.MarshalParcel(_data); _err != nil {
@@ -1040,13 +1040,13 @@ func (p *AppWidgetServiceProxy) GetAppWidgetIds(
 func (p *AppWidgetServiceProxy) IsBoundWidgetPackage(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetService, "isBoundWidgetPackage")
 	if _err != nil {
@@ -1147,12 +1147,12 @@ func (p *AppWidgetServiceProxy) IsRequestPinAppWidgetSupported(
 
 func (p *AppWidgetServiceProxy) NoteAppWidgetTapped(
 	ctx context.Context,
-	callingPackage string,
 	appWidgetId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(appWidgetId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetService, "noteAppWidgetTapped")
@@ -1207,15 +1207,15 @@ func (p *AppWidgetServiceProxy) SetWidgetPreview(
 
 func (p *AppWidgetServiceProxy) GetWidgetPreview(
 	ctx context.Context,
-	callingPackage string,
 	providerComponent content.ComponentName,
 	profileId int32,
 	widgetCategory int32,
 ) (widget.RemoteViews, error) {
 	var _result widget.RemoteViews
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := providerComponent.MarshalParcel(_data); _err != nil {
 		return _result, _err

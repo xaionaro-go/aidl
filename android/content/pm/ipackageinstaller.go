@@ -91,9 +91,9 @@ func (p *PackageInstallerProxy) CreateSession(
 	params PackageInstallerSessionParams,
 	installerPackageName string,
 	installerAttributionTag string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageInstaller)
 	_data.WriteInt32(1)
@@ -102,7 +102,7 @@ func (p *PackageInstallerProxy) CreateSession(
 	}
 	_data.WriteString16(installerPackageName)
 	_data.WriteString16(installerAttributionTag)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageInstaller, "createSession")
 	if _err != nil {
@@ -281,12 +281,12 @@ func (p *PackageInstallerProxy) GetSessionInfo(
 
 func (p *PackageInstallerProxy) GetAllSessions(
 	ctx context.Context,
-	userId int32,
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageInstaller)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageInstaller, "getAllSessions")
 	if _err != nil {
@@ -318,13 +318,13 @@ func (p *PackageInstallerProxy) GetAllSessions(
 func (p *PackageInstallerProxy) GetMySessions(
 	ctx context.Context,
 	installerPackageName string,
-	userId int32,
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageInstaller)
 	_data.WriteString16(installerPackageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageInstaller, "getMySessions")
 	if _err != nil {
@@ -390,12 +390,12 @@ func (p *PackageInstallerProxy) GetStagedSessions(
 func (p *PackageInstallerProxy) RegisterCallback(
 	ctx context.Context,
 	callback IPackageInstallerCallback,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageInstaller)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageInstaller, "registerCallback")
 	if _err != nil {
@@ -447,8 +447,8 @@ func (p *PackageInstallerProxy) Uninstall(
 	callerPackageName string,
 	flags int32,
 	statusReceiver interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageInstaller)
 	_data.WriteInt32(1)
@@ -457,7 +457,7 @@ func (p *PackageInstallerProxy) Uninstall(
 	}
 	_data.WriteString16(callerPackageName)
 	_data.WriteInt32(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageInstaller, "uninstall")
 	if _err != nil {
@@ -482,8 +482,8 @@ func (p *PackageInstallerProxy) UninstallExistingPackage(
 	versionedPackage VersionedPackage,
 	callerPackageName string,
 	statusReceiver interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageInstaller)
 	_data.WriteInt32(1)
@@ -491,7 +491,7 @@ func (p *PackageInstallerProxy) UninstallExistingPackage(
 		return _err
 	}
 	_data.WriteString16(callerPackageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageInstaller, "uninstallExistingPackage")
 	if _err != nil {
@@ -517,15 +517,15 @@ func (p *PackageInstallerProxy) InstallExistingPackage(
 	installFlags int32,
 	installReason int32,
 	statusReceiver interface{},
-	userId int32,
 	whiteListedPermissions []string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageInstaller)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(installFlags)
 	_data.WriteInt32(installReason)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if whiteListedPermissions == nil {
 		_data.WriteInt32(-1)
 	} else {

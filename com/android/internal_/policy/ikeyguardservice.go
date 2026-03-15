@@ -383,11 +383,11 @@ func (p *KeyguardServiceProxy) SetSwitchingUser(
 
 func (p *KeyguardServiceProxy) SetCurrentUser(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyguardService)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardService, "setCurrentUser")
 	if _err != nil {

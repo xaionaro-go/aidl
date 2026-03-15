@@ -145,13 +145,13 @@ func (p *ContentServiceProxy) RegisterContentObserver(
 	uri interface{},
 	notifyForDescendants bool,
 	observer interface{},
-	userHandle int32,
 	targetSdkVersion int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	_data.WriteBool(notifyForDescendants)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(targetSdkVersion)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "registerContentObserver")
@@ -178,10 +178,9 @@ func (p *ContentServiceProxy) NotifyChange(
 	observer interface{},
 	observerWantsSelfNotifications bool,
 	flags int32,
-	userHandle int32,
 	targetSdkVersion int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	if uris == nil {
@@ -191,9 +190,9 @@ func (p *ContentServiceProxy) NotifyChange(
 	}
 	_data.WriteBool(observerWantsSelfNotifications)
 	_data.WriteInt32(flags)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(targetSdkVersion)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "notifyChange")
 	if _err != nil {
@@ -218,12 +217,12 @@ func (p *ContentServiceProxy) RequestSync(
 	account interface{},
 	authority string,
 	extras interface{},
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	_data.WriteString16(authority)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "requestSync")
 	if _err != nil {
@@ -246,15 +245,15 @@ func (p *ContentServiceProxy) RequestSync(
 func (p *ContentServiceProxy) Sync(
 	ctx context.Context,
 	request SyncRequest,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	_data.WriteInt32(1)
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "sync")
 	if _err != nil {
@@ -277,17 +276,16 @@ func (p *ContentServiceProxy) Sync(
 func (p *ContentServiceProxy) SyncAsUser(
 	ctx context.Context,
 	request SyncRequest,
-	userId int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	_data.WriteInt32(1)
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
-	_data.WriteString16(callingPackage)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "syncAsUser")
 	if _err != nil {
@@ -344,8 +342,8 @@ func (p *ContentServiceProxy) CancelSyncAsUser(
 	account interface{},
 	authority string,
 	cname ComponentName,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	_data.WriteString16(authority)
@@ -353,7 +351,7 @@ func (p *ContentServiceProxy) CancelSyncAsUser(
 	if _err := cname.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "cancelSyncAsUser")
 	if _err != nil {
@@ -438,13 +436,13 @@ func (p *ContentServiceProxy) GetSyncAutomaticallyAsUser(
 	ctx context.Context,
 	account interface{},
 	providerName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	_data.WriteString16(providerName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "getSyncAutomaticallyAsUser")
 	if _err != nil {
@@ -502,13 +500,13 @@ func (p *ContentServiceProxy) SetSyncAutomaticallyAsUser(
 	account interface{},
 	providerName string,
 	sync bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	_data.WriteString16(providerName)
 	_data.WriteBool(sync)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "setSyncAutomaticallyAsUser")
 	if _err != nil {
@@ -668,13 +666,13 @@ func (p *ContentServiceProxy) GetIsSyncableAsUser(
 	ctx context.Context,
 	account interface{},
 	providerName string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	_data.WriteString16(providerName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "getIsSyncableAsUser")
 	if _err != nil {
@@ -732,13 +730,13 @@ func (p *ContentServiceProxy) SetIsSyncableAsUser(
 	account interface{},
 	providerName string,
 	syncable int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	_data.WriteString16(providerName)
 	_data.WriteInt32(syncable)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "setIsSyncableAsUser")
 	if _err != nil {
@@ -787,12 +785,12 @@ func (p *ContentServiceProxy) SetMasterSyncAutomatically(
 func (p *ContentServiceProxy) SetMasterSyncAutomaticallyAsUser(
 	ctx context.Context,
 	flag bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	_data.WriteBool(flag)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "setMasterSyncAutomaticallyAsUser")
 	if _err != nil {
@@ -843,12 +841,12 @@ func (p *ContentServiceProxy) GetMasterSyncAutomatically(
 
 func (p *ContentServiceProxy) GetMasterSyncAutomaticallyAsUser(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "getMasterSyncAutomaticallyAsUser")
 	if _err != nil {
@@ -912,12 +910,12 @@ func (p *ContentServiceProxy) GetCurrentSyncs(
 
 func (p *ContentServiceProxy) GetCurrentSyncsAsUser(
 	ctx context.Context,
-	userId int32,
 ) ([]SyncInfo, error) {
 	var _result []SyncInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "getCurrentSyncsAsUser")
 	if _err != nil {
@@ -990,12 +988,12 @@ func (p *ContentServiceProxy) GetSyncAdapterTypes(
 
 func (p *ContentServiceProxy) GetSyncAdapterTypesAsUser(
 	ctx context.Context,
-	userId int32,
 ) ([]SyncAdapterType, error) {
 	var _result []SyncAdapterType
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "getSyncAdapterTypesAsUser")
 	if _err != nil {
@@ -1031,13 +1029,13 @@ func (p *ContentServiceProxy) GetSyncAdapterTypesAsUser(
 func (p *ContentServiceProxy) GetSyncAdapterPackagesForAuthorityAsUser(
 	ctx context.Context,
 	authority string,
-	userId int32,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	_data.WriteString16(authority)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "getSyncAdapterPackagesForAuthorityAsUser")
 	if _err != nil {
@@ -1075,14 +1073,14 @@ func (p *ContentServiceProxy) GetSyncAdapterPackageAsUser(
 	ctx context.Context,
 	accountType string,
 	authority string,
-	userId int32,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	_data.WriteString16(accountType)
 	_data.WriteString16(authority)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "getSyncAdapterPackageAsUser")
 	if _err != nil {
@@ -1190,9 +1188,9 @@ func (p *ContentServiceProxy) GetSyncStatusAsUser(
 	account interface{},
 	authority string,
 	cname ComponentName,
-	userId int32,
 ) (SyncStatusInfo, error) {
 	var _result SyncStatusInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	_data.WriteString16(authority)
@@ -1200,7 +1198,7 @@ func (p *ContentServiceProxy) GetSyncStatusAsUser(
 	if _err := cname.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "getSyncStatusAsUser")
 	if _err != nil {
@@ -1271,9 +1269,9 @@ func (p *ContentServiceProxy) IsSyncPendingAsUser(
 	account interface{},
 	authority string,
 	cname ComponentName,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	_data.WriteString16(authority)
@@ -1281,7 +1279,7 @@ func (p *ContentServiceProxy) IsSyncPendingAsUser(
 	if _err := cname.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "isSyncPendingAsUser")
 	if _err != nil {
@@ -1364,12 +1362,12 @@ func (p *ContentServiceProxy) PutCache(
 	packageName string,
 	key interface{},
 	value interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "putCache")
 	if _err != nil {
@@ -1393,13 +1391,13 @@ func (p *ContentServiceProxy) GetCache(
 	ctx context.Context,
 	packageName string,
 	key interface{},
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "getCache")
 	if _err != nil {

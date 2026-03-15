@@ -60,13 +60,13 @@ var _ IBiometricAuthenticator = (*BiometricAuthenticatorProxy)(nil)
 func (p *BiometricAuthenticatorProxy) CreateTestSession(
 	ctx context.Context,
 	callback ITestSessionCallback,
-	opPackageName string,
 ) (ITestSession, error) {
 	var _result ITestSession
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricAuthenticator)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricAuthenticator, "createTestSession")
 	if _err != nil {
@@ -93,12 +93,12 @@ func (p *BiometricAuthenticatorProxy) CreateTestSession(
 
 func (p *BiometricAuthenticatorProxy) GetSensorProperties(
 	ctx context.Context,
-	opPackageName string,
 ) (SensorPropertiesInternal, error) {
 	var _result SensorPropertiesInternal
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricAuthenticator)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricAuthenticator, "getSensorProperties")
 	if _err != nil {
@@ -173,23 +173,22 @@ func (p *BiometricAuthenticatorProxy) PrepareForAuthentication(
 	requireConfirmation bool,
 	token binder.IBinder,
 	operationId int64,
-	userId int32,
 	sensorReceiver IBiometricSensorReceiver,
-	opPackageName string,
 	requestId int64,
 	cookie int32,
 	allowBackgroundAuthentication bool,
 	isForLegacyFingerprintManager bool,
 	isMandatoryBiometrics bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricAuthenticator)
 	_data.WriteBool(requireConfirmation)
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt64(operationId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(sensorReceiver.AsBinder().Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt64(requestId)
 	_data.WriteInt32(cookie)
 	_data.WriteBool(allowBackgroundAuthentication)
@@ -243,13 +242,13 @@ func (p *BiometricAuthenticatorProxy) StartPreparedClient(
 func (p *BiometricAuthenticatorProxy) CancelAuthenticationFromService(
 	ctx context.Context,
 	token binder.IBinder,
-	opPackageName string,
 	requestId int64,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricAuthenticator)
 	_data.WriteStrongBinder(token.Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt64(requestId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricAuthenticator, "cancelAuthenticationFromService")
@@ -272,12 +271,12 @@ func (p *BiometricAuthenticatorProxy) CancelAuthenticationFromService(
 
 func (p *BiometricAuthenticatorProxy) IsHardwareDetected(
 	ctx context.Context,
-	opPackageName string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricAuthenticator)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricAuthenticator, "isHardwareDetected")
 	if _err != nil {
@@ -303,14 +302,13 @@ func (p *BiometricAuthenticatorProxy) IsHardwareDetected(
 
 func (p *BiometricAuthenticatorProxy) HasEnrolledTemplates(
 	ctx context.Context,
-	userId int32,
-	opPackageName string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricAuthenticator)
-	_data.WriteInt32(userId)
-	_data.WriteString16(opPackageName)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricAuthenticator, "hasEnrolledTemplates")
 	if _err != nil {
@@ -336,12 +334,12 @@ func (p *BiometricAuthenticatorProxy) HasEnrolledTemplates(
 
 func (p *BiometricAuthenticatorProxy) GetLockoutModeForUser(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricAuthenticator)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricAuthenticator, "getLockoutModeForUser")
 	if _err != nil {
@@ -367,12 +365,12 @@ func (p *BiometricAuthenticatorProxy) GetLockoutModeForUser(
 
 func (p *BiometricAuthenticatorProxy) InvalidateAuthenticatorId(
 	ctx context.Context,
-	userId int32,
 	callback IInvalidationCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricAuthenticator)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricAuthenticator, "invalidateAuthenticatorId")
@@ -395,12 +393,12 @@ func (p *BiometricAuthenticatorProxy) InvalidateAuthenticatorId(
 
 func (p *BiometricAuthenticatorProxy) GetAuthenticatorId(
 	ctx context.Context,
-	callingUserId int32,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricAuthenticator)
-	_data.WriteInt32(callingUserId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricAuthenticator, "getAuthenticatorId")
 	if _err != nil {
@@ -427,15 +425,14 @@ func (p *BiometricAuthenticatorProxy) GetAuthenticatorId(
 func (p *BiometricAuthenticatorProxy) ResetLockout(
 	ctx context.Context,
 	token binder.IBinder,
-	opPackageName string,
-	userId int32,
 	hardwareAuthToken []byte,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricAuthenticator)
 	_data.WriteStrongBinder(token.Handle())
-	_data.WriteString16(opPackageName)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 	if hardwareAuthToken == nil {
 		_data.WriteInt32(-1)
 	} else {

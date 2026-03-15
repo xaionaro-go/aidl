@@ -41,12 +41,12 @@ func (p *ContentObserverProxy) OnChange(
 	ctx context.Context,
 	selfUpdate bool,
 	uri interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentObserver)
 	_data.WriteBool(selfUpdate)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentObserver, "onChange")
 	if _err != nil {
@@ -62,8 +62,8 @@ func (p *ContentObserverProxy) OnChangeEtc(
 	selfUpdate bool,
 	uri []interface{},
 	flags int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentObserver)
 	_data.WriteBool(selfUpdate)
@@ -73,7 +73,7 @@ func (p *ContentObserverProxy) OnChangeEtc(
 		_data.WriteInt32(int32(len(uri)))
 	}
 	_data.WriteInt32(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentObserver, "onChangeEtc")
 	if _err != nil {

@@ -55,7 +55,6 @@ var _ IAlarmManager = (*AlarmManagerProxy)(nil)
 
 func (p *AlarmManagerProxy) Set(
 	ctx context.Context,
-	callingPackage string,
 	type_ int32,
 	triggerAtTime int64,
 	windowLength int64,
@@ -67,9 +66,10 @@ func (p *AlarmManagerProxy) Set(
 	workSource interface{},
 	alarmClock AlarmManagerAlarmClockInfo,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAlarmManager)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(type_)
 	_data.WriteInt64(triggerAtTime)
 	_data.WriteInt64(windowLength)
@@ -249,12 +249,12 @@ func (p *AlarmManagerProxy) GetNextWakeFromIdleTime(
 
 func (p *AlarmManagerProxy) GetNextAlarmClock(
 	ctx context.Context,
-	userId int32,
 ) (AlarmManagerAlarmClockInfo, error) {
 	var _result AlarmManagerAlarmClockInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAlarmManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAlarmManager, "getNextAlarmClock")
 	if _err != nil {
@@ -317,13 +317,13 @@ func (p *AlarmManagerProxy) CanScheduleExactAlarms(
 func (p *AlarmManagerProxy) HasScheduleExactAlarm(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAlarmManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAlarmManager, "hasScheduleExactAlarm")
 	if _err != nil {

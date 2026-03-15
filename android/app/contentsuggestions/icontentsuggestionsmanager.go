@@ -56,13 +56,13 @@ var _ IContentSuggestionsManager = (*ContentSuggestionsManagerProxy)(nil)
 
 func (p *ContentSuggestionsManagerProxy) ProvideContextImage(
 	ctx context.Context,
-	userId int32,
 	taskId int32,
 	imageContextRequestExtras os.Bundle,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentSuggestionsManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(taskId)
 	_data.WriteInt32(1)
 	if _err := imageContextRequestExtras.MarshalParcel(_data); _err != nil {
@@ -80,13 +80,13 @@ func (p *ContentSuggestionsManagerProxy) ProvideContextImage(
 
 func (p *ContentSuggestionsManagerProxy) ProvideContextBitmap(
 	ctx context.Context,
-	userId int32,
 	bitmap graphics.Bitmap,
 	imageContextRequestExtras os.Bundle,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentSuggestionsManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := bitmap.MarshalParcel(_data); _err != nil {
 		return _err
@@ -107,13 +107,13 @@ func (p *ContentSuggestionsManagerProxy) ProvideContextBitmap(
 
 func (p *ContentSuggestionsManagerProxy) SuggestContentSelections(
 	ctx context.Context,
-	userId int32,
 	request SelectionsRequest,
 	callback ISelectionsCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentSuggestionsManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
@@ -131,13 +131,13 @@ func (p *ContentSuggestionsManagerProxy) SuggestContentSelections(
 
 func (p *ContentSuggestionsManagerProxy) ClassifyContentSelections(
 	ctx context.Context,
-	userId int32,
 	request ClassificationsRequest,
 	callback IClassificationsCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentSuggestionsManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
@@ -155,13 +155,13 @@ func (p *ContentSuggestionsManagerProxy) ClassifyContentSelections(
 
 func (p *ContentSuggestionsManagerProxy) NotifyInteraction(
 	ctx context.Context,
-	userId int32,
 	requestId string,
 	interaction os.Bundle,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentSuggestionsManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(requestId)
 	_data.WriteInt32(1)
 	if _err := interaction.MarshalParcel(_data); _err != nil {
@@ -179,12 +179,12 @@ func (p *ContentSuggestionsManagerProxy) NotifyInteraction(
 
 func (p *ContentSuggestionsManagerProxy) IsEnabled(
 	ctx context.Context,
-	userId int32,
 	receiver internalOs.IResultReceiver,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentSuggestionsManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(receiver.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "isEnabled")
@@ -198,11 +198,11 @@ func (p *ContentSuggestionsManagerProxy) IsEnabled(
 
 func (p *ContentSuggestionsManagerProxy) ResetTemporaryService(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentSuggestionsManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "resetTemporaryService")
 	if _err != nil {
@@ -215,13 +215,13 @@ func (p *ContentSuggestionsManagerProxy) ResetTemporaryService(
 
 func (p *ContentSuggestionsManagerProxy) SetTemporaryService(
 	ctx context.Context,
-	userId int32,
 	serviceName string,
 	duration int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentSuggestionsManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(serviceName)
 	_data.WriteInt32(duration)
 
@@ -236,12 +236,12 @@ func (p *ContentSuggestionsManagerProxy) SetTemporaryService(
 
 func (p *ContentSuggestionsManagerProxy) SetDefaultServiceEnabled(
 	ctx context.Context,
-	userId int32,
 	enabled bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentSuggestionsManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(enabled)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "setDefaultServiceEnabled")

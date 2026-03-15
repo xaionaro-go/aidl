@@ -55,16 +55,16 @@ func (p *LegacyPermissionManagerProxy) CheckDeviceIdentifierAccess(
 	ctx context.Context,
 	packageName string,
 	message string,
-	callingFeatureId string,
 	pid int32,
 	uid int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILegacyPermissionManager)
 	_data.WriteString16(packageName)
 	_data.WriteString16(message)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt32(pid)
 	_data.WriteInt32(uid)
 
@@ -94,16 +94,16 @@ func (p *LegacyPermissionManagerProxy) CheckPhoneNumberAccess(
 	ctx context.Context,
 	packageName string,
 	message string,
-	callingFeatureId string,
 	pid int32,
 	uid int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILegacyPermissionManager)
 	_data.WriteString16(packageName)
 	_data.WriteString16(message)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt32(pid)
 	_data.WriteInt32(uid)
 
@@ -132,8 +132,8 @@ func (p *LegacyPermissionManagerProxy) CheckPhoneNumberAccess(
 func (p *LegacyPermissionManagerProxy) GrantDefaultPermissionsToEnabledCarrierApps(
 	ctx context.Context,
 	packageNames []string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILegacyPermissionManager)
 	if packageNames == nil {
@@ -144,7 +144,7 @@ func (p *LegacyPermissionManagerProxy) GrantDefaultPermissionsToEnabledCarrierAp
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILegacyPermissionManager, "grantDefaultPermissionsToEnabledCarrierApps")
 	if _err != nil {
@@ -167,8 +167,8 @@ func (p *LegacyPermissionManagerProxy) GrantDefaultPermissionsToEnabledCarrierAp
 func (p *LegacyPermissionManagerProxy) GrantDefaultPermissionsToEnabledImsServices(
 	ctx context.Context,
 	packageNames []string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILegacyPermissionManager)
 	if packageNames == nil {
@@ -179,7 +179,7 @@ func (p *LegacyPermissionManagerProxy) GrantDefaultPermissionsToEnabledImsServic
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILegacyPermissionManager, "grantDefaultPermissionsToEnabledImsServices")
 	if _err != nil {
@@ -202,8 +202,8 @@ func (p *LegacyPermissionManagerProxy) GrantDefaultPermissionsToEnabledImsServic
 func (p *LegacyPermissionManagerProxy) GrantDefaultPermissionsToEnabledTelephonyDataServices(
 	ctx context.Context,
 	packageNames []string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILegacyPermissionManager)
 	if packageNames == nil {
@@ -214,7 +214,7 @@ func (p *LegacyPermissionManagerProxy) GrantDefaultPermissionsToEnabledTelephony
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILegacyPermissionManager, "grantDefaultPermissionsToEnabledTelephonyDataServices")
 	if _err != nil {
@@ -237,8 +237,8 @@ func (p *LegacyPermissionManagerProxy) GrantDefaultPermissionsToEnabledTelephony
 func (p *LegacyPermissionManagerProxy) RevokeDefaultPermissionsFromDisabledTelephonyDataServices(
 	ctx context.Context,
 	packageNames []string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILegacyPermissionManager)
 	if packageNames == nil {
@@ -249,7 +249,7 @@ func (p *LegacyPermissionManagerProxy) RevokeDefaultPermissionsFromDisabledTelep
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILegacyPermissionManager, "revokeDefaultPermissionsFromDisabledTelephonyDataServices")
 	if _err != nil {
@@ -272,12 +272,12 @@ func (p *LegacyPermissionManagerProxy) RevokeDefaultPermissionsFromDisabledTelep
 func (p *LegacyPermissionManagerProxy) GrantDefaultPermissionsToActiveLuiApp(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILegacyPermissionManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILegacyPermissionManager, "grantDefaultPermissionsToActiveLuiApp")
 	if _err != nil {
@@ -300,8 +300,8 @@ func (p *LegacyPermissionManagerProxy) GrantDefaultPermissionsToActiveLuiApp(
 func (p *LegacyPermissionManagerProxy) RevokeDefaultPermissionsFromLuiApps(
 	ctx context.Context,
 	packageNames []string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILegacyPermissionManager)
 	if packageNames == nil {
@@ -312,7 +312,7 @@ func (p *LegacyPermissionManagerProxy) RevokeDefaultPermissionsFromLuiApps(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILegacyPermissionManager, "revokeDefaultPermissionsFromLuiApps")
 	if _err != nil {
@@ -335,12 +335,12 @@ func (p *LegacyPermissionManagerProxy) RevokeDefaultPermissionsFromLuiApps(
 func (p *LegacyPermissionManagerProxy) GrantDefaultPermissionsToCarrierServiceApp(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILegacyPermissionManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILegacyPermissionManager, "grantDefaultPermissionsToCarrierServiceApp")
 	if _err != nil {

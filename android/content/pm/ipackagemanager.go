@@ -484,12 +484,12 @@ var _ IPackageManager = (*PackageManagerProxy)(nil)
 func (p *PackageManagerProxy) CheckPackageStartable(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "checkPackageStartable")
 	if _err != nil {
@@ -512,13 +512,13 @@ func (p *PackageManagerProxy) CheckPackageStartable(
 func (p *PackageManagerProxy) IsPackageAvailable(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "isPackageAvailable")
 	if _err != nil {
@@ -546,14 +546,14 @@ func (p *PackageManagerProxy) GetPackageInfo(
 	ctx context.Context,
 	packageName string,
 	flags int64,
-	userId int32,
 ) (PackageInfo, error) {
 	var _result PackageInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getPackageInfo")
 	if _err != nil {
@@ -586,9 +586,9 @@ func (p *PackageManagerProxy) GetPackageInfoVersioned(
 	ctx context.Context,
 	versionedPackage VersionedPackage,
 	flags int64,
-	userId int32,
 ) (PackageInfo, error) {
 	var _result PackageInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteInt32(1)
@@ -596,7 +596,7 @@ func (p *PackageManagerProxy) GetPackageInfoVersioned(
 		return _result, _err
 	}
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getPackageInfoVersioned")
 	if _err != nil {
@@ -629,14 +629,14 @@ func (p *PackageManagerProxy) GetPackageUid(
 	ctx context.Context,
 	packageName string,
 	flags int64,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getPackageUid")
 	if _err != nil {
@@ -664,14 +664,14 @@ func (p *PackageManagerProxy) GetPackageGids(
 	ctx context.Context,
 	packageName string,
 	flags int64,
-	userId int32,
 ) ([]int32, error) {
 	var _result []int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getPackageGids")
 	if _err != nil {
@@ -805,14 +805,14 @@ func (p *PackageManagerProxy) GetApplicationInfo(
 	ctx context.Context,
 	packageName string,
 	flags int64,
-	userId int32,
 ) (ApplicationInfo, error) {
 	var _result ApplicationInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getApplicationInfo")
 	if _err != nil {
@@ -876,13 +876,13 @@ func (p *PackageManagerProxy) GetActivityInfo(
 	ctx context.Context,
 	className interface{},
 	flags int64,
-	userId int32,
 ) (ActivityInfo, error) {
 	var _result ActivityInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getActivityInfo")
 	if _err != nil {
@@ -916,13 +916,13 @@ func (p *PackageManagerProxy) ActivitySupportsIntentAsUser(
 	className interface{},
 	intent interface{},
 	resolvedType string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(resolvedType)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "activitySupportsIntentAsUser")
 	if _err != nil {
@@ -950,13 +950,13 @@ func (p *PackageManagerProxy) GetReceiverInfo(
 	ctx context.Context,
 	className interface{},
 	flags int64,
-	userId int32,
 ) (ActivityInfo, error) {
 	var _result ActivityInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getReceiverInfo")
 	if _err != nil {
@@ -989,13 +989,13 @@ func (p *PackageManagerProxy) GetServiceInfo(
 	ctx context.Context,
 	className interface{},
 	flags int64,
-	userId int32,
 ) (ServiceInfo, error) {
 	var _result ServiceInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getServiceInfo")
 	if _err != nil {
@@ -1028,13 +1028,13 @@ func (p *PackageManagerProxy) GetProviderInfo(
 	ctx context.Context,
 	className interface{},
 	flags int64,
-	userId int32,
 ) (ProviderInfo, error) {
 	var _result ProviderInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getProviderInfo")
 	if _err != nil {
@@ -1098,14 +1098,14 @@ func (p *PackageManagerProxy) CheckSignatures(
 	ctx context.Context,
 	pkg1 string,
 	pkg2 string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(pkg1)
 	_data.WriteString16(pkg2)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "checkSignatures")
 	if _err != nil {
@@ -1450,14 +1450,14 @@ func (p *PackageManagerProxy) ResolveIntent(
 	intent interface{},
 	resolvedType string,
 	flags int64,
-	userId int32,
 ) (ResolveInfo, error) {
 	var _result ResolveInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(resolvedType)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "resolveIntent")
 	if _err != nil {
@@ -1489,12 +1489,12 @@ func (p *PackageManagerProxy) ResolveIntent(
 func (p *PackageManagerProxy) FindPersistentPreferredActivity(
 	ctx context.Context,
 	intent interface{},
-	userId int32,
 ) (ResolveInfo, error) {
 	var _result ResolveInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "findPersistentPreferredActivity")
 	if _err != nil {
@@ -1564,14 +1564,14 @@ func (p *PackageManagerProxy) QueryIntentActivities(
 	intent interface{},
 	resolvedType string,
 	flags int64,
-	userId int32,
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(resolvedType)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "queryIntentActivities")
 	if _err != nil {
@@ -1608,9 +1608,9 @@ func (p *PackageManagerProxy) QueryIntentActivityOptions(
 	intent interface{},
 	resolvedType string,
 	flags int64,
-	userId int32,
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	if specifics == nil {
@@ -1628,7 +1628,7 @@ func (p *PackageManagerProxy) QueryIntentActivityOptions(
 	}
 	_data.WriteString16(resolvedType)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "queryIntentActivityOptions")
 	if _err != nil {
@@ -1662,14 +1662,14 @@ func (p *PackageManagerProxy) QueryIntentReceivers(
 	intent interface{},
 	resolvedType string,
 	flags int64,
-	userId int32,
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(resolvedType)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "queryIntentReceivers")
 	if _err != nil {
@@ -1703,14 +1703,14 @@ func (p *PackageManagerProxy) ResolveService(
 	intent interface{},
 	resolvedType string,
 	flags int64,
-	userId int32,
 ) (ResolveInfo, error) {
 	var _result ResolveInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(resolvedType)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "resolveService")
 	if _err != nil {
@@ -1744,14 +1744,14 @@ func (p *PackageManagerProxy) QueryIntentServices(
 	intent interface{},
 	resolvedType string,
 	flags int64,
-	userId int32,
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(resolvedType)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "queryIntentServices")
 	if _err != nil {
@@ -1785,14 +1785,14 @@ func (p *PackageManagerProxy) QueryIntentContentProviders(
 	intent interface{},
 	resolvedType string,
 	flags int64,
-	userId int32,
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(resolvedType)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "queryIntentContentProviders")
 	if _err != nil {
@@ -1824,13 +1824,13 @@ func (p *PackageManagerProxy) QueryIntentContentProviders(
 func (p *PackageManagerProxy) GetInstalledPackages(
 	ctx context.Context,
 	flags int64,
-	userId int32,
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getInstalledPackages")
 	if _err != nil {
@@ -1862,13 +1862,13 @@ func (p *PackageManagerProxy) GetInstalledPackages(
 func (p *PackageManagerProxy) GetAppMetadataFd(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getAppMetadataFd")
 	if _err != nil {
@@ -1896,9 +1896,9 @@ func (p *PackageManagerProxy) GetPackagesHoldingPermissions(
 	ctx context.Context,
 	permissions []string,
 	flags int64,
-	userId int32,
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	if permissions == nil {
@@ -1910,7 +1910,7 @@ func (p *PackageManagerProxy) GetPackagesHoldingPermissions(
 		}
 	}
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getPackagesHoldingPermissions")
 	if _err != nil {
@@ -1942,13 +1942,13 @@ func (p *PackageManagerProxy) GetPackagesHoldingPermissions(
 func (p *PackageManagerProxy) GetInstalledApplications(
 	ctx context.Context,
 	flags int64,
-	userId int32,
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getInstalledApplications")
 	if _err != nil {
@@ -2017,14 +2017,14 @@ func (p *PackageManagerProxy) ResolveContentProvider(
 	ctx context.Context,
 	name string,
 	flags int64,
-	userId int32,
 ) (ProviderInfo, error) {
 	var _result ProviderInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(name)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "resolveContentProvider")
 	if _err != nil {
@@ -2168,13 +2168,13 @@ func (p *PackageManagerProxy) GetInstrumentationInfoAsUser(
 	ctx context.Context,
 	className interface{},
 	flags int32,
-	userId int32,
 ) (InstrumentationInfo, error) {
 	var _result InstrumentationInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteInt32(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getInstrumentationInfoAsUser")
 	if _err != nil {
@@ -2207,14 +2207,14 @@ func (p *PackageManagerProxy) QueryInstrumentationAsUser(
 	ctx context.Context,
 	targetPackage string,
 	flags int32,
-	userId int32,
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(targetPackage)
 	_data.WriteInt32(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "queryInstrumentationAsUser")
 	if _err != nil {
@@ -2360,15 +2360,15 @@ func (p *PackageManagerProxy) DeletePackageAsUser(
 	packageName string,
 	versionCode int32,
 	observer IPackageDeleteObserver,
-	userId int32,
 	flags int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(versionCode)
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "deletePackageAsUser")
@@ -2393,9 +2393,9 @@ func (p *PackageManagerProxy) DeletePackageVersioned(
 	ctx context.Context,
 	versionedPackage VersionedPackage,
 	observer IPackageDeleteObserver2,
-	userId int32,
 	flags int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteInt32(1)
@@ -2403,7 +2403,7 @@ func (p *PackageManagerProxy) DeletePackageVersioned(
 		return _err
 	}
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "deletePackageVersioned")
@@ -2428,8 +2428,8 @@ func (p *PackageManagerProxy) DeleteExistingPackageAsUser(
 	ctx context.Context,
 	versionedPackage VersionedPackage,
 	observer IPackageDeleteObserver2,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteInt32(1)
@@ -2437,7 +2437,7 @@ func (p *PackageManagerProxy) DeleteExistingPackageAsUser(
 		return _err
 	}
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "deleteExistingPackageAsUser")
 	if _err != nil {
@@ -2491,13 +2491,13 @@ func (p *PackageManagerProxy) GetInstallerPackageName(
 func (p *PackageManagerProxy) GetInstallSourceInfo(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (InstallSourceInfo, error) {
 	var _result InstallSourceInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getInstallSourceInfo")
 	if _err != nil {
@@ -2528,11 +2528,11 @@ func (p *PackageManagerProxy) GetInstallSourceInfo(
 
 func (p *PackageManagerProxy) ResetApplicationPreferences(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "resetApplicationPreferences")
 	if _err != nil {
@@ -2630,9 +2630,9 @@ func (p *PackageManagerProxy) AddPreferredActivity(
 	match int32,
 	set []interface{},
 	activity interface{},
-	userId int32,
 	removeExisting bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteInt32(match)
@@ -2641,7 +2641,7 @@ func (p *PackageManagerProxy) AddPreferredActivity(
 	} else {
 		_data.WriteInt32(int32(len(set)))
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(removeExisting)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "addPreferredActivity")
@@ -2668,8 +2668,8 @@ func (p *PackageManagerProxy) ReplacePreferredActivity(
 	match int32,
 	set []interface{},
 	activity interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteInt32(match)
@@ -2678,7 +2678,7 @@ func (p *PackageManagerProxy) ReplacePreferredActivity(
 	} else {
 		_data.WriteInt32(int32(len(set)))
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "replacePreferredActivity")
 	if _err != nil {
@@ -2775,11 +2775,11 @@ func (p *PackageManagerProxy) AddPersistentPreferredActivity(
 	ctx context.Context,
 	filter interface{},
 	activity interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "addPersistentPreferredActivity")
 	if _err != nil {
@@ -2802,12 +2802,12 @@ func (p *PackageManagerProxy) AddPersistentPreferredActivity(
 func (p *PackageManagerProxy) ClearPackagePersistentPreferredActivities(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "clearPackagePersistentPreferredActivities")
 	if _err != nil {
@@ -2830,11 +2830,11 @@ func (p *PackageManagerProxy) ClearPackagePersistentPreferredActivities(
 func (p *PackageManagerProxy) ClearPersistentPreferredActivity(
 	ctx context.Context,
 	filter interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "clearPersistentPreferredActivity")
 	if _err != nil {
@@ -2957,9 +2957,9 @@ func (p *PackageManagerProxy) SetDistractingPackageRestrictionsAsUser(
 	ctx context.Context,
 	packageNames []string,
 	restrictionFlags int32,
-	userId int32,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	if packageNames == nil {
@@ -2971,7 +2971,7 @@ func (p *PackageManagerProxy) SetDistractingPackageRestrictionsAsUser(
 		}
 	}
 	_data.WriteInt32(restrictionFlags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "setDistractingPackageRestrictionsAsUser")
 	if _err != nil {
@@ -3073,9 +3073,9 @@ func (p *PackageManagerProxy) SetPackagesSuspendedAsUser(
 func (p *PackageManagerProxy) GetUnsuspendablePackagesForUser(
 	ctx context.Context,
 	packageNames []string,
-	userId int32,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	if packageNames == nil {
@@ -3086,7 +3086,7 @@ func (p *PackageManagerProxy) GetUnsuspendablePackagesForUser(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getUnsuspendablePackagesForUser")
 	if _err != nil {
@@ -3123,13 +3123,13 @@ func (p *PackageManagerProxy) GetUnsuspendablePackagesForUser(
 func (p *PackageManagerProxy) IsPackageSuspendedForUser(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "isPackageSuspendedForUser")
 	if _err != nil {
@@ -3156,13 +3156,13 @@ func (p *PackageManagerProxy) IsPackageSuspendedForUser(
 func (p *PackageManagerProxy) IsPackageQuarantinedForUser(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "isPackageQuarantinedForUser")
 	if _err != nil {
@@ -3189,13 +3189,13 @@ func (p *PackageManagerProxy) IsPackageQuarantinedForUser(
 func (p *PackageManagerProxy) IsPackageStoppedForUser(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "isPackageStoppedForUser")
 	if _err != nil {
@@ -3222,13 +3222,13 @@ func (p *PackageManagerProxy) IsPackageStoppedForUser(
 func (p *PackageManagerProxy) GetSuspendedPackageAppExtras(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getSuspendedPackageAppExtras")
 	if _err != nil {
@@ -3251,13 +3251,13 @@ func (p *PackageManagerProxy) GetSuspendedPackageAppExtras(
 func (p *PackageManagerProxy) GetSuspendingPackage(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getSuspendingPackage")
 	if _err != nil {
@@ -3283,12 +3283,12 @@ func (p *PackageManagerProxy) GetSuspendingPackage(
 
 func (p *PackageManagerProxy) GetPreferredActivityBackup(
 	ctx context.Context,
-	userId int32,
 ) ([]byte, error) {
 	var _result []byte
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getPreferredActivityBackup")
 	if _err != nil {
@@ -3325,8 +3325,8 @@ func (p *PackageManagerProxy) GetPreferredActivityBackup(
 func (p *PackageManagerProxy) RestorePreferredActivities(
 	ctx context.Context,
 	backup []byte,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	if backup == nil {
@@ -3337,7 +3337,7 @@ func (p *PackageManagerProxy) RestorePreferredActivities(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "restorePreferredActivities")
 	if _err != nil {
@@ -3359,12 +3359,12 @@ func (p *PackageManagerProxy) RestorePreferredActivities(
 
 func (p *PackageManagerProxy) GetDefaultAppsBackup(
 	ctx context.Context,
-	userId int32,
 ) ([]byte, error) {
 	var _result []byte
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getDefaultAppsBackup")
 	if _err != nil {
@@ -3401,8 +3401,8 @@ func (p *PackageManagerProxy) GetDefaultAppsBackup(
 func (p *PackageManagerProxy) RestoreDefaultApps(
 	ctx context.Context,
 	backup []byte,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	if backup == nil {
@@ -3413,7 +3413,7 @@ func (p *PackageManagerProxy) RestoreDefaultApps(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "restoreDefaultApps")
 	if _err != nil {
@@ -3435,12 +3435,12 @@ func (p *PackageManagerProxy) RestoreDefaultApps(
 
 func (p *PackageManagerProxy) GetDomainVerificationBackup(
 	ctx context.Context,
-	userId int32,
 ) ([]byte, error) {
 	var _result []byte
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getDomainVerificationBackup")
 	if _err != nil {
@@ -3477,8 +3477,8 @@ func (p *PackageManagerProxy) GetDomainVerificationBackup(
 func (p *PackageManagerProxy) RestoreDomainVerification(
 	ctx context.Context,
 	backup []byte,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	if backup == nil {
@@ -3489,7 +3489,7 @@ func (p *PackageManagerProxy) RestoreDomainVerification(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "restoreDomainVerification")
 	if _err != nil {
@@ -3550,11 +3550,11 @@ func (p *PackageManagerProxy) GetHomeActivities(
 func (p *PackageManagerProxy) SetHomeActivity(
 	ctx context.Context,
 	className interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "setHomeActivity")
 	if _err != nil {
@@ -3579,13 +3579,13 @@ func (p *PackageManagerProxy) OverrideLabelAndIcon(
 	componentName interface{},
 	nonLocalizedLabel string,
 	icon int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(nonLocalizedLabel)
 	_data.WriteInt32(icon)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "overrideLabelAndIcon")
 	if _err != nil {
@@ -3608,11 +3608,11 @@ func (p *PackageManagerProxy) OverrideLabelAndIcon(
 func (p *PackageManagerProxy) RestoreLabelAndIcon(
 	ctx context.Context,
 	componentName interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "restoreLabelAndIcon")
 	if _err != nil {
@@ -3637,15 +3637,14 @@ func (p *PackageManagerProxy) SetComponentEnabledSetting(
 	componentName interface{},
 	newState int32,
 	flags int32,
-	userId int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteInt32(newState)
 	_data.WriteInt32(flags)
-	_data.WriteInt32(userId)
-	_data.WriteString16(callingPackage)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "setComponentEnabledSetting")
 	if _err != nil {
@@ -3668,9 +3667,8 @@ func (p *PackageManagerProxy) SetComponentEnabledSetting(
 func (p *PackageManagerProxy) SetComponentEnabledSettings(
 	ctx context.Context,
 	settings []PackageManagerComponentEnabledSetting,
-	userId int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	if settings == nil {
@@ -3683,8 +3681,8 @@ func (p *PackageManagerProxy) SetComponentEnabledSettings(
 			}
 		}
 	}
-	_data.WriteInt32(userId)
-	_data.WriteString16(callingPackage)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "setComponentEnabledSettings")
 	if _err != nil {
@@ -3707,12 +3705,12 @@ func (p *PackageManagerProxy) SetComponentEnabledSettings(
 func (p *PackageManagerProxy) GetComponentEnabledSetting(
 	ctx context.Context,
 	componentName interface{},
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getComponentEnabledSetting")
 	if _err != nil {
@@ -3741,16 +3739,15 @@ func (p *PackageManagerProxy) SetApplicationEnabledSetting(
 	packageName string,
 	newState int32,
 	flags int32,
-	userId int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(newState)
 	_data.WriteInt32(flags)
-	_data.WriteInt32(userId)
-	_data.WriteString16(callingPackage)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "setApplicationEnabledSetting")
 	if _err != nil {
@@ -3773,13 +3770,13 @@ func (p *PackageManagerProxy) SetApplicationEnabledSetting(
 func (p *PackageManagerProxy) GetApplicationEnabledSetting(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getApplicationEnabledSetting")
 	if _err != nil {
@@ -3841,11 +3838,11 @@ func (p *PackageManagerProxy) LogAppProcessStartIfNeeded(
 
 func (p *PackageManagerProxy) FlushPackageRestrictionsAsUser(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "flushPackageRestrictionsAsUser")
 	if _err != nil {
@@ -3869,13 +3866,13 @@ func (p *PackageManagerProxy) SetPackageStoppedState(
 	ctx context.Context,
 	packageName string,
 	stopped bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
 	_data.WriteBool(stopped)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "setPackageStoppedState")
 	if _err != nil {
@@ -3989,13 +3986,13 @@ func (p *PackageManagerProxy) DeleteApplicationCacheFiles(
 func (p *PackageManagerProxy) DeleteApplicationCacheFilesAsUser(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	observer IPackageDataObserver,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "deleteApplicationCacheFilesAsUser")
@@ -4020,13 +4017,13 @@ func (p *PackageManagerProxy) ClearApplicationUserData(
 	ctx context.Context,
 	packageName string,
 	observer IPackageDataObserver,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "clearApplicationUserData")
 	if _err != nil {
@@ -4075,13 +4072,13 @@ func (p *PackageManagerProxy) ClearApplicationProfileData(
 func (p *PackageManagerProxy) GetPackageSizeInfo(
 	ctx context.Context,
 	packageName string,
-	userHandle int32,
 	observer IPackageStatsObserver,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getPackageSizeInfo")
@@ -4729,16 +4726,16 @@ func (p *PackageManagerProxy) GetInstallLocation(
 func (p *PackageManagerProxy) InstallExistingPackageAsUser(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	installFlags int32,
 	installReason int32,
 	whiteListedPermissions []string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(installFlags)
 	_data.WriteInt32(installReason)
 	if whiteListedPermissions == nil {
@@ -4870,13 +4867,13 @@ func (p *PackageManagerProxy) VerifyIntentFilter(
 func (p *PackageManagerProxy) GetIntentVerificationStatus(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getIntentVerificationStatus")
 	if _err != nil {
@@ -4904,14 +4901,14 @@ func (p *PackageManagerProxy) UpdateIntentVerificationStatus(
 	ctx context.Context,
 	packageName string,
 	status int32,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(status)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "updateIntentVerificationStatus")
 	if _err != nil {
@@ -5132,14 +5129,14 @@ func (p *PackageManagerProxy) SetApplicationHiddenSettingAsUser(
 	ctx context.Context,
 	packageName string,
 	hidden bool,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
 	_data.WriteBool(hidden)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "setApplicationHiddenSettingAsUser")
 	if _err != nil {
@@ -5166,13 +5163,13 @@ func (p *PackageManagerProxy) SetApplicationHiddenSettingAsUser(
 func (p *PackageManagerProxy) GetApplicationHiddenSettingAsUser(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getApplicationHiddenSettingAsUser")
 	if _err != nil {
@@ -5228,14 +5225,14 @@ func (p *PackageManagerProxy) SetSystemAppInstallState(
 	ctx context.Context,
 	packageName string,
 	installed bool,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
 	_data.WriteBool(installed)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "setSystemAppInstallState")
 	if _err != nil {
@@ -5293,14 +5290,14 @@ func (p *PackageManagerProxy) SetBlockUninstallForUser(
 	ctx context.Context,
 	packageName string,
 	blockUninstall bool,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
 	_data.WriteBool(blockUninstall)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "setBlockUninstallForUser")
 	if _err != nil {
@@ -5327,13 +5324,13 @@ func (p *PackageManagerProxy) SetBlockUninstallForUser(
 func (p *PackageManagerProxy) GetBlockUninstallForUser(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getBlockUninstallForUser")
 	if _err != nil {
@@ -5563,12 +5560,12 @@ func (p *PackageManagerProxy) GetSdkSandboxPackageName(
 
 func (p *PackageManagerProxy) GetInstantApps(
 	ctx context.Context,
-	userId int32,
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getInstantApps")
 	if _err != nil {
@@ -5600,13 +5597,13 @@ func (p *PackageManagerProxy) GetInstantApps(
 func (p *PackageManagerProxy) GetInstantAppCookie(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) ([]byte, error) {
 	var _result []byte
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getInstantAppCookie")
 	if _err != nil {
@@ -5644,9 +5641,9 @@ func (p *PackageManagerProxy) SetInstantAppCookie(
 	ctx context.Context,
 	packageName string,
 	cookie []byte,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
@@ -5658,7 +5655,7 @@ func (p *PackageManagerProxy) SetInstantAppCookie(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "setInstantAppCookie")
 	if _err != nil {
@@ -5685,13 +5682,13 @@ func (p *PackageManagerProxy) SetInstantAppCookie(
 func (p *PackageManagerProxy) GetInstantAppIcon(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (graphics.Bitmap, error) {
 	var _result graphics.Bitmap
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getInstantAppIcon")
 	if _err != nil {
@@ -5723,13 +5720,13 @@ func (p *PackageManagerProxy) GetInstantAppIcon(
 func (p *PackageManagerProxy) IsInstantApp(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "isInstantApp")
 	if _err != nil {
@@ -5875,13 +5872,13 @@ func (p *PackageManagerProxy) GetSharedSystemSharedLibraryPackageName(
 func (p *PackageManagerProxy) GetChangedPackages(
 	ctx context.Context,
 	sequenceNumber int32,
-	userId int32,
 ) (ChangedPackages, error) {
 	var _result ChangedPackages
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteInt32(sequenceNumber)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getChangedPackages")
 	if _err != nil {
@@ -5944,13 +5941,13 @@ func (p *PackageManagerProxy) IsPackageDeviceAdminOnAnyUser(
 func (p *PackageManagerProxy) GetInstallReason(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getInstallReason")
 	if _err != nil {
@@ -5978,14 +5975,14 @@ func (p *PackageManagerProxy) GetSharedLibraries(
 	ctx context.Context,
 	packageName string,
 	flags int64,
-	userId int32,
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getSharedLibraries")
 	if _err != nil {
@@ -6018,14 +6015,14 @@ func (p *PackageManagerProxy) GetDeclaredSharedLibraries(
 	ctx context.Context,
 	packageName string,
 	flags int64,
-	userId int32,
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getDeclaredSharedLibraries")
 	if _err != nil {
@@ -6057,13 +6054,13 @@ func (p *PackageManagerProxy) GetDeclaredSharedLibraries(
 func (p *PackageManagerProxy) CanRequestPackageInstalls(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "canRequestPackageInstalls")
 	if _err != nil {
@@ -6189,13 +6186,13 @@ func (p *PackageManagerProxy) GetInstantAppInstallerComponent(
 func (p *PackageManagerProxy) GetInstantAppAndroidId(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getInstantAppAndroidId")
 	if _err != nil {
@@ -6253,12 +6250,12 @@ func (p *PackageManagerProxy) SetHarmfulAppWarning(
 	ctx context.Context,
 	packageName string,
 	warning interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "setHarmfulAppWarning")
 	if _err != nil {
@@ -6281,13 +6278,13 @@ func (p *PackageManagerProxy) SetHarmfulAppWarning(
 func (p *PackageManagerProxy) GetHarmfulAppWarning(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getHarmfulAppWarning")
 	if _err != nil {
@@ -6655,13 +6652,13 @@ func (p *PackageManagerProxy) GetIncidentReportApproverPackageName(
 func (p *PackageManagerProxy) IsPackageStateProtected(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "isPackageStateProtected")
 	if _err != nil {
@@ -6789,12 +6786,12 @@ func (p *PackageManagerProxy) GetModuleInfo(
 
 func (p *PackageManagerProxy) GetRuntimePermissionsVersion(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getRuntimePermissionsVersion")
 	if _err != nil {
@@ -6821,12 +6818,12 @@ func (p *PackageManagerProxy) GetRuntimePermissionsVersion(
 func (p *PackageManagerProxy) SetRuntimePermissionsVersion(
 	ctx context.Context,
 	version int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteInt32(version)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "setRuntimePermissionsVersion")
 	if _err != nil {
@@ -6887,8 +6884,8 @@ func (p *PackageManagerProxy) RequestPackageChecksums(
 	required int32,
 	trustedInstallers []interface{},
 	onChecksumsReadyListener IOnChecksumsReadyListener,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
@@ -6901,7 +6898,7 @@ func (p *PackageManagerProxy) RequestPackageChecksums(
 		_data.WriteInt32(int32(len(trustedInstallers)))
 	}
 	_data.WriteStrongBinder(onChecksumsReadyListener.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "requestPackageChecksums")
 	if _err != nil {
@@ -6924,17 +6921,16 @@ func (p *PackageManagerProxy) RequestPackageChecksums(
 func (p *PackageManagerProxy) GetLaunchIntentSenderForPackage(
 	ctx context.Context,
 	packageName string,
-	callingPackage string,
 	featureId string,
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(featureId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getLaunchIntentSenderForPackage")
 	if _err != nil {
@@ -6957,13 +6953,13 @@ func (p *PackageManagerProxy) GetLaunchIntentSenderForPackage(
 func (p *PackageManagerProxy) GetAppOpPermissionPackages(
 	ctx context.Context,
 	permissionName string,
-	userId int32,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(permissionName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getAppOpPermissionPackages")
 	if _err != nil {
@@ -7133,14 +7129,14 @@ func (p *PackageManagerProxy) CheckPermission(
 	ctx context.Context,
 	permName string,
 	pkgName string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(permName)
 	_data.WriteString16(pkgName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "checkPermission")
 	if _err != nil {
@@ -7168,13 +7164,13 @@ func (p *PackageManagerProxy) GrantRuntimePermission(
 	ctx context.Context,
 	packageName string,
 	permissionName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
 	_data.WriteString16(permissionName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "grantRuntimePermission")
 	if _err != nil {
@@ -7267,13 +7263,13 @@ func (p *PackageManagerProxy) SetMimeGroup(
 func (p *PackageManagerProxy) GetSplashScreenTheme(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getSplashScreenTheme")
 	if _err != nil {
@@ -7301,13 +7297,13 @@ func (p *PackageManagerProxy) SetSplashScreenTheme(
 	ctx context.Context,
 	packageName string,
 	themeName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
 	_data.WriteString16(themeName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "setSplashScreenTheme")
 	if _err != nil {
@@ -7330,13 +7326,13 @@ func (p *PackageManagerProxy) SetSplashScreenTheme(
 func (p *PackageManagerProxy) GetUserMinAspectRatio(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getUserMinAspectRatio")
 	if _err != nil {
@@ -7363,13 +7359,13 @@ func (p *PackageManagerProxy) GetUserMinAspectRatio(
 func (p *PackageManagerProxy) SetUserMinAspectRatio(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	aspectRatio int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(aspectRatio)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "setUserMinAspectRatio")
@@ -7583,15 +7579,15 @@ func (p *PackageManagerProxy) GetPropertyAsUser(
 	propertyName string,
 	packageName string,
 	className string,
-	userId int32,
 ) (PackageManagerProperty, error) {
 	var _result PackageManagerProperty
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(propertyName)
 	_data.WriteString16(packageName)
 	_data.WriteString16(className)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getPropertyAsUser")
 	if _err != nil {
@@ -7695,9 +7691,9 @@ func (p *PackageManagerProxy) CanPackageQuery(
 	ctx context.Context,
 	sourcePackageName string,
 	targetPackageNames []string,
-	userId int32,
 ) ([]bool, error) {
 	var _result []bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(sourcePackageName)
@@ -7709,7 +7705,7 @@ func (p *PackageManagerProxy) CanPackageQuery(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "canPackageQuery")
 	if _err != nil {
@@ -7779,11 +7775,11 @@ func (p *PackageManagerProxy) WaitForHandler(
 func (p *PackageManagerProxy) RegisterPackageMonitorCallback(
 	ctx context.Context,
 	callback interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "registerPackageMonitorCallback")
 	if _err != nil {
@@ -7831,13 +7827,13 @@ func (p *PackageManagerProxy) UnregisterPackageMonitorCallback(
 func (p *PackageManagerProxy) GetArchivedPackage(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (ArchivedPackageParcel, error) {
 	var _result ArchivedPackageParcel
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getArchivedPackage")
 	if _err != nil {
@@ -7940,13 +7936,13 @@ func (p *PackageManagerProxy) IsAppArchivable(
 func (p *PackageManagerProxy) GetAppMetadataSource(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getAppMetadataSource")
 	if _err != nil {
@@ -7972,12 +7968,12 @@ func (p *PackageManagerProxy) GetAppMetadataSource(
 
 func (p *PackageManagerProxy) GetDomainVerificationAgent(
 	ctx context.Context,
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getDomainVerificationAgent")
 	if _err != nil {

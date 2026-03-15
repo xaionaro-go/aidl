@@ -56,13 +56,13 @@ func (p *TranslationManagerProxy) OnTranslationCapabilitiesRequest(
 	sourceFormat int32,
 	destFormat int32,
 	receiver interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationManager)
 	_data.WriteInt32(sourceFormat)
 	_data.WriteInt32(destFormat)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationManager, "onTranslationCapabilitiesRequest")
 	if _err != nil {
@@ -76,11 +76,11 @@ func (p *TranslationManagerProxy) OnTranslationCapabilitiesRequest(
 func (p *TranslationManagerProxy) RegisterTranslationCapabilityCallback(
 	ctx context.Context,
 	callback interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationManager, "registerTranslationCapabilityCallback")
 	if _err != nil {
@@ -94,11 +94,11 @@ func (p *TranslationManagerProxy) RegisterTranslationCapabilityCallback(
 func (p *TranslationManagerProxy) UnregisterTranslationCapabilityCallback(
 	ctx context.Context,
 	callback interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationManager, "unregisterTranslationCapabilityCallback")
 	if _err != nil {
@@ -114,8 +114,8 @@ func (p *TranslationManagerProxy) OnSessionCreated(
 	translationContext TranslationContext,
 	sessionId int32,
 	receiver interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationManager)
 	_data.WriteInt32(1)
@@ -123,7 +123,7 @@ func (p *TranslationManagerProxy) OnSessionCreated(
 		return _err
 	}
 	_data.WriteInt32(sessionId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationManager, "onSessionCreated")
 	if _err != nil {
@@ -143,8 +143,8 @@ func (p *TranslationManagerProxy) UpdateUiTranslationState(
 	token binder.IBinder,
 	taskId int32,
 	uiTranslationSpec UiTranslationSpec,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationManager)
 	_data.WriteInt32(state)
@@ -167,7 +167,7 @@ func (p *TranslationManagerProxy) UpdateUiTranslationState(
 	if _err := uiTranslationSpec.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationManager, "updateUiTranslationState")
 	if _err != nil {
@@ -181,11 +181,11 @@ func (p *TranslationManagerProxy) UpdateUiTranslationState(
 func (p *TranslationManagerProxy) RegisterUiTranslationStateCallback(
 	ctx context.Context,
 	callback interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationManager, "registerUiTranslationStateCallback")
 	if _err != nil {
@@ -199,11 +199,11 @@ func (p *TranslationManagerProxy) RegisterUiTranslationStateCallback(
 func (p *TranslationManagerProxy) UnregisterUiTranslationStateCallback(
 	ctx context.Context,
 	callback interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationManager, "unregisterUiTranslationStateCallback")
 	if _err != nil {
@@ -217,11 +217,11 @@ func (p *TranslationManagerProxy) UnregisterUiTranslationStateCallback(
 func (p *TranslationManagerProxy) GetServiceSettingsActivity(
 	ctx context.Context,
 	result interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationManager, "getServiceSettingsActivity")
 	if _err != nil {
@@ -237,13 +237,13 @@ func (p *TranslationManagerProxy) OnTranslationFinished(
 	activityDestroyed bool,
 	token binder.IBinder,
 	componentName interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationManager)
 	_data.WriteBool(activityDestroyed)
 	_data.WriteStrongBinder(token.Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationManager, "onTranslationFinished")
 	if _err != nil {

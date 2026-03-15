@@ -349,12 +349,12 @@ func (p *BlobStoreManagerProxy) WaitForIdle(
 
 func (p *BlobStoreManagerProxy) QueryBlobsForUser(
 	ctx context.Context,
-	userId int32,
 ) ([]BlobInfo, error) {
 	var _result []BlobInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBlobStoreManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBlobStoreManager, "queryBlobsForUser")
 	if _err != nil {

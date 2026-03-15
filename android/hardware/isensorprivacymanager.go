@@ -323,14 +323,14 @@ func (p *SensorPrivacyManagerProxy) SetSensorPrivacy(
 
 func (p *SensorPrivacyManagerProxy) SetToggleSensorPrivacy(
 	ctx context.Context,
-	userId int32,
 	source int32,
 	sensor int32,
 	enable bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISensorPrivacyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(source)
 	_data.WriteInt32(sensor)
 	_data.WriteBool(enable)
@@ -355,14 +355,14 @@ func (p *SensorPrivacyManagerProxy) SetToggleSensorPrivacy(
 
 func (p *SensorPrivacyManagerProxy) SetToggleSensorPrivacyForProfileGroup(
 	ctx context.Context,
-	userId int32,
 	source int32,
 	sensor int32,
 	enable bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISensorPrivacyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(source)
 	_data.WriteInt32(sensor)
 	_data.WriteBool(enable)
@@ -459,14 +459,14 @@ func (p *SensorPrivacyManagerProxy) GetToggleSensorPrivacyState(
 
 func (p *SensorPrivacyManagerProxy) SetToggleSensorPrivacyState(
 	ctx context.Context,
-	userId int32,
 	source int32,
 	sensor int32,
 	state int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISensorPrivacyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(source)
 	_data.WriteInt32(sensor)
 	_data.WriteInt32(state)
@@ -491,14 +491,14 @@ func (p *SensorPrivacyManagerProxy) SetToggleSensorPrivacyState(
 
 func (p *SensorPrivacyManagerProxy) SetToggleSensorPrivacyStateForProfileGroup(
 	ctx context.Context,
-	userId int32,
 	source int32,
 	sensor int32,
 	state int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISensorPrivacyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(source)
 	_data.WriteInt32(sensor)
 	_data.WriteInt32(state)

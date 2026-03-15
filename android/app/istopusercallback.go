@@ -39,11 +39,11 @@ var _ IStopUserCallback = (*StopUserCallbackProxy)(nil)
 
 func (p *StopUserCallbackProxy) UserStopped(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStopUserCallback)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStopUserCallback, "userStopped")
 	if _err != nil {
@@ -65,11 +65,11 @@ func (p *StopUserCallbackProxy) UserStopped(
 
 func (p *StopUserCallbackProxy) UserStopAborted(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStopUserCallback)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStopUserCallback, "userStopAborted")
 	if _err != nil {

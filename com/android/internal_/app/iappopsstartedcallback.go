@@ -40,7 +40,6 @@ func (p *AppOpsStartedCallbackProxy) OpStarted(
 	op int32,
 	uid int32,
 	packageName string,
-	attributionTag string,
 	virtualDeviceId int32,
 	flags int32,
 	mode int32,
@@ -48,12 +47,13 @@ func (p *AppOpsStartedCallbackProxy) OpStarted(
 	attributionFlags int32,
 	attributionChainId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsStartedCallback)
 	_data.WriteInt32(op)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt32(virtualDeviceId)
 	_data.WriteInt32(flags)
 	_data.WriteInt32(mode)

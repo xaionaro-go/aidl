@@ -71,14 +71,14 @@ func (p *BiometricServiceProxy) CreateTestSession(
 	ctx context.Context,
 	sensorId int32,
 	callback ITestSessionCallback,
-	opPackageName string,
 ) (ITestSession, error) {
 	var _result ITestSession
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
 	_data.WriteInt32(sensorId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricService, "createTestSession")
 	if _err != nil {
@@ -105,12 +105,12 @@ func (p *BiometricServiceProxy) CreateTestSession(
 
 func (p *BiometricServiceProxy) GetSensorProperties(
 	ctx context.Context,
-	opPackageName string,
 ) ([]SensorPropertiesInternal, error) {
 	var _result []SensorPropertiesInternal
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricService, "getSensorProperties")
 	if _err != nil {
@@ -147,19 +147,18 @@ func (p *BiometricServiceProxy) Authenticate(
 	ctx context.Context,
 	token binder.IBinder,
 	operationId int64,
-	userId int32,
 	receiver IBiometricServiceReceiver,
-	opPackageName string,
 	promptInfo PromptInfo,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt64(operationId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(receiver.AsBinder().Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := promptInfo.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -190,13 +189,13 @@ func (p *BiometricServiceProxy) Authenticate(
 func (p *BiometricServiceProxy) CancelAuthentication(
 	ctx context.Context,
 	token binder.IBinder,
-	opPackageName string,
 	requestId int64,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
 	_data.WriteStrongBinder(token.Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt64(requestId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricService, "cancelAuthentication")
@@ -219,17 +218,15 @@ func (p *BiometricServiceProxy) CancelAuthentication(
 
 func (p *BiometricServiceProxy) CanAuthenticate(
 	ctx context.Context,
-	opPackageName string,
-	userId int32,
-	callingUserId int32,
 	authenticators int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
-	_data.WriteString16(opPackageName)
-	_data.WriteInt32(userId)
-	_data.WriteInt32(callingUserId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(authenticators)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricService, "canAuthenticate")
@@ -256,13 +253,13 @@ func (p *BiometricServiceProxy) CanAuthenticate(
 
 func (p *BiometricServiceProxy) GetLastAuthenticationTime(
 	ctx context.Context,
-	userId int32,
 	authenticators int32,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(authenticators)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricService, "getLastAuthenticationTime")
@@ -289,14 +286,13 @@ func (p *BiometricServiceProxy) GetLastAuthenticationTime(
 
 func (p *BiometricServiceProxy) HasEnrolledBiometrics(
 	ctx context.Context,
-	userId int32,
-	opPackageName string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
-	_data.WriteInt32(userId)
-	_data.WriteString16(opPackageName)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricService, "hasEnrolledBiometrics")
 	if _err != nil {
@@ -408,13 +404,13 @@ func (p *BiometricServiceProxy) OnReadyForAuthentication(
 
 func (p *BiometricServiceProxy) InvalidateAuthenticatorIds(
 	ctx context.Context,
-	userId int32,
 	fromSensorId int32,
 	callback IInvalidationCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(fromSensorId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
@@ -438,12 +434,12 @@ func (p *BiometricServiceProxy) InvalidateAuthenticatorIds(
 
 func (p *BiometricServiceProxy) GetAuthenticatorIds(
 	ctx context.Context,
-	callingUserId int32,
 ) ([]int64, error) {
 	var _result []int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
-	_data.WriteInt32(callingUserId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricService, "getAuthenticatorIds")
 	if _err != nil {
@@ -480,17 +476,16 @@ func (p *BiometricServiceProxy) GetAuthenticatorIds(
 func (p *BiometricServiceProxy) ResetLockoutTimeBound(
 	ctx context.Context,
 	token binder.IBinder,
-	opPackageName string,
 	fromSensorId int32,
-	userId int32,
 	hardwareAuthToken []byte,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
 	_data.WriteStrongBinder(token.Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(fromSensorId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if hardwareAuthToken == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -520,12 +515,12 @@ func (p *BiometricServiceProxy) ResetLockoutTimeBound(
 
 func (p *BiometricServiceProxy) ResetLockout(
 	ctx context.Context,
-	userId int32,
 	hardwareAuthToken []byte,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if hardwareAuthToken == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -586,17 +581,15 @@ func (p *BiometricServiceProxy) GetCurrentStrength(
 
 func (p *BiometricServiceProxy) GetCurrentModality(
 	ctx context.Context,
-	opPackageName string,
-	userId int32,
-	callingUserId int32,
 	authenticators int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
-	_data.WriteString16(opPackageName)
-	_data.WriteInt32(userId)
-	_data.WriteInt32(callingUserId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(authenticators)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricService, "getCurrentModality")

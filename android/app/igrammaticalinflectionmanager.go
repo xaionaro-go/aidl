@@ -44,13 +44,13 @@ var _ IGrammaticalInflectionManager = (*GrammaticalInflectionManagerProxy)(nil)
 func (p *GrammaticalInflectionManagerProxy) SetRequestedApplicationGrammaticalGender(
 	ctx context.Context,
 	appPackageName string,
-	userId int32,
 	gender int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGrammaticalInflectionManager)
 	_data.WriteString16(appPackageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(gender)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGrammaticalInflectionManager, "setRequestedApplicationGrammaticalGender")
@@ -74,12 +74,12 @@ func (p *GrammaticalInflectionManagerProxy) SetRequestedApplicationGrammaticalGe
 func (p *GrammaticalInflectionManagerProxy) SetSystemWideGrammaticalGender(
 	ctx context.Context,
 	gender int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGrammaticalInflectionManager)
 	_data.WriteInt32(gender)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGrammaticalInflectionManager, "setSystemWideGrammaticalGender")
 	if _err != nil {
@@ -102,12 +102,12 @@ func (p *GrammaticalInflectionManagerProxy) SetSystemWideGrammaticalGender(
 func (p *GrammaticalInflectionManagerProxy) GetSystemGrammaticalGender(
 	ctx context.Context,
 	attributionSource interface{},
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGrammaticalInflectionManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGrammaticalInflectionManager, "getSystemGrammaticalGender")
 	if _err != nil {
@@ -134,12 +134,12 @@ func (p *GrammaticalInflectionManagerProxy) GetSystemGrammaticalGender(
 func (p *GrammaticalInflectionManagerProxy) PeekSystemGrammaticalGenderByUserId(
 	ctx context.Context,
 	attributionSource interface{},
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGrammaticalInflectionManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGrammaticalInflectionManager, "peekSystemGrammaticalGenderByUserId")
 	if _err != nil {

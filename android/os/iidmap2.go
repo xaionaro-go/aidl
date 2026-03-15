@@ -56,13 +56,13 @@ var _ IIdmap2 = (*Idmap2Proxy)(nil)
 func (p *Idmap2Proxy) GetIdmapPath(
 	ctx context.Context,
 	overlayApkPath string,
-	userId int32,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIdmap2)
 	_data.WriteString16(overlayApkPath)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIdmap2, "getIdmapPath")
 	if _err != nil {
@@ -89,13 +89,13 @@ func (p *Idmap2Proxy) GetIdmapPath(
 func (p *Idmap2Proxy) RemoveIdmap(
 	ctx context.Context,
 	overlayApkPath string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIdmap2)
 	_data.WriteString16(overlayApkPath)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIdmap2, "removeIdmap")
 	if _err != nil {
@@ -126,9 +126,9 @@ func (p *Idmap2Proxy) VerifyIdmap(
 	overlayName string,
 	fulfilledPolicies int32,
 	enforceOverlayable bool,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIdmap2)
 	_data.WriteString16(targetApkPath)
@@ -136,7 +136,7 @@ func (p *Idmap2Proxy) VerifyIdmap(
 	_data.WriteString16(overlayName)
 	_data.WriteInt32(fulfilledPolicies)
 	_data.WriteBool(enforceOverlayable)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIdmap2, "verifyIdmap")
 	if _err != nil {
@@ -167,9 +167,9 @@ func (p *Idmap2Proxy) CreateIdmap(
 	overlayName string,
 	fulfilledPolicies int32,
 	enforceOverlayable bool,
-	userId int32,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIdmap2)
 	_data.WriteString16(targetApkPath)
@@ -177,7 +177,7 @@ func (p *Idmap2Proxy) CreateIdmap(
 	_data.WriteString16(overlayName)
 	_data.WriteInt32(fulfilledPolicies)
 	_data.WriteBool(enforceOverlayable)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIdmap2, "createIdmap")
 	if _err != nil {

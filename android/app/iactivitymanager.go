@@ -604,14 +604,14 @@ func (p *ActivityManagerProxy) RegisterUidObserver(
 	observer IUidObserver,
 	which int32,
 	cutpoint int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
 	_data.WriteInt32(which)
 	_data.WriteInt32(cutpoint)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "registerUidObserver")
 	if _err != nil {
@@ -662,16 +662,16 @@ func (p *ActivityManagerProxy) RegisterUidObserverForUids(
 	observer IUidObserver,
 	which int32,
 	cutpoint int32,
-	callingPackage string,
 	uids []int32,
 ) (binder.IBinder, error) {
 	var _result binder.IBinder
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
 	_data.WriteInt32(which)
 	_data.WriteInt32(cutpoint)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	if uids == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -707,13 +707,13 @@ func (p *ActivityManagerProxy) RegisterUidObserverForUids(
 func (p *ActivityManagerProxy) AddUidToObserver(
 	ctx context.Context,
 	observerToken binder.IBinder,
-	callingPackage string,
 	uid int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(observerToken.Handle())
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(uid)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "addUidToObserver")
@@ -737,13 +737,13 @@ func (p *ActivityManagerProxy) AddUidToObserver(
 func (p *ActivityManagerProxy) RemoveUidFromObserver(
 	ctx context.Context,
 	observerToken binder.IBinder,
-	callingPackage string,
 	uid int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(observerToken.Handle())
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(uid)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "removeUidFromObserver")
@@ -767,13 +767,13 @@ func (p *ActivityManagerProxy) RemoveUidFromObserver(
 func (p *ActivityManagerProxy) IsUidActive(
 	ctx context.Context,
 	uid int32,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(uid)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "isUidActive")
 	if _err != nil {
@@ -800,13 +800,13 @@ func (p *ActivityManagerProxy) IsUidActive(
 func (p *ActivityManagerProxy) GetUidProcessState(
 	ctx context.Context,
 	uid int32,
-	callingPackage string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(uid)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getUidProcessState")
 	if _err != nil {
@@ -868,14 +868,13 @@ func (p *ActivityManagerProxy) CheckPermission(
 func (p *ActivityManagerProxy) LogFgsApiBegin(
 	ctx context.Context,
 	apiType int32,
-	appUid int32,
-	appPid int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(apiType)
-	_data.WriteInt32(appUid)
-	_data.WriteInt32(appPid)
+	_data.WriteInt32(_identity.UID)
+	_data.WriteInt32(_identity.PID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "logFgsApiBegin")
 	if _err != nil {
@@ -889,14 +888,13 @@ func (p *ActivityManagerProxy) LogFgsApiBegin(
 func (p *ActivityManagerProxy) LogFgsApiEnd(
 	ctx context.Context,
 	apiType int32,
-	appUid int32,
-	appPid int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(apiType)
-	_data.WriteInt32(appUid)
-	_data.WriteInt32(appPid)
+	_data.WriteInt32(_identity.UID)
+	_data.WriteInt32(_identity.PID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "logFgsApiEnd")
 	if _err != nil {
@@ -911,15 +909,14 @@ func (p *ActivityManagerProxy) LogFgsApiStateChanged(
 	ctx context.Context,
 	apiType int32,
 	state int32,
-	appUid int32,
-	appPid int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(apiType)
 	_data.WriteInt32(state)
-	_data.WriteInt32(appUid)
-	_data.WriteInt32(appPid)
+	_data.WriteInt32(_identity.UID)
+	_data.WriteInt32(_identity.PID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "logFgsApiStateChanged")
 	if _err != nil {
@@ -964,7 +961,6 @@ func (p *ActivityManagerProxy) HandleApplicationCrash(
 func (p *ActivityManagerProxy) StartActivity(
 	ctx context.Context,
 	caller IApplicationThread,
-	callingPackage string,
 	intent interface{},
 	resolvedType string,
 	resultTo binder.IBinder,
@@ -975,10 +971,11 @@ func (p *ActivityManagerProxy) StartActivity(
 	options interface{},
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(resolvedType)
 	_data.WriteStrongBinder(resultTo.Handle())
 	_data.WriteString16(resultWho)
@@ -1014,8 +1011,6 @@ func (p *ActivityManagerProxy) StartActivity(
 func (p *ActivityManagerProxy) StartActivityWithFeature(
 	ctx context.Context,
 	caller IApplicationThread,
-	callingPackage string,
-	callingFeatureId string,
 	intent interface{},
 	resolvedType string,
 	resultTo binder.IBinder,
@@ -1026,11 +1021,12 @@ func (p *ActivityManagerProxy) StartActivityWithFeature(
 	options interface{},
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(resolvedType)
 	_data.WriteStrongBinder(resultTo.Handle())
 	_data.WriteString16(resultWho)
@@ -1130,16 +1126,16 @@ func (p *ActivityManagerProxy) RegisterReceiver(
 	receiver interface{},
 	filter interface{},
 	requiredPermission string,
-	userId int32,
 	flags int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
 	_data.WriteString16(callerPackage)
 	_data.WriteString16(requiredPermission)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "registerReceiver")
@@ -1164,23 +1160,22 @@ func (p *ActivityManagerProxy) RegisterReceiverWithFeature(
 	ctx context.Context,
 	caller IApplicationThread,
 	callerPackage string,
-	callingFeatureId string,
 	receiverId string,
 	receiver interface{},
 	filter interface{},
 	requiredPermission string,
-	userId int32,
 	flags int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
 	_data.WriteString16(callerPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(receiverId)
 	_data.WriteString16(requiredPermission)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "registerReceiverWithFeature")
@@ -1276,9 +1271,9 @@ func (p *ActivityManagerProxy) BroadcastIntent(
 	options interface{},
 	serialized bool,
 	sticky bool,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
@@ -1296,7 +1291,7 @@ func (p *ActivityManagerProxy) BroadcastIntent(
 	_data.WriteInt32(appOp)
 	_data.WriteBool(serialized)
 	_data.WriteBool(sticky)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "broadcastIntent")
 	if _err != nil {
@@ -1323,7 +1318,6 @@ func (p *ActivityManagerProxy) BroadcastIntent(
 func (p *ActivityManagerProxy) BroadcastIntentWithFeature(
 	ctx context.Context,
 	caller IApplicationThread,
-	callingFeatureId string,
 	intent interface{},
 	resolvedType string,
 	resultTo interface{},
@@ -1337,13 +1331,13 @@ func (p *ActivityManagerProxy) BroadcastIntentWithFeature(
 	options interface{},
 	serialized bool,
 	sticky bool,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(resolvedType)
 	_data.WriteInt32(resultCode)
 	_data.WriteString16(resultData)
@@ -1374,7 +1368,7 @@ func (p *ActivityManagerProxy) BroadcastIntentWithFeature(
 	_data.WriteInt32(appOp)
 	_data.WriteBool(serialized)
 	_data.WriteBool(sticky)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "broadcastIntentWithFeature")
 	if _err != nil {
@@ -1402,12 +1396,12 @@ func (p *ActivityManagerProxy) UnbroadcastIntent(
 	ctx context.Context,
 	caller IApplicationThread,
 	intent interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "unbroadcastIntent")
 	if _err != nil {
@@ -1552,15 +1546,15 @@ func (p *ActivityManagerProxy) GetTasks(
 func (p *ActivityManagerProxy) MoveTaskToFront(
 	ctx context.Context,
 	caller IApplicationThread,
-	callingPackage string,
 	task int32,
 	flags int32,
 	options interface{},
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(task)
 	_data.WriteInt32(flags)
 
@@ -1618,18 +1612,17 @@ func (p *ActivityManagerProxy) GetTaskForActivity(
 func (p *ActivityManagerProxy) GetContentProvider(
 	ctx context.Context,
 	caller IApplicationThread,
-	callingPackage string,
 	name string,
-	userId int32,
 	stable bool,
 ) (ContentProviderHolder, error) {
 	var _result ContentProviderHolder
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(name)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(stable)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getContentProvider")
@@ -1772,19 +1765,17 @@ func (p *ActivityManagerProxy) StartService(
 	service interface{},
 	resolvedType string,
 	requireForeground bool,
-	callingPackage string,
-	callingFeatureId string,
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
 	_data.WriteString16(resolvedType)
 	_data.WriteBool(requireForeground)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "startService")
 	if _err != nil {
@@ -1809,14 +1800,14 @@ func (p *ActivityManagerProxy) StopService(
 	caller IApplicationThread,
 	service interface{},
 	resolvedType string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
 	_data.WriteString16(resolvedType)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "stopService")
 	if _err != nil {
@@ -1848,10 +1839,9 @@ func (p *ActivityManagerProxy) BindService(
 	resolvedType string,
 	connection IServiceConnection,
 	flags int64,
-	callingPackage string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
@@ -1859,8 +1849,8 @@ func (p *ActivityManagerProxy) BindService(
 	_data.WriteString16(resolvedType)
 	_data.WriteStrongBinder(connection.AsBinder().Handle())
 	_data.WriteInt64(flags)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "bindService")
 	if _err != nil {
@@ -1893,10 +1883,9 @@ func (p *ActivityManagerProxy) BindServiceInstance(
 	connection IServiceConnection,
 	flags int64,
 	instanceName string,
-	callingPackage string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
@@ -1905,8 +1894,8 @@ func (p *ActivityManagerProxy) BindServiceInstance(
 	_data.WriteStrongBinder(connection.AsBinder().Handle())
 	_data.WriteInt64(flags)
 	_data.WriteString16(instanceName)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "bindServiceInstance")
 	if _err != nil {
@@ -2112,17 +2101,17 @@ func (p *ActivityManagerProxy) StartInstrumentation(
 	arguments interface{},
 	watcher IInstrumentationWatcher,
 	connection IUiAutomationConnection,
-	userId int32,
 	abiOverride string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(profileFile)
 	_data.WriteInt32(flags)
 	_data.WriteStrongBinder(watcher.AsBinder().Handle())
 	_data.WriteStrongBinder(connection.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(abiOverride)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "startInstrumentation")
@@ -2386,16 +2375,16 @@ func (p *ActivityManagerProxy) CheckUriPermission(
 	pid int32,
 	uid int32,
 	mode int32,
-	userId int32,
 	callerToken binder.IBinder,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(pid)
 	_data.WriteInt32(uid)
 	_data.WriteInt32(mode)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(callerToken.Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "checkUriPermission")
@@ -2426,15 +2415,15 @@ func (p *ActivityManagerProxy) CheckContentUriPermissionFull(
 	pid int32,
 	uid int32,
 	mode int32,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(pid)
 	_data.WriteInt32(uid)
 	_data.WriteInt32(mode)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "checkContentUriPermissionFull")
 	if _err != nil {
@@ -2464,10 +2453,10 @@ func (p *ActivityManagerProxy) CheckUriPermissions(
 	pid int32,
 	uid int32,
 	mode int32,
-	userId int32,
 	callerToken binder.IBinder,
 ) ([]int32, error) {
 	var _result []int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	if uris == nil {
@@ -2478,7 +2467,7 @@ func (p *ActivityManagerProxy) CheckUriPermissions(
 	_data.WriteInt32(pid)
 	_data.WriteInt32(uid)
 	_data.WriteInt32(mode)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(callerToken.Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "checkUriPermissions")
@@ -2519,14 +2508,14 @@ func (p *ActivityManagerProxy) GrantUriPermission(
 	targetPkg string,
 	uri interface{},
 	mode int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
 	_data.WriteString16(targetPkg)
 	_data.WriteInt32(mode)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "grantUriPermission")
 	if _err != nil {
@@ -2552,14 +2541,14 @@ func (p *ActivityManagerProxy) RevokeUriPermission(
 	targetPkg string,
 	uri interface{},
 	mode int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
 	_data.WriteString16(targetPkg)
 	_data.WriteInt32(mode)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "revokeUriPermission")
 	if _err != nil {
@@ -2665,14 +2654,14 @@ func (p *ActivityManagerProxy) GetRecentTasks(
 	ctx context.Context,
 	maxNum int32,
 	flags int32,
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(maxNum)
 	_data.WriteInt32(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getRecentTasks")
 	if _err != nil {
@@ -2727,9 +2716,9 @@ func (p *ActivityManagerProxy) GetIntentSender(
 	resolvedTypes []string,
 	flags int32,
 	options interface{},
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(type_)
@@ -2751,7 +2740,7 @@ func (p *ActivityManagerProxy) GetIntentSender(
 		}
 	}
 	_data.WriteInt32(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getIntentSender")
 	if _err != nil {
@@ -2783,9 +2772,9 @@ func (p *ActivityManagerProxy) GetIntentSenderWithFeature(
 	resolvedTypes []string,
 	flags int32,
 	options interface{},
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(type_)
@@ -2808,7 +2797,7 @@ func (p *ActivityManagerProxy) GetIntentSenderWithFeature(
 		}
 	}
 	_data.WriteInt32(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getIntentSenderWithFeature")
 	if _err != nil {
@@ -3281,14 +3270,14 @@ func (p *ActivityManagerProxy) ClearApplicationUserData(
 	packageName string,
 	keepState bool,
 	observer interface{},
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(packageName)
 	_data.WriteBool(keepState)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "clearApplicationUserData")
 	if _err != nil {
@@ -3315,12 +3304,12 @@ func (p *ActivityManagerProxy) ClearApplicationUserData(
 func (p *ActivityManagerProxy) StopAppForUser(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "stopAppForUser")
 	if _err != nil {
@@ -3374,12 +3363,12 @@ func (p *ActivityManagerProxy) RegisterForegroundServiceObserver(
 func (p *ActivityManagerProxy) ForceStopPackage(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "forceStopPackage")
 	if _err != nil {
@@ -3402,12 +3391,12 @@ func (p *ActivityManagerProxy) ForceStopPackage(
 func (p *ActivityManagerProxy) ForceStopPackageEvenWhenStopping(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "forceStopPackageEvenWhenStopping")
 	if _err != nil {
@@ -3553,13 +3542,13 @@ func (p *ActivityManagerProxy) PeekService(
 	ctx context.Context,
 	service interface{},
 	resolvedType string,
-	callingPackage string,
 ) (binder.IBinder, error) {
 	var _result binder.IBinder
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(resolvedType)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "peekService")
 	if _err != nil {
@@ -3587,16 +3576,16 @@ func (p *ActivityManagerProxy) PeekService(
 func (p *ActivityManagerProxy) ProfileControl(
 	ctx context.Context,
 	process string,
-	userId int32,
 	start bool,
 	profilerInfo ProfilerInfo,
 	profileType int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(process)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(start)
 	_data.WriteInt32(1)
 	if _err := profilerInfo.MarshalParcel(_data); _err != nil {
@@ -3748,13 +3737,13 @@ func (p *ActivityManagerProxy) BackupAgentCreated(
 	ctx context.Context,
 	packageName string,
 	agent binder.IBinder,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(packageName)
 	_data.WriteStrongBinder(agent.Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "backupAgentCreated")
 	if _err != nil {
@@ -3801,20 +3790,18 @@ func (p *ActivityManagerProxy) UnbindBackupAgent(
 
 func (p *ActivityManagerProxy) HandleIncomingUser(
 	ctx context.Context,
-	callingPid int32,
-	callingUid int32,
-	userId int32,
 	allowAll bool,
 	requireFull bool,
 	name string,
 	callerPackage string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(callingPid)
-	_data.WriteInt32(callingUid)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.PID)
+	_data.WriteInt32(_identity.UID)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(allowAll)
 	_data.WriteBool(requireFull)
 	_data.WriteString16(name)
@@ -3872,15 +3859,15 @@ func (p *ActivityManagerProxy) KillApplication(
 	ctx context.Context,
 	pkg string,
 	appId int32,
-	userId int32,
 	reason string,
 	exitInfoReason int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(pkg)
 	_data.WriteInt32(appId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(reason)
 	_data.WriteInt32(exitInfoReason)
 
@@ -4045,12 +4032,12 @@ func (p *ActivityManagerProxy) HandleApplicationWtf(
 func (p *ActivityManagerProxy) KillBackgroundProcesses(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "killBackgroundProcesses")
 	if _err != nil {
@@ -4247,17 +4234,17 @@ func (p *ActivityManagerProxy) CrashApplicationWithType(
 	uid int32,
 	initialPid int32,
 	packageName string,
-	userId int32,
 	message string,
 	force bool,
 	exceptionTypeId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(uid)
 	_data.WriteInt32(initialPid)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(message)
 	_data.WriteBool(force)
 	_data.WriteInt32(exceptionTypeId)
@@ -4285,18 +4272,18 @@ func (p *ActivityManagerProxy) CrashApplicationWithTypeWithExtras(
 	uid int32,
 	initialPid int32,
 	packageName string,
-	userId int32,
 	message string,
 	force bool,
 	exceptionTypeId int32,
 	extras interface{},
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(uid)
 	_data.WriteInt32(initialPid)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(message)
 	_data.WriteBool(force)
 	_data.WriteInt32(exceptionTypeId)
@@ -4322,12 +4309,12 @@ func (p *ActivityManagerProxy) CrashApplicationWithTypeWithExtras(
 func (p *ActivityManagerProxy) GetMimeTypeFilterAsync(
 	ctx context.Context,
 	uri interface{},
-	userId int32,
 	resultCallback interface{},
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getMimeTypeFilterAsync")
 	if _err != nil {
@@ -4341,7 +4328,6 @@ func (p *ActivityManagerProxy) GetMimeTypeFilterAsync(
 func (p *ActivityManagerProxy) DumpHeap(
 	ctx context.Context,
 	process string,
-	userId int32,
 	managed bool,
 	mallocInfo bool,
 	runGc bool,
@@ -4351,10 +4337,11 @@ func (p *ActivityManagerProxy) DumpHeap(
 	finishCallback interface{},
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(process)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(managed)
 	_data.WriteBool(mallocInfo)
 	_data.WriteBool(runGc)
@@ -4829,15 +4816,15 @@ func (p *ActivityManagerProxy) KillAllBackgroundProcesses(
 func (p *ActivityManagerProxy) GetContentProviderExternal(
 	ctx context.Context,
 	name string,
-	userId int32,
 	token binder.IBinder,
 	tag string,
 ) (ContentProviderHolder, error) {
 	var _result ContentProviderHolder
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(name)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteString16(tag)
 
@@ -4900,13 +4887,13 @@ func (p *ActivityManagerProxy) RemoveContentProviderExternalAsUser(
 	ctx context.Context,
 	name string,
 	token binder.IBinder,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(name)
 	_data.WriteStrongBinder(token.Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "removeContentProviderExternalAsUser")
 	if _err != nil {
@@ -5129,7 +5116,6 @@ func (p *ActivityManagerProxy) IsIntentSenderAnActivity(
 func (p *ActivityManagerProxy) StartActivityAsUser(
 	ctx context.Context,
 	caller IApplicationThread,
-	callingPackage string,
 	intent interface{},
 	resolvedType string,
 	resultTo binder.IBinder,
@@ -5138,13 +5124,13 @@ func (p *ActivityManagerProxy) StartActivityAsUser(
 	flags int32,
 	profilerInfo ProfilerInfo,
 	options interface{},
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(resolvedType)
 	_data.WriteStrongBinder(resultTo.Handle())
 	_data.WriteString16(resultWho)
@@ -5154,7 +5140,7 @@ func (p *ActivityManagerProxy) StartActivityAsUser(
 	if _err := profilerInfo.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "startActivityAsUser")
 	if _err != nil {
@@ -5181,8 +5167,6 @@ func (p *ActivityManagerProxy) StartActivityAsUser(
 func (p *ActivityManagerProxy) StartActivityAsUserWithFeature(
 	ctx context.Context,
 	caller IApplicationThread,
-	callingPackage string,
-	callingFeatureId string,
 	intent interface{},
 	resolvedType string,
 	resultTo binder.IBinder,
@@ -5191,14 +5175,14 @@ func (p *ActivityManagerProxy) StartActivityAsUserWithFeature(
 	flags int32,
 	profilerInfo ProfilerInfo,
 	options interface{},
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(resolvedType)
 	_data.WriteStrongBinder(resultTo.Handle())
 	_data.WriteString16(resultWho)
@@ -5208,7 +5192,7 @@ func (p *ActivityManagerProxy) StartActivityAsUserWithFeature(
 	if _err := profilerInfo.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "startActivityAsUserWithFeature")
 	if _err != nil {
@@ -5857,13 +5841,13 @@ func (p *ActivityManagerProxy) GetLaunchedFromPackage(
 func (p *ActivityManagerProxy) KillUid(
 	ctx context.Context,
 	appId int32,
-	userId int32,
 	reason string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(appId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(reason)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "killUid")
@@ -6179,14 +6163,14 @@ func (p *ActivityManagerProxy) GetTaskBounds(
 func (p *ActivityManagerProxy) SetProcessMemoryTrimLevel(
 	ctx context.Context,
 	process string,
-	userId int32,
 	level int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(process)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(level)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "setProcessMemoryTrimLevel")
@@ -6418,11 +6402,11 @@ func (p *ActivityManagerProxy) BootAnimationComplete(
 
 func (p *ActivityManagerProxy) SetThemeOverlayReady(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "setThemeOverlayReady")
 	if _err != nil {
@@ -6679,12 +6663,12 @@ func (p *ActivityManagerProxy) DumpHeapFinished(
 
 func (p *ActivityManagerProxy) UpdateLockTaskPackages(
 	ctx context.Context,
-	userId int32,
 	packages []string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if packages == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -6775,13 +6759,13 @@ func (p *ActivityManagerProxy) NoteAlarmFinish(
 func (p *ActivityManagerProxy) GetPackageProcessState(
 	ctx context.Context,
 	packageName string,
-	callingPackage string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(packageName)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getPackageProcessState")
 	if _err != nil {
@@ -6943,13 +6927,13 @@ func (p *ActivityManagerProxy) UnlockUser(
 
 func (p *ActivityManagerProxy) UnlockUser2(
 	ctx context.Context,
-	userId int32,
 	listener interface{},
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "unlockUser2")
 	if _err != nil {
@@ -6976,12 +6960,12 @@ func (p *ActivityManagerProxy) UnlockUser2(
 func (p *ActivityManagerProxy) KillPackageDependents(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "killPackageDependents")
 	if _err != nil {
@@ -7004,12 +6988,12 @@ func (p *ActivityManagerProxy) KillPackageDependents(
 func (p *ActivityManagerProxy) MakePackageIdle(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "makePackageIdle")
 	if _err != nil {
@@ -7116,11 +7100,11 @@ func (p *ActivityManagerProxy) IsVrModePackageEnabled(
 
 func (p *ActivityManagerProxy) NotifyLockedProfile(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "notifyLockedProfile")
 	if _err != nil {
@@ -7345,8 +7329,8 @@ func (p *ActivityManagerProxy) CancelTaskWindowTransition(
 func (p *ActivityManagerProxy) ScheduleApplicationInfoChanged(
 	ctx context.Context,
 	packageNames []string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	if packageNames == nil {
@@ -7357,7 +7341,7 @@ func (p *ActivityManagerProxy) ScheduleApplicationInfoChanged(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "scheduleApplicationInfoChanged")
 	if _err != nil {
@@ -7676,14 +7660,14 @@ func (p *ActivityManagerProxy) GetHistoricalProcessStartReasons(
 	ctx context.Context,
 	packageName string,
 	maxNum int32,
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(maxNum)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getHistoricalProcessStartReasons")
 	if _err != nil {
@@ -7706,12 +7690,12 @@ func (p *ActivityManagerProxy) GetHistoricalProcessStartReasons(
 func (p *ActivityManagerProxy) AddApplicationStartInfoCompleteListener(
 	ctx context.Context,
 	listener IApplicationStartInfoCompleteListener,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "addApplicationStartInfoCompleteListener")
 	if _err != nil {
@@ -7734,12 +7718,12 @@ func (p *ActivityManagerProxy) AddApplicationStartInfoCompleteListener(
 func (p *ActivityManagerProxy) RemoveApplicationStartInfoCompleteListener(
 	ctx context.Context,
 	listener IApplicationStartInfoCompleteListener,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "removeApplicationStartInfoCompleteListener")
 	if _err != nil {
@@ -7763,13 +7747,13 @@ func (p *ActivityManagerProxy) AddStartInfoTimestamp(
 	ctx context.Context,
 	key int32,
 	timestampNs int64,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(key)
 	_data.WriteInt64(timestampNs)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "addStartInfoTimestamp")
 	if _err != nil {
@@ -7813,15 +7797,15 @@ func (p *ActivityManagerProxy) GetHistoricalProcessExitReasons(
 	packageName string,
 	pid int32,
 	maxNum int32,
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(pid)
 	_data.WriteInt32(maxNum)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getHistoricalProcessExitReasons")
 	if _err != nil {
@@ -7998,13 +7982,13 @@ func (p *ActivityManagerProxy) IsAppFreezerEnabled(
 func (p *ActivityManagerProxy) KillUidForPermissionChange(
 	ctx context.Context,
 	appId int32,
-	userId int32,
 	reason string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(appId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(reason)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "killUidForPermissionChange")
@@ -8141,12 +8125,12 @@ func (p *ActivityManagerProxy) HoldLock(
 
 func (p *ActivityManagerProxy) StartProfile(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "startProfile")
 	if _err != nil {
@@ -8172,12 +8156,12 @@ func (p *ActivityManagerProxy) StartProfile(
 
 func (p *ActivityManagerProxy) StopProfile(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "stopProfile")
 	if _err != nil {
@@ -8232,13 +8216,13 @@ func (p *ActivityManagerProxy) QueryIntentComponentsForIntentSender(
 func (p *ActivityManagerProxy) GetUidProcessCapabilities(
 	ctx context.Context,
 	uid int32,
-	callingPackage string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(uid)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getUidProcessCapabilities")
 	if _err != nil {
@@ -8468,13 +8452,13 @@ func (p *ActivityManagerProxy) StartProfileWithListener(
 
 func (p *ActivityManagerProxy) RestartUserInBackground(
 	ctx context.Context,
-	userId int32,
 	userStartMode int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(userStartMode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "restartUserInBackground")
@@ -8765,13 +8749,13 @@ func (p *ActivityManagerProxy) FrozenBinderTransactionDetected(
 func (p *ActivityManagerProxy) GetBindingUidProcessState(
 	ctx context.Context,
 	uid int32,
-	callingPackage string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(uid)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getBindingUidProcessState")
 	if _err != nil {
@@ -8798,13 +8782,13 @@ func (p *ActivityManagerProxy) GetBindingUidProcessState(
 func (p *ActivityManagerProxy) GetUidLastIdleElapsedTime(
 	ctx context.Context,
 	uid int32,
-	callingPackage string,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(uid)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getUidLastIdleElapsedTime")
 	if _err != nil {

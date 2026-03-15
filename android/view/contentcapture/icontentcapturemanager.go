@@ -211,11 +211,11 @@ func (p *ContentCaptureManagerProxy) GetContentCaptureConditions(
 
 func (p *ContentCaptureManagerProxy) ResetTemporaryService(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentCaptureManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureManager, "resetTemporaryService")
 	if _err != nil {
@@ -228,13 +228,13 @@ func (p *ContentCaptureManagerProxy) ResetTemporaryService(
 
 func (p *ContentCaptureManagerProxy) SetTemporaryService(
 	ctx context.Context,
-	userId int32,
 	serviceName string,
 	duration int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentCaptureManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(serviceName)
 	_data.WriteInt32(duration)
 
@@ -249,12 +249,12 @@ func (p *ContentCaptureManagerProxy) SetTemporaryService(
 
 func (p *ContentCaptureManagerProxy) SetDefaultServiceEnabled(
 	ctx context.Context,
-	userId int32,
 	enabled bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentCaptureManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(enabled)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureManager, "setDefaultServiceEnabled")

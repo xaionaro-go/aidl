@@ -49,13 +49,13 @@ var _ ITextServicesManager = (*TextServicesManagerProxy)(nil)
 
 func (p *TextServicesManagerProxy) GetCurrentSpellChecker(
 	ctx context.Context,
-	userId int32,
 	locale string,
 ) (viewTextservice.SpellCheckerInfo, error) {
 	var _result viewTextservice.SpellCheckerInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextServicesManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(locale)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITextServicesManager, "getCurrentSpellChecker")
@@ -87,13 +87,13 @@ func (p *TextServicesManagerProxy) GetCurrentSpellChecker(
 
 func (p *TextServicesManagerProxy) GetCurrentSpellCheckerSubtype(
 	ctx context.Context,
-	userId int32,
 	allowImplicitlySelectedSubtype bool,
 ) (viewTextservice.SpellCheckerSubtype, error) {
 	var _result viewTextservice.SpellCheckerSubtype
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextServicesManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(allowImplicitlySelectedSubtype)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITextServicesManager, "getCurrentSpellCheckerSubtype")
@@ -125,7 +125,6 @@ func (p *TextServicesManagerProxy) GetCurrentSpellCheckerSubtype(
 
 func (p *TextServicesManagerProxy) GetSpellCheckerService(
 	ctx context.Context,
-	userId int32,
 	sciId string,
 	locale string,
 	tsListener ITextServicesSessionListener,
@@ -133,9 +132,10 @@ func (p *TextServicesManagerProxy) GetSpellCheckerService(
 	bundle os.Bundle,
 	supportedAttributes int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextServicesManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(sciId)
 	_data.WriteString16(locale)
 	_data.WriteStrongBinder(tsListener.AsBinder().Handle())
@@ -157,12 +157,12 @@ func (p *TextServicesManagerProxy) GetSpellCheckerService(
 
 func (p *TextServicesManagerProxy) FinishSpellCheckerService(
 	ctx context.Context,
-	userId int32,
 	listener ISpellCheckerSessionListener,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextServicesManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITextServicesManager, "finishSpellCheckerService")
@@ -176,12 +176,12 @@ func (p *TextServicesManagerProxy) FinishSpellCheckerService(
 
 func (p *TextServicesManagerProxy) IsSpellCheckerEnabled(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextServicesManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITextServicesManager, "isSpellCheckerEnabled")
 	if _err != nil {
@@ -207,12 +207,12 @@ func (p *TextServicesManagerProxy) IsSpellCheckerEnabled(
 
 func (p *TextServicesManagerProxy) GetEnabledSpellCheckers(
 	ctx context.Context,
-	userId int32,
 ) ([]viewTextservice.SpellCheckerInfo, error) {
 	var _result []viewTextservice.SpellCheckerInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextServicesManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITextServicesManager, "getEnabledSpellCheckers")
 	if _err != nil {

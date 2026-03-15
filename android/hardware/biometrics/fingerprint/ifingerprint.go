@@ -78,14 +78,14 @@ func (p *FingerprintProxy) GetSensorProps(
 func (p *FingerprintProxy) CreateSession(
 	ctx context.Context,
 	sensorId int32,
-	userId int32,
 	cb ISessionCallback,
 ) (ISession, error) {
 	var _result ISession
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprint)
 	_data.WriteInt32(sensorId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprint, "createSession")

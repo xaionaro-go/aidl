@@ -177,15 +177,15 @@ func (p *DropBoxManagerServiceProxy) GetNextEntryWithAttribution(
 	tag string,
 	millis int64,
 	packageName string,
-	attributionTag string,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDropBoxManagerService)
 	_data.WriteString16(tag)
 	_data.WriteInt64(millis)
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDropBoxManagerService, "getNextEntryWithAttribution")
 	if _err != nil {

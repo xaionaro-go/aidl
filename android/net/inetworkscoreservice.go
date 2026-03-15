@@ -279,12 +279,12 @@ func (p *NetworkScoreServiceProxy) RequestScores(
 
 func (p *NetworkScoreServiceProxy) IsCallerActiveScorer(
 	ctx context.Context,
-	callingUid int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkScoreService)
-	_data.WriteInt32(callingUid)
+	_data.WriteInt32(_identity.UID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorINetworkScoreService, "isCallerActiveScorer")
 	if _err != nil {

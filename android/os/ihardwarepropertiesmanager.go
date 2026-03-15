@@ -41,14 +41,14 @@ var _ IHardwarePropertiesManager = (*HardwarePropertiesManagerProxy)(nil)
 
 func (p *HardwarePropertiesManagerProxy) GetDeviceTemperatures(
 	ctx context.Context,
-	callingPackage string,
 	type_ int32,
 	source int32,
 ) ([]float32, error) {
 	var _result []float32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHardwarePropertiesManager)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(type_)
 	_data.WriteInt32(source)
 
@@ -86,12 +86,12 @@ func (p *HardwarePropertiesManagerProxy) GetDeviceTemperatures(
 
 func (p *HardwarePropertiesManagerProxy) GetCpuUsages(
 	ctx context.Context,
-	callingPackage string,
 ) ([]CpuUsageInfo, error) {
 	var _result []CpuUsageInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHardwarePropertiesManager)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHardwarePropertiesManager, "getCpuUsages")
 	if _err != nil {
@@ -126,12 +126,12 @@ func (p *HardwarePropertiesManagerProxy) GetCpuUsages(
 
 func (p *HardwarePropertiesManagerProxy) GetFanSpeeds(
 	ctx context.Context,
-	callingPackage string,
 ) ([]float32, error) {
 	var _result []float32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHardwarePropertiesManager)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHardwarePropertiesManager, "getFanSpeeds")
 	if _err != nil {

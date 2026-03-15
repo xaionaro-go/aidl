@@ -86,9 +86,9 @@ func (p *ShortcutServiceProxy) SetDynamicShortcuts(
 	ctx context.Context,
 	packageName string,
 	shortcutInfoList ParceledListSlice,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
@@ -96,7 +96,7 @@ func (p *ShortcutServiceProxy) SetDynamicShortcuts(
 	if _err := shortcutInfoList.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "setDynamicShortcuts")
 	if _err != nil {
@@ -124,9 +124,9 @@ func (p *ShortcutServiceProxy) AddDynamicShortcuts(
 	ctx context.Context,
 	packageName string,
 	shortcutInfoList ParceledListSlice,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
@@ -134,7 +134,7 @@ func (p *ShortcutServiceProxy) AddDynamicShortcuts(
 	if _err := shortcutInfoList.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "addDynamicShortcuts")
 	if _err != nil {
@@ -162,8 +162,8 @@ func (p *ShortcutServiceProxy) RemoveDynamicShortcuts(
 	ctx context.Context,
 	packageName string,
 	shortcutIds []string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
@@ -175,7 +175,7 @@ func (p *ShortcutServiceProxy) RemoveDynamicShortcuts(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "removeDynamicShortcuts")
 	if _err != nil {
@@ -198,12 +198,12 @@ func (p *ShortcutServiceProxy) RemoveDynamicShortcuts(
 func (p *ShortcutServiceProxy) RemoveAllDynamicShortcuts(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "removeAllDynamicShortcuts")
 	if _err != nil {
@@ -227,9 +227,9 @@ func (p *ShortcutServiceProxy) UpdateShortcuts(
 	ctx context.Context,
 	packageName string,
 	shortcuts ParceledListSlice,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
@@ -237,7 +237,7 @@ func (p *ShortcutServiceProxy) UpdateShortcuts(
 	if _err := shortcuts.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "updateShortcuts")
 	if _err != nil {
@@ -266,9 +266,9 @@ func (p *ShortcutServiceProxy) RequestPinShortcut(
 	packageName string,
 	shortcut ShortcutInfo,
 	resultIntent interface{},
-	userId int32,
 	ret infra.AndroidFuture,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
@@ -276,7 +276,7 @@ func (p *ShortcutServiceProxy) RequestPinShortcut(
 	if _err := shortcut.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := ret.MarshalParcel(_data); _err != nil {
 		return _err
@@ -304,9 +304,9 @@ func (p *ShortcutServiceProxy) CreateShortcutResultIntent(
 	ctx context.Context,
 	packageName string,
 	shortcut ShortcutInfo,
-	userId int32,
 	ret infra.AndroidFuture,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
@@ -314,7 +314,7 @@ func (p *ShortcutServiceProxy) CreateShortcutResultIntent(
 	if _err := shortcut.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := ret.MarshalParcel(_data); _err != nil {
 		return _err
@@ -344,8 +344,8 @@ func (p *ShortcutServiceProxy) DisableShortcuts(
 	shortcutIds []string,
 	disabledMessage interface{},
 	disabledMessageResId int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
@@ -358,7 +358,7 @@ func (p *ShortcutServiceProxy) DisableShortcuts(
 		}
 	}
 	_data.WriteInt32(disabledMessageResId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "disableShortcuts")
 	if _err != nil {
@@ -382,8 +382,8 @@ func (p *ShortcutServiceProxy) EnableShortcuts(
 	ctx context.Context,
 	packageName string,
 	shortcutIds []string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
@@ -395,7 +395,7 @@ func (p *ShortcutServiceProxy) EnableShortcuts(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "enableShortcuts")
 	if _err != nil {
@@ -418,13 +418,13 @@ func (p *ShortcutServiceProxy) EnableShortcuts(
 func (p *ShortcutServiceProxy) GetMaxShortcutCountPerActivity(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "getMaxShortcutCountPerActivity")
 	if _err != nil {
@@ -451,13 +451,13 @@ func (p *ShortcutServiceProxy) GetMaxShortcutCountPerActivity(
 func (p *ShortcutServiceProxy) GetRemainingCallCount(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "getRemainingCallCount")
 	if _err != nil {
@@ -484,13 +484,13 @@ func (p *ShortcutServiceProxy) GetRemainingCallCount(
 func (p *ShortcutServiceProxy) GetRateLimitResetTime(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "getRateLimitResetTime")
 	if _err != nil {
@@ -517,13 +517,13 @@ func (p *ShortcutServiceProxy) GetRateLimitResetTime(
 func (p *ShortcutServiceProxy) GetIconMaxDimensions(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "getIconMaxDimensions")
 	if _err != nil {
@@ -551,13 +551,13 @@ func (p *ShortcutServiceProxy) ReportShortcutUsed(
 	ctx context.Context,
 	packageName string,
 	shortcutId string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
 	_data.WriteString16(shortcutId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "reportShortcutUsed")
 	if _err != nil {
@@ -604,12 +604,12 @@ func (p *ShortcutServiceProxy) ResetThrottling(
 func (p *ShortcutServiceProxy) OnApplicationActive(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "onApplicationActive")
 	if _err != nil {
@@ -733,13 +733,13 @@ func (p *ShortcutServiceProxy) GetShareTargets(
 	ctx context.Context,
 	packageName string,
 	filter interface{},
-	userId int32,
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "getShareTargets")
 	if _err != nil {
@@ -772,14 +772,14 @@ func (p *ShortcutServiceProxy) HasShareTargets(
 	ctx context.Context,
 	packageName string,
 	packageToCheck string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
 	_data.WriteString16(packageToCheck)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "hasShareTargets")
 	if _err != nil {
@@ -807,8 +807,8 @@ func (p *ShortcutServiceProxy) RemoveLongLivedShortcuts(
 	ctx context.Context,
 	packageName string,
 	shortcutIds []string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
@@ -820,7 +820,7 @@ func (p *ShortcutServiceProxy) RemoveLongLivedShortcuts(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "removeLongLivedShortcuts")
 	if _err != nil {
@@ -844,14 +844,14 @@ func (p *ShortcutServiceProxy) GetShortcuts(
 	ctx context.Context,
 	packageName string,
 	matchFlags int32,
-	userId int32,
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(matchFlags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "getShortcuts")
 	if _err != nil {
@@ -884,8 +884,8 @@ func (p *ShortcutServiceProxy) PushDynamicShortcut(
 	ctx context.Context,
 	packageName string,
 	shortcut ShortcutInfo,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
@@ -893,7 +893,7 @@ func (p *ShortcutServiceProxy) PushDynamicShortcut(
 	if _err := shortcut.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "pushDynamicShortcut")
 	if _err != nil {

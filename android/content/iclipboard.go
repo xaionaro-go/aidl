@@ -60,20 +60,18 @@ var _ IClipboard = (*ClipboardProxy)(nil)
 func (p *ClipboardProxy) SetPrimaryClip(
 	ctx context.Context,
 	clip ClipData,
-	callingPackage string,
-	attributionTag string,
-	userId int32,
 	deviceId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClipboard)
 	_data.WriteInt32(1)
 	if _err := clip.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(attributionTag)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(deviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIClipboard, "setPrimaryClip")
@@ -97,21 +95,19 @@ func (p *ClipboardProxy) SetPrimaryClip(
 func (p *ClipboardProxy) SetPrimaryClipAsPackage(
 	ctx context.Context,
 	clip ClipData,
-	callingPackage string,
-	attributionTag string,
-	userId int32,
 	deviceId int32,
 	sourcePackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClipboard)
 	_data.WriteInt32(1)
 	if _err := clip.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(attributionTag)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(deviceId)
 	_data.WriteString16(sourcePackage)
 
@@ -135,16 +131,14 @@ func (p *ClipboardProxy) SetPrimaryClipAsPackage(
 
 func (p *ClipboardProxy) ClearPrimaryClip(
 	ctx context.Context,
-	callingPackage string,
-	attributionTag string,
-	userId int32,
 	deviceId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClipboard)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(attributionTag)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(deviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIClipboard, "clearPrimaryClip")
@@ -168,16 +162,15 @@ func (p *ClipboardProxy) ClearPrimaryClip(
 func (p *ClipboardProxy) GetPrimaryClip(
 	ctx context.Context,
 	pkg string,
-	attributionTag string,
-	userId int32,
 	deviceId int32,
 ) (ClipData, error) {
 	var _result ClipData
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClipboard)
 	_data.WriteString16(pkg)
-	_data.WriteString16(attributionTag)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.AttributionTag)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(deviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIClipboard, "getPrimaryClip")
@@ -209,17 +202,15 @@ func (p *ClipboardProxy) GetPrimaryClip(
 
 func (p *ClipboardProxy) GetPrimaryClipDescription(
 	ctx context.Context,
-	callingPackage string,
-	attributionTag string,
-	userId int32,
 	deviceId int32,
 ) (ClipDescription, error) {
 	var _result ClipDescription
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClipboard)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(attributionTag)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(deviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIClipboard, "getPrimaryClipDescription")
@@ -251,17 +242,15 @@ func (p *ClipboardProxy) GetPrimaryClipDescription(
 
 func (p *ClipboardProxy) HasPrimaryClip(
 	ctx context.Context,
-	callingPackage string,
-	attributionTag string,
-	userId int32,
 	deviceId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClipboard)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(attributionTag)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(deviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIClipboard, "hasPrimaryClip")
@@ -289,17 +278,15 @@ func (p *ClipboardProxy) HasPrimaryClip(
 func (p *ClipboardProxy) AddPrimaryClipChangedListener(
 	ctx context.Context,
 	listener IOnPrimaryClipChangedListener,
-	callingPackage string,
-	attributionTag string,
-	userId int32,
 	deviceId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClipboard)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(attributionTag)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(deviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIClipboard, "addPrimaryClipChangedListener")
@@ -323,17 +310,15 @@ func (p *ClipboardProxy) AddPrimaryClipChangedListener(
 func (p *ClipboardProxy) RemovePrimaryClipChangedListener(
 	ctx context.Context,
 	listener IOnPrimaryClipChangedListener,
-	callingPackage string,
-	attributionTag string,
-	userId int32,
 	deviceId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClipboard)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(attributionTag)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(deviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIClipboard, "removePrimaryClipChangedListener")
@@ -356,17 +341,15 @@ func (p *ClipboardProxy) RemovePrimaryClipChangedListener(
 
 func (p *ClipboardProxy) HasClipboardText(
 	ctx context.Context,
-	callingPackage string,
-	attributionTag string,
-	userId int32,
 	deviceId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClipboard)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(attributionTag)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(deviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIClipboard, "hasClipboardText")
@@ -393,17 +376,15 @@ func (p *ClipboardProxy) HasClipboardText(
 
 func (p *ClipboardProxy) GetPrimaryClipSource(
 	ctx context.Context,
-	callingPackage string,
-	attributionTag string,
-	userId int32,
 	deviceId int32,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClipboard)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(attributionTag)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(deviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIClipboard, "getPrimaryClipSource")
@@ -430,12 +411,12 @@ func (p *ClipboardProxy) GetPrimaryClipSource(
 
 func (p *ClipboardProxy) AreClipboardAccessNotificationsEnabledForUser(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClipboard)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIClipboard, "areClipboardAccessNotificationsEnabledForUser")
 	if _err != nil {
@@ -462,12 +443,12 @@ func (p *ClipboardProxy) AreClipboardAccessNotificationsEnabledForUser(
 func (p *ClipboardProxy) SetClipboardAccessNotificationsEnabledForUser(
 	ctx context.Context,
 	enable bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClipboard)
 	_data.WriteBool(enable)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIClipboard, "setClipboardAccessNotificationsEnabledForUser")
 	if _err != nil {

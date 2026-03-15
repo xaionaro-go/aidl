@@ -38,12 +38,12 @@ var _ IWeakEscrowTokenRemovedListener = (*WeakEscrowTokenRemovedListenerProxy)(n
 func (p *WeakEscrowTokenRemovedListenerProxy) OnWeakEscrowTokenRemoved(
 	ctx context.Context,
 	handle int64,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWeakEscrowTokenRemovedListener)
 	_data.WriteInt64(handle)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWeakEscrowTokenRemovedListener, "onWeakEscrowTokenRemoved")
 	if _err != nil {

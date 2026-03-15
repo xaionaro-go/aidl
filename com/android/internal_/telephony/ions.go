@@ -47,13 +47,13 @@ var _ IOns = (*OnsProxy)(nil)
 func (p *OnsProxy) SetEnable(
 	ctx context.Context,
 	enable bool,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOns)
 	_data.WriteBool(enable)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOns, "setEnable")
 	if _err != nil {
@@ -79,12 +79,12 @@ func (p *OnsProxy) SetEnable(
 
 func (p *OnsProxy) IsEnabled(
 	ctx context.Context,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOns)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOns, "isEnabled")
 	if _err != nil {
@@ -113,14 +113,14 @@ func (p *OnsProxy) SetPreferredDataSubscriptionId(
 	subId int32,
 	needValidation bool,
 	callbackStub ISetOpportunisticDataCallback,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOns)
 	_data.WriteInt32(subId)
 	_data.WriteBool(needValidation)
 	_data.WriteStrongBinder(callbackStub.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOns, "setPreferredDataSubscriptionId")
 	if _err != nil {
@@ -142,14 +142,13 @@ func (p *OnsProxy) SetPreferredDataSubscriptionId(
 
 func (p *OnsProxy) GetPreferredDataSubscriptionId(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOns)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOns, "getPreferredDataSubscriptionId")
 	if _err != nil {
@@ -177,8 +176,8 @@ func (p *OnsProxy) UpdateAvailableNetworks(
 	ctx context.Context,
 	availableNetworks []androidTelephony.AvailableNetworkInfo,
 	callbackStub IUpdateAvailableNetworksCallback,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOns)
 	if availableNetworks == nil {
@@ -192,7 +191,7 @@ func (p *OnsProxy) UpdateAvailableNetworks(
 		}
 	}
 	_data.WriteStrongBinder(callbackStub.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOns, "updateAvailableNetworks")
 	if _err != nil {

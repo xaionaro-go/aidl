@@ -129,13 +129,13 @@ func (p *DomainVerificationManagerProxy) GetDomainVerificationInfo(
 func (p *DomainVerificationManagerProxy) GetDomainVerificationUserState(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (DomainVerificationUserState, error) {
 	var _result DomainVerificationUserState
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDomainVerificationManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDomainVerificationManager, "getDomainVerificationUserState")
 	if _err != nil {
@@ -167,13 +167,13 @@ func (p *DomainVerificationManagerProxy) GetDomainVerificationUserState(
 func (p *DomainVerificationManagerProxy) GetOwnersForDomain(
 	ctx context.Context,
 	domain string,
-	userId int32,
 ) ([]DomainOwner, error) {
 	var _result []DomainOwner
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDomainVerificationManager)
 	_data.WriteString16(domain)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDomainVerificationManager, "getOwnersForDomain")
 	if _err != nil {
@@ -248,13 +248,13 @@ func (p *DomainVerificationManagerProxy) SetDomainVerificationLinkHandlingAllowe
 	ctx context.Context,
 	packageName string,
 	allowed bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDomainVerificationManager)
 	_data.WriteString16(packageName)
 	_data.WriteBool(allowed)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDomainVerificationManager, "setDomainVerificationLinkHandlingAllowed")
 	if _err != nil {
@@ -279,9 +279,9 @@ func (p *DomainVerificationManagerProxy) SetDomainVerificationUserSelection(
 	domainSetId string,
 	domains DomainSet,
 	enabled bool,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDomainVerificationManager)
 	_data.WriteString16(domainSetId)
@@ -290,7 +290,7 @@ func (p *DomainVerificationManagerProxy) SetDomainVerificationUserSelection(
 		return _result, _err
 	}
 	_data.WriteBool(enabled)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDomainVerificationManager, "setDomainVerificationUserSelection")
 	if _err != nil {

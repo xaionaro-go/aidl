@@ -37,13 +37,13 @@ var _ IUserRestrictionsListener = (*UserRestrictionsListenerProxy)(nil)
 
 func (p *UserRestrictionsListenerProxy) OnUserRestrictionsChanged(
 	ctx context.Context,
-	userId int32,
 	newRestrictions Bundle,
 	prevRestrictions Bundle,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserRestrictionsListener)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := newRestrictions.MarshalParcel(_data); _err != nil {
 		return _err

@@ -113,13 +113,13 @@ func (p *PlatformCompatProxy) ReportChangeByPackageName(
 	ctx context.Context,
 	changeId int64,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPlatformCompat)
 	_data.WriteInt64(changeId)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPlatformCompat, "reportChangeByPackageName")
 	if _err != nil {
@@ -207,14 +207,14 @@ func (p *PlatformCompatProxy) IsChangeEnabledByPackageName(
 	ctx context.Context,
 	changeId int64,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPlatformCompat)
 	_data.WriteInt64(changeId)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPlatformCompat, "isChangeEnabledByPackageName")
 	if _err != nil {

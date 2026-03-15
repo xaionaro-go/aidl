@@ -115,12 +115,12 @@ var _ IPhoneSubInfo = (*PhoneSubInfoProxy)(nil)
 
 func (p *PhoneSubInfoProxy) GetDeviceId(
 	ctx context.Context,
-	callingPackage string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getDeviceId")
 	if _err != nil {
@@ -146,14 +146,13 @@ func (p *PhoneSubInfoProxy) GetDeviceId(
 
 func (p *PhoneSubInfoProxy) GetDeviceIdWithFeature(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getDeviceIdWithFeature")
 	if _err != nil {
@@ -180,15 +179,14 @@ func (p *PhoneSubInfoProxy) GetDeviceIdWithFeature(
 func (p *PhoneSubInfoProxy) GetNaiForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getNaiForSubscriber")
 	if _err != nil {
@@ -215,15 +213,14 @@ func (p *PhoneSubInfoProxy) GetNaiForSubscriber(
 func (p *PhoneSubInfoProxy) GetDeviceIdForPhone(
 	ctx context.Context,
 	phoneId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(phoneId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getDeviceIdForPhone")
 	if _err != nil {
@@ -250,15 +247,14 @@ func (p *PhoneSubInfoProxy) GetDeviceIdForPhone(
 func (p *PhoneSubInfoProxy) GetImeiForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getImeiForSubscriber")
 	if _err != nil {
@@ -284,14 +280,13 @@ func (p *PhoneSubInfoProxy) GetImeiForSubscriber(
 
 func (p *PhoneSubInfoProxy) GetDeviceSvn(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getDeviceSvn")
 	if _err != nil {
@@ -318,15 +313,14 @@ func (p *PhoneSubInfoProxy) GetDeviceSvn(
 func (p *PhoneSubInfoProxy) GetDeviceSvnUsingSubId(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getDeviceSvnUsingSubId")
 	if _err != nil {
@@ -352,12 +346,12 @@ func (p *PhoneSubInfoProxy) GetDeviceSvnUsingSubId(
 
 func (p *PhoneSubInfoProxy) GetSubscriberId(
 	ctx context.Context,
-	callingPackage string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getSubscriberId")
 	if _err != nil {
@@ -383,13 +377,13 @@ func (p *PhoneSubInfoProxy) GetSubscriberId(
 
 func (p *PhoneSubInfoProxy) GetSubscriberIdWithFeature(
 	ctx context.Context,
-	callingPackage string,
 	callingComponenId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(callingComponenId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getSubscriberIdWithFeature")
@@ -417,15 +411,14 @@ func (p *PhoneSubInfoProxy) GetSubscriberIdWithFeature(
 func (p *PhoneSubInfoProxy) GetSubscriberIdForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getSubscriberIdForSubscriber")
 	if _err != nil {
@@ -452,15 +445,14 @@ func (p *PhoneSubInfoProxy) GetSubscriberIdForSubscriber(
 func (p *PhoneSubInfoProxy) GetGroupIdLevel1ForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getGroupIdLevel1ForSubscriber")
 	if _err != nil {
@@ -487,15 +479,14 @@ func (p *PhoneSubInfoProxy) GetGroupIdLevel1ForSubscriber(
 func (p *PhoneSubInfoProxy) GetGroupIdLevel2ForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getGroupIdLevel2ForSubscriber")
 	if _err != nil {
@@ -521,12 +512,12 @@ func (p *PhoneSubInfoProxy) GetGroupIdLevel2ForSubscriber(
 
 func (p *PhoneSubInfoProxy) GetIccSerialNumber(
 	ctx context.Context,
-	callingPackage string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getIccSerialNumber")
 	if _err != nil {
@@ -552,14 +543,13 @@ func (p *PhoneSubInfoProxy) GetIccSerialNumber(
 
 func (p *PhoneSubInfoProxy) GetIccSerialNumberWithFeature(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getIccSerialNumberWithFeature")
 	if _err != nil {
@@ -586,15 +576,14 @@ func (p *PhoneSubInfoProxy) GetIccSerialNumberWithFeature(
 func (p *PhoneSubInfoProxy) GetIccSerialNumberForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getIccSerialNumberForSubscriber")
 	if _err != nil {
@@ -620,14 +609,13 @@ func (p *PhoneSubInfoProxy) GetIccSerialNumberForSubscriber(
 
 func (p *PhoneSubInfoProxy) GetLine1Number(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getLine1Number")
 	if _err != nil {
@@ -654,15 +642,14 @@ func (p *PhoneSubInfoProxy) GetLine1Number(
 func (p *PhoneSubInfoProxy) GetLine1NumberForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getLine1NumberForSubscriber")
 	if _err != nil {
@@ -688,14 +675,13 @@ func (p *PhoneSubInfoProxy) GetLine1NumberForSubscriber(
 
 func (p *PhoneSubInfoProxy) GetLine1AlphaTag(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getLine1AlphaTag")
 	if _err != nil {
@@ -722,15 +708,14 @@ func (p *PhoneSubInfoProxy) GetLine1AlphaTag(
 func (p *PhoneSubInfoProxy) GetLine1AlphaTagForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getLine1AlphaTagForSubscriber")
 	if _err != nil {
@@ -756,14 +741,13 @@ func (p *PhoneSubInfoProxy) GetLine1AlphaTagForSubscriber(
 
 func (p *PhoneSubInfoProxy) GetMsisdn(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getMsisdn")
 	if _err != nil {
@@ -790,15 +774,14 @@ func (p *PhoneSubInfoProxy) GetMsisdn(
 func (p *PhoneSubInfoProxy) GetMsisdnForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getMsisdnForSubscriber")
 	if _err != nil {
@@ -824,14 +807,13 @@ func (p *PhoneSubInfoProxy) GetMsisdnForSubscriber(
 
 func (p *PhoneSubInfoProxy) GetVoiceMailNumber(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getVoiceMailNumber")
 	if _err != nil {
@@ -858,15 +840,14 @@ func (p *PhoneSubInfoProxy) GetVoiceMailNumber(
 func (p *PhoneSubInfoProxy) GetVoiceMailNumberForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getVoiceMailNumberForSubscriber")
 	if _err != nil {
@@ -894,14 +875,14 @@ func (p *PhoneSubInfoProxy) GetCarrierInfoForImsiEncryption(
 	ctx context.Context,
 	subId int32,
 	keyType int32,
-	callingPackage string,
 ) (sim.ImsiEncryptionInfo, error) {
 	var _result sim.ImsiEncryptionInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
 	_data.WriteInt32(keyType)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getCarrierInfoForImsiEncryption")
 	if _err != nil {
@@ -933,13 +914,13 @@ func (p *PhoneSubInfoProxy) GetCarrierInfoForImsiEncryption(
 func (p *PhoneSubInfoProxy) SetCarrierInfoForImsiEncryption(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
 	imsiEncryptionInfo sim.ImsiEncryptionInfo,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := imsiEncryptionInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -966,12 +947,12 @@ func (p *PhoneSubInfoProxy) SetCarrierInfoForImsiEncryption(
 func (p *PhoneSubInfoProxy) ResetCarrierKeysForImsiEncryption(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "resetCarrierKeysForImsiEncryption")
 	if _err != nil {
@@ -993,14 +974,13 @@ func (p *PhoneSubInfoProxy) ResetCarrierKeysForImsiEncryption(
 
 func (p *PhoneSubInfoProxy) GetVoiceMailAlphaTag(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getVoiceMailAlphaTag")
 	if _err != nil {
@@ -1027,15 +1007,14 @@ func (p *PhoneSubInfoProxy) GetVoiceMailAlphaTag(
 func (p *PhoneSubInfoProxy) GetVoiceMailAlphaTagForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getVoiceMailAlphaTagForSubscriber")
 	if _err != nil {
@@ -1093,15 +1072,14 @@ func (p *PhoneSubInfoProxy) GetIsimImpi(
 func (p *PhoneSubInfoProxy) GetImsPrivateUserIdentity(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getImsPrivateUserIdentity")
 	if _err != nil {
@@ -1200,13 +1178,13 @@ func (p *PhoneSubInfoProxy) GetIsimImpu(
 func (p *PhoneSubInfoProxy) GetImsPublicUserIdentities(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
 ) ([]net.Uri, error) {
 	var _result []net.Uri
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getImsPublicUserIdentities")
 	if _err != nil {
@@ -1314,13 +1292,13 @@ func (p *PhoneSubInfoProxy) GetIsimPcscf(
 func (p *PhoneSubInfoProxy) GetImsPcscfAddresses(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getImsPcscfAddresses")
 	if _err != nil {
@@ -1360,18 +1338,17 @@ func (p *PhoneSubInfoProxy) GetIccSimChallengeResponse(
 	appType int32,
 	authType int32,
 	data string,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneSubInfo)
 	_data.WriteInt32(subId)
 	_data.WriteInt32(appType)
 	_data.WriteInt32(authType)
 	_data.WriteString16(data)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneSubInfo, "getIccSimChallengeResponse")
 	if _err != nil {

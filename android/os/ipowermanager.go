@@ -564,14 +564,14 @@ func (p *PowerManagerProxy) WakeUp(
 	time int64,
 	reason int32,
 	details string,
-	opPackageName string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPowerManager)
 	_data.WriteInt64(time)
 	_data.WriteInt32(reason)
 	_data.WriteString16(details)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPowerManager, "wakeUp")
 	if _err != nil {
@@ -596,15 +596,15 @@ func (p *PowerManagerProxy) WakeUpWithDisplayId(
 	time int64,
 	reason int32,
 	details string,
-	opPackageName string,
 	displayId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPowerManager)
 	_data.WriteInt64(time)
 	_data.WriteInt32(reason)
 	_data.WriteString16(details)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(displayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPowerManager, "wakeUpWithDisplayId")
@@ -2160,13 +2160,13 @@ func (p *PowerManagerProxy) IsAmbientDisplaySuppressed(
 func (p *PowerManagerProxy) IsAmbientDisplaySuppressedForTokenByApp(
 	ctx context.Context,
 	token string,
-	appUid int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPowerManager)
 	_data.WriteString16(token)
-	_data.WriteInt32(appUid)
+	_data.WriteInt32(_identity.UID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPowerManager, "isAmbientDisplaySuppressedForTokenByApp")
 	if _err != nil {

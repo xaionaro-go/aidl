@@ -197,7 +197,6 @@ func (p *WindowSessionProxy) AddToDisplayAsUser(
 	attrs WindowManagerLayoutParams,
 	viewVisibility int32,
 	layerStackId int32,
-	userId int32,
 	requestedVisibleTypes int32,
 	outInputChannel InputChannel,
 	insetsState InsetsState,
@@ -206,6 +205,7 @@ func (p *WindowSessionProxy) AddToDisplayAsUser(
 	sizeCompatScale []float32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
 	_data.WriteStrongBinder(window.AsBinder().Handle())
@@ -215,7 +215,7 @@ func (p *WindowSessionProxy) AddToDisplayAsUser(
 	}
 	_data.WriteInt32(viewVisibility)
 	_data.WriteInt32(layerStackId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(requestedVisibleTypes)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "addToDisplayAsUser")

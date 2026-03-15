@@ -96,14 +96,14 @@ func (p *AutoFillManagerProxy) AddClient(
 	ctx context.Context,
 	client IAutoFillManagerClient,
 	componentName interface{},
-	userId int32,
 	result interface{},
 	credmanRequested bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
 	_data.WriteStrongBinder(client.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(credmanRequested)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillManager, "addClient")
@@ -118,12 +118,12 @@ func (p *AutoFillManagerProxy) AddClient(
 func (p *AutoFillManagerProxy) RemoveClient(
 	ctx context.Context,
 	client IAutoFillManagerClient,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
 	_data.WriteStrongBinder(client.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillManager, "removeClient")
 	if _err != nil {
@@ -141,13 +141,13 @@ func (p *AutoFillManagerProxy) StartSession(
 	autoFillId AutofillId,
 	bounds graphics.Rect,
 	value AutofillValue,
-	userId int32,
 	hasCallback bool,
 	flags int32,
 	componentName interface{},
 	compatMode bool,
 	result interface{},
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
 	_data.WriteStrongBinder(activityToken.Handle())
@@ -164,7 +164,7 @@ func (p *AutoFillManagerProxy) StartSession(
 	if _err := value.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(hasCallback)
 	_data.WriteInt32(flags)
 	_data.WriteBool(compatMode)
@@ -224,8 +224,8 @@ func (p *AutoFillManagerProxy) UpdateSession(
 	value AutofillValue,
 	action int32,
 	flags int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
 	_data.WriteInt32(sessionId)
@@ -243,7 +243,7 @@ func (p *AutoFillManagerProxy) UpdateSession(
 	}
 	_data.WriteInt32(action)
 	_data.WriteInt32(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillManager, "updateSession")
 	if _err != nil {
@@ -259,8 +259,8 @@ func (p *AutoFillManagerProxy) SetAutofillFailure(
 	sessionId int32,
 	ids []AutofillId,
 	isRefill bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
 	_data.WriteInt32(sessionId)
@@ -275,7 +275,7 @@ func (p *AutoFillManagerProxy) SetAutofillFailure(
 		}
 	}
 	_data.WriteBool(isRefill)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillManager, "setAutofillFailure")
 	if _err != nil {
@@ -290,8 +290,8 @@ func (p *AutoFillManagerProxy) SetViewAutofilled(
 	ctx context.Context,
 	sessionId int32,
 	id AutofillId,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
 	_data.WriteInt32(sessionId)
@@ -299,7 +299,7 @@ func (p *AutoFillManagerProxy) SetViewAutofilled(
 	if _err := id.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillManager, "setViewAutofilled")
 	if _err != nil {
@@ -313,13 +313,13 @@ func (p *AutoFillManagerProxy) SetViewAutofilled(
 func (p *AutoFillManagerProxy) FinishSession(
 	ctx context.Context,
 	sessionId int32,
-	userId int32,
 	commitReason int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
 	_data.WriteInt32(sessionId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(commitReason)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillManager, "finishSession")
@@ -334,12 +334,12 @@ func (p *AutoFillManagerProxy) FinishSession(
 func (p *AutoFillManagerProxy) CancelSession(
 	ctx context.Context,
 	sessionId int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
 	_data.WriteInt32(sessionId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillManager, "cancelSession")
 	if _err != nil {
@@ -355,13 +355,13 @@ func (p *AutoFillManagerProxy) SetAuthenticationResult(
 	data interface{},
 	sessionId int32,
 	authenticationId int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
 	_data.WriteInt32(sessionId)
 	_data.WriteInt32(authenticationId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillManager, "setAuthenticationResult")
 	if _err != nil {
@@ -375,13 +375,13 @@ func (p *AutoFillManagerProxy) SetAuthenticationResult(
 func (p *AutoFillManagerProxy) SetHasCallback(
 	ctx context.Context,
 	sessionId int32,
-	userId int32,
 	hasIt bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
 	_data.WriteInt32(sessionId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(hasIt)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillManager, "setHasCallback")
@@ -395,11 +395,11 @@ func (p *AutoFillManagerProxy) SetHasCallback(
 
 func (p *AutoFillManagerProxy) DisableOwnedAutofillServices(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillManager, "disableOwnedAutofillServices")
 	if _err != nil {
@@ -412,12 +412,12 @@ func (p *AutoFillManagerProxy) DisableOwnedAutofillServices(
 
 func (p *AutoFillManagerProxy) IsServiceSupported(
 	ctx context.Context,
-	userId int32,
 	result interface{},
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillManager, "isServiceSupported")
 	if _err != nil {
@@ -430,13 +430,13 @@ func (p *AutoFillManagerProxy) IsServiceSupported(
 
 func (p *AutoFillManagerProxy) IsServiceEnabled(
 	ctx context.Context,
-	userId int32,
 	packageName string,
 	result interface{},
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(packageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillManager, "isServiceEnabled")
@@ -613,12 +613,12 @@ func (p *AutoFillManagerProxy) SetAugmentedAutofillWhitelist(
 func (p *AutoFillManagerProxy) NotifyNotExpiringResponseDuringAuth(
 	ctx context.Context,
 	sessionId int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
 	_data.WriteInt32(sessionId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillManager, "notifyNotExpiringResponseDuringAuth")
 	if _err != nil {
@@ -632,12 +632,12 @@ func (p *AutoFillManagerProxy) NotifyNotExpiringResponseDuringAuth(
 func (p *AutoFillManagerProxy) NotifyViewEnteredIgnoredDuringAuthCount(
 	ctx context.Context,
 	sessionId int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
 	_data.WriteInt32(sessionId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillManager, "notifyViewEnteredIgnoredDuringAuthCount")
 	if _err != nil {
@@ -652,8 +652,8 @@ func (p *AutoFillManagerProxy) SetAutofillIdsAttemptedForRefill(
 	ctx context.Context,
 	sessionId int32,
 	ids []AutofillId,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
 	_data.WriteInt32(sessionId)
@@ -667,7 +667,7 @@ func (p *AutoFillManagerProxy) SetAutofillIdsAttemptedForRefill(
 			}
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillManager, "setAutofillIdsAttemptedForRefill")
 	if _err != nil {
@@ -682,13 +682,13 @@ func (p *AutoFillManagerProxy) NotifyImeAnimationStart(
 	ctx context.Context,
 	sessionId int32,
 	startTimeMs int64,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
 	_data.WriteInt32(sessionId)
 	_data.WriteInt64(startTimeMs)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillManager, "notifyImeAnimationStart")
 	if _err != nil {
@@ -703,13 +703,13 @@ func (p *AutoFillManagerProxy) NotifyImeAnimationEnd(
 	ctx context.Context,
 	sessionId int32,
 	endTimeMs int64,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
 	_data.WriteInt32(sessionId)
 	_data.WriteInt64(endTimeMs)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillManager, "notifyImeAnimationEnd")
 	if _err != nil {

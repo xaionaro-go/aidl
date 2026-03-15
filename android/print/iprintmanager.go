@@ -90,13 +90,13 @@ var _ IPrintManager = (*PrintManagerProxy)(nil)
 func (p *PrintManagerProxy) GetPrintJobInfos(
 	ctx context.Context,
 	appId int32,
-	userId int32,
 ) ([]PrintJobInfo, error) {
 	var _result []PrintJobInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteInt32(appId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "getPrintJobInfos")
 	if _err != nil {
@@ -133,9 +133,9 @@ func (p *PrintManagerProxy) GetPrintJobInfo(
 	ctx context.Context,
 	printJobId PrintJobId,
 	appId int32,
-	userId int32,
 ) (PrintJobInfo, error) {
 	var _result PrintJobInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteInt32(1)
@@ -143,7 +143,7 @@ func (p *PrintManagerProxy) GetPrintJobInfo(
 		return _result, _err
 	}
 	_data.WriteInt32(appId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "getPrintJobInfo")
 	if _err != nil {
@@ -179,9 +179,9 @@ func (p *PrintManagerProxy) Print(
 	attributes PrintAttributes,
 	packageName string,
 	appId int32,
-	userId int32,
 ) (os.Bundle, error) {
 	var _result os.Bundle
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteString16(printJobName)
@@ -192,7 +192,7 @@ func (p *PrintManagerProxy) Print(
 	}
 	_data.WriteString16(packageName)
 	_data.WriteInt32(appId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "print")
 	if _err != nil {
@@ -225,8 +225,8 @@ func (p *PrintManagerProxy) CancelPrintJob(
 	ctx context.Context,
 	printJobId PrintJobId,
 	appId int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteInt32(1)
@@ -234,7 +234,7 @@ func (p *PrintManagerProxy) CancelPrintJob(
 		return _err
 	}
 	_data.WriteInt32(appId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "cancelPrintJob")
 	if _err != nil {
@@ -258,8 +258,8 @@ func (p *PrintManagerProxy) RestartPrintJob(
 	ctx context.Context,
 	printJobId PrintJobId,
 	appId int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteInt32(1)
@@ -267,7 +267,7 @@ func (p *PrintManagerProxy) RestartPrintJob(
 		return _err
 	}
 	_data.WriteInt32(appId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "restartPrintJob")
 	if _err != nil {
@@ -291,13 +291,13 @@ func (p *PrintManagerProxy) AddPrintJobStateChangeListener(
 	ctx context.Context,
 	listener IPrintJobStateChangeListener,
 	appId int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteInt32(appId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "addPrintJobStateChangeListener")
 	if _err != nil {
@@ -320,12 +320,12 @@ func (p *PrintManagerProxy) AddPrintJobStateChangeListener(
 func (p *PrintManagerProxy) RemovePrintJobStateChangeListener(
 	ctx context.Context,
 	listener IPrintJobStateChangeListener,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "removePrintJobStateChangeListener")
 	if _err != nil {
@@ -348,12 +348,12 @@ func (p *PrintManagerProxy) RemovePrintJobStateChangeListener(
 func (p *PrintManagerProxy) AddPrintServicesChangeListener(
 	ctx context.Context,
 	listener IPrintServicesChangeListener,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "addPrintServicesChangeListener")
 	if _err != nil {
@@ -376,12 +376,12 @@ func (p *PrintManagerProxy) AddPrintServicesChangeListener(
 func (p *PrintManagerProxy) RemovePrintServicesChangeListener(
 	ctx context.Context,
 	listener IPrintServicesChangeListener,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "removePrintServicesChangeListener")
 	if _err != nil {
@@ -404,13 +404,13 @@ func (p *PrintManagerProxy) RemovePrintServicesChangeListener(
 func (p *PrintManagerProxy) GetPrintServices(
 	ctx context.Context,
 	selectionFlags int32,
-	userId int32,
 ) ([]interface{}, error) {
 	var _result []interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteInt32(selectionFlags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "getPrintServices")
 	if _err != nil {
@@ -444,8 +444,8 @@ func (p *PrintManagerProxy) SetPrintServiceEnabled(
 	ctx context.Context,
 	service content.ComponentName,
 	isEnabled bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteInt32(1)
@@ -453,7 +453,7 @@ func (p *PrintManagerProxy) SetPrintServiceEnabled(
 		return _err
 	}
 	_data.WriteBool(isEnabled)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "setPrintServiceEnabled")
 	if _err != nil {
@@ -476,16 +476,16 @@ func (p *PrintManagerProxy) SetPrintServiceEnabled(
 func (p *PrintManagerProxy) IsPrintServiceEnabled(
 	ctx context.Context,
 	service content.ComponentName,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteInt32(1)
 	if _err := service.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "isPrintServiceEnabled")
 	if _err != nil {
@@ -512,12 +512,12 @@ func (p *PrintManagerProxy) IsPrintServiceEnabled(
 func (p *PrintManagerProxy) AddPrintServiceRecommendationsChangeListener(
 	ctx context.Context,
 	listener recommendation.IRecommendationsChangeListener,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "addPrintServiceRecommendationsChangeListener")
 	if _err != nil {
@@ -540,12 +540,12 @@ func (p *PrintManagerProxy) AddPrintServiceRecommendationsChangeListener(
 func (p *PrintManagerProxy) RemovePrintServiceRecommendationsChangeListener(
 	ctx context.Context,
 	listener recommendation.IRecommendationsChangeListener,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "removePrintServiceRecommendationsChangeListener")
 	if _err != nil {
@@ -567,12 +567,12 @@ func (p *PrintManagerProxy) RemovePrintServiceRecommendationsChangeListener(
 
 func (p *PrintManagerProxy) GetPrintServiceRecommendations(
 	ctx context.Context,
-	userId int32,
 ) ([]recommendation.RecommendationInfo, error) {
 	var _result []recommendation.RecommendationInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "getPrintServiceRecommendations")
 	if _err != nil {
@@ -608,12 +608,12 @@ func (p *PrintManagerProxy) GetPrintServiceRecommendations(
 func (p *PrintManagerProxy) CreatePrinterDiscoverySession(
 	ctx context.Context,
 	observer IPrinterDiscoveryObserver,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "createPrinterDiscoverySession")
 	if _err != nil {
@@ -637,8 +637,8 @@ func (p *PrintManagerProxy) StartPrinterDiscovery(
 	ctx context.Context,
 	observer IPrinterDiscoveryObserver,
 	priorityList []PrinterId,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
@@ -652,7 +652,7 @@ func (p *PrintManagerProxy) StartPrinterDiscovery(
 			}
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "startPrinterDiscovery")
 	if _err != nil {
@@ -675,12 +675,12 @@ func (p *PrintManagerProxy) StartPrinterDiscovery(
 func (p *PrintManagerProxy) StopPrinterDiscovery(
 	ctx context.Context,
 	observer IPrinterDiscoveryObserver,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "stopPrinterDiscovery")
 	if _err != nil {
@@ -703,8 +703,8 @@ func (p *PrintManagerProxy) StopPrinterDiscovery(
 func (p *PrintManagerProxy) ValidatePrinters(
 	ctx context.Context,
 	printerIds []PrinterId,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	if printerIds == nil {
@@ -717,7 +717,7 @@ func (p *PrintManagerProxy) ValidatePrinters(
 			}
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "validatePrinters")
 	if _err != nil {
@@ -740,15 +740,15 @@ func (p *PrintManagerProxy) ValidatePrinters(
 func (p *PrintManagerProxy) StartPrinterStateTracking(
 	ctx context.Context,
 	printerId PrinterId,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteInt32(1)
 	if _err := printerId.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "startPrinterStateTracking")
 	if _err != nil {
@@ -771,16 +771,16 @@ func (p *PrintManagerProxy) StartPrinterStateTracking(
 func (p *PrintManagerProxy) GetCustomPrinterIcon(
 	ctx context.Context,
 	printerId PrinterId,
-	userId int32,
 ) (drawable.Icon, error) {
 	var _result drawable.Icon
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteInt32(1)
 	if _err := printerId.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "getCustomPrinterIcon")
 	if _err != nil {
@@ -812,15 +812,15 @@ func (p *PrintManagerProxy) GetCustomPrinterIcon(
 func (p *PrintManagerProxy) StopPrinterStateTracking(
 	ctx context.Context,
 	printerId PrinterId,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteInt32(1)
 	if _err := printerId.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "stopPrinterStateTracking")
 	if _err != nil {
@@ -843,12 +843,12 @@ func (p *PrintManagerProxy) StopPrinterStateTracking(
 func (p *PrintManagerProxy) DestroyPrinterDiscoverySession(
 	ctx context.Context,
 	observer IPrinterDiscoveryObserver,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteStrongBinder(observer.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "destroyPrinterDiscoverySession")
 	if _err != nil {
@@ -870,12 +870,12 @@ func (p *PrintManagerProxy) DestroyPrinterDiscoverySession(
 
 func (p *PrintManagerProxy) GetBindInstantServiceAllowed(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "getBindInstantServiceAllowed")
 	if _err != nil {
@@ -901,12 +901,12 @@ func (p *PrintManagerProxy) GetBindInstantServiceAllowed(
 
 func (p *PrintManagerProxy) SetBindInstantServiceAllowed(
 	ctx context.Context,
-	userId int32,
 	allowed bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(allowed)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "setBindInstantServiceAllowed")

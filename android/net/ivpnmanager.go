@@ -96,14 +96,14 @@ func (p *VpnManagerProxy) PrepareVpn(
 	ctx context.Context,
 	oldPackage string,
 	newPackage string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 	_data.WriteString16(oldPackage)
 	_data.WriteString16(newPackage)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "prepareVpn")
 	if _err != nil {
@@ -130,13 +130,13 @@ func (p *VpnManagerProxy) PrepareVpn(
 func (p *VpnManagerProxy) SetVpnPackageAuthorization(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	vpnType int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(vpnType)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "setVpnPackageAuthorization")
@@ -449,14 +449,14 @@ func (p *VpnManagerProxy) GetProvisionedVpnProfileState(
 
 func (p *VpnManagerProxy) SetAppExclusionList(
 	ctx context.Context,
-	userId int32,
 	vpnPackage string,
 	excludedApps []string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(vpnPackage)
 	if excludedApps == nil {
 		_data.WriteInt32(-1)
@@ -491,13 +491,13 @@ func (p *VpnManagerProxy) SetAppExclusionList(
 
 func (p *VpnManagerProxy) GetAppExclusionList(
 	ctx context.Context,
-	userId int32,
 	vpnPackage string,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(vpnPackage)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "getAppExclusionList")
@@ -534,13 +534,13 @@ func (p *VpnManagerProxy) GetAppExclusionList(
 
 func (p *VpnManagerProxy) IsAlwaysOnVpnPackageSupported(
 	ctx context.Context,
-	userId int32,
 	packageName string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(packageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "isAlwaysOnVpnPackageSupported")
@@ -567,15 +567,15 @@ func (p *VpnManagerProxy) IsAlwaysOnVpnPackageSupported(
 
 func (p *VpnManagerProxy) SetAlwaysOnVpnPackage(
 	ctx context.Context,
-	userId int32,
 	packageName string,
 	lockdown bool,
 	lockdownAllowlist []string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(packageName)
 	_data.WriteBool(lockdown)
 	if lockdownAllowlist == nil {
@@ -611,12 +611,12 @@ func (p *VpnManagerProxy) SetAlwaysOnVpnPackage(
 
 func (p *VpnManagerProxy) GetAlwaysOnVpnPackage(
 	ctx context.Context,
-	userId int32,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "getAlwaysOnVpnPackage")
 	if _err != nil {
@@ -642,12 +642,12 @@ func (p *VpnManagerProxy) GetAlwaysOnVpnPackage(
 
 func (p *VpnManagerProxy) IsVpnLockdownEnabled(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "isVpnLockdownEnabled")
 	if _err != nil {
@@ -673,12 +673,12 @@ func (p *VpnManagerProxy) IsVpnLockdownEnabled(
 
 func (p *VpnManagerProxy) GetVpnLockdownAllowlist(
 	ctx context.Context,
-	userId int32,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "getVpnLockdownAllowlist")
 	if _err != nil {
@@ -801,12 +801,12 @@ func (p *VpnManagerProxy) StartLegacyVpn(
 
 func (p *VpnManagerProxy) GetLegacyVpnInfo(
 	ctx context.Context,
-	userId int32,
 ) (internalNet.LegacyVpnInfo, error) {
 	var _result internalNet.LegacyVpnInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "getLegacyVpnInfo")
 	if _err != nil {
@@ -1019,12 +1019,12 @@ func (p *VpnManagerProxy) ListFromVpnProfileStore(
 
 func (p *VpnManagerProxy) GetVpnConfig(
 	ctx context.Context,
-	userId int32,
 ) (internalNet.VpnConfig, error) {
 	var _result internalNet.VpnConfig
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVpnManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVpnManager, "getVpnConfig")
 	if _err != nil {

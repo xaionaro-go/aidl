@@ -68,14 +68,13 @@ func (p *DeviceIdentifiersPolicyServiceProxy) GetSerial(
 
 func (p *DeviceIdentifiersPolicyServiceProxy) GetSerialForPackage(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDeviceIdentifiersPolicyService)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDeviceIdentifiersPolicyService, "getSerialForPackage")
 	if _err != nil {

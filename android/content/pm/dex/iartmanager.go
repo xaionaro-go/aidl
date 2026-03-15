@@ -43,15 +43,15 @@ func (p *ArtManagerProxy) SnapshotRuntimeProfile(
 	packageName string,
 	codePath string,
 	callback ISnapshotRuntimeProfileCallback,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIArtManager)
 	_data.WriteInt32(profileType)
 	_data.WriteString16(packageName)
 	_data.WriteString16(codePath)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIArtManager, "snapshotRuntimeProfile")
 	if _err != nil {
@@ -74,13 +74,13 @@ func (p *ArtManagerProxy) SnapshotRuntimeProfile(
 func (p *ArtManagerProxy) IsRuntimeProfilingEnabled(
 	ctx context.Context,
 	profileType int32,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIArtManager)
 	_data.WriteInt32(profileType)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIArtManager, "isRuntimeProfilingEnabled")
 	if _err != nil {

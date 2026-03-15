@@ -73,8 +73,8 @@ func (p *MmsProxy) SendMessage(
 	configOverrides os.Bundle,
 	sentIntent app.PendingIntent,
 	messageId int64,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMms)
 	_data.WriteInt32(subId)
@@ -94,7 +94,7 @@ func (p *MmsProxy) SendMessage(
 		return _err
 	}
 	_data.WriteInt64(messageId)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMms, "sendMessage")
 	if _err != nil {
@@ -124,8 +124,8 @@ func (p *MmsProxy) DownloadMessage(
 	configOverrides os.Bundle,
 	downloadedIntent app.PendingIntent,
 	messageId int64,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMms)
 	_data.WriteInt32(subId)
@@ -145,7 +145,7 @@ func (p *MmsProxy) DownloadMessage(
 		return _err
 	}
 	_data.WriteInt64(messageId)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMms, "downloadMessage")
 	if _err != nil {

@@ -786,18 +786,18 @@ func (p *InputManagerProxy) GetKeyboardLayout(
 func (p *InputManagerProxy) GetKeyboardLayoutForInputDevice(
 	ctx context.Context,
 	identifier InputDeviceIdentifier,
-	userId int32,
 	imeInfo inputmethod.InputMethodInfo,
 	imeSubtype inputmethod.InputMethodSubtype,
 ) (KeyboardLayoutSelectionResult, error) {
 	var _result KeyboardLayoutSelectionResult
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(1)
 	if _err := identifier.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := imeInfo.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -837,18 +837,18 @@ func (p *InputManagerProxy) GetKeyboardLayoutForInputDevice(
 func (p *InputManagerProxy) SetKeyboardLayoutForInputDevice(
 	ctx context.Context,
 	identifier InputDeviceIdentifier,
-	userId int32,
 	imeInfo inputmethod.InputMethodInfo,
 	imeSubtype inputmethod.InputMethodSubtype,
 	keyboardLayoutDescriptor string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(1)
 	if _err := identifier.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := imeInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -880,18 +880,18 @@ func (p *InputManagerProxy) SetKeyboardLayoutForInputDevice(
 func (p *InputManagerProxy) GetKeyboardLayoutListForInputDevice(
 	ctx context.Context,
 	identifier InputDeviceIdentifier,
-	userId int32,
 	imeInfo inputmethod.InputMethodInfo,
 	imeSubtype inputmethod.InputMethodSubtype,
 ) ([]KeyboardLayout, error) {
 	var _result []KeyboardLayout
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(1)
 	if _err := identifier.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := imeInfo.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -2466,13 +2466,13 @@ func (p *InputManagerProxy) UnregisterKeyGestureHandler(
 
 func (p *InputManagerProxy) AddCustomInputGesture(
 	ctx context.Context,
-	userId int32,
 	data AidlInputGestureData,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := data.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -2502,13 +2502,13 @@ func (p *InputManagerProxy) AddCustomInputGesture(
 
 func (p *InputManagerProxy) RemoveCustomInputGesture(
 	ctx context.Context,
-	userId int32,
 	data AidlInputGestureData,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := data.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -2538,12 +2538,12 @@ func (p *InputManagerProxy) RemoveCustomInputGesture(
 
 func (p *InputManagerProxy) RemoveAllCustomInputGestures(
 	ctx context.Context,
-	userId int32,
 	tag int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(tag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "removeAllCustomInputGestures")
@@ -2566,13 +2566,13 @@ func (p *InputManagerProxy) RemoveAllCustomInputGestures(
 
 func (p *InputManagerProxy) GetCustomInputGestures(
 	ctx context.Context,
-	userId int32,
 	tag int32,
 ) ([]AidlInputGestureData, error) {
 	var _result []AidlInputGestureData
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(tag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "getCustomInputGestures")

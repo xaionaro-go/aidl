@@ -189,14 +189,13 @@ var _ ITelecomService = (*TelecomServiceProxy)(nil)
 func (p *TelecomServiceProxy) ShowInCallScreen(
 	ctx context.Context,
 	showDialpad bool,
-	callingPackage string,
-	callingFeatureId string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteBool(showDialpad)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "showInCallScreen")
 	if _err != nil {
@@ -219,15 +218,14 @@ func (p *TelecomServiceProxy) ShowInCallScreen(
 func (p *TelecomServiceProxy) GetDefaultOutgoingPhoneAccount(
 	ctx context.Context,
 	uriScheme string,
-	callingPackage string,
-	callingFeatureId string,
 ) (androidTelecom.PhoneAccountHandle, error) {
 	var _result androidTelecom.PhoneAccountHandle
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteString16(uriScheme)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getDefaultOutgoingPhoneAccount")
 	if _err != nil {
@@ -258,12 +256,12 @@ func (p *TelecomServiceProxy) GetDefaultOutgoingPhoneAccount(
 
 func (p *TelecomServiceProxy) GetUserSelectedOutgoingPhoneAccount(
 	ctx context.Context,
-	callingPackage string,
 ) (androidTelecom.PhoneAccountHandle, error) {
 	var _result androidTelecom.PhoneAccountHandle
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getUserSelectedOutgoingPhoneAccount")
 	if _err != nil {
@@ -324,16 +322,15 @@ func (p *TelecomServiceProxy) SetUserSelectedOutgoingPhoneAccount(
 func (p *TelecomServiceProxy) GetCallCapablePhoneAccounts(
 	ctx context.Context,
 	includeDisabledAccounts bool,
-	callingPackage string,
-	callingFeatureId string,
 	acrossProfiles bool,
 ) (pm.ParceledListSlice, error) {
 	var _result pm.ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteBool(includeDisabledAccounts)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteBool(acrossProfiles)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getCallCapablePhoneAccounts")
@@ -365,14 +362,13 @@ func (p *TelecomServiceProxy) GetCallCapablePhoneAccounts(
 
 func (p *TelecomServiceProxy) GetSelfManagedPhoneAccounts(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (pm.ParceledListSlice, error) {
 	var _result pm.ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getSelfManagedPhoneAccounts")
 	if _err != nil {
@@ -403,14 +399,13 @@ func (p *TelecomServiceProxy) GetSelfManagedPhoneAccounts(
 
 func (p *TelecomServiceProxy) GetOwnSelfManagedPhoneAccounts(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (pm.ParceledListSlice, error) {
 	var _result pm.ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getOwnSelfManagedPhoneAccounts")
 	if _err != nil {
@@ -442,13 +437,13 @@ func (p *TelecomServiceProxy) GetOwnSelfManagedPhoneAccounts(
 func (p *TelecomServiceProxy) GetPhoneAccountsSupportingScheme(
 	ctx context.Context,
 	uriScheme string,
-	callingPackage string,
 ) (pm.ParceledListSlice, error) {
 	var _result pm.ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteString16(uriScheme)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getPhoneAccountsSupportingScheme")
 	if _err != nil {
@@ -516,16 +511,16 @@ func (p *TelecomServiceProxy) GetPhoneAccountsForPackage(
 func (p *TelecomServiceProxy) GetPhoneAccount(
 	ctx context.Context,
 	account androidTelecom.PhoneAccountHandle,
-	callingPackage string,
 ) (androidTelecom.PhoneAccount, error) {
 	var _result androidTelecom.PhoneAccount
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteInt32(1)
 	if _err := account.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getPhoneAccount")
 	if _err != nil {
@@ -556,14 +551,13 @@ func (p *TelecomServiceProxy) GetPhoneAccount(
 
 func (p *TelecomServiceProxy) GetRegisteredPhoneAccounts(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (pm.ParceledListSlice, error) {
 	var _result pm.ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getRegisteredPhoneAccounts")
 	if _err != nil {
@@ -692,13 +686,13 @@ func (p *TelecomServiceProxy) GetAllPhoneAccountHandles(
 func (p *TelecomServiceProxy) GetSimCallManager(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
 ) (androidTelecom.PhoneAccountHandle, error) {
 	var _result androidTelecom.PhoneAccountHandle
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getSimCallManager")
 	if _err != nil {
@@ -729,14 +723,13 @@ func (p *TelecomServiceProxy) GetSimCallManager(
 
 func (p *TelecomServiceProxy) GetSimCallManagerForUser(
 	ctx context.Context,
-	userId int32,
-	callingPackage string,
 ) (androidTelecom.PhoneAccountHandle, error) {
 	var _result androidTelecom.PhoneAccountHandle
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteInt32(userId)
-	_data.WriteString16(callingPackage)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getSimCallManagerForUser")
 	if _err != nil {
@@ -768,15 +761,15 @@ func (p *TelecomServiceProxy) GetSimCallManagerForUser(
 func (p *TelecomServiceProxy) RegisterPhoneAccount(
 	ctx context.Context,
 	metadata androidTelecom.PhoneAccount,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteInt32(1)
 	if _err := metadata.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "registerPhoneAccount")
 	if _err != nil {
@@ -799,15 +792,15 @@ func (p *TelecomServiceProxy) RegisterPhoneAccount(
 func (p *TelecomServiceProxy) UnregisterPhoneAccount(
 	ctx context.Context,
 	account androidTelecom.PhoneAccountHandle,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteInt32(1)
 	if _err := account.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "unregisterPhoneAccount")
 	if _err != nil {
@@ -857,10 +850,9 @@ func (p *TelecomServiceProxy) IsVoiceMailNumber(
 	ctx context.Context,
 	accountHandle androidTelecom.PhoneAccountHandle,
 	number string,
-	callingPackage string,
-	callingFeatureId string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteInt32(1)
@@ -868,8 +860,8 @@ func (p *TelecomServiceProxy) IsVoiceMailNumber(
 		return _result, _err
 	}
 	_data.WriteString16(number)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "isVoiceMailNumber")
 	if _err != nil {
@@ -896,18 +888,17 @@ func (p *TelecomServiceProxy) IsVoiceMailNumber(
 func (p *TelecomServiceProxy) GetVoiceMailNumber(
 	ctx context.Context,
 	accountHandle androidTelecom.PhoneAccountHandle,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteInt32(1)
 	if _err := accountHandle.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getVoiceMailNumber")
 	if _err != nil {
@@ -934,18 +925,17 @@ func (p *TelecomServiceProxy) GetVoiceMailNumber(
 func (p *TelecomServiceProxy) GetLine1Number(
 	ctx context.Context,
 	accountHandle androidTelecom.PhoneAccountHandle,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteInt32(1)
 	if _err := accountHandle.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getLine1Number")
 	if _err != nil {
@@ -1005,12 +995,12 @@ func (p *TelecomServiceProxy) GetDefaultPhoneApp(
 
 func (p *TelecomServiceProxy) GetDefaultDialerPackage(
 	ctx context.Context,
-	callingPackage string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getDefaultDialerPackage")
 	if _err != nil {
@@ -1036,12 +1026,12 @@ func (p *TelecomServiceProxy) GetDefaultDialerPackage(
 
 func (p *TelecomServiceProxy) GetDefaultDialerPackageForUser(
 	ctx context.Context,
-	userId int32,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getDefaultDialerPackageForUser")
 	if _err != nil {
@@ -1067,12 +1057,12 @@ func (p *TelecomServiceProxy) GetDefaultDialerPackageForUser(
 
 func (p *TelecomServiceProxy) GetSystemDialerPackage(
 	ctx context.Context,
-	callingPackage string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getSystemDialerPackage")
 	if _err != nil {
@@ -1132,11 +1122,11 @@ func (p *TelecomServiceProxy) DumpCallAnalytics(
 
 func (p *TelecomServiceProxy) SilenceRinger(
 	ctx context.Context,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "silenceRinger")
 	if _err != nil {
@@ -1158,14 +1148,13 @@ func (p *TelecomServiceProxy) SilenceRinger(
 
 func (p *TelecomServiceProxy) IsInCall(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "isInCall")
 	if _err != nil {
@@ -1191,12 +1180,12 @@ func (p *TelecomServiceProxy) IsInCall(
 
 func (p *TelecomServiceProxy) HasManageOngoingCallsPermission(
 	ctx context.Context,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "hasManageOngoingCallsPermission")
 	if _err != nil {
@@ -1222,14 +1211,13 @@ func (p *TelecomServiceProxy) HasManageOngoingCallsPermission(
 
 func (p *TelecomServiceProxy) IsInManagedCall(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "isInManagedCall")
 	if _err != nil {
@@ -1255,12 +1243,12 @@ func (p *TelecomServiceProxy) IsInManagedCall(
 
 func (p *TelecomServiceProxy) IsRinging(
 	ctx context.Context,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "isRinging")
 	if _err != nil {
@@ -1315,14 +1303,13 @@ func (p *TelecomServiceProxy) GetCallState(
 
 func (p *TelecomServiceProxy) GetCallStateUsingPackage(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getCallStateUsingPackage")
 	if _err != nil {
@@ -1348,12 +1335,12 @@ func (p *TelecomServiceProxy) GetCallStateUsingPackage(
 
 func (p *TelecomServiceProxy) EndCall(
 	ctx context.Context,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "endCall")
 	if _err != nil {
@@ -1379,11 +1366,11 @@ func (p *TelecomServiceProxy) EndCall(
 
 func (p *TelecomServiceProxy) AcceptRingingCall(
 	ctx context.Context,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "acceptRingingCall")
 	if _err != nil {
@@ -1405,12 +1392,12 @@ func (p *TelecomServiceProxy) AcceptRingingCall(
 
 func (p *TelecomServiceProxy) AcceptRingingCallWithVideoState(
 	ctx context.Context,
-	callingPackage string,
 	videoState int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(videoState)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "acceptRingingCallWithVideoState")
@@ -1433,11 +1420,11 @@ func (p *TelecomServiceProxy) AcceptRingingCallWithVideoState(
 
 func (p *TelecomServiceProxy) CancelMissedCallsNotification(
 	ctx context.Context,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "cancelMissedCallsNotification")
 	if _err != nil {
@@ -1460,13 +1447,13 @@ func (p *TelecomServiceProxy) CancelMissedCallsNotification(
 func (p *TelecomServiceProxy) HandlePinMmi(
 	ctx context.Context,
 	dialString string,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteString16(dialString)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "handlePinMmi")
 	if _err != nil {
@@ -1494,9 +1481,9 @@ func (p *TelecomServiceProxy) HandlePinMmiForPhoneAccount(
 	ctx context.Context,
 	accountHandle androidTelecom.PhoneAccountHandle,
 	dialString string,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteInt32(1)
@@ -1504,7 +1491,7 @@ func (p *TelecomServiceProxy) HandlePinMmiForPhoneAccount(
 		return _result, _err
 	}
 	_data.WriteString16(dialString)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "handlePinMmiForPhoneAccount")
 	if _err != nil {
@@ -1531,16 +1518,16 @@ func (p *TelecomServiceProxy) HandlePinMmiForPhoneAccount(
 func (p *TelecomServiceProxy) GetAdnUriForPhoneAccount(
 	ctx context.Context,
 	accountHandle androidTelecom.PhoneAccountHandle,
-	callingPackage string,
 ) (net.Uri, error) {
 	var _result net.Uri
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteInt32(1)
 	if _err := accountHandle.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getAdnUriForPhoneAccount")
 	if _err != nil {
@@ -1571,14 +1558,13 @@ func (p *TelecomServiceProxy) GetAdnUriForPhoneAccount(
 
 func (p *TelecomServiceProxy) IsTtySupported(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "isTtySupported")
 	if _err != nil {
@@ -1604,14 +1590,13 @@ func (p *TelecomServiceProxy) IsTtySupported(
 
 func (p *TelecomServiceProxy) GetCurrentTtyMode(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "getCurrentTtyMode")
 	if _err != nil {
@@ -1639,8 +1624,8 @@ func (p *TelecomServiceProxy) AddNewIncomingCall(
 	ctx context.Context,
 	phoneAccount androidTelecom.PhoneAccountHandle,
 	extras os.Bundle,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteInt32(1)
@@ -1651,7 +1636,7 @@ func (p *TelecomServiceProxy) AddNewIncomingCall(
 	if _err := extras.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "addNewIncomingCall")
 	if _err != nil {
@@ -1675,8 +1660,8 @@ func (p *TelecomServiceProxy) AddNewIncomingConference(
 	ctx context.Context,
 	phoneAccount androidTelecom.PhoneAccountHandle,
 	extras os.Bundle,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteInt32(1)
@@ -1687,7 +1672,7 @@ func (p *TelecomServiceProxy) AddNewIncomingConference(
 	if _err := extras.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "addNewIncomingConference")
 	if _err != nil {
@@ -1745,8 +1730,8 @@ func (p *TelecomServiceProxy) StartConference(
 	ctx context.Context,
 	participants []net.Uri,
 	extras os.Bundle,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	if participants == nil {
@@ -1763,7 +1748,7 @@ func (p *TelecomServiceProxy) StartConference(
 	if _err := extras.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "startConference")
 	if _err != nil {
@@ -1787,9 +1772,8 @@ func (p *TelecomServiceProxy) PlaceCall(
 	ctx context.Context,
 	handle net.Uri,
 	extras os.Bundle,
-	callingPackage string,
-	callingFeatureId string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteInt32(1)
@@ -1800,8 +1784,8 @@ func (p *TelecomServiceProxy) PlaceCall(
 	if _err := extras.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "placeCall")
 	if _err != nil {
@@ -1914,12 +1898,12 @@ func (p *TelecomServiceProxy) StopBlockSuppression(
 
 func (p *TelecomServiceProxy) CreateManageBlockedNumbersIntent(
 	ctx context.Context,
-	callingPackage string,
 ) (content.Intent, error) {
 	var _result content.Intent
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "createManageBlockedNumbersIntent")
 	if _err != nil {
@@ -1987,16 +1971,16 @@ func (p *TelecomServiceProxy) CreateLaunchEmergencyDialerIntent(
 func (p *TelecomServiceProxy) IsIncomingCallPermitted(
 	ctx context.Context,
 	phoneAccountHandle androidTelecom.PhoneAccountHandle,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteInt32(1)
 	if _err := phoneAccountHandle.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "isIncomingCallPermitted")
 	if _err != nil {
@@ -2023,16 +2007,16 @@ func (p *TelecomServiceProxy) IsIncomingCallPermitted(
 func (p *TelecomServiceProxy) IsOutgoingCallPermitted(
 	ctx context.Context,
 	phoneAccountHandle androidTelecom.PhoneAccountHandle,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteInt32(1)
 	if _err := phoneAccountHandle.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "isOutgoingCallPermitted")
 	if _err != nil {
@@ -2085,8 +2069,8 @@ func (p *TelecomServiceProxy) AcceptHandover(
 	srcAddr net.Uri,
 	videoState int32,
 	destAcct androidTelecom.PhoneAccountHandle,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteInt32(1)
@@ -2098,7 +2082,7 @@ func (p *TelecomServiceProxy) AcceptHandover(
 	if _err := destAcct.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "acceptHandover")
 	if _err != nil {
@@ -2534,9 +2518,9 @@ func (p *TelecomServiceProxy) IsInSelfManagedCall(
 	ctx context.Context,
 	packageName string,
 	userHandle os.UserHandle,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteString16(packageName)
@@ -2544,7 +2528,7 @@ func (p *TelecomServiceProxy) IsInSelfManagedCall(
 	if _err := userHandle.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "isInSelfManagedCall")
 	if _err != nil {
@@ -2573,8 +2557,8 @@ func (p *TelecomServiceProxy) AddCall(
 	callAttributes androidTelecom.CallAttributes,
 	callback ICallEventCallback,
 	callId string,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomService)
 	_data.WriteInt32(1)
@@ -2583,7 +2567,7 @@ func (p *TelecomServiceProxy) AddCall(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteString16(callId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomService, "addCall")
 	if _err != nil {

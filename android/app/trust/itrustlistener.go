@@ -45,11 +45,11 @@ var _ ITrustListener = (*TrustListenerProxy)(nil)
 
 func (p *TrustListenerProxy) OnEnabledTrustAgentsChanged(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustListener)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustListener, "onEnabledTrustAgentsChanged")
 	if _err != nil {
@@ -64,15 +64,15 @@ func (p *TrustListenerProxy) OnTrustChanged(
 	ctx context.Context,
 	enabled bool,
 	newlyUnlocked bool,
-	userId int32,
 	flags int32,
 	trustGrantedMessages []string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustListener)
 	_data.WriteBool(enabled)
 	_data.WriteBool(newlyUnlocked)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 	if trustGrantedMessages == nil {
 		_data.WriteInt32(-1)
@@ -95,12 +95,12 @@ func (p *TrustListenerProxy) OnTrustChanged(
 func (p *TrustListenerProxy) OnTrustManagedChanged(
 	ctx context.Context,
 	managed bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustListener)
 	_data.WriteBool(managed)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustListener, "onTrustManagedChanged")
 	if _err != nil {
@@ -130,12 +130,12 @@ func (p *TrustListenerProxy) OnTrustError(
 func (p *TrustListenerProxy) OnIsActiveUnlockRunningChanged(
 	ctx context.Context,
 	isRunning bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustListener)
 	_data.WriteBool(isRunning)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustListener, "onIsActiveUnlockRunningChanged")
 	if _err != nil {

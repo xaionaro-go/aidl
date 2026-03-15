@@ -205,12 +205,12 @@ func (p *SearchManagerProxy) GetWebSearchActivity(
 
 func (p *SearchManagerProxy) LaunchAssist(
 	ctx context.Context,
-	userHandle int32,
 	args interface{},
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISearchManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISearchManager, "launchAssist")
 	if _err != nil {

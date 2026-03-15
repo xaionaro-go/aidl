@@ -197,12 +197,12 @@ func (p *AccountManagerProxy) GetUserData(
 
 func (p *AccountManagerProxy) GetAuthenticatorTypes(
 	ctx context.Context,
-	userId int32,
 ) ([]AuthenticatorDescription, error) {
 	var _result []AuthenticatorDescription
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "getAuthenticatorTypes")
 	if _err != nil {
@@ -239,14 +239,14 @@ func (p *AccountManagerProxy) GetAccountsForPackage(
 	ctx context.Context,
 	packageName string,
 	uid int32,
-	opPackageName string,
 ) ([]Account, error) {
 	var _result []Account
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(uid)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "getAccountsForPackage")
 	if _err != nil {
@@ -283,14 +283,14 @@ func (p *AccountManagerProxy) GetAccountsByTypeForPackage(
 	ctx context.Context,
 	type_ string,
 	packageName string,
-	opPackageName string,
 ) ([]Account, error) {
 	var _result []Account
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
 	_data.WriteString16(type_)
 	_data.WriteString16(packageName)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "getAccountsByTypeForPackage")
 	if _err != nil {
@@ -326,15 +326,14 @@ func (p *AccountManagerProxy) GetAccountsByTypeForPackage(
 func (p *AccountManagerProxy) GetAccountsAsUser(
 	ctx context.Context,
 	accountType string,
-	userId int32,
-	opPackageName string,
 ) ([]Account, error) {
 	var _result []Account
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
 	_data.WriteString16(accountType)
-	_data.WriteInt32(userId)
-	_data.WriteString16(opPackageName)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "getAccountsAsUser")
 	if _err != nil {
@@ -372,9 +371,8 @@ func (p *AccountManagerProxy) HasFeatures(
 	response IAccountManagerResponse,
 	account Account,
 	features []string,
-	userId int32,
-	opPackageName string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
 	_data.WriteStrongBinder(response.AsBinder().Handle())
@@ -390,8 +388,8 @@ func (p *AccountManagerProxy) HasFeatures(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteInt32(userId)
-	_data.WriteString16(opPackageName)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "hasFeatures")
 	if _err != nil {
@@ -416,8 +414,8 @@ func (p *AccountManagerProxy) GetAccountByTypeAndFeatures(
 	response IAccountManagerResponse,
 	accountType string,
 	features []string,
-	opPackageName string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
 	_data.WriteStrongBinder(response.AsBinder().Handle())
@@ -430,7 +428,7 @@ func (p *AccountManagerProxy) GetAccountByTypeAndFeatures(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "getAccountByTypeAndFeatures")
 	if _err != nil {
@@ -455,8 +453,8 @@ func (p *AccountManagerProxy) GetAccountsByFeatures(
 	response IAccountManagerResponse,
 	accountType string,
 	features []string,
-	opPackageName string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
 	_data.WriteStrongBinder(response.AsBinder().Handle())
@@ -469,7 +467,7 @@ func (p *AccountManagerProxy) GetAccountsByFeatures(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "getAccountsByFeatures")
 	if _err != nil {
@@ -494,9 +492,9 @@ func (p *AccountManagerProxy) AddAccountExplicitly(
 	account Account,
 	password string,
 	extras interface{},
-	opPackageName string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
 	_data.WriteInt32(1)
@@ -504,7 +502,7 @@ func (p *AccountManagerProxy) AddAccountExplicitly(
 		return _result, _err
 	}
 	_data.WriteString16(password)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "addAccountExplicitly")
 	if _err != nil {
@@ -533,8 +531,8 @@ func (p *AccountManagerProxy) RemoveAccountAsUser(
 	response IAccountManagerResponse,
 	account Account,
 	expectActivityLaunch bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
 	_data.WriteStrongBinder(response.AsBinder().Handle())
@@ -543,7 +541,7 @@ func (p *AccountManagerProxy) RemoveAccountAsUser(
 		return _err
 	}
 	_data.WriteBool(expectActivityLaunch)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "removeAccountAsUser")
 	if _err != nil {
@@ -945,8 +943,8 @@ func (p *AccountManagerProxy) AddAccountAsUser(
 	requiredFeatures []string,
 	expectActivityLaunch bool,
 	options interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
 	_data.WriteStrongBinder(response.AsBinder().Handle())
@@ -961,7 +959,7 @@ func (p *AccountManagerProxy) AddAccountAsUser(
 		}
 	}
 	_data.WriteBool(expectActivityLaunch)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "addAccountAsUser")
 	if _err != nil {
@@ -1053,8 +1051,8 @@ func (p *AccountManagerProxy) ConfirmCredentialsAsUser(
 	account Account,
 	options interface{},
 	expectActivityLaunch bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
 	_data.WriteStrongBinder(response.AsBinder().Handle())
@@ -1063,7 +1061,7 @@ func (p *AccountManagerProxy) ConfirmCredentialsAsUser(
 		return _err
 	}
 	_data.WriteBool(expectActivityLaunch)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "confirmCredentialsAsUser")
 	if _err != nil {
@@ -1150,14 +1148,13 @@ func (p *AccountManagerProxy) GetAuthTokenLabel(
 func (p *AccountManagerProxy) AddSharedAccountsFromParentUser(
 	ctx context.Context,
 	parentUserId int32,
-	userId int32,
-	opPackageName string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
 	_data.WriteInt32(parentUserId)
-	_data.WriteInt32(userId)
-	_data.WriteString16(opPackageName)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "addSharedAccountsFromParentUser")
 	if _err != nil {
@@ -1328,13 +1325,13 @@ func (p *AccountManagerProxy) FinishSessionAsUser(
 	sessionBundle interface{},
 	expectActivityLaunch bool,
 	appInfo interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
 	_data.WriteStrongBinder(response.AsBinder().Handle())
 	_data.WriteBool(expectActivityLaunch)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "finishSessionAsUser")
 	if _err != nil {
@@ -1475,9 +1472,9 @@ func (p *AccountManagerProxy) AddAccountExplicitlyWithVisibility(
 	password string,
 	extras interface{},
 	visibility map[interface{}]interface{},
-	opPackageName string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
 	_data.WriteInt32(1)
@@ -1494,7 +1491,7 @@ func (p *AccountManagerProxy) AddAccountExplicitlyWithVisibility(
 			_data.WriteString16(_v.(string))
 		}
 	}
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "addAccountExplicitlyWithVisibility")
 	if _err != nil {
@@ -1642,8 +1639,8 @@ func (p *AccountManagerProxy) GetAccountsAndVisibilityForPackage(
 func (p *AccountManagerProxy) RegisterAccountListener(
 	ctx context.Context,
 	accountTypes []string,
-	opPackageName string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
 	if accountTypes == nil {
@@ -1654,7 +1651,7 @@ func (p *AccountManagerProxy) RegisterAccountListener(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "registerAccountListener")
 	if _err != nil {
@@ -1677,8 +1674,8 @@ func (p *AccountManagerProxy) RegisterAccountListener(
 func (p *AccountManagerProxy) UnregisterAccountListener(
 	ctx context.Context,
 	accountTypes []string,
-	opPackageName string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
 	if accountTypes == nil {
@@ -1689,7 +1686,7 @@ func (p *AccountManagerProxy) UnregisterAccountListener(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "unregisterAccountListener")
 	if _err != nil {

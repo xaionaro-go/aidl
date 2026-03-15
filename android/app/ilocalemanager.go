@@ -46,14 +46,14 @@ var _ ILocaleManager = (*LocaleManagerProxy)(nil)
 func (p *LocaleManagerProxy) SetApplicationLocales(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	locales interface{},
 	fromDelegate bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocaleManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(fromDelegate)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocaleManager, "setApplicationLocales")
@@ -77,13 +77,13 @@ func (p *LocaleManagerProxy) SetApplicationLocales(
 func (p *LocaleManagerProxy) GetApplicationLocales(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocaleManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocaleManager, "getApplicationLocales")
 	if _err != nil {
@@ -131,13 +131,13 @@ func (p *LocaleManagerProxy) GetSystemLocales(
 func (p *LocaleManagerProxy) SetOverrideLocaleConfig(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	localeConfig LocaleConfig,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocaleManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := localeConfig.MarshalParcel(_data); _err != nil {
 		return _err
@@ -164,13 +164,13 @@ func (p *LocaleManagerProxy) SetOverrideLocaleConfig(
 func (p *LocaleManagerProxy) GetOverrideLocaleConfig(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (LocaleConfig, error) {
 	var _result LocaleConfig
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocaleManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocaleManager, "getOverrideLocaleConfig")
 	if _err != nil {

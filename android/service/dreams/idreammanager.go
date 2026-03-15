@@ -199,12 +199,12 @@ func (p *DreamManagerProxy) GetDreamComponents(
 
 func (p *DreamManagerProxy) GetDefaultDreamComponentForUser(
 	ctx context.Context,
-	userId int32,
 ) (content.ComponentName, error) {
 	var _result content.ComponentName
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDreamManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDreamManager, "getDefaultDreamComponentForUser")
 	if _err != nil {
@@ -235,12 +235,12 @@ func (p *DreamManagerProxy) GetDefaultDreamComponentForUser(
 
 func (p *DreamManagerProxy) TestDream(
 	ctx context.Context,
-	userId int32,
 	componentName content.ComponentName,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDreamManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := componentName.MarshalParcel(_data); _err != nil {
 		return _err
@@ -471,12 +471,12 @@ func (p *DreamManagerProxy) ForceAmbientDisplayEnabled(
 
 func (p *DreamManagerProxy) GetDreamComponentsForUser(
 	ctx context.Context,
-	userId int32,
 ) ([]content.ComponentName, error) {
 	var _result []content.ComponentName
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDreamManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDreamManager, "getDreamComponentsForUser")
 	if _err != nil {
@@ -511,12 +511,12 @@ func (p *DreamManagerProxy) GetDreamComponentsForUser(
 
 func (p *DreamManagerProxy) SetDreamComponentsForUser(
 	ctx context.Context,
-	userId int32,
 	componentNames []content.ComponentName,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDreamManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if componentNames == nil {
 		_data.WriteInt32(-1)
 	} else {

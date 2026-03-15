@@ -157,14 +157,14 @@ var _ IInstalld = (*InstalldProxy)(nil)
 func (p *InstalldProxy) CreateUserData(
 	ctx context.Context,
 	uuid string,
-	userId int32,
 	userSerial int32,
 	flags int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(userSerial)
 	_data.WriteInt32(flags)
 
@@ -189,13 +189,13 @@ func (p *InstalldProxy) CreateUserData(
 func (p *InstalldProxy) DestroyUserData(
 	ctx context.Context,
 	uuid string,
-	userId int32,
 	flags int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInstalld, "destroyUserData")
@@ -361,16 +361,16 @@ func (p *InstalldProxy) RestoreconAppData(
 	ctx context.Context,
 	uuid string,
 	packageName string,
-	userId int32,
 	flags int32,
 	appId int32,
 	seInfo string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 	_data.WriteInt32(appId)
 	_data.WriteString16(seInfo)
@@ -397,14 +397,14 @@ func (p *InstalldProxy) MigrateAppData(
 	ctx context.Context,
 	uuid string,
 	packageName string,
-	userId int32,
 	flags int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInstalld, "migrateAppData")
@@ -429,15 +429,15 @@ func (p *InstalldProxy) ClearAppData(
 	ctx context.Context,
 	uuid string,
 	packageName string,
-	userId int32,
 	flags int32,
 	ceDataInode int64,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 	_data.WriteInt64(ceDataInode)
 
@@ -463,15 +463,15 @@ func (p *InstalldProxy) DestroyAppData(
 	ctx context.Context,
 	uuid string,
 	packageName string,
-	userId int32,
 	flags int32,
 	ceDataInode int64,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 	_data.WriteInt64(ceDataInode)
 
@@ -525,13 +525,13 @@ func (p *InstalldProxy) GetAppSize(
 	ctx context.Context,
 	uuid string,
 	packageNames []string,
-	userId int32,
 	flags int32,
 	appId int32,
 	ceDataInodes []int64,
 	codePaths []string,
 ) ([]int64, error) {
 	var _result []int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
@@ -543,7 +543,7 @@ func (p *InstalldProxy) GetAppSize(
 			_data.WriteString(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 	_data.WriteInt32(appId)
 	if ceDataInodes == nil {
@@ -598,15 +598,15 @@ func (p *InstalldProxy) GetAppSize(
 func (p *InstalldProxy) GetUserSize(
 	ctx context.Context,
 	uuid string,
-	userId int32,
 	flags int32,
 	appIds []int32,
 ) ([]int64, error) {
 	var _result []int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 	if appIds == nil {
 		_data.WriteInt32(-1)
@@ -652,15 +652,15 @@ func (p *InstalldProxy) GetUserSize(
 func (p *InstalldProxy) GetExternalSize(
 	ctx context.Context,
 	uuid string,
-	userId int32,
 	flags int32,
 	appIds []int32,
 ) ([]int64, error) {
 	var _result []int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 	if appIds == nil {
 		_data.WriteInt32(-1)
@@ -707,9 +707,9 @@ func (p *InstalldProxy) GetAppCrates(
 	ctx context.Context,
 	uuid string,
 	packageNames []string,
-	userId int32,
 ) ([]interface{}, error) {
 	var _result []interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
@@ -721,7 +721,7 @@ func (p *InstalldProxy) GetAppCrates(
 			_data.WriteString(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInstalld, "getAppCrates")
 	if _err != nil {
@@ -754,13 +754,13 @@ func (p *InstalldProxy) GetAppCrates(
 func (p *InstalldProxy) GetUserCrates(
 	ctx context.Context,
 	uuid string,
-	userId int32,
 ) ([]interface{}, error) {
 	var _result []interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInstalld, "getUserCrates")
 	if _err != nil {
@@ -793,14 +793,14 @@ func (p *InstalldProxy) GetUserCrates(
 func (p *InstalldProxy) SetAppQuota(
 	ctx context.Context,
 	uuid string,
-	userId int32,
 	appId int32,
 	cacheQuota int64,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(appId)
 	_data.WriteInt64(cacheQuota)
 
@@ -1296,14 +1296,14 @@ func (p *InstalldProxy) LinkNativeLibraryDirectory(
 	uuid string,
 	packageName string,
 	nativeLibPath32 string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
 	_data.WriteString16(packageName)
 	_data.WriteString16(nativeLibPath32)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInstalld, "linkNativeLibraryDirectory")
 	if _err != nil {
@@ -1609,17 +1609,17 @@ func (p *InstalldProxy) IsQuotaSupported(
 func (p *InstalldProxy) PrepareAppProfile(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	appId int32,
 	profileName string,
 	codePath string,
 	dexMetadata string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(appId)
 	_data.WriteString16(profileName)
 	_data.WriteString16(codePath)
@@ -1651,16 +1651,16 @@ func (p *InstalldProxy) SnapshotAppData(
 	ctx context.Context,
 	uuid string,
 	packageName string,
-	userId int32,
 	snapshotId int32,
 	storageFlags int32,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
 	_data.WriteString(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(snapshotId)
 	_data.WriteInt32(storageFlags)
 
@@ -1728,16 +1728,16 @@ func (p *InstalldProxy) DestroyAppDataSnapshot(
 	ctx context.Context,
 	uuid string,
 	packageName string,
-	userId int32,
 	ceSnapshotInode int64,
 	snapshotId int32,
 	storageFlags int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt64(ceSnapshotInode)
 	_data.WriteInt32(snapshotId)
 	_data.WriteInt32(storageFlags)
@@ -1763,13 +1763,13 @@ func (p *InstalldProxy) DestroyAppDataSnapshot(
 func (p *InstalldProxy) DestroyCeSnapshotsNotSpecified(
 	ctx context.Context,
 	uuid string,
-	userId int32,
 	retainSnapshotIds []int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if retainSnapshotIds == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1876,13 +1876,13 @@ func (p *InstalldProxy) MigrateLegacyObbData(
 func (p *InstalldProxy) CleanupInvalidPackageDirs(
 	ctx context.Context,
 	uuid string,
-	userId int32,
 	flags int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInstalld, "cleanupInvalidPackageDirs")

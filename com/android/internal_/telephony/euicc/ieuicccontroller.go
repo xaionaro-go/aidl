@@ -114,9 +114,9 @@ func (p *EuiccControllerProxy) GetDownloadableSubscriptionMetadata(
 	ctx context.Context,
 	cardId int32,
 	subscription telephonyEuicc.DownloadableSubscription,
-	callingPackage string,
 	callbackIntent app.PendingIntent,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccController)
 	_data.WriteInt32(cardId)
@@ -124,7 +124,7 @@ func (p *EuiccControllerProxy) GetDownloadableSubscriptionMetadata(
 	if _err := subscription.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := callbackIntent.MarshalParcel(_data); _err != nil {
 		return _err
@@ -142,13 +142,13 @@ func (p *EuiccControllerProxy) GetDownloadableSubscriptionMetadata(
 func (p *EuiccControllerProxy) GetDefaultDownloadableSubscriptionList(
 	ctx context.Context,
 	cardId int32,
-	callingPackage string,
 	callbackIntent app.PendingIntent,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccController)
 	_data.WriteInt32(cardId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := callbackIntent.MarshalParcel(_data); _err != nil {
 		return _err
@@ -166,13 +166,13 @@ func (p *EuiccControllerProxy) GetDefaultDownloadableSubscriptionList(
 func (p *EuiccControllerProxy) GetEid(
 	ctx context.Context,
 	cardId int32,
-	callingPackage string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccController)
 	_data.WriteInt32(cardId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccController, "getEid")
 	if _err != nil {
@@ -232,10 +232,10 @@ func (p *EuiccControllerProxy) DownloadSubscription(
 	cardId int32,
 	subscription telephonyEuicc.DownloadableSubscription,
 	switchAfterDownload bool,
-	callingPackage string,
 	resolvedBundle os.Bundle,
 	callbackIntent app.PendingIntent,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccController)
 	_data.WriteInt32(cardId)
@@ -244,7 +244,7 @@ func (p *EuiccControllerProxy) DownloadSubscription(
 		return _err
 	}
 	_data.WriteBool(switchAfterDownload)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := resolvedBundle.MarshalParcel(_data); _err != nil {
 		return _err
@@ -303,14 +303,14 @@ func (p *EuiccControllerProxy) DeleteSubscription(
 	ctx context.Context,
 	cardId int32,
 	subscriptionId int32,
-	callingPackage string,
 	callbackIntent app.PendingIntent,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccController)
 	_data.WriteInt32(cardId)
 	_data.WriteInt32(subscriptionId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := callbackIntent.MarshalParcel(_data); _err != nil {
 		return _err
@@ -329,14 +329,14 @@ func (p *EuiccControllerProxy) SwitchToSubscription(
 	ctx context.Context,
 	cardId int32,
 	subscriptionId int32,
-	callingPackage string,
 	callbackIntent app.PendingIntent,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccController)
 	_data.WriteInt32(cardId)
 	_data.WriteInt32(subscriptionId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := callbackIntent.MarshalParcel(_data); _err != nil {
 		return _err
@@ -356,15 +356,15 @@ func (p *EuiccControllerProxy) SwitchToSubscriptionWithPort(
 	cardId int32,
 	subscriptionId int32,
 	portIndex int32,
-	callingPackage string,
 	callbackIntent app.PendingIntent,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccController)
 	_data.WriteInt32(cardId)
 	_data.WriteInt32(subscriptionId)
 	_data.WriteInt32(portIndex)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := callbackIntent.MarshalParcel(_data); _err != nil {
 		return _err
@@ -384,15 +384,15 @@ func (p *EuiccControllerProxy) UpdateSubscriptionNickname(
 	cardId int32,
 	subscriptionId int32,
 	nickname string,
-	callingPackage string,
 	callbackIntent app.PendingIntent,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccController)
 	_data.WriteInt32(cardId)
 	_data.WriteInt32(subscriptionId)
 	_data.WriteString16(nickname)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := callbackIntent.MarshalParcel(_data); _err != nil {
 		return _err
@@ -586,14 +586,14 @@ func (p *EuiccControllerProxy) IsSimPortAvailable(
 	ctx context.Context,
 	cardId int32,
 	portIndex int32,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccController)
 	_data.WriteInt32(cardId)
 	_data.WriteInt32(portIndex)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccController, "isSimPortAvailable")
 	if _err != nil {
@@ -619,12 +619,12 @@ func (p *EuiccControllerProxy) IsSimPortAvailable(
 
 func (p *EuiccControllerProxy) HasCarrierPrivilegesForPackageOnAnyPhone(
 	ctx context.Context,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccController, "hasCarrierPrivilegesForPackageOnAnyPhone")
 	if _err != nil {
@@ -650,13 +650,13 @@ func (p *EuiccControllerProxy) HasCarrierPrivilegesForPackageOnAnyPhone(
 
 func (p *EuiccControllerProxy) IsCompatChangeEnabled(
 	ctx context.Context,
-	callingPackage string,
 	changeId int64,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt64(changeId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccController, "isCompatChangeEnabled")
@@ -748,13 +748,13 @@ func (p *EuiccControllerProxy) IsPsimConversionSupported(
 func (p *EuiccControllerProxy) GetAvailableMemoryInBytes(
 	ctx context.Context,
 	cardId int32,
-	callingPackage string,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccController)
 	_data.WriteInt32(cardId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccController, "getAvailableMemoryInBytes")
 	if _err != nil {

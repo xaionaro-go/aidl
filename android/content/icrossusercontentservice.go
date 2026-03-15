@@ -69,11 +69,11 @@ func (p *CrossUserContentServiceProxy) UpdateContent(
 func (p *CrossUserContentServiceProxy) NotifyForUriAsUser(
 	ctx context.Context,
 	uri interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICrossUserContentService)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICrossUserContentService, "notifyForUriAsUser")
 	if _err != nil {

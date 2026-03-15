@@ -99,15 +99,15 @@ func (p *SessionManagerProxy) CreateSession(
 	sessionCb ISessionCallback,
 	tag string,
 	sessionInfo interface{},
-	userId int32,
 ) (ISession, error) {
 	var _result ISession
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionManager)
 	_data.WriteString16(packageName)
 	_data.WriteStrongBinder(sessionCb.AsBinder().Handle())
 	_data.WriteString16(tag)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISessionManager, "createSession")
 	if _err != nil {
@@ -135,12 +135,12 @@ func (p *SessionManagerProxy) CreateSession(
 func (p *SessionManagerProxy) GetSessions(
 	ctx context.Context,
 	compName interface{},
-	userId int32,
 ) ([]MediaSessionToken, error) {
 	var _result []MediaSessionToken
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISessionManager, "getSessions")
 	if _err != nil {
@@ -311,16 +311,16 @@ func (p *SessionManagerProxy) DispatchMediaKeyEventToSessionAsSystemService(
 func (p *SessionManagerProxy) DispatchVolumeKeyEvent(
 	ctx context.Context,
 	packageName string,
-	opPackageName string,
 	asSystemService bool,
 	keyEvent interface{},
 	stream int32,
 	musicOnly bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionManager)
 	_data.WriteString16(packageName)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteBool(asSystemService)
 	_data.WriteInt32(stream)
 	_data.WriteBool(musicOnly)
@@ -346,14 +346,14 @@ func (p *SessionManagerProxy) DispatchVolumeKeyEvent(
 func (p *SessionManagerProxy) DispatchVolumeKeyEventToSessionAsSystemService(
 	ctx context.Context,
 	packageName string,
-	opPackageName string,
 	keyEvent interface{},
 	sessionToken MediaSessionToken,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionManager)
 	_data.WriteString16(packageName)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := sessionToken.MarshalParcel(_data); _err != nil {
 		return _err
@@ -380,15 +380,15 @@ func (p *SessionManagerProxy) DispatchVolumeKeyEventToSessionAsSystemService(
 func (p *SessionManagerProxy) DispatchAdjustVolume(
 	ctx context.Context,
 	packageName string,
-	opPackageName string,
 	suggestedStream int32,
 	delta int32,
 	flags int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionManager)
 	_data.WriteString16(packageName)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(suggestedStream)
 	_data.WriteInt32(delta)
 	_data.WriteInt32(flags)
@@ -415,12 +415,12 @@ func (p *SessionManagerProxy) AddSessionsListener(
 	ctx context.Context,
 	listener IActiveSessionsListener,
 	compName interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISessionManager, "addSessionsListener")
 	if _err != nil {
@@ -469,12 +469,12 @@ func (p *SessionManagerProxy) RemoveSessionsListener(
 func (p *SessionManagerProxy) AddSession2TokensListener(
 	ctx context.Context,
 	listener ISession2TokensListener,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISessionManager, "addSession2TokensListener")
 	if _err != nil {

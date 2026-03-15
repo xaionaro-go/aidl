@@ -49,8 +49,8 @@ func (p *LocationProviderManagerProxy) OnInitialize(
 	ctx context.Context,
 	allowed bool,
 	properties ProviderProperties,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationProviderManager)
 	_data.WriteBool(allowed)
@@ -58,7 +58,7 @@ func (p *LocationProviderManagerProxy) OnInitialize(
 	if _err := properties.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationProviderManager, "onInitialize")
 	if _err != nil {

@@ -143,12 +143,12 @@ func (p *InputMethodManagerProxy) AddClient(
 
 func (p *InputMethodManagerProxy) GetCurrentInputMethodInfoAsUser(
 	ctx context.Context,
-	userId int32,
 ) (viewInputmethod.InputMethodInfo, error) {
 	var _result viewInputmethod.InputMethodInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "getCurrentInputMethodInfoAsUser")
 	if _err != nil {
@@ -179,13 +179,13 @@ func (p *InputMethodManagerProxy) GetCurrentInputMethodInfoAsUser(
 
 func (p *InputMethodManagerProxy) GetInputMethodList(
 	ctx context.Context,
-	userId int32,
 	directBootAwareness int32,
 ) (inputmethod.InputMethodInfoSafeList, error) {
 	var _result inputmethod.InputMethodInfoSafeList
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(directBootAwareness)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "getInputMethodList")
@@ -217,12 +217,12 @@ func (p *InputMethodManagerProxy) GetInputMethodList(
 
 func (p *InputMethodManagerProxy) GetEnabledInputMethodList(
 	ctx context.Context,
-	userId int32,
 ) (inputmethod.InputMethodInfoSafeList, error) {
 	var _result inputmethod.InputMethodInfoSafeList
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "getEnabledInputMethodList")
 	if _err != nil {
@@ -253,13 +253,13 @@ func (p *InputMethodManagerProxy) GetEnabledInputMethodList(
 
 func (p *InputMethodManagerProxy) GetInputMethodListLegacy(
 	ctx context.Context,
-	userId int32,
 	directBootAwareness int32,
 ) ([]viewInputmethod.InputMethodInfo, error) {
 	var _result []viewInputmethod.InputMethodInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(directBootAwareness)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "getInputMethodListLegacy")
@@ -295,12 +295,12 @@ func (p *InputMethodManagerProxy) GetInputMethodListLegacy(
 
 func (p *InputMethodManagerProxy) GetEnabledInputMethodListLegacy(
 	ctx context.Context,
-	userId int32,
 ) ([]viewInputmethod.InputMethodInfo, error) {
 	var _result []viewInputmethod.InputMethodInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "getEnabledInputMethodListLegacy")
 	if _err != nil {
@@ -337,14 +337,14 @@ func (p *InputMethodManagerProxy) GetEnabledInputMethodSubtypeList(
 	ctx context.Context,
 	imiId string,
 	allowsImplicitlyEnabledSubtypes bool,
-	userId int32,
 ) ([]viewInputmethod.InputMethodSubtype, error) {
 	var _result []viewInputmethod.InputMethodSubtype
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
 	_data.WriteString16(imiId)
 	_data.WriteBool(allowsImplicitlyEnabledSubtypes)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "getEnabledInputMethodSubtypeList")
 	if _err != nil {
@@ -379,12 +379,12 @@ func (p *InputMethodManagerProxy) GetEnabledInputMethodSubtypeList(
 
 func (p *InputMethodManagerProxy) GetLastInputMethodSubtype(
 	ctx context.Context,
-	userId int32,
 ) (viewInputmethod.InputMethodSubtype, error) {
 	var _result viewInputmethod.InputMethodSubtype
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "getLastInputMethodSubtype")
 	if _err != nil {
@@ -555,10 +555,10 @@ func (p *InputMethodManagerProxy) StartInputOrWindowGainedFocus(
 	inputConnection *inputmethod.IRemoteInputConnection,
 	remoteAccessibilityInputConnection *inputmethod.IRemoteAccessibilityInputConnection,
 	unverifiedTargetSdkVersion int32,
-	userId int32,
 	imeDispatcher window.ImeOnBackInvokedDispatcher,
 ) (inputmethod.InputBindResult, error) {
 	var _result inputmethod.InputBindResult
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
 	_data.WriteInt32(startInputReason)
@@ -589,7 +589,7 @@ func (p *InputMethodManagerProxy) StartInputOrWindowGainedFocus(
 		_data.WriteInt32(-1)
 	}
 	_data.WriteInt32(unverifiedTargetSdkVersion)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := imeDispatcher.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -634,11 +634,11 @@ func (p *InputMethodManagerProxy) StartInputOrWindowGainedFocusAsync(
 	inputConnection *inputmethod.IRemoteInputConnection,
 	remoteAccessibilityInputConnection *inputmethod.IRemoteAccessibilityInputConnection,
 	unverifiedTargetSdkVersion int32,
-	userId int32,
 	imeDispatcher window.ImeOnBackInvokedDispatcher,
 	startInputSeq int32,
 	useAsyncShowHideMethod bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
 	_data.WriteInt32(startInputReason)
@@ -669,7 +669,7 @@ func (p *InputMethodManagerProxy) StartInputOrWindowGainedFocusAsync(
 		_data.WriteInt32(-1)
 	}
 	_data.WriteInt32(unverifiedTargetSdkVersion)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := imeDispatcher.MarshalParcel(_data); _err != nil {
 		return _err
@@ -799,12 +799,12 @@ func (p *InputMethodManagerProxy) OnImeSwitchButtonClickFromSystem(
 
 func (p *InputMethodManagerProxy) GetCurrentInputMethodSubtype(
 	ctx context.Context,
-	userId int32,
 ) (viewInputmethod.InputMethodSubtype, error) {
 	var _result viewInputmethod.InputMethodSubtype
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "getCurrentInputMethodSubtype")
 	if _err != nil {
@@ -837,8 +837,8 @@ func (p *InputMethodManagerProxy) SetAdditionalInputMethodSubtypes(
 	ctx context.Context,
 	id string,
 	subtypes []viewInputmethod.InputMethodSubtype,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
 	_data.WriteString16(id)
@@ -852,7 +852,7 @@ func (p *InputMethodManagerProxy) SetAdditionalInputMethodSubtypes(
 			}
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "setAdditionalInputMethodSubtypes")
 	if _err != nil {
@@ -876,8 +876,8 @@ func (p *InputMethodManagerProxy) SetExplicitlyEnabledInputMethodSubtypes(
 	ctx context.Context,
 	imeId string,
 	subtypeHashCodes []int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
 	_data.WriteString16(imeId)
@@ -889,7 +889,7 @@ func (p *InputMethodManagerProxy) SetExplicitlyEnabledInputMethodSubtypes(
 			_data.WriteInt32(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "setExplicitlyEnabledInputMethodSubtypes")
 	if _err != nil {
@@ -1145,16 +1145,16 @@ func (p *InputMethodManagerProxy) StartStylusHandwriting(
 func (p *InputMethodManagerProxy) StartConnectionlessStylusHandwriting(
 	ctx context.Context,
 	client inputmethod.IInputMethodClient,
-	userId int32,
 	cursorAnchorInfo viewInputmethod.CursorAnchorInfo,
 	delegatePackageName string,
 	delegatorPackageName string,
 	callback inputmethod.IConnectionlessHandwritingCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
 	_data.WriteStrongBinder(client.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := cursorAnchorInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1175,14 +1175,14 @@ func (p *InputMethodManagerProxy) StartConnectionlessStylusHandwriting(
 func (p *InputMethodManagerProxy) PrepareStylusHandwritingDelegation(
 	ctx context.Context,
 	client inputmethod.IInputMethodClient,
-	userId int32,
 	delegatePackageName string,
 	delegatorPackageName string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
 	_data.WriteStrongBinder(client.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(delegatePackageName)
 	_data.WriteString16(delegatorPackageName)
 
@@ -1207,16 +1207,16 @@ func (p *InputMethodManagerProxy) PrepareStylusHandwritingDelegation(
 func (p *InputMethodManagerProxy) AcceptStylusHandwritingDelegation(
 	ctx context.Context,
 	client inputmethod.IInputMethodClient,
-	userId int32,
 	delegatePackageName string,
 	delegatorPackageName string,
 	flags int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
 	_data.WriteStrongBinder(client.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(delegatePackageName)
 	_data.WriteString16(delegatorPackageName)
 	_data.WriteInt32(flags)
@@ -1246,16 +1246,16 @@ func (p *InputMethodManagerProxy) AcceptStylusHandwritingDelegation(
 func (p *InputMethodManagerProxy) AcceptStylusHandwritingDelegationAsync(
 	ctx context.Context,
 	client inputmethod.IInputMethodClient,
-	userId int32,
 	delegatePackageName string,
 	delegatorPackageName string,
 	flags int32,
 	callback inputmethod.IBooleanListener,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
 	_data.WriteStrongBinder(client.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(delegatePackageName)
 	_data.WriteString16(delegatorPackageName)
 	_data.WriteInt32(flags)
@@ -1272,13 +1272,13 @@ func (p *InputMethodManagerProxy) AcceptStylusHandwritingDelegationAsync(
 
 func (p *InputMethodManagerProxy) IsStylusHandwritingAvailableAsUser(
 	ctx context.Context,
-	userId int32,
 	connectionless bool,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(connectionless)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "isStylusHandwritingAvailableAsUser")

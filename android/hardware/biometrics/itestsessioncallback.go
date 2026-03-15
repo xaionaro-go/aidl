@@ -39,11 +39,11 @@ var _ ITestSessionCallback = (*TestSessionCallbackProxy)(nil)
 
 func (p *TestSessionCallbackProxy) OnCleanupStarted(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITestSessionCallback)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITestSessionCallback, "onCleanupStarted")
 	if _err != nil {
@@ -56,11 +56,11 @@ func (p *TestSessionCallbackProxy) OnCleanupStarted(
 
 func (p *TestSessionCallbackProxy) OnCleanupFinished(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITestSessionCallback)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITestSessionCallback, "onCleanupFinished")
 	if _err != nil {

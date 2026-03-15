@@ -49,8 +49,8 @@ func (p *VirtualDeviceActivityListenerProxy) OnTopActivityChanged(
 	ctx context.Context,
 	displayId int32,
 	topActivity content.ComponentName,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualDeviceActivityListener)
 	_data.WriteInt32(displayId)
@@ -58,7 +58,7 @@ func (p *VirtualDeviceActivityListenerProxy) OnTopActivityChanged(
 	if _err := topActivity.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDeviceActivityListener, "onTopActivityChanged")
 	if _err != nil {

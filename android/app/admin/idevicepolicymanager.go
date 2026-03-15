@@ -906,17 +906,17 @@ func (p *DevicePolicyManagerProxy) SetPasswordQuality(
 func (p *DevicePolicyManagerProxy) GetPasswordQuality(
 	ctx context.Context,
 	who content.ComponentName,
-	userHandle int32,
 	parent bool,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordQuality")
@@ -977,17 +977,17 @@ func (p *DevicePolicyManagerProxy) SetPasswordMinimumLength(
 func (p *DevicePolicyManagerProxy) GetPasswordMinimumLength(
 	ctx context.Context,
 	who content.ComponentName,
-	userHandle int32,
 	parent bool,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumLength")
@@ -1048,17 +1048,17 @@ func (p *DevicePolicyManagerProxy) SetPasswordMinimumUpperCase(
 func (p *DevicePolicyManagerProxy) GetPasswordMinimumUpperCase(
 	ctx context.Context,
 	who content.ComponentName,
-	userHandle int32,
 	parent bool,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumUpperCase")
@@ -1119,17 +1119,17 @@ func (p *DevicePolicyManagerProxy) SetPasswordMinimumLowerCase(
 func (p *DevicePolicyManagerProxy) GetPasswordMinimumLowerCase(
 	ctx context.Context,
 	who content.ComponentName,
-	userHandle int32,
 	parent bool,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumLowerCase")
@@ -1190,17 +1190,17 @@ func (p *DevicePolicyManagerProxy) SetPasswordMinimumLetters(
 func (p *DevicePolicyManagerProxy) GetPasswordMinimumLetters(
 	ctx context.Context,
 	who content.ComponentName,
-	userHandle int32,
 	parent bool,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumLetters")
@@ -1261,17 +1261,17 @@ func (p *DevicePolicyManagerProxy) SetPasswordMinimumNumeric(
 func (p *DevicePolicyManagerProxy) GetPasswordMinimumNumeric(
 	ctx context.Context,
 	who content.ComponentName,
-	userHandle int32,
 	parent bool,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumNumeric")
@@ -1332,17 +1332,17 @@ func (p *DevicePolicyManagerProxy) SetPasswordMinimumSymbols(
 func (p *DevicePolicyManagerProxy) GetPasswordMinimumSymbols(
 	ctx context.Context,
 	who content.ComponentName,
-	userHandle int32,
 	parent bool,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumSymbols")
@@ -1403,17 +1403,17 @@ func (p *DevicePolicyManagerProxy) SetPasswordMinimumNonLetter(
 func (p *DevicePolicyManagerProxy) GetPasswordMinimumNonLetter(
 	ctx context.Context,
 	who content.ComponentName,
-	userHandle int32,
 	parent bool,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumNonLetter")
@@ -1440,13 +1440,13 @@ func (p *DevicePolicyManagerProxy) GetPasswordMinimumNonLetter(
 
 func (p *DevicePolicyManagerProxy) GetPasswordMinimumMetrics(
 	ctx context.Context,
-	userHandle int32,
 	deviceWideOnly bool,
 ) (PasswordMetrics, error) {
 	var _result PasswordMetrics
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(deviceWideOnly)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordMinimumMetrics")
@@ -1512,17 +1512,17 @@ func (p *DevicePolicyManagerProxy) SetPasswordHistoryLength(
 func (p *DevicePolicyManagerProxy) GetPasswordHistoryLength(
 	ctx context.Context,
 	who content.ComponentName,
-	userHandle int32,
 	parent bool,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordHistoryLength")
@@ -1585,17 +1585,17 @@ func (p *DevicePolicyManagerProxy) SetPasswordExpirationTimeout(
 func (p *DevicePolicyManagerProxy) GetPasswordExpirationTimeout(
 	ctx context.Context,
 	who content.ComponentName,
-	userHandle int32,
 	parent bool,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordExpirationTimeout")
@@ -1623,17 +1623,17 @@ func (p *DevicePolicyManagerProxy) GetPasswordExpirationTimeout(
 func (p *DevicePolicyManagerProxy) GetPasswordExpiration(
 	ctx context.Context,
 	who content.ComponentName,
-	userHandle int32,
 	parent bool,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPasswordExpiration")
@@ -1661,14 +1661,14 @@ func (p *DevicePolicyManagerProxy) GetPasswordExpiration(
 func (p *DevicePolicyManagerProxy) IsActivePasswordSufficient(
 	ctx context.Context,
 	callerPackageName string,
-	userHandle int32,
 	parent bool,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackageName)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isActivePasswordSufficient")
@@ -1724,13 +1724,13 @@ func (p *DevicePolicyManagerProxy) IsActivePasswordSufficientForDeviceRequiremen
 
 func (p *DevicePolicyManagerProxy) IsPasswordSufficientAfterProfileUnification(
 	ctx context.Context,
-	userHandle int32,
 	profileUser int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(profileUser)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isPasswordSufficientAfterProfileUnification")
@@ -1851,13 +1851,13 @@ func (p *DevicePolicyManagerProxy) GetRequiredPasswordComplexity(
 
 func (p *DevicePolicyManagerProxy) GetAggregatedPasswordComplexityForUser(
 	ctx context.Context,
-	userId int32,
 	deviceWideOnly bool,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(deviceWideOnly)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAggregatedPasswordComplexityForUser")
@@ -1919,14 +1919,14 @@ func (p *DevicePolicyManagerProxy) IsUsingUnifiedPassword(
 func (p *DevicePolicyManagerProxy) GetCurrentFailedPasswordAttempts(
 	ctx context.Context,
 	callerPackageName string,
-	userHandle int32,
 	parent bool,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackageName)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCurrentFailedPasswordAttempts")
@@ -1953,13 +1953,13 @@ func (p *DevicePolicyManagerProxy) GetCurrentFailedPasswordAttempts(
 
 func (p *DevicePolicyManagerProxy) GetProfileWithMinimumFailedPasswordsForWipe(
 	ctx context.Context,
-	userHandle int32,
 	parent bool,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getProfileWithMinimumFailedPasswordsForWipe")
@@ -2022,17 +2022,17 @@ func (p *DevicePolicyManagerProxy) SetMaximumFailedPasswordsForWipe(
 func (p *DevicePolicyManagerProxy) GetMaximumFailedPasswordsForWipe(
 	ctx context.Context,
 	admin content.ComponentName,
-	userHandle int32,
 	parent bool,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := admin.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getMaximumFailedPasswordsForWipe")
@@ -2128,17 +2128,17 @@ func (p *DevicePolicyManagerProxy) SetMaximumTimeToLock(
 func (p *DevicePolicyManagerProxy) GetMaximumTimeToLock(
 	ctx context.Context,
 	who content.ComponentName,
-	userHandle int32,
 	parent bool,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getMaximumTimeToLock")
@@ -2201,17 +2201,17 @@ func (p *DevicePolicyManagerProxy) SetRequiredStrongAuthTimeout(
 func (p *DevicePolicyManagerProxy) GetRequiredStrongAuthTimeout(
 	ctx context.Context,
 	who content.ComponentName,
-	userId int32,
 	parent bool,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getRequiredStrongAuthTimeout")
@@ -2478,12 +2478,12 @@ func (p *DevicePolicyManagerProxy) SetGlobalProxy(
 
 func (p *DevicePolicyManagerProxy) GetGlobalProxyAdmin(
 	ctx context.Context,
-	userHandle int32,
 ) (content.ComponentName, error) {
 	var _result content.ComponentName
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getGlobalProxyAdmin")
 	if _err != nil {
@@ -2581,16 +2581,16 @@ func (p *DevicePolicyManagerProxy) SetStorageEncryption(
 func (p *DevicePolicyManagerProxy) GetStorageEncryption(
 	ctx context.Context,
 	who content.ComponentName,
-	userHandle int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getStorageEncryption")
 	if _err != nil {
@@ -2617,13 +2617,13 @@ func (p *DevicePolicyManagerProxy) GetStorageEncryption(
 func (p *DevicePolicyManagerProxy) GetStorageEncryptionStatus(
 	ctx context.Context,
 	callerPackage string,
-	userHandle int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackage)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getStorageEncryptionStatus")
 	if _err != nil {
@@ -2720,10 +2720,10 @@ func (p *DevicePolicyManagerProxy) GetCameraDisabled(
 	ctx context.Context,
 	who content.ComponentName,
 	callerPackageName string,
-	userHandle int32,
 	parent bool,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
@@ -2731,7 +2731,7 @@ func (p *DevicePolicyManagerProxy) GetCameraDisabled(
 		return _result, _err
 	}
 	_data.WriteString16(callerPackageName)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCameraDisabled")
@@ -2794,17 +2794,17 @@ func (p *DevicePolicyManagerProxy) SetScreenCaptureDisabled(
 func (p *DevicePolicyManagerProxy) GetScreenCaptureDisabled(
 	ctx context.Context,
 	who content.ComponentName,
-	userHandle int32,
 	parent bool,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getScreenCaptureDisabled")
@@ -2857,12 +2857,12 @@ func (p *DevicePolicyManagerProxy) SetNearbyNotificationStreamingPolicy(
 
 func (p *DevicePolicyManagerProxy) GetNearbyNotificationStreamingPolicy(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getNearbyNotificationStreamingPolicy")
 	if _err != nil {
@@ -2914,12 +2914,12 @@ func (p *DevicePolicyManagerProxy) SetNearbyAppStreamingPolicy(
 
 func (p *DevicePolicyManagerProxy) GetNearbyAppStreamingPolicy(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getNearbyAppStreamingPolicy")
 	if _err != nil {
@@ -2981,17 +2981,17 @@ func (p *DevicePolicyManagerProxy) SetKeyguardDisabledFeatures(
 func (p *DevicePolicyManagerProxy) GetKeyguardDisabledFeatures(
 	ctx context.Context,
 	who content.ComponentName,
-	userHandle int32,
 	parent bool,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getKeyguardDisabledFeatures")
@@ -3020,9 +3020,9 @@ func (p *DevicePolicyManagerProxy) SetActiveAdmin(
 	ctx context.Context,
 	policyReceiver content.ComponentName,
 	refreshing bool,
-	userHandle int32,
 	provisioningContext string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
@@ -3030,7 +3030,7 @@ func (p *DevicePolicyManagerProxy) SetActiveAdmin(
 		return _err
 	}
 	_data.WriteBool(refreshing)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(provisioningContext)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setActiveAdmin")
@@ -3054,16 +3054,16 @@ func (p *DevicePolicyManagerProxy) SetActiveAdmin(
 func (p *DevicePolicyManagerProxy) IsAdminActive(
 	ctx context.Context,
 	policyReceiver content.ComponentName,
-	userHandle int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := policyReceiver.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isAdminActive")
 	if _err != nil {
@@ -3089,12 +3089,12 @@ func (p *DevicePolicyManagerProxy) IsAdminActive(
 
 func (p *DevicePolicyManagerProxy) GetActiveAdmins(
 	ctx context.Context,
-	userHandle int32,
 ) ([]content.ComponentName, error) {
 	var _result []content.ComponentName
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getActiveAdmins")
 	if _err != nil {
@@ -3130,13 +3130,13 @@ func (p *DevicePolicyManagerProxy) GetActiveAdmins(
 func (p *DevicePolicyManagerProxy) PackageHasActiveAdmins(
 	ctx context.Context,
 	packageName string,
-	userHandle int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "packageHasActiveAdmins")
 	if _err != nil {
@@ -3164,8 +3164,8 @@ func (p *DevicePolicyManagerProxy) GetRemoveWarning(
 	ctx context.Context,
 	policyReceiver content.ComponentName,
 	result os.RemoteCallback,
-	userHandle int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
@@ -3176,7 +3176,7 @@ func (p *DevicePolicyManagerProxy) GetRemoveWarning(
 	if _err := result.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getRemoveWarning")
 	if _err != nil {
@@ -3199,15 +3199,15 @@ func (p *DevicePolicyManagerProxy) GetRemoveWarning(
 func (p *DevicePolicyManagerProxy) RemoveActiveAdmin(
 	ctx context.Context,
 	policyReceiver content.ComponentName,
-	userHandle int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := policyReceiver.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "removeActiveAdmin")
 	if _err != nil {
@@ -3230,15 +3230,15 @@ func (p *DevicePolicyManagerProxy) RemoveActiveAdmin(
 func (p *DevicePolicyManagerProxy) ForceRemoveActiveAdmin(
 	ctx context.Context,
 	policyReceiver content.ComponentName,
-	userHandle int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := policyReceiver.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "forceRemoveActiveAdmin")
 	if _err != nil {
@@ -3262,9 +3262,9 @@ func (p *DevicePolicyManagerProxy) HasGrantedPolicy(
 	ctx context.Context,
 	policyReceiver content.ComponentName,
 	usesPolicy int32,
-	userHandle int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
@@ -3272,7 +3272,7 @@ func (p *DevicePolicyManagerProxy) HasGrantedPolicy(
 		return _result, _err
 	}
 	_data.WriteInt32(usesPolicy)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "hasGrantedPolicy")
 	if _err != nil {
@@ -3299,15 +3299,15 @@ func (p *DevicePolicyManagerProxy) HasGrantedPolicy(
 func (p *DevicePolicyManagerProxy) ReportPasswordChanged(
 	ctx context.Context,
 	metrics PasswordMetrics,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := metrics.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportPasswordChanged")
 	if _err != nil {
@@ -3329,12 +3329,12 @@ func (p *DevicePolicyManagerProxy) ReportPasswordChanged(
 
 func (p *DevicePolicyManagerProxy) ReportFailedPasswordAttempt(
 	ctx context.Context,
-	userHandle int32,
 	parent bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportFailedPasswordAttempt")
@@ -3357,11 +3357,11 @@ func (p *DevicePolicyManagerProxy) ReportFailedPasswordAttempt(
 
 func (p *DevicePolicyManagerProxy) ReportSuccessfulPasswordAttempt(
 	ctx context.Context,
-	userHandle int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportSuccessfulPasswordAttempt")
 	if _err != nil {
@@ -3383,11 +3383,11 @@ func (p *DevicePolicyManagerProxy) ReportSuccessfulPasswordAttempt(
 
 func (p *DevicePolicyManagerProxy) ReportFailedBiometricAttempt(
 	ctx context.Context,
-	userHandle int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportFailedBiometricAttempt")
 	if _err != nil {
@@ -3409,11 +3409,11 @@ func (p *DevicePolicyManagerProxy) ReportFailedBiometricAttempt(
 
 func (p *DevicePolicyManagerProxy) ReportSuccessfulBiometricAttempt(
 	ctx context.Context,
-	userHandle int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportSuccessfulBiometricAttempt")
 	if _err != nil {
@@ -3435,11 +3435,11 @@ func (p *DevicePolicyManagerProxy) ReportSuccessfulBiometricAttempt(
 
 func (p *DevicePolicyManagerProxy) ReportKeyguardDismissed(
 	ctx context.Context,
-	userHandle int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportKeyguardDismissed")
 	if _err != nil {
@@ -3461,11 +3461,11 @@ func (p *DevicePolicyManagerProxy) ReportKeyguardDismissed(
 
 func (p *DevicePolicyManagerProxy) ReportKeyguardSecured(
 	ctx context.Context,
-	userHandle int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "reportKeyguardSecured")
 	if _err != nil {
@@ -3488,17 +3488,17 @@ func (p *DevicePolicyManagerProxy) ReportKeyguardSecured(
 func (p *DevicePolicyManagerProxy) SetDeviceOwner(
 	ctx context.Context,
 	who content.ComponentName,
-	userId int32,
 	setProfileOwnerOnCurrentUserIfNecessary bool,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(setProfileOwnerOnCurrentUserIfNecessary)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setDeviceOwner")
@@ -3561,12 +3561,12 @@ func (p *DevicePolicyManagerProxy) GetDeviceOwnerComponent(
 
 func (p *DevicePolicyManagerProxy) GetDeviceOwnerComponentOnUser(
 	ctx context.Context,
-	userId int32,
 ) (content.ComponentName, error) {
 	var _result content.ComponentName
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDeviceOwnerComponentOnUser")
 	if _err != nil {
@@ -3711,16 +3711,16 @@ func (p *DevicePolicyManagerProxy) GetDeviceOwnerUserId(
 func (p *DevicePolicyManagerProxy) SetProfileOwner(
 	ctx context.Context,
 	who content.ComponentName,
-	userHandle int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setProfileOwner")
 	if _err != nil {
@@ -3746,12 +3746,12 @@ func (p *DevicePolicyManagerProxy) SetProfileOwner(
 
 func (p *DevicePolicyManagerProxy) GetProfileOwnerAsUser(
 	ctx context.Context,
-	userHandle int32,
 ) (content.ComponentName, error) {
 	var _result content.ComponentName
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getProfileOwnerAsUser")
 	if _err != nil {
@@ -3855,12 +3855,12 @@ func (p *DevicePolicyManagerProxy) IsSupervisionComponent(
 
 func (p *DevicePolicyManagerProxy) GetProfileOwnerName(
 	ctx context.Context,
-	userHandle int32,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getProfileOwnerName")
 	if _err != nil {
@@ -4374,14 +4374,14 @@ func (p *DevicePolicyManagerProxy) EnforceCanManageCaCerts(
 func (p *DevicePolicyManagerProxy) ApproveCaCert(
 	ctx context.Context,
 	alias string,
-	userHandle int32,
 	approval bool,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(alias)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(approval)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "approveCaCert")
@@ -4409,13 +4409,13 @@ func (p *DevicePolicyManagerProxy) ApproveCaCert(
 func (p *DevicePolicyManagerProxy) IsCaCertApproved(
 	ctx context.Context,
 	alias string,
-	userHandle int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(alias)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isCaCertApproved")
 	if _err != nil {
@@ -5001,12 +5001,12 @@ func (p *DevicePolicyManagerProxy) GetAlwaysOnVpnPackage(
 
 func (p *DevicePolicyManagerProxy) GetAlwaysOnVpnPackageForUser(
 	ctx context.Context,
-	userHandle int32,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAlwaysOnVpnPackageForUser")
 	if _err != nil {
@@ -5066,12 +5066,12 @@ func (p *DevicePolicyManagerProxy) IsAlwaysOnVpnLockdownEnabled(
 
 func (p *DevicePolicyManagerProxy) IsAlwaysOnVpnLockdownEnabledForUser(
 	ctx context.Context,
-	userHandle int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isAlwaysOnVpnLockdownEnabledForUser")
 	if _err != nil {
@@ -5496,12 +5496,12 @@ func (p *DevicePolicyManagerProxy) SetRestrictionsProvider(
 
 func (p *DevicePolicyManagerProxy) GetRestrictionsProvider(
 	ctx context.Context,
-	userHandle int32,
 ) (content.ComponentName, error) {
 	var _result content.ComponentName
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getRestrictionsProvider")
 	if _err != nil {
@@ -5894,12 +5894,12 @@ func (p *DevicePolicyManagerProxy) GetPermittedAccessibilityServices(
 
 func (p *DevicePolicyManagerProxy) GetPermittedAccessibilityServicesForUser(
 	ctx context.Context,
-	userId int32,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPermittedAccessibilityServicesForUser")
 	if _err != nil {
@@ -5937,9 +5937,9 @@ func (p *DevicePolicyManagerProxy) IsAccessibilityServicePermittedByAdmin(
 	ctx context.Context,
 	admin content.ComponentName,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
@@ -5947,7 +5947,7 @@ func (p *DevicePolicyManagerProxy) IsAccessibilityServicePermittedByAdmin(
 		return _result, _err
 	}
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isAccessibilityServicePermittedByAdmin")
 	if _err != nil {
@@ -6068,12 +6068,12 @@ func (p *DevicePolicyManagerProxy) GetPermittedInputMethods(
 
 func (p *DevicePolicyManagerProxy) GetPermittedInputMethodsAsUser(
 	ctx context.Context,
-	userId int32,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getPermittedInputMethodsAsUser")
 	if _err != nil {
@@ -6111,10 +6111,10 @@ func (p *DevicePolicyManagerProxy) IsInputMethodPermittedByAdmin(
 	ctx context.Context,
 	admin content.ComponentName,
 	packageName string,
-	userId int32,
 	parent bool,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
@@ -6122,7 +6122,7 @@ func (p *DevicePolicyManagerProxy) IsInputMethodPermittedByAdmin(
 		return _result, _err
 	}
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isInputMethodPermittedByAdmin")
@@ -6237,13 +6237,13 @@ func (p *DevicePolicyManagerProxy) GetPermittedCrossProfileNotificationListeners
 func (p *DevicePolicyManagerProxy) IsNotificationListenerServicePermitted(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isNotificationListenerServicePermitted")
 	if _err != nil {
@@ -6305,13 +6305,13 @@ func (p *DevicePolicyManagerProxy) CreateAdminSupportIntent(
 
 func (p *DevicePolicyManagerProxy) GetEnforcingAdminAndUserDetails(
 	ctx context.Context,
-	userId int32,
 	restriction string,
 ) (os.Bundle, error) {
 	var _result os.Bundle
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(restriction)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getEnforcingAdminAndUserDetails")
@@ -6343,13 +6343,13 @@ func (p *DevicePolicyManagerProxy) GetEnforcingAdminAndUserDetails(
 
 func (p *DevicePolicyManagerProxy) GetEnforcingAdmin(
 	ctx context.Context,
-	userId int32,
 	identifier string,
 ) (EnforcingAdmin, error) {
 	var _result EnforcingAdmin
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(identifier)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getEnforcingAdmin")
@@ -6381,13 +6381,13 @@ func (p *DevicePolicyManagerProxy) GetEnforcingAdmin(
 
 func (p *DevicePolicyManagerProxy) GetEnforcingAdminsForRestriction(
 	ctx context.Context,
-	userId int32,
 	restriction string,
 ) ([]EnforcingAdmin, error) {
 	var _result []EnforcingAdmin
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(restriction)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getEnforcingAdminsForRestriction")
@@ -6845,11 +6845,11 @@ func (p *DevicePolicyManagerProxy) GetSecondaryUsers(
 
 func (p *DevicePolicyManagerProxy) AcknowledgeNewUserDisclaimer(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "acknowledgeNewUserDisclaimer")
 	if _err != nil {
@@ -6871,12 +6871,12 @@ func (p *DevicePolicyManagerProxy) AcknowledgeNewUserDisclaimer(
 
 func (p *DevicePolicyManagerProxy) IsNewUserDisclaimerAcknowledged(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isNewUserDisclaimerAcknowledged")
 	if _err != nil {
@@ -7092,14 +7092,14 @@ func (p *DevicePolicyManagerProxy) GetAccountTypesWithManagementDisabled(
 
 func (p *DevicePolicyManagerProxy) GetAccountTypesWithManagementDisabledAsUser(
 	ctx context.Context,
-	userId int32,
 	callerPackageName string,
 	parent bool,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(callerPackageName)
 	_data.WriteBool(parent)
 
@@ -7804,13 +7804,13 @@ func (p *DevicePolicyManagerProxy) NotifyLockTaskModeChanged(
 	ctx context.Context,
 	isEnabled bool,
 	pkg string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteBool(isEnabled)
 	_data.WriteString16(pkg)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "notifyLockTaskModeChanged")
 	if _err != nil {
@@ -7963,12 +7963,12 @@ func (p *DevicePolicyManagerProxy) GetCrossProfileCallerIdDisabled(
 
 func (p *DevicePolicyManagerProxy) GetCrossProfileCallerIdDisabledForUser(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfileCallerIdDisabledForUser")
 	if _err != nil {
@@ -8059,12 +8059,12 @@ func (p *DevicePolicyManagerProxy) GetCrossProfileContactsSearchDisabled(
 
 func (p *DevicePolicyManagerProxy) GetCrossProfileContactsSearchDisabledForUser(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfileContactsSearchDisabledForUser")
 	if _err != nil {
@@ -8190,13 +8190,13 @@ func (p *DevicePolicyManagerProxy) GetManagedProfileCallerIdAccessPolicy(
 
 func (p *DevicePolicyManagerProxy) HasManagedProfileCallerIdAccess(
 	ctx context.Context,
-	userId int32,
 	packageName string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(packageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "hasManagedProfileCallerIdAccess")
@@ -8252,12 +8252,12 @@ func (p *DevicePolicyManagerProxy) SetCredentialManagerPolicy(
 
 func (p *DevicePolicyManagerProxy) GetCredentialManagerPolicy(
 	ctx context.Context,
-	userId int32,
 ) (PackagePolicy, error) {
 	var _result PackagePolicy
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCredentialManagerPolicy")
 	if _err != nil {
@@ -8351,13 +8351,13 @@ func (p *DevicePolicyManagerProxy) GetManagedProfileContactsAccessPolicy(
 
 func (p *DevicePolicyManagerProxy) HasManagedProfileContactsAccess(
 	ctx context.Context,
-	userId int32,
 	packageName string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(packageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "hasManagedProfileContactsAccess")
@@ -8449,12 +8449,12 @@ func (p *DevicePolicyManagerProxy) GetBluetoothContactSharingDisabled(
 
 func (p *DevicePolicyManagerProxy) GetBluetoothContactSharingDisabledForUser(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getBluetoothContactSharingDisabledForUser")
 	if _err != nil {
@@ -8521,10 +8521,10 @@ func (p *DevicePolicyManagerProxy) GetTrustAgentConfiguration(
 	ctx context.Context,
 	admin content.ComponentName,
 	agent content.ComponentName,
-	userId int32,
 	parent bool,
 ) ([]interface{}, error) {
 	var _result []interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
@@ -8535,7 +8535,7 @@ func (p *DevicePolicyManagerProxy) GetTrustAgentConfiguration(
 	if _err := agent.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(parent)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getTrustAgentConfiguration")
@@ -9072,16 +9072,16 @@ func (p *DevicePolicyManagerProxy) GetForceEphemeralUsers(
 func (p *DevicePolicyManagerProxy) IsRemovingAdmin(
 	ctx context.Context,
 	adminReceiver content.ComponentName,
-	userHandle int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := adminReceiver.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isRemovingAdmin")
 	if _err != nil {
@@ -9964,16 +9964,16 @@ func (p *DevicePolicyManagerProxy) GetLongSupportMessage(
 func (p *DevicePolicyManagerProxy) GetShortSupportMessageForUser(
 	ctx context.Context,
 	admin content.ComponentName,
-	userHandle int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := admin.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getShortSupportMessageForUser")
 	if _err != nil {
@@ -9996,16 +9996,16 @@ func (p *DevicePolicyManagerProxy) GetShortSupportMessageForUser(
 func (p *DevicePolicyManagerProxy) GetLongSupportMessageForUser(
 	ctx context.Context,
 	admin content.ComponentName,
-	userHandle int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := admin.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getLongSupportMessageForUser")
 	if _err != nil {
@@ -10059,12 +10059,12 @@ func (p *DevicePolicyManagerProxy) SetOrganizationColor(
 func (p *DevicePolicyManagerProxy) SetOrganizationColorForUser(
 	ctx context.Context,
 	color int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(color)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setOrganizationColorForUser")
 	if _err != nil {
@@ -10086,11 +10086,11 @@ func (p *DevicePolicyManagerProxy) SetOrganizationColorForUser(
 
 func (p *DevicePolicyManagerProxy) ClearOrganizationIdForUser(
 	ctx context.Context,
-	userHandle int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearOrganizationIdForUser")
 	if _err != nil {
@@ -10146,12 +10146,12 @@ func (p *DevicePolicyManagerProxy) GetOrganizationColor(
 
 func (p *DevicePolicyManagerProxy) GetOrganizationColorForUser(
 	ctx context.Context,
-	userHandle int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getOrganizationColorForUser")
 	if _err != nil {
@@ -10266,12 +10266,12 @@ func (p *DevicePolicyManagerProxy) GetDeviceOwnerOrganizationName(
 
 func (p *DevicePolicyManagerProxy) GetOrganizationNameForUser(
 	ctx context.Context,
-	userHandle int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getOrganizationNameForUser")
 	if _err != nil {
@@ -10293,12 +10293,12 @@ func (p *DevicePolicyManagerProxy) GetOrganizationNameForUser(
 
 func (p *DevicePolicyManagerProxy) GetUserProvisioningState(
 	ctx context.Context,
-	userHandle int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getUserProvisioningState")
 	if _err != nil {
@@ -10325,12 +10325,12 @@ func (p *DevicePolicyManagerProxy) GetUserProvisioningState(
 func (p *DevicePolicyManagerProxy) SetUserProvisioningState(
 	ctx context.Context,
 	state int32,
-	userHandle int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(state)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setUserProvisioningState")
 	if _err != nil {
@@ -10463,12 +10463,12 @@ func (p *DevicePolicyManagerProxy) IsCallingUserAffiliated(
 
 func (p *DevicePolicyManagerProxy) IsAffiliatedUser(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isAffiliatedUser")
 	if _err != nil {
@@ -10929,11 +10929,11 @@ func (p *DevicePolicyManagerProxy) SetDeviceProvisioningConfigApplied(
 
 func (p *DevicePolicyManagerProxy) ForceUpdateUserSetupComplete(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "forceUpdateUserSetupComplete")
 	if _err != nil {
@@ -11677,17 +11677,17 @@ func (p *DevicePolicyManagerProxy) IsLogoutEnabled(
 func (p *DevicePolicyManagerProxy) GetDisallowedSystemApps(
 	ctx context.Context,
 	admin content.ComponentName,
-	userId int32,
 	provisioningAction string,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := admin.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(provisioningAction)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getDisallowedSystemApps")
@@ -12227,9 +12227,9 @@ func (p *DevicePolicyManagerProxy) IsMeteredDataDisabledPackageForUser(
 	ctx context.Context,
 	admin content.ComponentName,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
@@ -12237,7 +12237,7 @@ func (p *DevicePolicyManagerProxy) IsMeteredDataDisabledPackageForUser(
 		return _result, _err
 	}
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isMeteredDataDisabledPackageForUser")
 	if _err != nil {
@@ -12370,16 +12370,16 @@ func (p *DevicePolicyManagerProxy) GetGlobalPrivateDnsHost(
 func (p *DevicePolicyManagerProxy) SetProfileOwnerOnOrganizationOwnedDevice(
 	ctx context.Context,
 	who content.ComponentName,
-	userId int32,
 	isProfileOwnerOnOrganizationOwnedDevice bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
 	if _err := who.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(isProfileOwnerOnOrganizationOwnedDevice)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setProfileOwnerOnOrganizationOwnedDevice")
@@ -12520,13 +12520,13 @@ func (p *DevicePolicyManagerProxy) GetCrossProfileCalendarPackages(
 func (p *DevicePolicyManagerProxy) IsPackageAllowedToAccessCalendarForUser(
 	ctx context.Context,
 	packageName string,
-	userHandle int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "isPackageAllowedToAccessCalendarForUser")
 	if _err != nil {
@@ -12552,12 +12552,12 @@ func (p *DevicePolicyManagerProxy) IsPackageAllowedToAccessCalendarForUser(
 
 func (p *DevicePolicyManagerProxy) GetCrossProfileCalendarPackagesForUser(
 	ctx context.Context,
-	userHandle int32,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getCrossProfileCalendarPackagesForUser")
 	if _err != nil {
@@ -12675,12 +12675,12 @@ func (p *DevicePolicyManagerProxy) GetCrossProfilePackages(
 
 func (p *DevicePolicyManagerProxy) GetAllCrossProfilePackages(
 	ctx context.Context,
-	userId int32,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAllCrossProfilePackages")
 	if _err != nil {
@@ -13338,12 +13338,12 @@ func (p *DevicePolicyManagerProxy) IsComplianceAcknowledgementRequired(
 
 func (p *DevicePolicyManagerProxy) CanProfileOwnerResetPasswordWhenLocked(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "canProfileOwnerResetPasswordWhenLocked")
 	if _err != nil {
@@ -13461,13 +13461,13 @@ func (p *DevicePolicyManagerProxy) SetOrganizationIdForUser(
 	ctx context.Context,
 	callerPackage string,
 	enterpriseId string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackage)
 	_data.WriteString16(enterpriseId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setOrganizationIdForUser")
 	if _err != nil {
@@ -13670,12 +13670,12 @@ func (p *DevicePolicyManagerProxy) FinalizeWorkProfileProvisioning(
 
 func (p *DevicePolicyManagerProxy) RemoveManagedProfile(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "removeManagedProfile")
 	if _err != nil {
@@ -13766,11 +13766,11 @@ func (p *DevicePolicyManagerProxy) GetDeviceOwnerType(
 
 func (p *DevicePolicyManagerProxy) ResetDefaultCrossProfileIntentFilters(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "resetDefaultCrossProfileIntentFilters")
 	if _err != nil {
@@ -14879,9 +14879,9 @@ func (p *DevicePolicyManagerProxy) GetContentProtectionPolicy(
 	ctx context.Context,
 	who content.ComponentName,
 	callerPackageName string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteInt32(1)
@@ -14889,7 +14889,7 @@ func (p *DevicePolicyManagerProxy) GetContentProtectionPolicy(
 		return _result, _err
 	}
 	_data.WriteString16(callerPackageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getContentProtectionPolicy")
 	if _err != nil {
@@ -15139,13 +15139,13 @@ func (p *DevicePolicyManagerProxy) SetAppFunctionsPolicy(
 func (p *DevicePolicyManagerProxy) GetAppFunctionsPolicy(
 	ctx context.Context,
 	callerPackageName string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "getAppFunctionsPolicy")
 	if _err != nil {

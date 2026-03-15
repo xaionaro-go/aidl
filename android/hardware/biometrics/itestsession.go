@@ -79,11 +79,11 @@ func (p *TestSessionProxy) SetTestHalEnabled(
 
 func (p *TestSessionProxy) StartEnroll(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITestSession)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITestSession, "startEnroll")
 	if _err != nil {
@@ -105,11 +105,11 @@ func (p *TestSessionProxy) StartEnroll(
 
 func (p *TestSessionProxy) FinishEnroll(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITestSession)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITestSession, "finishEnroll")
 	if _err != nil {
@@ -131,11 +131,11 @@ func (p *TestSessionProxy) FinishEnroll(
 
 func (p *TestSessionProxy) AcceptAuthentication(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITestSession)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITestSession, "acceptAuthentication")
 	if _err != nil {
@@ -157,11 +157,11 @@ func (p *TestSessionProxy) AcceptAuthentication(
 
 func (p *TestSessionProxy) RejectAuthentication(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITestSession)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITestSession, "rejectAuthentication")
 	if _err != nil {
@@ -183,12 +183,12 @@ func (p *TestSessionProxy) RejectAuthentication(
 
 func (p *TestSessionProxy) NotifyAcquired(
 	ctx context.Context,
-	userId int32,
 	acquireInfo int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITestSession)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(acquireInfo)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITestSession, "notifyAcquired")
@@ -211,12 +211,12 @@ func (p *TestSessionProxy) NotifyAcquired(
 
 func (p *TestSessionProxy) NotifyError(
 	ctx context.Context,
-	userId int32,
 	errorCode int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITestSession)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(errorCode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITestSession, "notifyError")
@@ -239,11 +239,11 @@ func (p *TestSessionProxy) NotifyError(
 
 func (p *TestSessionProxy) CleanupInternalState(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITestSession)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITestSession, "cleanupInternalState")
 	if _err != nil {

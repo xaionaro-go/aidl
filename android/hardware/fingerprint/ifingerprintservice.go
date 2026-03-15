@@ -125,14 +125,14 @@ func (p *FingerprintServiceProxy) CreateTestSession(
 	ctx context.Context,
 	sensorId int32,
 	callback biometrics.ITestSessionCallback,
-	opPackageName string,
 ) (biometrics.ITestSession, error) {
 	var _result biometrics.ITestSession
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteInt32(sensorId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "createTestSession")
 	if _err != nil {
@@ -202,12 +202,12 @@ func (p *FingerprintServiceProxy) DumpSensorServiceStateProto(
 
 func (p *FingerprintServiceProxy) GetSensorPropertiesInternal(
 	ctx context.Context,
-	opPackageName string,
 ) ([]FingerprintSensorPropertiesInternal, error) {
 	var _result []FingerprintSensorPropertiesInternal
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "getSensorPropertiesInternal")
 	if _err != nil {
@@ -243,13 +243,13 @@ func (p *FingerprintServiceProxy) GetSensorPropertiesInternal(
 func (p *FingerprintServiceProxy) GetSensorProperties(
 	ctx context.Context,
 	sensorId int32,
-	opPackageName string,
 ) (FingerprintSensorPropertiesInternal, error) {
 	var _result FingerprintSensorPropertiesInternal
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteInt32(sensorId)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "getSensorProperties")
 	if _err != nil {
@@ -430,15 +430,14 @@ func (p *FingerprintServiceProxy) StartPreparedClient(
 func (p *FingerprintServiceProxy) CancelAuthentication(
 	ctx context.Context,
 	token binder.IBinder,
-	opPackageName string,
-	attributionTag string,
 	requestId int64,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteStrongBinder(token.Handle())
-	_data.WriteString16(opPackageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt64(requestId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "cancelAuthentication")
@@ -462,13 +461,13 @@ func (p *FingerprintServiceProxy) CancelAuthentication(
 func (p *FingerprintServiceProxy) CancelFingerprintDetect(
 	ctx context.Context,
 	token binder.IBinder,
-	opPackageName string,
 	requestId int64,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteStrongBinder(token.Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt64(requestId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "cancelFingerprintDetect")
@@ -493,14 +492,14 @@ func (p *FingerprintServiceProxy) CancelAuthenticationFromService(
 	ctx context.Context,
 	sensorId int32,
 	token binder.IBinder,
-	opPackageName string,
 	requestId int64,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteInt32(sensorId)
 	_data.WriteStrongBinder(token.Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt64(requestId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "cancelAuthenticationFromService")
@@ -525,13 +524,12 @@ func (p *FingerprintServiceProxy) Enroll(
 	ctx context.Context,
 	token binder.IBinder,
 	hardwareAuthToken []byte,
-	userId int32,
 	receiver IFingerprintServiceReceiver,
-	opPackageName string,
 	enrollReason int32,
 	options FingerprintEnrollOptions,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteStrongBinder(token.Handle())
@@ -543,9 +541,9 @@ func (p *FingerprintServiceProxy) Enroll(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(receiver.AsBinder().Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(enrollReason)
 	_data.WriteInt32(1)
 	if _err := options.MarshalParcel(_data); _err != nil {
@@ -606,17 +604,16 @@ func (p *FingerprintServiceProxy) Remove(
 	ctx context.Context,
 	token binder.IBinder,
 	fingerId int32,
-	userId int32,
 	receiver IFingerprintServiceReceiver,
-	opPackageName string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt32(fingerId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(receiver.AsBinder().Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "remove")
 	if _err != nil {
@@ -639,16 +636,15 @@ func (p *FingerprintServiceProxy) Remove(
 func (p *FingerprintServiceProxy) RemoveAll(
 	ctx context.Context,
 	token binder.IBinder,
-	userId int32,
 	receiver IFingerprintServiceReceiver,
-	opPackageName string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteStrongBinder(token.Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(receiver.AsBinder().Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "removeAll")
 	if _err != nil {
@@ -671,13 +667,13 @@ func (p *FingerprintServiceProxy) RemoveAll(
 func (p *FingerprintServiceProxy) Rename(
 	ctx context.Context,
 	fingerId int32,
-	userId int32,
 	name string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteInt32(fingerId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(name)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "rename")
@@ -700,16 +696,14 @@ func (p *FingerprintServiceProxy) Rename(
 
 func (p *FingerprintServiceProxy) GetEnrolledFingerprints(
 	ctx context.Context,
-	userId int32,
-	opPackageName string,
-	attributionTag string,
 ) ([]Fingerprint, error) {
 	var _result []Fingerprint
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteInt32(userId)
-	_data.WriteString16(opPackageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "getEnrolledFingerprints")
 	if _err != nil {
@@ -744,14 +738,13 @@ func (p *FingerprintServiceProxy) GetEnrolledFingerprints(
 
 func (p *FingerprintServiceProxy) IsHardwareDetectedDeprecated(
 	ctx context.Context,
-	opPackageName string,
-	attributionTag string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteString16(opPackageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "isHardwareDetectedDeprecated")
 	if _err != nil {
@@ -778,13 +771,13 @@ func (p *FingerprintServiceProxy) IsHardwareDetectedDeprecated(
 func (p *FingerprintServiceProxy) IsHardwareDetected(
 	ctx context.Context,
 	sensorId int32,
-	opPackageName string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteInt32(sensorId)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "isHardwareDetected")
 	if _err != nil {
@@ -812,17 +805,16 @@ func (p *FingerprintServiceProxy) GenerateChallenge(
 	ctx context.Context,
 	token binder.IBinder,
 	sensorId int32,
-	userId int32,
 	receiver IFingerprintServiceReceiver,
-	opPackageName string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt32(sensorId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(receiver.AsBinder().Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "generateChallenge")
 	if _err != nil {
@@ -846,16 +838,15 @@ func (p *FingerprintServiceProxy) RevokeChallenge(
 	ctx context.Context,
 	token binder.IBinder,
 	sensorId int32,
-	userId int32,
-	opPackageName string,
 	challenge int64,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt32(sensorId)
-	_data.WriteInt32(userId)
-	_data.WriteString16(opPackageName)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt64(challenge)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "revokeChallenge")
@@ -878,16 +869,14 @@ func (p *FingerprintServiceProxy) RevokeChallenge(
 
 func (p *FingerprintServiceProxy) HasEnrolledFingerprintsDeprecated(
 	ctx context.Context,
-	userId int32,
-	opPackageName string,
-	attributionTag string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteInt32(userId)
-	_data.WriteString16(opPackageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "hasEnrolledFingerprintsDeprecated")
 	if _err != nil {
@@ -914,15 +903,14 @@ func (p *FingerprintServiceProxy) HasEnrolledFingerprintsDeprecated(
 func (p *FingerprintServiceProxy) HasEnrolledFingerprints(
 	ctx context.Context,
 	sensorId int32,
-	userId int32,
-	opPackageName string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteInt32(sensorId)
-	_data.WriteInt32(userId)
-	_data.WriteString16(opPackageName)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "hasEnrolledFingerprints")
 	if _err != nil {
@@ -949,13 +937,13 @@ func (p *FingerprintServiceProxy) HasEnrolledFingerprints(
 func (p *FingerprintServiceProxy) GetLockoutModeForUser(
 	ctx context.Context,
 	sensorId int32,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteInt32(sensorId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "getLockoutModeForUser")
 	if _err != nil {
@@ -982,13 +970,13 @@ func (p *FingerprintServiceProxy) GetLockoutModeForUser(
 func (p *FingerprintServiceProxy) InvalidateAuthenticatorId(
 	ctx context.Context,
 	sensorId int32,
-	userId int32,
 	callback biometrics.IInvalidationCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteInt32(sensorId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "invalidateAuthenticatorId")
@@ -1012,13 +1000,13 @@ func (p *FingerprintServiceProxy) InvalidateAuthenticatorId(
 func (p *FingerprintServiceProxy) GetAuthenticatorId(
 	ctx context.Context,
 	sensorId int32,
-	callingUserId int32,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteInt32(sensorId)
-	_data.WriteInt32(callingUserId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "getAuthenticatorId")
 	if _err != nil {
@@ -1046,15 +1034,15 @@ func (p *FingerprintServiceProxy) ResetLockout(
 	ctx context.Context,
 	token binder.IBinder,
 	sensorId int32,
-	userId int32,
 	hardwareAuthToken []byte,
 	opPackageNAame string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt32(sensorId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if hardwareAuthToken == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1086,12 +1074,12 @@ func (p *FingerprintServiceProxy) ResetLockout(
 func (p *FingerprintServiceProxy) AddLockoutResetCallback(
 	ctx context.Context,
 	callback biometrics.IBiometricServiceLockoutResetCallback,
-	opPackageName string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "addLockoutResetCallback")
 	if _err != nil {

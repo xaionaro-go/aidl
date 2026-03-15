@@ -55,17 +55,16 @@ var _ IIncidentCompanion = (*IncidentCompanionProxy)(nil)
 
 func (p *IncidentCompanionProxy) AuthorizeReport(
 	ctx context.Context,
-	callingUid int32,
-	callingPackage string,
 	receiverClass string,
 	reportId string,
 	flags int32,
 	callback IIncidentAuthListener,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncidentCompanion)
-	_data.WriteInt32(callingUid)
-	_data.WriteString16(callingPackage)
+	_data.WriteInt32(_identity.UID)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(receiverClass)
 	_data.WriteString16(reportId)
 	_data.WriteInt32(flags)

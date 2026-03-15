@@ -115,13 +115,13 @@ func (p *MediaRouterServiceProxy) RegisterClientAsUser(
 	ctx context.Context,
 	client IMediaRouterClient,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaRouterService)
 	_data.WriteStrongBinder(client.AsBinder().Handle())
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaRouterService, "registerClientAsUser")
 	if _err != nil {

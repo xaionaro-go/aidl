@@ -324,16 +324,15 @@ func (p *ImsRcsControllerProxy) IsAvailable(
 func (p *ImsRcsControllerProxy) RequestCapabilities(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 	contactNumbers []net.Uri,
 	c IRcsUceControllerCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsController)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 	if contactNumbers == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -367,16 +366,15 @@ func (p *ImsRcsControllerProxy) RequestCapabilities(
 func (p *ImsRcsControllerProxy) RequestAvailability(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 	contactNumber net.Uri,
 	c IRcsUceControllerCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsController)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt32(1)
 	if _err := contactNumber.MarshalParcel(_data); _err != nil {
 		return _err
@@ -435,15 +433,14 @@ func (p *ImsRcsControllerProxy) GetUcePublishState(
 func (p *ImsRcsControllerProxy) IsUceSettingEnabled(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsController)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsController, "isUceSettingEnabled")
 	if _err != nil {

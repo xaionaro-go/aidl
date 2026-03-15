@@ -966,11 +966,10 @@ func (p *StatusBarProxy) ShowAuthenticationDialog(
 	sensorIds []int32,
 	credentialAllowed bool,
 	requireConfirmation bool,
-	userId int32,
 	operationId int64,
-	opPackageName string,
 	requestId int64,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStatusBar)
 	_data.WriteInt32(1)
@@ -988,9 +987,9 @@ func (p *StatusBarProxy) ShowAuthenticationDialog(
 	}
 	_data.WriteBool(credentialAllowed)
 	_data.WriteBool(requireConfirmation)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt64(operationId)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt64(requestId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStatusBar, "showAuthenticationDialog")
@@ -1443,16 +1442,16 @@ func (p *StatusBarProxy) RequestTileServiceListeningState(
 
 func (p *StatusBarProxy) RequestAddTile(
 	ctx context.Context,
-	callingUid int32,
 	componentName content.ComponentName,
 	appName interface{},
 	label interface{},
 	icon drawable.Icon,
 	callback IAddTileResultCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStatusBar)
-	_data.WriteInt32(callingUid)
+	_data.WriteInt32(_identity.UID)
 	_data.WriteInt32(1)
 	if _err := componentName.MarshalParcel(_data); _err != nil {
 		return _err

@@ -56,8 +56,8 @@ func (p *WallpaperManagerCallbackProxy) OnWallpaperColorsChanged(
 	ctx context.Context,
 	colors WallpaperColors,
 	which int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWallpaperManagerCallback)
 	_data.WriteInt32(1)
@@ -65,7 +65,7 @@ func (p *WallpaperManagerCallbackProxy) OnWallpaperColorsChanged(
 		return _err
 	}
 	_data.WriteInt32(which)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWallpaperManagerCallback, "onWallpaperColorsChanged")
 	if _err != nil {

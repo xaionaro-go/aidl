@@ -148,8 +148,8 @@ func (p *TrustAgentServiceCallbackProxy) OnConfigureCompleted(
 func (p *TrustAgentServiceCallbackProxy) AddEscrowToken(
 	ctx context.Context,
 	token []byte,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustAgentServiceCallback)
 	if token == nil {
@@ -160,7 +160,7 @@ func (p *TrustAgentServiceCallbackProxy) AddEscrowToken(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustAgentServiceCallback, "addEscrowToken")
 	if _err != nil {
@@ -174,12 +174,12 @@ func (p *TrustAgentServiceCallbackProxy) AddEscrowToken(
 func (p *TrustAgentServiceCallbackProxy) IsEscrowTokenActive(
 	ctx context.Context,
 	handle int64,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustAgentServiceCallback)
 	_data.WriteInt64(handle)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustAgentServiceCallback, "isEscrowTokenActive")
 	if _err != nil {
@@ -193,12 +193,12 @@ func (p *TrustAgentServiceCallbackProxy) IsEscrowTokenActive(
 func (p *TrustAgentServiceCallbackProxy) RemoveEscrowToken(
 	ctx context.Context,
 	handle int64,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustAgentServiceCallback)
 	_data.WriteInt64(handle)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustAgentServiceCallback, "removeEscrowToken")
 	if _err != nil {
@@ -213,8 +213,8 @@ func (p *TrustAgentServiceCallbackProxy) UnlockUserWithToken(
 	ctx context.Context,
 	handle int64,
 	token []byte,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustAgentServiceCallback)
 	_data.WriteInt64(handle)
@@ -226,7 +226,7 @@ func (p *TrustAgentServiceCallbackProxy) UnlockUserWithToken(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustAgentServiceCallback, "unlockUserWithToken")
 	if _err != nil {

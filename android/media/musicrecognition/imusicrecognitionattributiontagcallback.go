@@ -37,11 +37,11 @@ var _ IMusicRecognitionAttributionTagCallback = (*MusicRecognitionAttributionTag
 
 func (p *MusicRecognitionAttributionTagCallbackProxy) OnAttributionTag(
 	ctx context.Context,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMusicRecognitionAttributionTagCallback)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMusicRecognitionAttributionTagCallback, "onAttributionTag")
 	if _err != nil {

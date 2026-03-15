@@ -253,8 +253,8 @@ func (p *UsbManagerProxy) SetDevicePackage(
 	ctx context.Context,
 	device UsbDevice,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsbManager)
 	_data.WriteInt32(1)
@@ -262,7 +262,7 @@ func (p *UsbManagerProxy) SetDevicePackage(
 		return _err
 	}
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsbManager, "setDevicePackage")
 	if _err != nil {
@@ -286,8 +286,8 @@ func (p *UsbManagerProxy) SetAccessoryPackage(
 	ctx context.Context,
 	accessory UsbAccessory,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsbManager)
 	_data.WriteInt32(1)
@@ -295,7 +295,7 @@ func (p *UsbManagerProxy) SetAccessoryPackage(
 		return _err
 	}
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsbManager, "setAccessoryPackage")
 	if _err != nil {
@@ -816,13 +816,13 @@ func (p *UsbManagerProxy) GrantAccessoryPermission(
 func (p *UsbManagerProxy) HasDefaults(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsbManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsbManager, "hasDefaults")
 	if _err != nil {
@@ -849,12 +849,12 @@ func (p *UsbManagerProxy) HasDefaults(
 func (p *UsbManagerProxy) ClearDefaults(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsbManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsbManager, "clearDefaults")
 	if _err != nil {

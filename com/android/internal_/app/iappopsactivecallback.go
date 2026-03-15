@@ -40,18 +40,18 @@ func (p *AppOpsActiveCallbackProxy) OpActiveChanged(
 	op int32,
 	uid int32,
 	packageName string,
-	attributionTag string,
 	virtualDeviceId int32,
 	active bool,
 	attributionFlags int32,
 	attributionChainId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsActiveCallback)
 	_data.WriteInt32(op)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt32(virtualDeviceId)
 	_data.WriteBool(active)
 	_data.WriteInt32(attributionFlags)

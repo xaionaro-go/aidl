@@ -176,12 +176,12 @@ var _ ITvInputManager = (*TvInputManagerProxy)(nil)
 
 func (p *TvInputManagerProxy) GetTvInputList(
 	ctx context.Context,
-	userId int32,
 ) ([]TvInputInfo, error) {
 	var _result []TvInputInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getTvInputList")
 	if _err != nil {
@@ -217,13 +217,13 @@ func (p *TvInputManagerProxy) GetTvInputList(
 func (p *TvInputManagerProxy) GetTvInputInfo(
 	ctx context.Context,
 	inputId string,
-	userId int32,
 ) (TvInputInfo, error) {
 	var _result TvInputInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteString16(inputId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getTvInputInfo")
 	if _err != nil {
@@ -255,15 +255,15 @@ func (p *TvInputManagerProxy) GetTvInputInfo(
 func (p *TvInputManagerProxy) UpdateTvInputInfo(
 	ctx context.Context,
 	inputInfo TvInputInfo,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteInt32(1)
 	if _err := inputInfo.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "updateTvInputInfo")
 	if _err != nil {
@@ -286,13 +286,13 @@ func (p *TvInputManagerProxy) UpdateTvInputInfo(
 func (p *TvInputManagerProxy) GetTvInputState(
 	ctx context.Context,
 	inputId string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteString16(inputId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getTvInputState")
 	if _err != nil {
@@ -319,13 +319,13 @@ func (p *TvInputManagerProxy) GetTvInputState(
 func (p *TvInputManagerProxy) GetAvailableExtensionInterfaceNames(
 	ctx context.Context,
 	inputId string,
-	userId int32,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteString16(inputId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getAvailableExtensionInterfaceNames")
 	if _err != nil {
@@ -363,14 +363,14 @@ func (p *TvInputManagerProxy) GetExtensionInterface(
 	ctx context.Context,
 	inputId string,
 	name string,
-	userId int32,
 ) (binder.IBinder, error) {
 	var _result binder.IBinder
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteString16(inputId)
 	_data.WriteString16(name)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getExtensionInterface")
 	if _err != nil {
@@ -397,12 +397,12 @@ func (p *TvInputManagerProxy) GetExtensionInterface(
 
 func (p *TvInputManagerProxy) GetTvContentRatingSystemList(
 	ctx context.Context,
-	userId int32,
 ) ([]TvContentRatingSystemInfo, error) {
 	var _result []TvContentRatingSystemInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getTvContentRatingSystemList")
 	if _err != nil {
@@ -438,12 +438,12 @@ func (p *TvInputManagerProxy) GetTvContentRatingSystemList(
 func (p *TvInputManagerProxy) RegisterCallback(
 	ctx context.Context,
 	callback ITvInputManagerCallback,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "registerCallback")
 	if _err != nil {
@@ -466,12 +466,12 @@ func (p *TvInputManagerProxy) RegisterCallback(
 func (p *TvInputManagerProxy) UnregisterCallback(
 	ctx context.Context,
 	callback ITvInputManagerCallback,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "unregisterCallback")
 	if _err != nil {
@@ -493,12 +493,12 @@ func (p *TvInputManagerProxy) UnregisterCallback(
 
 func (p *TvInputManagerProxy) IsParentalControlsEnabled(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "isParentalControlsEnabled")
 	if _err != nil {
@@ -525,12 +525,12 @@ func (p *TvInputManagerProxy) IsParentalControlsEnabled(
 func (p *TvInputManagerProxy) SetParentalControlsEnabled(
 	ctx context.Context,
 	enabled bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteBool(enabled)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "setParentalControlsEnabled")
 	if _err != nil {
@@ -553,13 +553,13 @@ func (p *TvInputManagerProxy) SetParentalControlsEnabled(
 func (p *TvInputManagerProxy) IsRatingBlocked(
 	ctx context.Context,
 	rating string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteString16(rating)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "isRatingBlocked")
 	if _err != nil {
@@ -585,12 +585,12 @@ func (p *TvInputManagerProxy) IsRatingBlocked(
 
 func (p *TvInputManagerProxy) GetBlockedRatings(
 	ctx context.Context,
-	userId int32,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getBlockedRatings")
 	if _err != nil {
@@ -627,12 +627,12 @@ func (p *TvInputManagerProxy) GetBlockedRatings(
 func (p *TvInputManagerProxy) AddBlockedRating(
 	ctx context.Context,
 	rating string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteString16(rating)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "addBlockedRating")
 	if _err != nil {
@@ -655,12 +655,12 @@ func (p *TvInputManagerProxy) AddBlockedRating(
 func (p *TvInputManagerProxy) RemoveBlockedRating(
 	ctx context.Context,
 	rating string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteString16(rating)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "removeBlockedRating")
 	if _err != nil {
@@ -687,8 +687,8 @@ func (p *TvInputManagerProxy) CreateSession(
 	tvAppAttributionSource content.AttributionSource,
 	isRecordingSession bool,
 	seq int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(client.AsBinder().Handle())
@@ -699,7 +699,7 @@ func (p *TvInputManagerProxy) CreateSession(
 	}
 	_data.WriteBool(isRecordingSession)
 	_data.WriteInt32(seq)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "createSession")
 	if _err != nil {
@@ -722,12 +722,12 @@ func (p *TvInputManagerProxy) CreateSession(
 func (p *TvInputManagerProxy) ReleaseSession(
 	ctx context.Context,
 	sessionToken binder.IBinder,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "releaseSession")
 	if _err != nil {
@@ -845,12 +845,12 @@ func (p *TvInputManagerProxy) GetClientUserId(
 func (p *TvInputManagerProxy) SetMainSession(
 	ctx context.Context,
 	sessionToken binder.IBinder,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "setMainSession")
 	if _err != nil {
@@ -874,12 +874,12 @@ func (p *TvInputManagerProxy) SetSurface(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	surface interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "setSurface")
 	if _err != nil {
@@ -905,15 +905,15 @@ func (p *TvInputManagerProxy) DispatchSurfaceChanged(
 	format int32,
 	width int32,
 	height int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(format)
 	_data.WriteInt32(width)
 	_data.WriteInt32(height)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "dispatchSurfaceChanged")
 	if _err != nil {
@@ -937,13 +937,13 @@ func (p *TvInputManagerProxy) SetVolume(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	volume float32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteFloat32(volume)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "setVolume")
 	if _err != nil {
@@ -968,8 +968,8 @@ func (p *TvInputManagerProxy) Tune(
 	sessionToken binder.IBinder,
 	channelUri net.Uri,
 	params os.Bundle,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
@@ -981,7 +981,7 @@ func (p *TvInputManagerProxy) Tune(
 	if _err := params.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "tune")
 	if _err != nil {
@@ -1005,13 +1005,13 @@ func (p *TvInputManagerProxy) SetCaptionEnabled(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	enabled bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteBool(enabled)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "setCaptionEnabled")
 	if _err != nil {
@@ -1036,14 +1036,14 @@ func (p *TvInputManagerProxy) SelectTrack(
 	sessionToken binder.IBinder,
 	type_ int32,
 	trackId string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(type_)
 	_data.WriteString16(trackId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "selectTrack")
 	if _err != nil {
@@ -1068,14 +1068,14 @@ func (p *TvInputManagerProxy) SelectAudioPresentation(
 	sessionToken binder.IBinder,
 	presentationId int32,
 	programId int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(presentationId)
 	_data.WriteInt32(programId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "selectAudioPresentation")
 	if _err != nil {
@@ -1099,13 +1099,13 @@ func (p *TvInputManagerProxy) SetInteractiveAppNotificationEnabled(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	enabled bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteBool(enabled)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "setInteractiveAppNotificationEnabled")
 	if _err != nil {
@@ -1130,8 +1130,8 @@ func (p *TvInputManagerProxy) SendAppPrivateCommand(
 	sessionToken binder.IBinder,
 	action string,
 	data os.Bundle,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
@@ -1140,7 +1140,7 @@ func (p *TvInputManagerProxy) SendAppPrivateCommand(
 	if _err := data.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "sendAppPrivateCommand")
 	if _err != nil {
@@ -1165,8 +1165,8 @@ func (p *TvInputManagerProxy) CreateOverlayView(
 	sessionToken binder.IBinder,
 	windowToken binder.IBinder,
 	frame graphics.Rect,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
@@ -1175,7 +1175,7 @@ func (p *TvInputManagerProxy) CreateOverlayView(
 	if _err := frame.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "createOverlayView")
 	if _err != nil {
@@ -1199,8 +1199,8 @@ func (p *TvInputManagerProxy) RelayoutOverlayView(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	frame graphics.Rect,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
@@ -1208,7 +1208,7 @@ func (p *TvInputManagerProxy) RelayoutOverlayView(
 	if _err := frame.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "relayoutOverlayView")
 	if _err != nil {
@@ -1231,12 +1231,12 @@ func (p *TvInputManagerProxy) RelayoutOverlayView(
 func (p *TvInputManagerProxy) RemoveOverlayView(
 	ctx context.Context,
 	sessionToken binder.IBinder,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "removeOverlayView")
 	if _err != nil {
@@ -1260,13 +1260,13 @@ func (p *TvInputManagerProxy) UnblockContent(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	unblockedRating string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteString16(unblockedRating)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "unblockContent")
 	if _err != nil {
@@ -1290,8 +1290,8 @@ func (p *TvInputManagerProxy) TimeShiftPlay(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	recordedProgramUri net.Uri,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
@@ -1299,7 +1299,7 @@ func (p *TvInputManagerProxy) TimeShiftPlay(
 	if _err := recordedProgramUri.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftPlay")
 	if _err != nil {
@@ -1322,12 +1322,12 @@ func (p *TvInputManagerProxy) TimeShiftPlay(
 func (p *TvInputManagerProxy) TimeShiftPause(
 	ctx context.Context,
 	sessionToken binder.IBinder,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftPause")
 	if _err != nil {
@@ -1350,12 +1350,12 @@ func (p *TvInputManagerProxy) TimeShiftPause(
 func (p *TvInputManagerProxy) TimeShiftResume(
 	ctx context.Context,
 	sessionToken binder.IBinder,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftResume")
 	if _err != nil {
@@ -1379,13 +1379,13 @@ func (p *TvInputManagerProxy) TimeShiftSeekTo(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	timeMs int64,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt64(timeMs)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftSeekTo")
 	if _err != nil {
@@ -1409,8 +1409,8 @@ func (p *TvInputManagerProxy) TimeShiftSetPlaybackParams(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	params media.PlaybackParams,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
@@ -1418,7 +1418,7 @@ func (p *TvInputManagerProxy) TimeShiftSetPlaybackParams(
 	if _err := params.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftSetPlaybackParams")
 	if _err != nil {
@@ -1442,13 +1442,13 @@ func (p *TvInputManagerProxy) TimeShiftSetMode(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	mode int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(mode)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftSetMode")
 	if _err != nil {
@@ -1472,13 +1472,13 @@ func (p *TvInputManagerProxy) TimeShiftEnablePositionTracking(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	enable bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteBool(enable)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "timeShiftEnablePositionTracking")
 	if _err != nil {
@@ -1500,12 +1500,12 @@ func (p *TvInputManagerProxy) TimeShiftEnablePositionTracking(
 
 func (p *TvInputManagerProxy) GetCurrentTunedInfos(
 	ctx context.Context,
-	userId int32,
 ) ([]TunedInfo, error) {
 	var _result []TunedInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getCurrentTunedInfos")
 	if _err != nil {
@@ -1543,8 +1543,8 @@ func (p *TvInputManagerProxy) StartRecording(
 	sessionToken binder.IBinder,
 	programUri net.Uri,
 	params os.Bundle,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
@@ -1556,7 +1556,7 @@ func (p *TvInputManagerProxy) StartRecording(
 	if _err := params.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "startRecording")
 	if _err != nil {
@@ -1579,12 +1579,12 @@ func (p *TvInputManagerProxy) StartRecording(
 func (p *TvInputManagerProxy) StopRecording(
 	ctx context.Context,
 	sessionToken binder.IBinder,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "stopRecording")
 	if _err != nil {
@@ -1608,8 +1608,8 @@ func (p *TvInputManagerProxy) PauseRecording(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	params os.Bundle,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
@@ -1617,7 +1617,7 @@ func (p *TvInputManagerProxy) PauseRecording(
 	if _err := params.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "pauseRecording")
 	if _err != nil {
@@ -1641,8 +1641,8 @@ func (p *TvInputManagerProxy) ResumeRecording(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	params os.Bundle,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
@@ -1650,7 +1650,7 @@ func (p *TvInputManagerProxy) ResumeRecording(
 	if _err := params.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "resumeRecording")
 	if _err != nil {
@@ -1673,12 +1673,12 @@ func (p *TvInputManagerProxy) ResumeRecording(
 func (p *TvInputManagerProxy) ResumePlayback(
 	ctx context.Context,
 	sessionToken binder.IBinder,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "resumePlayback")
 	if _err != nil {
@@ -1702,13 +1702,13 @@ func (p *TvInputManagerProxy) StopPlayback(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	mode int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(mode)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "stopPlayback")
 	if _err != nil {
@@ -1732,8 +1732,8 @@ func (p *TvInputManagerProxy) RequestBroadcastInfo(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	request BroadcastInfoRequest,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
@@ -1741,7 +1741,7 @@ func (p *TvInputManagerProxy) RequestBroadcastInfo(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "requestBroadcastInfo")
 	if _err != nil {
@@ -1765,13 +1765,13 @@ func (p *TvInputManagerProxy) RemoveBroadcastInfo(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	id int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(id)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "removeBroadcastInfo")
 	if _err != nil {
@@ -1795,8 +1795,8 @@ func (p *TvInputManagerProxy) RequestAd(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	request AdRequest,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
@@ -1804,7 +1804,7 @@ func (p *TvInputManagerProxy) RequestAd(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "requestAd")
 	if _err != nil {
@@ -1828,8 +1828,8 @@ func (p *TvInputManagerProxy) NotifyAdBufferReady(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	buffer AdBuffer,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
@@ -1837,7 +1837,7 @@ func (p *TvInputManagerProxy) NotifyAdBufferReady(
 	if _err := buffer.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "notifyAdBufferReady")
 	if _err != nil {
@@ -1862,8 +1862,8 @@ func (p *TvInputManagerProxy) NotifyTvMessage(
 	sessionToken binder.IBinder,
 	type_ int32,
 	data os.Bundle,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
@@ -1872,7 +1872,7 @@ func (p *TvInputManagerProxy) NotifyTvMessage(
 	if _err := data.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "notifyTvMessage")
 	if _err != nil {
@@ -1897,14 +1897,14 @@ func (p *TvInputManagerProxy) SetTvMessageEnabled(
 	sessionToken binder.IBinder,
 	type_ int32,
 	enabled bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteInt32(type_)
 	_data.WriteBool(enabled)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "setTvMessageEnabled")
 	if _err != nil {
@@ -1967,11 +1967,11 @@ func (p *TvInputManagerProxy) AcquireTvInputHardware(
 	deviceId int32,
 	callback ITvInputHardwareCallback,
 	info TvInputInfo,
-	userId int32,
 	tvInputSessionId string,
 	priorityHint int32,
 ) (ITvInputHardware, error) {
 	var _result ITvInputHardware
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteInt32(deviceId)
@@ -1980,7 +1980,7 @@ func (p *TvInputManagerProxy) AcquireTvInputHardware(
 	if _err := info.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(tvInputSessionId)
 	_data.WriteInt32(priorityHint)
 
@@ -2011,13 +2011,13 @@ func (p *TvInputManagerProxy) ReleaseTvInputHardware(
 	ctx context.Context,
 	deviceId int32,
 	hardware ITvInputHardware,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteInt32(deviceId)
 	_data.WriteStrongBinder(hardware.AsBinder().Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "releaseTvInputHardware")
 	if _err != nil {
@@ -2040,13 +2040,13 @@ func (p *TvInputManagerProxy) ReleaseTvInputHardware(
 func (p *TvInputManagerProxy) GetAvailableTvStreamConfigList(
 	ctx context.Context,
 	inputId string,
-	userId int32,
 ) ([]TvStreamConfig, error) {
 	var _result []TvStreamConfig
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteString16(inputId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "getAvailableTvStreamConfigList")
 	if _err != nil {
@@ -2084,9 +2084,9 @@ func (p *TvInputManagerProxy) CaptureFrame(
 	inputId string,
 	surface interface{},
 	config TvStreamConfig,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteString16(inputId)
@@ -2094,7 +2094,7 @@ func (p *TvInputManagerProxy) CaptureFrame(
 	if _err := config.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "captureFrame")
 	if _err != nil {
@@ -2120,12 +2120,12 @@ func (p *TvInputManagerProxy) CaptureFrame(
 
 func (p *TvInputManagerProxy) IsSingleSessionActive(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "isSingleSessionActive")
 	if _err != nil {
@@ -2226,15 +2226,15 @@ func (p *TvInputManagerProxy) OpenDvbDevice(
 func (p *TvInputManagerProxy) SendTvInputNotifyIntent(
 	ctx context.Context,
 	intent content.Intent,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteInt32(1)
 	if _err := intent.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "sendTvInputNotifyIntent")
 	if _err != nil {
@@ -2257,15 +2257,15 @@ func (p *TvInputManagerProxy) SendTvInputNotifyIntent(
 func (p *TvInputManagerProxy) RequestChannelBrowsable(
 	ctx context.Context,
 	channelUri net.Uri,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteInt32(1)
 	if _err := channelUri.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "requestChannelBrowsable")
 	if _err != nil {
@@ -2341,13 +2341,13 @@ func (p *TvInputManagerProxy) SetVideoFrozen(
 	ctx context.Context,
 	sessionToken binder.IBinder,
 	isFrozen bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
 	_data.WriteBool(isFrozen)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "setVideoFrozen")
 	if _err != nil {
@@ -2372,8 +2372,8 @@ func (p *TvInputManagerProxy) NotifyTvAdSessionData(
 	sessionToken binder.IBinder,
 	type_ string,
 	data os.Bundle,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputManager)
 	_data.WriteStrongBinder(sessionToken.Handle())
@@ -2382,7 +2382,7 @@ func (p *TvInputManagerProxy) NotifyTvAdSessionData(
 	if _err := data.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputManager, "notifyTvAdSessionData")
 	if _err != nil {

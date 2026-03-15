@@ -362,15 +362,14 @@ func (p *StorageManagerProxy) GetMountedObbPath(
 
 func (p *StorageManagerProxy) GetVolumeList(
 	ctx context.Context,
-	userId int32,
-	callingPackage string,
 	flags int32,
 ) ([]StorageVolume, error) {
 	var _result []StorageVolume
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
-	_data.WriteInt32(userId)
-	_data.WriteString16(callingPackage)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageManager, "getVolumeList")
@@ -982,12 +981,12 @@ func (p *StorageManagerProxy) SetDebugFlags(
 
 func (p *StorageManagerProxy) CreateUserStorageKeys(
 	ctx context.Context,
-	userId int32,
 	ephemeral bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(ephemeral)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageManager, "createUserStorageKeys")
@@ -1010,11 +1009,11 @@ func (p *StorageManagerProxy) CreateUserStorageKeys(
 
 func (p *StorageManagerProxy) DestroyUserStorageKeys(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageManager, "destroyUserStorageKeys")
 	if _err != nil {
@@ -1036,12 +1035,12 @@ func (p *StorageManagerProxy) DestroyUserStorageKeys(
 
 func (p *StorageManagerProxy) UnlockCeStorage(
 	ctx context.Context,
-	userId int32,
 	secret []byte,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if secret == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1071,11 +1070,11 @@ func (p *StorageManagerProxy) UnlockCeStorage(
 
 func (p *StorageManagerProxy) LockCeStorage(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageManager, "lockCeStorage")
 	if _err != nil {
@@ -1097,12 +1096,12 @@ func (p *StorageManagerProxy) LockCeStorage(
 
 func (p *StorageManagerProxy) IsCeStorageUnlocked(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageManager, "isCeStorageUnlocked")
 	if _err != nil {
@@ -1129,13 +1128,13 @@ func (p *StorageManagerProxy) IsCeStorageUnlocked(
 func (p *StorageManagerProxy) PrepareUserStorage(
 	ctx context.Context,
 	volumeUuid string,
-	userId int32,
 	flags int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
 	_data.WriteString16(volumeUuid)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageManager, "prepareUserStorage")
@@ -1159,13 +1158,13 @@ func (p *StorageManagerProxy) PrepareUserStorage(
 func (p *StorageManagerProxy) DestroyUserStorage(
 	ctx context.Context,
 	volumeUuid string,
-	userId int32,
 	flags int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
 	_data.WriteString16(volumeUuid)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageManager, "destroyUserStorage")
@@ -1188,12 +1187,12 @@ func (p *StorageManagerProxy) DestroyUserStorage(
 
 func (p *StorageManagerProxy) SetCeStorageProtection(
 	ctx context.Context,
-	userId int32,
 	secret []byte,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if secret == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1378,14 +1377,14 @@ func (p *StorageManagerProxy) GetAllocatableBytes(
 	ctx context.Context,
 	volumeUuid string,
 	flags int32,
-	callingPackage string,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
 	_data.WriteString16(volumeUuid)
 	_data.WriteInt32(flags)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageManager, "getAllocatableBytes")
 	if _err != nil {
@@ -1414,14 +1413,14 @@ func (p *StorageManagerProxy) AllocateBytes(
 	volumeUuid string,
 	bytes int64,
 	flags int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
 	_data.WriteString16(volumeUuid)
 	_data.WriteInt64(bytes)
 	_data.WriteInt32(flags)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageManager, "allocateBytes")
 	if _err != nil {
@@ -1655,13 +1654,13 @@ func (p *StorageManagerProxy) DisableAppDataIsolation(
 	ctx context.Context,
 	pkgName string,
 	pid int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
 	_data.WriteString16(pkgName)
 	_data.WriteInt32(pid)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageManager, "disableAppDataIsolation")
 	if _err != nil {

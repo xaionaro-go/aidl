@@ -941,12 +941,12 @@ func (p *TelephonyProxy) Dial(
 
 func (p *TelephonyProxy) Call(
 	ctx context.Context,
-	callingPackage string,
 	number string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(number)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "call")
@@ -969,12 +969,12 @@ func (p *TelephonyProxy) Call(
 
 func (p *TelephonyProxy) IsRadioOn(
 	ctx context.Context,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "isRadioOn")
 	if _err != nil {
@@ -1000,14 +1000,13 @@ func (p *TelephonyProxy) IsRadioOn(
 
 func (p *TelephonyProxy) IsRadioOnWithFeature(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "isRadioOnWithFeature")
 	if _err != nil {
@@ -1034,13 +1033,13 @@ func (p *TelephonyProxy) IsRadioOnWithFeature(
 func (p *TelephonyProxy) IsRadioOnForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "isRadioOnForSubscriber")
 	if _err != nil {
@@ -1067,15 +1066,14 @@ func (p *TelephonyProxy) IsRadioOnForSubscriber(
 func (p *TelephonyProxy) IsRadioOnForSubscriberWithFeature(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "isRadioOnForSubscriberWithFeature")
 	if _err != nil {
@@ -1625,15 +1623,14 @@ func (p *TelephonyProxy) ClearRadioPowerOffForReason(
 func (p *TelephonyProxy) GetRadioPowerOffReasons(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) ([]interface{}, error) {
 	var _result []interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getRadioPowerOffReasons")
 	if _err != nil {
@@ -1763,12 +1760,12 @@ func (p *TelephonyProxy) DisableLocationUpdates(
 
 func (p *TelephonyProxy) EnableDataConnectivity(
 	ctx context.Context,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "enableDataConnectivity")
 	if _err != nil {
@@ -1794,12 +1791,12 @@ func (p *TelephonyProxy) EnableDataConnectivity(
 
 func (p *TelephonyProxy) DisableDataConnectivity(
 	ctx context.Context,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "disableDataConnectivity")
 	if _err != nil {
@@ -1857,13 +1854,13 @@ func (p *TelephonyProxy) IsDataConnectivityPossible(
 func (p *TelephonyProxy) GetCellLocation(
 	ctx context.Context,
 	callingPkg string,
-	callingFeatureId string,
 ) (network.CellIdentity, error) {
 	var _result network.CellIdentity
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteString16(callingPkg)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getCellLocation")
 	if _err != nil {
@@ -1926,13 +1923,13 @@ func (p *TelephonyProxy) GetNetworkCountryIsoForPhone(
 func (p *TelephonyProxy) GetNeighboringCellInfo(
 	ctx context.Context,
 	callingPkg string,
-	callingFeatureId string,
 ) ([]androidTelephony.NeighboringCellInfo, error) {
 	var _result []androidTelephony.NeighboringCellInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteString16(callingPkg)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getNeighboringCellInfo")
 	if _err != nil {
@@ -1997,14 +1994,14 @@ func (p *TelephonyProxy) GetCallState(
 func (p *TelephonyProxy) GetCallStateForSubscription(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
 	featureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(featureId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getCallStateForSubscription")
@@ -2211,14 +2208,13 @@ func (p *TelephonyProxy) GetActivePhoneTypeForSlot(
 
 func (p *TelephonyProxy) GetCdmaEriIconIndex(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getCdmaEriIconIndex")
 	if _err != nil {
@@ -2245,15 +2241,14 @@ func (p *TelephonyProxy) GetCdmaEriIconIndex(
 func (p *TelephonyProxy) GetCdmaEriIconIndexForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getCdmaEriIconIndexForSubscriber")
 	if _err != nil {
@@ -2279,14 +2274,13 @@ func (p *TelephonyProxy) GetCdmaEriIconIndexForSubscriber(
 
 func (p *TelephonyProxy) GetCdmaEriIconMode(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getCdmaEriIconMode")
 	if _err != nil {
@@ -2313,15 +2307,14 @@ func (p *TelephonyProxy) GetCdmaEriIconMode(
 func (p *TelephonyProxy) GetCdmaEriIconModeForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getCdmaEriIconModeForSubscriber")
 	if _err != nil {
@@ -2347,14 +2340,13 @@ func (p *TelephonyProxy) GetCdmaEriIconModeForSubscriber(
 
 func (p *TelephonyProxy) GetCdmaEriText(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getCdmaEriText")
 	if _err != nil {
@@ -2381,15 +2373,14 @@ func (p *TelephonyProxy) GetCdmaEriText(
 func (p *TelephonyProxy) GetCdmaEriTextForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getCdmaEriTextForSubscriber")
 	if _err != nil {
@@ -2536,13 +2527,13 @@ func (p *TelephonyProxy) SetDataActivationState(
 func (p *TelephonyProxy) GetVoiceActivationState(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getVoiceActivationState")
 	if _err != nil {
@@ -2569,13 +2560,13 @@ func (p *TelephonyProxy) GetVoiceActivationState(
 func (p *TelephonyProxy) GetDataActivationState(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getDataActivationState")
 	if _err != nil {
@@ -2602,15 +2593,14 @@ func (p *TelephonyProxy) GetDataActivationState(
 func (p *TelephonyProxy) GetVoiceMessageCountForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getVoiceMessageCountForSubscriber")
 	if _err != nil {
@@ -2667,13 +2657,13 @@ func (p *TelephonyProxy) IsConcurrentVoiceAndDataAllowed(
 
 func (p *TelephonyProxy) GetVisualVoicemailSettings(
 	ctx context.Context,
-	callingPackage string,
 	subId int32,
 ) (os.Bundle, error) {
 	var _result os.Bundle
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(subId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getVisualVoicemailSettings")
@@ -2705,15 +2695,14 @@ func (p *TelephonyProxy) GetVisualVoicemailSettings(
 
 func (p *TelephonyProxy) GetVisualVoicemailPackageName(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 	subId int32,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt32(subId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getVisualVoicemailPackageName")
@@ -2740,13 +2729,13 @@ func (p *TelephonyProxy) GetVisualVoicemailPackageName(
 
 func (p *TelephonyProxy) EnableVisualVoicemailSmsFilter(
 	ctx context.Context,
-	callingPackage string,
 	subId int32,
 	settings androidTelephony.VisualVoicemailSmsFilterSettings,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(subId)
 	_data.WriteInt32(1)
 	if _err := settings.MarshalParcel(_data); _err != nil {
@@ -2773,12 +2762,12 @@ func (p *TelephonyProxy) EnableVisualVoicemailSmsFilter(
 
 func (p *TelephonyProxy) DisableVisualVoicemailSmsFilter(
 	ctx context.Context,
-	callingPackage string,
 	subId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(subId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "disableVisualVoicemailSmsFilter")
@@ -2792,13 +2781,13 @@ func (p *TelephonyProxy) DisableVisualVoicemailSmsFilter(
 
 func (p *TelephonyProxy) GetVisualVoicemailSmsFilterSettings(
 	ctx context.Context,
-	callingPackage string,
 	subId int32,
 ) (androidTelephony.VisualVoicemailSmsFilterSettings, error) {
 	var _result androidTelephony.VisualVoicemailSmsFilterSettings
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(subId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getVisualVoicemailSmsFilterSettings")
@@ -2866,7 +2855,6 @@ func (p *TelephonyProxy) GetActiveVisualVoicemailSmsFilterSettings(
 
 func (p *TelephonyProxy) SendVisualVoicemailSmsForSubscriber(
 	ctx context.Context,
-	callingPackage string,
 	callingAttributeTag string,
 	subId int32,
 	number string,
@@ -2874,9 +2862,10 @@ func (p *TelephonyProxy) SendVisualVoicemailSmsForSubscriber(
 	text string,
 	sentIntent app.PendingIntent,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(callingAttributeTag)
 	_data.WriteInt32(subId)
 	_data.WriteString16(number)
@@ -2936,15 +2925,14 @@ func (p *TelephonyProxy) SendDialerSpecialCode(
 func (p *TelephonyProxy) GetNetworkTypeForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getNetworkTypeForSubscriber")
 	if _err != nil {
@@ -2970,14 +2958,13 @@ func (p *TelephonyProxy) GetNetworkTypeForSubscriber(
 
 func (p *TelephonyProxy) GetDataNetworkType(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getDataNetworkType")
 	if _err != nil {
@@ -3004,15 +2991,14 @@ func (p *TelephonyProxy) GetDataNetworkType(
 func (p *TelephonyProxy) GetDataNetworkTypeForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getDataNetworkTypeForSubscriber")
 	if _err != nil {
@@ -3039,15 +3025,14 @@ func (p *TelephonyProxy) GetDataNetworkTypeForSubscriber(
 func (p *TelephonyProxy) GetVoiceNetworkTypeForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getVoiceNetworkTypeForSubscriber")
 	if _err != nil {
@@ -3133,14 +3118,13 @@ func (p *TelephonyProxy) HasIccCardUsingSlotIndex(
 
 func (p *TelephonyProxy) GetLteOnCdmaMode(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getLteOnCdmaMode")
 	if _err != nil {
@@ -3167,15 +3151,14 @@ func (p *TelephonyProxy) GetLteOnCdmaMode(
 func (p *TelephonyProxy) GetLteOnCdmaModeForSubscriber(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getLteOnCdmaModeForSubscriber")
 	if _err != nil {
@@ -3202,13 +3185,13 @@ func (p *TelephonyProxy) GetLteOnCdmaModeForSubscriber(
 func (p *TelephonyProxy) GetAllCellInfo(
 	ctx context.Context,
 	callingPkg string,
-	callingFeatureId string,
 ) ([]network.CellInfo, error) {
 	var _result []network.CellInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteString16(callingPkg)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getAllCellInfo")
 	if _err != nil {
@@ -3246,14 +3229,14 @@ func (p *TelephonyProxy) RequestCellInfoUpdate(
 	subId int32,
 	cb androidTelephony.ICellInfoCallback,
 	callingPkg string,
-	callingFeatureId string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 	_data.WriteString16(callingPkg)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "requestCellInfoUpdate")
 	if _err != nil {
@@ -3278,15 +3261,15 @@ func (p *TelephonyProxy) RequestCellInfoUpdateWithWorkSource(
 	subId int32,
 	cb androidTelephony.ICellInfoCallback,
 	callingPkg string,
-	callingFeatureId string,
 	ws interface{},
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
 	_data.WriteString16(callingPkg)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "requestCellInfoUpdateWithWorkSource")
 	if _err != nil {
@@ -3503,7 +3486,6 @@ func (p *TelephonyProxy) IccTransmitApduBasicChannelByPort(
 	ctx context.Context,
 	slotIndex int32,
 	portIndex int32,
-	callingPackage string,
 	cla int32,
 	instruction int32,
 	p1 int32,
@@ -3512,11 +3494,12 @@ func (p *TelephonyProxy) IccTransmitApduBasicChannelByPort(
 	data string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(slotIndex)
 	_data.WriteInt32(portIndex)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(cla)
 	_data.WriteInt32(instruction)
 	_data.WriteInt32(p1)
@@ -3549,7 +3532,6 @@ func (p *TelephonyProxy) IccTransmitApduBasicChannelByPort(
 func (p *TelephonyProxy) IccTransmitApduBasicChannel(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
 	cla int32,
 	instruction int32,
 	p1 int32,
@@ -3558,10 +3540,11 @@ func (p *TelephonyProxy) IccTransmitApduBasicChannel(
 	data string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(cla)
 	_data.WriteInt32(instruction)
 	_data.WriteInt32(p1)
@@ -4096,16 +4079,16 @@ func (p *TelephonyProxy) GetImsConfig(
 func (p *TelephonyProxy) SetBoundImsServiceOverride(
 	ctx context.Context,
 	slotIndex int32,
-	userId int32,
 	isCarrierService bool,
 	featureTypes []int32,
 	packageName string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(slotIndex)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(isCarrierService)
 	if featureTypes == nil {
 		_data.WriteInt32(-1)
@@ -4262,15 +4245,14 @@ func (p *TelephonyProxy) SetNetworkSelectionModeAutomatic(
 func (p *TelephonyProxy) GetCellNetworkScanResults(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (CellNetworkScanResult, error) {
 	var _result CellNetworkScanResult
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getCellNetworkScanResults")
 	if _err != nil {
@@ -4306,10 +4288,9 @@ func (p *TelephonyProxy) RequestNetworkScan(
 	request network.NetworkScanRequest,
 	messenger os.Messenger,
 	binder_ binder.IBinder,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
@@ -4323,8 +4304,8 @@ func (p *TelephonyProxy) RequestNetworkScan(
 		return _result, _err
 	}
 	_data.WriteStrongBinder(binder_.Handle())
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "requestNetworkScan")
 	if _err != nil {
@@ -4580,14 +4561,14 @@ func (p *TelephonyProxy) SetDataEnabledForReason(
 	subId int32,
 	reason int32,
 	enable bool,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
 	_data.WriteInt32(reason)
 	_data.WriteBool(enable)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "setDataEnabledForReason")
 	if _err != nil {
@@ -4764,8 +4745,8 @@ func (p *TelephonyProxy) RequestNumberVerification(
 	range_ androidTelephony.PhoneNumberRange,
 	timeoutMillis int64,
 	callback INumberVerificationCallback,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(1)
@@ -4774,7 +4755,7 @@ func (p *TelephonyProxy) RequestNumberVerification(
 	}
 	_data.WriteInt64(timeoutMillis)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "requestNumberVerification")
 	if _err != nil {
@@ -5006,15 +4987,14 @@ func (p *TelephonyProxy) SetLine1NumberForDisplayForSubscriber(
 func (p *TelephonyProxy) GetLine1NumberForDisplay(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getLine1NumberForDisplay")
 	if _err != nil {
@@ -5041,15 +5021,14 @@ func (p *TelephonyProxy) GetLine1NumberForDisplay(
 func (p *TelephonyProxy) GetLine1AlphaTagForDisplay(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getLine1AlphaTagForDisplay")
 	if _err != nil {
@@ -5076,15 +5055,14 @@ func (p *TelephonyProxy) GetLine1AlphaTagForDisplay(
 func (p *TelephonyProxy) GetMergedSubscriberIds(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getMergedSubscriberIds")
 	if _err != nil {
@@ -5121,13 +5099,13 @@ func (p *TelephonyProxy) GetMergedSubscriberIds(
 func (p *TelephonyProxy) GetMergedImsisFromGroup(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getMergedImsisFromGroup")
 	if _err != nil {
@@ -5317,13 +5295,13 @@ func (p *TelephonyProxy) ShutdownMobileRadios(
 func (p *TelephonyProxy) GetRadioAccessFamily(
 	ctx context.Context,
 	phoneId int32,
-	callingPackage string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(phoneId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getRadioAccessFamily")
 	if _err != nil {
@@ -5350,15 +5328,15 @@ func (p *TelephonyProxy) GetRadioAccessFamily(
 func (p *TelephonyProxy) UploadCallComposerPicture(
 	ctx context.Context,
 	subscriptionId int32,
-	callingPackage string,
 	contentType string,
 	fd int32,
 	callback os.ResultReceiver,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subscriptionId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(contentType)
 	_data.WriteFileDescriptor(fd)
 	_data.WriteInt32(1)
@@ -5412,14 +5390,13 @@ func (p *TelephonyProxy) EnableVideoCalling(
 
 func (p *TelephonyProxy) IsVideoCallingEnabled(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "isVideoCallingEnabled")
 	if _err != nil {
@@ -5446,15 +5423,14 @@ func (p *TelephonyProxy) IsVideoCallingEnabled(
 func (p *TelephonyProxy) CanChangeDtmfToneLength(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "canChangeDtmfToneLength")
 	if _err != nil {
@@ -5481,15 +5457,14 @@ func (p *TelephonyProxy) CanChangeDtmfToneLength(
 func (p *TelephonyProxy) IsWorldPhone(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "isWorldPhone")
 	if _err != nil {
@@ -5728,12 +5703,12 @@ func (p *TelephonyProxy) GetImsRegTechnologyForMmTel(
 
 func (p *TelephonyProxy) GetDeviceId(
 	ctx context.Context,
-	callingPackage string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getDeviceId")
 	if _err != nil {
@@ -5759,14 +5734,13 @@ func (p *TelephonyProxy) GetDeviceId(
 
 func (p *TelephonyProxy) GetDeviceIdWithFeature(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getDeviceIdWithFeature")
 	if _err != nil {
@@ -5793,15 +5767,14 @@ func (p *TelephonyProxy) GetDeviceIdWithFeature(
 func (p *TelephonyProxy) GetImeiForSlot(
 	ctx context.Context,
 	slotIndex int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(slotIndex)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getImeiForSlot")
 	if _err != nil {
@@ -5827,14 +5800,13 @@ func (p *TelephonyProxy) GetImeiForSlot(
 
 func (p *TelephonyProxy) GetPrimaryImei(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getPrimaryImei")
 	if _err != nil {
@@ -5892,15 +5864,14 @@ func (p *TelephonyProxy) GetTypeAllocationCodeForSlot(
 func (p *TelephonyProxy) GetMeidForSlot(
 	ctx context.Context,
 	slotIndex int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(slotIndex)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getMeidForSlot")
 	if _err != nil {
@@ -5958,15 +5929,14 @@ func (p *TelephonyProxy) GetManufacturerCodeForSlot(
 func (p *TelephonyProxy) GetDeviceSoftwareVersionForSlot(
 	ctx context.Context,
 	slotIndex int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(slotIndex)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getDeviceSoftwareVersionForSlot")
 	if _err != nil {
@@ -5993,18 +5963,17 @@ func (p *TelephonyProxy) GetDeviceSoftwareVersionForSlot(
 func (p *TelephonyProxy) GetSubIdForPhoneAccountHandle(
 	ctx context.Context,
 	phoneAccountHandle telecom.PhoneAccountHandle,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(1)
 	if _err := phoneAccountHandle.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getSubIdForPhoneAccountHandle")
 	if _err != nil {
@@ -6067,12 +6036,12 @@ func (p *TelephonyProxy) GetPhoneAccountHandleForSubscriptionId(
 func (p *TelephonyProxy) FactoryReset(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "factoryReset")
 	if _err != nil {
@@ -6148,17 +6117,16 @@ func (p *TelephonyProxy) GetServiceStateForSlot(
 	slotIndex int32,
 	renounceFineLocationAccess bool,
 	renounceCoarseLocationAccess bool,
-	callingPackage string,
-	callingFeatureId string,
 ) (androidTelephony.ServiceState, error) {
 	var _result androidTelephony.ServiceState
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(slotIndex)
 	_data.WriteBool(renounceFineLocationAccess)
 	_data.WriteBool(renounceCoarseLocationAccess)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getServiceStateForSlot")
 	if _err != nil {
@@ -6228,13 +6196,13 @@ func (p *TelephonyProxy) GetVoicemailRingtoneUri(
 
 func (p *TelephonyProxy) SetVoicemailRingtoneUri(
 	ctx context.Context,
-	callingPackage string,
 	phoneAccountHandle telecom.PhoneAccountHandle,
 	uri net.Uri,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := phoneAccountHandle.MarshalParcel(_data); _err != nil {
 		return _err
@@ -6298,13 +6266,13 @@ func (p *TelephonyProxy) IsVoicemailVibrationEnabled(
 
 func (p *TelephonyProxy) SetVoicemailVibrationEnabled(
 	ctx context.Context,
-	callingPackage string,
 	phoneAccountHandle telecom.PhoneAccountHandle,
 	enabled bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := phoneAccountHandle.MarshalParcel(_data); _err != nil {
 		return _err
@@ -6974,15 +6942,14 @@ func (p *TelephonyProxy) SetCallWaitingStatus(
 
 func (p *TelephonyProxy) GetClientRequestStats(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 	subid int32,
 ) ([]androidTelephony.ClientRequestStats, error) {
 	var _result []androidTelephony.ClientRequestStats
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt32(subid)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getClientRequestStats")
@@ -7078,16 +7045,15 @@ func (p *TelephonyProxy) GetForbiddenPlmns(
 	ctx context.Context,
 	subId int32,
 	appType int32,
-	callingPackage string,
-	callingFeatureId string,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
 	_data.WriteInt32(appType)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getForbiddenPlmns")
 	if _err != nil {
@@ -7126,10 +7092,9 @@ func (p *TelephonyProxy) SetForbiddenPlmns(
 	subId int32,
 	appType int32,
 	fplmns []string,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
@@ -7142,8 +7107,8 @@ func (p *TelephonyProxy) SetForbiddenPlmns(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "setForbiddenPlmns")
 	if _err != nil {
@@ -7237,13 +7202,13 @@ func (p *TelephonyProxy) GetSignalStrength(
 func (p *TelephonyProxy) GetCardIdForDefaultEuicc(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getCardIdForDefaultEuicc")
 	if _err != nil {
@@ -7269,12 +7234,12 @@ func (p *TelephonyProxy) GetCardIdForDefaultEuicc(
 
 func (p *TelephonyProxy) GetUiccCardsInfo(
 	ctx context.Context,
-	callingPackage string,
 ) ([]androidTelephony.UiccCardInfo, error) {
 	var _result []androidTelephony.UiccCardInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getUiccCardsInfo")
 	if _err != nil {
@@ -7309,12 +7274,12 @@ func (p *TelephonyProxy) GetUiccCardsInfo(
 
 func (p *TelephonyProxy) GetUiccSlotsInfo(
 	ctx context.Context,
-	callingPackage string,
 ) ([]androidTelephony.UiccSlotInfo, error) {
 	var _result []androidTelephony.UiccSlotInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getUiccSlotsInfo")
 	if _err != nil {
@@ -7660,13 +7625,13 @@ func (p *TelephonyProxy) SetCarrierServicePackageOverride(
 	ctx context.Context,
 	subId int32,
 	carrierServicePackage string,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
 	_data.WriteString16(carrierServicePackage)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "setCarrierServicePackageOverride")
 	if _err != nil {
@@ -7746,15 +7711,14 @@ func (p *TelephonyProxy) RefreshUiccProfile(
 func (p *TelephonyProxy) GetNumberOfModemsWithSimultaneousDataConnections(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getNumberOfModemsWithSimultaneousDataConnections")
 	if _err != nil {
@@ -7841,15 +7805,14 @@ func (p *TelephonyProxy) IsInEmergencySmsMode(
 func (p *TelephonyProxy) GetRadioPowerState(
 	ctx context.Context,
 	slotIndex int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(slotIndex)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getRadioPowerState")
 	if _err != nil {
@@ -8697,14 +8660,13 @@ func (p *TelephonyProxy) IsTtyOverVolteEnabled(
 
 func (p *TelephonyProxy) GetEmergencyNumberList(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (map[interface{}]interface{}, error) {
 	var _result map[interface{}]interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getEmergencyNumberList")
 	if _err != nil {
@@ -9454,14 +9416,13 @@ func (p *TelephonyProxy) SetMultiSimCarrierRestriction(
 
 func (p *TelephonyProxy) IsMultiSimSupported(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "isMultiSimSupported")
 	if _err != nil {
@@ -9514,15 +9475,14 @@ func (p *TelephonyProxy) SwitchMultiSimConfig(
 func (p *TelephonyProxy) DoesSwitchMultiSimConfigTriggerReboot(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "doesSwitchMultiSimConfigTriggerReboot")
 	if _err != nil {
@@ -9548,12 +9508,12 @@ func (p *TelephonyProxy) DoesSwitchMultiSimConfigTriggerReboot(
 
 func (p *TelephonyProxy) GetSlotsMapping(
 	ctx context.Context,
-	callingPackage string,
 ) ([]androidTelephony.UiccSlotMapping, error) {
 	var _result []androidTelephony.UiccSlotMapping
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getSlotsMapping")
 	if _err != nil {
@@ -9711,15 +9671,14 @@ func (p *TelephonyProxy) IsApplicationOnUicc(
 func (p *TelephonyProxy) IsModemEnabledForSlot(
 	ctx context.Context,
 	slotIndex int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(slotIndex)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "isModemEnabledForSlot")
 	if _err != nil {
@@ -9747,14 +9706,14 @@ func (p *TelephonyProxy) IsDataEnabledForApn(
 	ctx context.Context,
 	apnType int32,
 	subId int32,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(apnType)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "isDataEnabledForApn")
 	if _err != nil {
@@ -9918,13 +9877,13 @@ func (p *TelephonyProxy) IsMvnoMatched(
 
 func (p *TelephonyProxy) EnqueueSmsPickResult(
 	ctx context.Context,
-	callingPackage string,
 	callingAttributeTag string,
 	subIdResult IIntegerConsumer,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(callingAttributeTag)
 	_data.WriteStrongBinder(subIdResult.AsBinder().Handle())
 
@@ -10325,15 +10284,14 @@ func (p *TelephonyProxy) CanConnectTo5GInDsdsMode(
 func (p *TelephonyProxy) GetEquivalentHomePlmns(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) ([]string, error) {
 	var _result []string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getEquivalentHomePlmns")
 	if _err != nil {
@@ -10530,9 +10488,9 @@ func (p *TelephonyProxy) SendThermalMitigationRequest(
 	ctx context.Context,
 	subId int32,
 	thermalMitigationRequest androidTelephony.ThermalMitigationRequest,
-	callingPackage string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
@@ -10540,7 +10498,7 @@ func (p *TelephonyProxy) SendThermalMitigationRequest(
 	if _err := thermalMitigationRequest.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "sendThermalMitigationRequest")
 	if _err != nil {
@@ -11634,8 +11592,8 @@ func (p *TelephonyProxy) SetSignalStrengthUpdateRequest(
 	ctx context.Context,
 	subId int32,
 	request androidTelephony.SignalStrengthUpdateRequest,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
@@ -11643,7 +11601,7 @@ func (p *TelephonyProxy) SetSignalStrengthUpdateRequest(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "setSignalStrengthUpdateRequest")
 	if _err != nil {
@@ -11667,8 +11625,8 @@ func (p *TelephonyProxy) ClearSignalStrengthUpdateRequest(
 	ctx context.Context,
 	subId int32,
 	request androidTelephony.SignalStrengthUpdateRequest,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
@@ -11676,7 +11634,7 @@ func (p *TelephonyProxy) ClearSignalStrengthUpdateRequest(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "clearSignalStrengthUpdateRequest")
 	if _err != nil {
@@ -11856,14 +11814,14 @@ func (p *TelephonyProxy) RegisterImsStateCallback(
 	subId int32,
 	feature int32,
 	cb IImsStateCallback,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
 	_data.WriteInt32(feature)
 	_data.WriteStrongBinder(cb.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerImsStateCallback")
 	if _err != nil {
@@ -11912,15 +11870,14 @@ func (p *TelephonyProxy) UnregisterImsStateCallback(
 func (p *TelephonyProxy) GetLastKnownCellIdentity(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (network.CellIdentity, error) {
 	var _result network.CellIdentity
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getLastKnownCellIdentity")
 	if _err != nil {
@@ -12083,13 +12040,13 @@ func (p *TelephonyProxy) SetVoiceServiceStateOverride(
 	ctx context.Context,
 	subId int32,
 	hasService bool,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
 	_data.WriteBool(hasService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "setVoiceServiceStateOverride")
 	if _err != nil {
@@ -12143,12 +12100,12 @@ func (p *TelephonyProxy) GetCarrierServicePackageNameForLogicalSlot(
 func (p *TelephonyProxy) SetRemovableEsimAsDefaultEuicc(
 	ctx context.Context,
 	isDefault bool,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteBool(isDefault)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "setRemovableEsimAsDefaultEuicc")
 	if _err != nil {
@@ -12170,12 +12127,12 @@ func (p *TelephonyProxy) SetRemovableEsimAsDefaultEuicc(
 
 func (p *TelephonyProxy) IsRemovableEsimDefaultEuicc(
 	ctx context.Context,
-	callingPackage string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "isRemovableEsimDefaultEuicc")
 	if _err != nil {

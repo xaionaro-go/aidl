@@ -40,12 +40,12 @@ var _ IStrongAuthTracker = (*StrongAuthTrackerProxy)(nil)
 func (p *StrongAuthTrackerProxy) OnStrongAuthRequiredChanged(
 	ctx context.Context,
 	strongAuthRequired int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStrongAuthTracker)
 	_data.WriteInt32(strongAuthRequired)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStrongAuthTracker, "onStrongAuthRequiredChanged")
 	if _err != nil {
@@ -59,12 +59,12 @@ func (p *StrongAuthTrackerProxy) OnStrongAuthRequiredChanged(
 func (p *StrongAuthTrackerProxy) OnIsNonStrongBiometricAllowedChanged(
 	ctx context.Context,
 	allowed bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStrongAuthTracker)
 	_data.WriteBool(allowed)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStrongAuthTracker, "onIsNonStrongBiometricAllowedChanged")
 	if _err != nil {

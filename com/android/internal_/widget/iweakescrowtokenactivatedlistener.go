@@ -38,12 +38,12 @@ var _ IWeakEscrowTokenActivatedListener = (*WeakEscrowTokenActivatedListenerProx
 func (p *WeakEscrowTokenActivatedListenerProxy) OnWeakEscrowTokenActivated(
 	ctx context.Context,
 	handle int64,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWeakEscrowTokenActivatedListener)
 	_data.WriteInt64(handle)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWeakEscrowTokenActivatedListener, "onWeakEscrowTokenActivated")
 	if _err != nil {

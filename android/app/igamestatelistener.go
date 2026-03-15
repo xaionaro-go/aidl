@@ -39,8 +39,8 @@ func (p *GameStateListenerProxy) OnGameStateChanged(
 	ctx context.Context,
 	packageName string,
 	state GameState,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameStateListener)
 	_data.WriteString16(packageName)
@@ -48,7 +48,7 @@ func (p *GameStateListenerProxy) OnGameStateChanged(
 	if _err := state.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGameStateListener, "onGameStateChanged")
 	if _err != nil {

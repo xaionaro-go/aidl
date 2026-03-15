@@ -39,14 +39,14 @@ func (p *DeviceIdleControllerAdapterProxy) ExemptAppTemporarilyForEvent(
 	ctx context.Context,
 	packageName string,
 	duration int64,
-	userHandle int32,
 	reason string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDeviceIdleControllerAdapter)
 	_data.WriteString16(packageName)
 	_data.WriteInt64(duration)
-	_data.WriteInt32(userHandle)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(reason)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDeviceIdleControllerAdapter, "exemptAppTemporarilyForEvent")

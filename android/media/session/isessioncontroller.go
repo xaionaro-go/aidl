@@ -397,14 +397,14 @@ func (p *SessionControllerProxy) GetVolumeAttributes(
 func (p *SessionControllerProxy) AdjustVolume(
 	ctx context.Context,
 	packageName string,
-	opPackageName string,
 	direction int32,
 	flags int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionController)
 	_data.WriteString16(packageName)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(direction)
 	_data.WriteInt32(flags)
 
@@ -429,14 +429,14 @@ func (p *SessionControllerProxy) AdjustVolume(
 func (p *SessionControllerProxy) SetVolumeTo(
 	ctx context.Context,
 	packageName string,
-	opPackageName string,
 	value int32,
 	flags int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionController)
 	_data.WriteString16(packageName)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(value)
 	_data.WriteInt32(flags)
 

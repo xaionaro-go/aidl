@@ -39,14 +39,14 @@ func (p *ForegroundServiceObserverProxy) OnForegroundStateChanged(
 	ctx context.Context,
 	serviceToken binder.IBinder,
 	packageName string,
-	userId int32,
 	isForeground bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIForegroundServiceObserver)
 	_data.WriteStrongBinder(serviceToken.Handle())
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(isForeground)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIForegroundServiceObserver, "onForegroundStateChanged")

@@ -74,12 +74,12 @@ var _ ITrustManager = (*TrustManagerProxy)(nil)
 func (p *TrustManagerProxy) ReportUnlockAttempt(
 	ctx context.Context,
 	successful bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustManager)
 	_data.WriteBool(successful)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustManager, "reportUnlockAttempt")
 	if _err != nil {
@@ -101,12 +101,12 @@ func (p *TrustManagerProxy) ReportUnlockAttempt(
 
 func (p *TrustManagerProxy) ReportUserRequestedUnlock(
 	ctx context.Context,
-	userId int32,
 	dismissKeyguard bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(dismissKeyguard)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustManager, "reportUserRequestedUnlock")
@@ -129,11 +129,11 @@ func (p *TrustManagerProxy) ReportUserRequestedUnlock(
 
 func (p *TrustManagerProxy) ReportUserMayRequestUnlock(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustManager, "reportUserMayRequestUnlock")
 	if _err != nil {
@@ -156,12 +156,12 @@ func (p *TrustManagerProxy) ReportUserMayRequestUnlock(
 func (p *TrustManagerProxy) ReportUnlockLockout(
 	ctx context.Context,
 	timeoutMs int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustManager)
 	_data.WriteInt32(timeoutMs)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustManager, "reportUnlockLockout")
 	if _err != nil {
@@ -183,11 +183,11 @@ func (p *TrustManagerProxy) ReportUnlockLockout(
 
 func (p *TrustManagerProxy) ReportEnabledTrustAgentsChanged(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustManager, "reportEnabledTrustAgentsChanged")
 	if _err != nil {
@@ -285,12 +285,12 @@ func (p *TrustManagerProxy) ReportKeyguardShowingChanged(
 
 func (p *TrustManagerProxy) SetDeviceLockedForUser(
 	ctx context.Context,
-	userId int32,
 	locked bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(locked)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustManager, "setDeviceLockedForUser")
@@ -313,13 +313,13 @@ func (p *TrustManagerProxy) SetDeviceLockedForUser(
 
 func (p *TrustManagerProxy) IsDeviceLocked(
 	ctx context.Context,
-	userId int32,
 	deviceId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(deviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustManager, "isDeviceLocked")
@@ -346,13 +346,13 @@ func (p *TrustManagerProxy) IsDeviceLocked(
 
 func (p *TrustManagerProxy) IsDeviceSecure(
 	ctx context.Context,
-	userId int32,
 	deviceId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(deviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustManager, "isDeviceSecure")
@@ -379,12 +379,12 @@ func (p *TrustManagerProxy) IsDeviceSecure(
 
 func (p *TrustManagerProxy) IsTrustUsuallyManaged(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustManager, "isTrustUsuallyManaged")
 	if _err != nil {
@@ -410,12 +410,12 @@ func (p *TrustManagerProxy) IsTrustUsuallyManaged(
 
 func (p *TrustManagerProxy) UnlockedByBiometricForUser(
 	ctx context.Context,
-	userId int32,
 	source biometrics.BiometricSourceType,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := source.MarshalParcel(_data); _err != nil {
 		return _err
@@ -472,12 +472,12 @@ func (p *TrustManagerProxy) ClearAllBiometricRecognized(
 
 func (p *TrustManagerProxy) IsActiveUnlockRunning(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustManager, "isActiveUnlockRunning")
 	if _err != nil {

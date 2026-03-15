@@ -85,14 +85,14 @@ func (p *RecentTasksProxy) GetRecentTasks(
 	ctx context.Context,
 	maxNum int32,
 	flags int32,
-	userId int32,
 ) ([]shared.GroupedTaskInfo, error) {
 	var _result []shared.GroupedTaskInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecentTasks)
 	_data.WriteInt32(maxNum)
 	_data.WriteInt32(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecentTasks, "getRecentTasks")
 	if _err != nil {

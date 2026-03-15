@@ -51,15 +51,15 @@ var _ IVoiceInteractor = (*VoiceInteractorProxy)(nil)
 
 func (p *VoiceInteractorProxy) StartConfirmation(
 	ctx context.Context,
-	callingPackage string,
 	callback IVoiceInteractorCallback,
 	prompt interface{},
 	extras interface{},
 ) (IVoiceInteractorRequest, error) {
 	var _result IVoiceInteractorRequest
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractor)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractor, "startConfirmation")
@@ -87,16 +87,16 @@ func (p *VoiceInteractorProxy) StartConfirmation(
 
 func (p *VoiceInteractorProxy) StartPickOption(
 	ctx context.Context,
-	callingPackage string,
 	callback IVoiceInteractorCallback,
 	prompt interface{},
 	options []interface{},
 	extras interface{},
 ) (IVoiceInteractorRequest, error) {
 	var _result IVoiceInteractorRequest
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractor)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	if options == nil {
 		_data.WriteInt32(-1)
@@ -129,15 +129,15 @@ func (p *VoiceInteractorProxy) StartPickOption(
 
 func (p *VoiceInteractorProxy) StartCompleteVoice(
 	ctx context.Context,
-	callingPackage string,
 	callback IVoiceInteractorCallback,
 	prompt interface{},
 	extras interface{},
 ) (IVoiceInteractorRequest, error) {
 	var _result IVoiceInteractorRequest
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractor)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractor, "startCompleteVoice")
@@ -165,15 +165,15 @@ func (p *VoiceInteractorProxy) StartCompleteVoice(
 
 func (p *VoiceInteractorProxy) StartAbortVoice(
 	ctx context.Context,
-	callingPackage string,
 	callback IVoiceInteractorCallback,
 	prompt interface{},
 	extras interface{},
 ) (IVoiceInteractorRequest, error) {
 	var _result IVoiceInteractorRequest
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractor)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractor, "startAbortVoice")
@@ -201,15 +201,15 @@ func (p *VoiceInteractorProxy) StartAbortVoice(
 
 func (p *VoiceInteractorProxy) StartCommand(
 	ctx context.Context,
-	callingPackage string,
 	callback IVoiceInteractorCallback,
 	command string,
 	extras interface{},
 ) (IVoiceInteractorRequest, error) {
 	var _result IVoiceInteractorRequest
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractor)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteString16(command)
 
@@ -238,13 +238,13 @@ func (p *VoiceInteractorProxy) StartCommand(
 
 func (p *VoiceInteractorProxy) SupportsCommands(
 	ctx context.Context,
-	callingPackage string,
 	commands []string,
 ) ([]bool, error) {
 	var _result []bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractor)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	if commands == nil {
 		_data.WriteInt32(-1)
 	} else {

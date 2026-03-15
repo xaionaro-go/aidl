@@ -244,12 +244,12 @@ var _ IUserManager = (*UserManagerProxy)(nil)
 
 func (p *UserManagerProxy) GetCredentialOwnerProfile(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getCredentialOwnerProfile")
 	if _err != nil {
@@ -275,12 +275,12 @@ func (p *UserManagerProxy) GetCredentialOwnerProfile(
 
 func (p *UserManagerProxy) GetProfileParentId(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getProfileParentId")
 	if _err != nil {
@@ -367,16 +367,16 @@ func (p *UserManagerProxy) CreateProfileForUserWithThrow(
 	name string,
 	userType string,
 	flags int32,
-	userId int32,
 	disallowedPackages []string,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
 	_data.WriteString16(name)
 	_data.WriteString16(userType)
 	_data.WriteInt32(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if disallowedPackages == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -476,11 +476,11 @@ func (p *UserManagerProxy) GetPreInstallableSystemPackages(
 
 func (p *UserManagerProxy) SetUserEnabled(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "setUserEnabled")
 	if _err != nil {
@@ -502,11 +502,11 @@ func (p *UserManagerProxy) SetUserEnabled(
 
 func (p *UserManagerProxy) SetUserAdmin(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "setUserAdmin")
 	if _err != nil {
@@ -528,11 +528,11 @@ func (p *UserManagerProxy) SetUserAdmin(
 
 func (p *UserManagerProxy) RevokeUserAdmin(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "revokeUserAdmin")
 	if _err != nil {
@@ -554,11 +554,11 @@ func (p *UserManagerProxy) RevokeUserAdmin(
 
 func (p *UserManagerProxy) EvictCredentialEncryptionKey(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "evictCredentialEncryptionKey")
 	if _err != nil {
@@ -580,12 +580,12 @@ func (p *UserManagerProxy) EvictCredentialEncryptionKey(
 
 func (p *UserManagerProxy) RemoveUser(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "removeUser")
 	if _err != nil {
@@ -611,12 +611,12 @@ func (p *UserManagerProxy) RemoveUser(
 
 func (p *UserManagerProxy) RemoveUserEvenWhenDisallowed(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "removeUserEvenWhenDisallowed")
 	if _err != nil {
@@ -642,12 +642,12 @@ func (p *UserManagerProxy) RemoveUserEvenWhenDisallowed(
 
 func (p *UserManagerProxy) SetUserName(
 	ctx context.Context,
-	userId int32,
 	name string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(name)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "setUserName")
@@ -670,12 +670,12 @@ func (p *UserManagerProxy) SetUserName(
 
 func (p *UserManagerProxy) SetUserIcon(
 	ctx context.Context,
-	userId int32,
 	icon graphics.Bitmap,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := icon.MarshalParcel(_data); _err != nil {
 		return _err
@@ -701,12 +701,12 @@ func (p *UserManagerProxy) SetUserIcon(
 
 func (p *UserManagerProxy) GetUserIcon(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getUserIcon")
 	if _err != nil {
@@ -885,13 +885,13 @@ func (p *UserManagerProxy) GetUsers(
 
 func (p *UserManagerProxy) GetProfiles(
 	ctx context.Context,
-	userId int32,
 	enabledOnly bool,
 ) ([]interface{}, error) {
 	var _result []interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(enabledOnly)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getProfiles")
@@ -924,13 +924,13 @@ func (p *UserManagerProxy) GetProfiles(
 
 func (p *UserManagerProxy) GetProfileIds(
 	ctx context.Context,
-	userId int32,
 	enabledOnly bool,
 ) ([]int32, error) {
 	var _result []int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(enabledOnly)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getProfileIds")
@@ -1061,13 +1061,13 @@ func (p *UserManagerProxy) GetRemainingCreatableUserCount(
 func (p *UserManagerProxy) GetRemainingCreatableProfileCount(
 	ctx context.Context,
 	userType string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
 	_data.WriteString16(userType)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getRemainingCreatableProfileCount")
 	if _err != nil {
@@ -1094,14 +1094,14 @@ func (p *UserManagerProxy) GetRemainingCreatableProfileCount(
 func (p *UserManagerProxy) CanAddMoreProfilesToUser(
 	ctx context.Context,
 	userType string,
-	userId int32,
 	allowedToRemoveOne bool,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
 	_data.WriteString16(userType)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(allowedToRemoveOne)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "canAddMoreProfilesToUser")
@@ -1128,13 +1128,13 @@ func (p *UserManagerProxy) CanAddMoreProfilesToUser(
 
 func (p *UserManagerProxy) CanAddMoreManagedProfiles(
 	ctx context.Context,
-	userId int32,
 	allowedToRemoveOne bool,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(allowedToRemoveOne)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "canAddMoreManagedProfiles")
@@ -1161,12 +1161,12 @@ func (p *UserManagerProxy) CanAddMoreManagedProfiles(
 
 func (p *UserManagerProxy) GetProfileParent(
 	ctx context.Context,
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getProfileParent")
 	if _err != nil {
@@ -1188,13 +1188,13 @@ func (p *UserManagerProxy) GetProfileParent(
 
 func (p *UserManagerProxy) IsSameProfileGroup(
 	ctx context.Context,
-	userId int32,
 	otherUserHandle int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(otherUserHandle)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "isSameProfileGroup")
@@ -1250,13 +1250,13 @@ func (p *UserManagerProxy) IsHeadlessSystemUserMode(
 
 func (p *UserManagerProxy) IsUserOfType(
 	ctx context.Context,
-	userId int32,
 	userType string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(userType)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "isUserOfType")
@@ -1283,12 +1283,12 @@ func (p *UserManagerProxy) IsUserOfType(
 
 func (p *UserManagerProxy) GetUserInfo(
 	ctx context.Context,
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getUserInfo")
 	if _err != nil {
@@ -1310,12 +1310,12 @@ func (p *UserManagerProxy) GetUserInfo(
 
 func (p *UserManagerProxy) GetUserPropertiesCopy(
 	ctx context.Context,
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getUserPropertiesCopy")
 	if _err != nil {
@@ -1337,12 +1337,12 @@ func (p *UserManagerProxy) GetUserPropertiesCopy(
 
 func (p *UserManagerProxy) GetUserAccount(
 	ctx context.Context,
-	userId int32,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getUserAccount")
 	if _err != nil {
@@ -1368,12 +1368,12 @@ func (p *UserManagerProxy) GetUserAccount(
 
 func (p *UserManagerProxy) SetUserAccount(
 	ctx context.Context,
-	userId int32,
 	accountName string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(accountName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "setUserAccount")
@@ -1396,12 +1396,12 @@ func (p *UserManagerProxy) SetUserAccount(
 
 func (p *UserManagerProxy) GetUserCreationTime(
 	ctx context.Context,
-	userId int32,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getUserCreationTime")
 	if _err != nil {
@@ -1427,12 +1427,12 @@ func (p *UserManagerProxy) GetUserCreationTime(
 
 func (p *UserManagerProxy) GetUserSwitchability(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getUserSwitchability")
 	if _err != nil {
@@ -1491,12 +1491,12 @@ func (p *UserManagerProxy) IsUserSwitcherEnabled(
 
 func (p *UserManagerProxy) IsRestricted(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "isRestricted")
 	if _err != nil {
@@ -1522,12 +1522,12 @@ func (p *UserManagerProxy) IsRestricted(
 
 func (p *UserManagerProxy) CanHaveRestrictedProfile(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "canHaveRestrictedProfile")
 	if _err != nil {
@@ -1553,12 +1553,12 @@ func (p *UserManagerProxy) CanHaveRestrictedProfile(
 
 func (p *UserManagerProxy) CanAddPrivateProfile(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "canAddPrivateProfile")
 	if _err != nil {
@@ -1584,12 +1584,12 @@ func (p *UserManagerProxy) CanAddPrivateProfile(
 
 func (p *UserManagerProxy) GetUserSerialNumber(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getUserSerialNumber")
 	if _err != nil {
@@ -1647,13 +1647,13 @@ func (p *UserManagerProxy) GetUserHandle(
 func (p *UserManagerProxy) GetUserRestrictionSource(
 	ctx context.Context,
 	restrictionKey string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
 	_data.WriteString16(restrictionKey)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getUserRestrictionSource")
 	if _err != nil {
@@ -1680,13 +1680,13 @@ func (p *UserManagerProxy) GetUserRestrictionSource(
 func (p *UserManagerProxy) GetUserRestrictionSources(
 	ctx context.Context,
 	restrictionKey string,
-	userId int32,
 ) ([]UserManagerEnforcingUser, error) {
 	var _result []UserManagerEnforcingUser
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
 	_data.WriteString16(restrictionKey)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getUserRestrictionSources")
 	if _err != nil {
@@ -1721,12 +1721,12 @@ func (p *UserManagerProxy) GetUserRestrictionSources(
 
 func (p *UserManagerProxy) GetUserRestrictions(
 	ctx context.Context,
-	userId int32,
 ) (Bundle, error) {
 	var _result Bundle
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getUserRestrictions")
 	if _err != nil {
@@ -1758,13 +1758,13 @@ func (p *UserManagerProxy) GetUserRestrictions(
 func (p *UserManagerProxy) HasBaseUserRestriction(
 	ctx context.Context,
 	restrictionKey string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
 	_data.WriteString16(restrictionKey)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "hasBaseUserRestriction")
 	if _err != nil {
@@ -1791,13 +1791,13 @@ func (p *UserManagerProxy) HasBaseUserRestriction(
 func (p *UserManagerProxy) HasUserRestriction(
 	ctx context.Context,
 	restrictionKey string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
 	_data.WriteString16(restrictionKey)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "hasUserRestriction")
 	if _err != nil {
@@ -1855,17 +1855,16 @@ func (p *UserManagerProxy) HasUserRestrictionOnAnyUser(
 func (p *UserManagerProxy) IsSettingRestrictedForUser(
 	ctx context.Context,
 	setting string,
-	userId int32,
 	value string,
-	callingUid int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
 	_data.WriteString16(setting)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(value)
-	_data.WriteInt32(callingUid)
+	_data.WriteInt32(_identity.UID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "isSettingRestrictedForUser")
 	if _err != nil {
@@ -1919,13 +1918,13 @@ func (p *UserManagerProxy) SetUserRestriction(
 	ctx context.Context,
 	key string,
 	value bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
 	_data.WriteString16(key)
 	_data.WriteBool(value)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "setUserRestriction")
 	if _err != nil {
@@ -1949,8 +1948,8 @@ func (p *UserManagerProxy) SetApplicationRestrictions(
 	ctx context.Context,
 	packageName string,
 	restrictions Bundle,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
 	_data.WriteString16(packageName)
@@ -1958,7 +1957,7 @@ func (p *UserManagerProxy) SetApplicationRestrictions(
 	if _err := restrictions.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "setApplicationRestrictions")
 	if _err != nil {
@@ -2017,13 +2016,13 @@ func (p *UserManagerProxy) GetApplicationRestrictions(
 func (p *UserManagerProxy) GetApplicationRestrictionsForUser(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (Bundle, error) {
 	var _result Bundle
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getApplicationRestrictionsForUser")
 	if _err != nil {
@@ -2117,13 +2116,13 @@ func (p *UserManagerProxy) GetDefaultGuestRestrictions(
 
 func (p *UserManagerProxy) RemoveUserWhenPossible(
 	ctx context.Context,
-	userId int32,
 	overrideDevicePolicy bool,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(overrideDevicePolicy)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "removeUserWhenPossible")
@@ -2150,12 +2149,12 @@ func (p *UserManagerProxy) RemoveUserWhenPossible(
 
 func (p *UserManagerProxy) MarkGuestForDeletion(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "markGuestForDeletion")
 	if _err != nil {
@@ -2216,12 +2215,12 @@ func (p *UserManagerProxy) GetGuestUsers(
 
 func (p *UserManagerProxy) IsQuietModeEnabled(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "isQuietModeEnabled")
 	if _err != nil {
@@ -2297,15 +2296,15 @@ func (p *UserManagerProxy) CreateUserWithAttributes(
 
 func (p *UserManagerProxy) SetSeedAccountData(
 	ctx context.Context,
-	userId int32,
 	accountName string,
 	accountType string,
 	accountOptions interface{},
 	persist bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(accountName)
 	_data.WriteString16(accountType)
 	_data.WriteBool(persist)
@@ -2330,12 +2329,12 @@ func (p *UserManagerProxy) SetSeedAccountData(
 
 func (p *UserManagerProxy) GetSeedAccountName(
 	ctx context.Context,
-	userId int32,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getSeedAccountName")
 	if _err != nil {
@@ -2361,12 +2360,12 @@ func (p *UserManagerProxy) GetSeedAccountName(
 
 func (p *UserManagerProxy) GetSeedAccountType(
 	ctx context.Context,
-	userId int32,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getSeedAccountType")
 	if _err != nil {
@@ -2392,12 +2391,12 @@ func (p *UserManagerProxy) GetSeedAccountType(
 
 func (p *UserManagerProxy) GetSeedAccountOptions(
 	ctx context.Context,
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getSeedAccountOptions")
 	if _err != nil {
@@ -2419,11 +2418,11 @@ func (p *UserManagerProxy) GetSeedAccountOptions(
 
 func (p *UserManagerProxy) ClearSeedAccountData(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "clearSeedAccountData")
 	if _err != nil {
@@ -2511,12 +2510,12 @@ func (p *UserManagerProxy) SomeUserHasAccount(
 
 func (p *UserManagerProxy) GetProfileType(
 	ctx context.Context,
-	userId int32,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getProfileType")
 	if _err != nil {
@@ -2542,12 +2541,12 @@ func (p *UserManagerProxy) GetProfileType(
 
 func (p *UserManagerProxy) IsDemoUser(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "isDemoUser")
 	if _err != nil {
@@ -2573,12 +2572,12 @@ func (p *UserManagerProxy) IsDemoUser(
 
 func (p *UserManagerProxy) IsAdminUser(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "isAdminUser")
 	if _err != nil {
@@ -2604,12 +2603,12 @@ func (p *UserManagerProxy) IsAdminUser(
 
 func (p *UserManagerProxy) IsPreCreated(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "isPreCreated")
 	if _err != nil {
@@ -2638,16 +2637,16 @@ func (p *UserManagerProxy) CreateProfileForUserEvenWhenDisallowedWithThrow(
 	name string,
 	userType string,
 	flags int32,
-	userId int32,
 	disallowedPackages []string,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
 	_data.WriteString16(name)
 	_data.WriteString16(userType)
 	_data.WriteInt32(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if disallowedPackages == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -2677,12 +2676,12 @@ func (p *UserManagerProxy) CreateProfileForUserEvenWhenDisallowedWithThrow(
 
 func (p *UserManagerProxy) IsUserUnlockingOrUnlocked(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "isUserUnlockingOrUnlocked")
 	if _err != nil {
@@ -2708,12 +2707,12 @@ func (p *UserManagerProxy) IsUserUnlockingOrUnlocked(
 
 func (p *UserManagerProxy) GetUserIconBadgeResId(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getUserIconBadgeResId")
 	if _err != nil {
@@ -2739,12 +2738,12 @@ func (p *UserManagerProxy) GetUserIconBadgeResId(
 
 func (p *UserManagerProxy) GetUserBadgeResId(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getUserBadgeResId")
 	if _err != nil {
@@ -2770,12 +2769,12 @@ func (p *UserManagerProxy) GetUserBadgeResId(
 
 func (p *UserManagerProxy) GetUserBadgeNoBackgroundResId(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getUserBadgeNoBackgroundResId")
 	if _err != nil {
@@ -2801,12 +2800,12 @@ func (p *UserManagerProxy) GetUserBadgeNoBackgroundResId(
 
 func (p *UserManagerProxy) GetUserBadgeLabelResId(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getUserBadgeLabelResId")
 	if _err != nil {
@@ -2832,12 +2831,12 @@ func (p *UserManagerProxy) GetUserBadgeLabelResId(
 
 func (p *UserManagerProxy) GetUserBadgeColorResId(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getUserBadgeColorResId")
 	if _err != nil {
@@ -2863,12 +2862,12 @@ func (p *UserManagerProxy) GetUserBadgeColorResId(
 
 func (p *UserManagerProxy) GetUserBadgeDarkColorResId(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getUserBadgeDarkColorResId")
 	if _err != nil {
@@ -2894,12 +2893,12 @@ func (p *UserManagerProxy) GetUserBadgeDarkColorResId(
 
 func (p *UserManagerProxy) GetUserStatusBarIconResId(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getUserStatusBarIconResId")
 	if _err != nil {
@@ -2925,12 +2924,12 @@ func (p *UserManagerProxy) GetUserStatusBarIconResId(
 
 func (p *UserManagerProxy) HasBadge(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "hasBadge")
 	if _err != nil {
@@ -2956,12 +2955,12 @@ func (p *UserManagerProxy) HasBadge(
 
 func (p *UserManagerProxy) GetProfileLabelResId(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getProfileLabelResId")
 	if _err != nil {
@@ -2987,12 +2986,12 @@ func (p *UserManagerProxy) GetProfileLabelResId(
 
 func (p *UserManagerProxy) GetProfileAccessibilityLabelResId(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getProfileAccessibilityLabelResId")
 	if _err != nil {
@@ -3018,12 +3017,12 @@ func (p *UserManagerProxy) GetProfileAccessibilityLabelResId(
 
 func (p *UserManagerProxy) IsUserUnlocked(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "isUserUnlocked")
 	if _err != nil {
@@ -3049,12 +3048,12 @@ func (p *UserManagerProxy) IsUserUnlocked(
 
 func (p *UserManagerProxy) IsUserRunning(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "isUserRunning")
 	if _err != nil {
@@ -3080,12 +3079,12 @@ func (p *UserManagerProxy) IsUserRunning(
 
 func (p *UserManagerProxy) IsUserForeground(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "isUserForeground")
 	if _err != nil {
@@ -3111,12 +3110,12 @@ func (p *UserManagerProxy) IsUserForeground(
 
 func (p *UserManagerProxy) IsUserVisible(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "isUserVisible")
 	if _err != nil {
@@ -3181,12 +3180,12 @@ func (p *UserManagerProxy) GetVisibleUsers(
 
 func (p *UserManagerProxy) GetMainDisplayIdAssignedToUser(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getMainDisplayIdAssignedToUser")
 	if _err != nil {
@@ -3241,12 +3240,12 @@ func (p *UserManagerProxy) IsForegroundUserAdmin(
 
 func (p *UserManagerProxy) IsUserNameSet(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "isUserNameSet")
 	if _err != nil {
@@ -3272,12 +3271,12 @@ func (p *UserManagerProxy) IsUserNameSet(
 
 func (p *UserManagerProxy) HasRestrictedProfiles(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "hasRestrictedProfiles")
 	if _err != nil {
@@ -3303,18 +3302,17 @@ func (p *UserManagerProxy) HasRestrictedProfiles(
 
 func (p *UserManagerProxy) RequestQuietModeEnabled(
 	ctx context.Context,
-	callingPackage string,
 	enableQuietMode bool,
-	userId int32,
 	target interface{},
 	flags int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteBool(enableQuietMode)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "requestQuietModeEnabled")
@@ -3428,13 +3426,13 @@ func (p *UserManagerProxy) GetUserUnlockRealtime(
 
 func (p *UserManagerProxy) SetUserEphemeral(
 	ctx context.Context,
-	userId int32,
 	enableEphemeral bool,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(enableEphemeral)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "setUserEphemeral")
@@ -3461,11 +3459,11 @@ func (p *UserManagerProxy) SetUserEphemeral(
 
 func (p *UserManagerProxy) SetBootUser(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "setBootUser")
 	if _err != nil {
@@ -3516,13 +3514,13 @@ func (p *UserManagerProxy) GetBootUser(
 
 func (p *UserManagerProxy) GetProfileIdsExcludingHidden(
 	ctx context.Context,
-	userId int32,
 	enabledOnly bool,
 ) ([]int32, error) {
 	var _result []int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(enabledOnly)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "getProfileIdsExcludingHidden")

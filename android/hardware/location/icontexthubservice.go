@@ -380,15 +380,15 @@ func (p *ContextHubServiceProxy) CreateClient(
 	ctx context.Context,
 	contextHubId int32,
 	client IContextHubClientCallback,
-	attributionTag string,
 	packageName string,
 ) (IContextHubClient, error) {
 	var _result IContextHubClient
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContextHubService)
 	_data.WriteInt32(contextHubId)
 	_data.WriteStrongBinder(client.AsBinder().Handle())
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(packageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContextHubService, "createClient")
@@ -419,14 +419,14 @@ func (p *ContextHubServiceProxy) CreatePendingIntentClient(
 	contextHubId int32,
 	pendingIntent interface{},
 	nanoAppId int64,
-	attributionTag string,
 ) (IContextHubClient, error) {
 	var _result IContextHubClient
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContextHubService)
 	_data.WriteInt32(contextHubId)
 	_data.WriteInt64(nanoAppId)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContextHubService, "createPendingIntentClient")
 	if _err != nil {

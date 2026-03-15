@@ -81,13 +81,13 @@ var _ IEuiccCardController = (*EuiccCardControllerProxy)(nil)
 
 func (p *EuiccCardControllerProxy) GetAllProfiles(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	callback IGetAllProfilesCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
@@ -102,14 +102,14 @@ func (p *EuiccCardControllerProxy) GetAllProfiles(
 
 func (p *EuiccCardControllerProxy) GetProfile(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	iccid string,
 	callback IGetProfileCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteString16(iccid)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
@@ -125,14 +125,14 @@ func (p *EuiccCardControllerProxy) GetProfile(
 
 func (p *EuiccCardControllerProxy) GetEnabledProfile(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	portIndex int32,
 	callback IGetProfileCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteInt32(portIndex)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
@@ -148,15 +148,15 @@ func (p *EuiccCardControllerProxy) GetEnabledProfile(
 
 func (p *EuiccCardControllerProxy) DisableProfile(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	iccid string,
 	refresh bool,
 	callback IDisableProfileCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteString16(iccid)
 	_data.WriteBool(refresh)
@@ -173,16 +173,16 @@ func (p *EuiccCardControllerProxy) DisableProfile(
 
 func (p *EuiccCardControllerProxy) SwitchToProfile(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	iccid string,
 	portIndex int32,
 	refresh bool,
 	callback ISwitchToProfileCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteString16(iccid)
 	_data.WriteInt32(portIndex)
@@ -200,15 +200,15 @@ func (p *EuiccCardControllerProxy) SwitchToProfile(
 
 func (p *EuiccCardControllerProxy) SetNickname(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	iccid string,
 	nickname string,
 	callback ISetNicknameCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteString16(iccid)
 	_data.WriteString16(nickname)
@@ -225,14 +225,14 @@ func (p *EuiccCardControllerProxy) SetNickname(
 
 func (p *EuiccCardControllerProxy) DeleteProfile(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	iccid string,
 	callback IDeleteProfileCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteString16(iccid)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
@@ -248,14 +248,14 @@ func (p *EuiccCardControllerProxy) DeleteProfile(
 
 func (p *EuiccCardControllerProxy) ResetMemory(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	options int32,
 	callback IResetMemoryCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteInt32(options)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
@@ -271,13 +271,13 @@ func (p *EuiccCardControllerProxy) ResetMemory(
 
 func (p *EuiccCardControllerProxy) GetDefaultSmdpAddress(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	callback IGetDefaultSmdpAddressCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
@@ -292,13 +292,13 @@ func (p *EuiccCardControllerProxy) GetDefaultSmdpAddress(
 
 func (p *EuiccCardControllerProxy) GetSmdsAddress(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	callback IGetSmdsAddressCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
@@ -313,14 +313,14 @@ func (p *EuiccCardControllerProxy) GetSmdsAddress(
 
 func (p *EuiccCardControllerProxy) SetDefaultSmdpAddress(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	address string,
 	callback ISetDefaultSmdpAddressCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteString16(address)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
@@ -336,13 +336,13 @@ func (p *EuiccCardControllerProxy) SetDefaultSmdpAddress(
 
 func (p *EuiccCardControllerProxy) GetRulesAuthTable(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	callback IGetRulesAuthTableCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
@@ -357,13 +357,13 @@ func (p *EuiccCardControllerProxy) GetRulesAuthTable(
 
 func (p *EuiccCardControllerProxy) GetEuiccChallenge(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	callback IGetEuiccChallengeCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
@@ -378,13 +378,13 @@ func (p *EuiccCardControllerProxy) GetEuiccChallenge(
 
 func (p *EuiccCardControllerProxy) GetEuiccInfo1(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	callback IGetEuiccInfo1Callback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
@@ -399,13 +399,13 @@ func (p *EuiccCardControllerProxy) GetEuiccInfo1(
 
 func (p *EuiccCardControllerProxy) GetEuiccInfo2(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	callback IGetEuiccInfo2Callback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
@@ -420,7 +420,6 @@ func (p *EuiccCardControllerProxy) GetEuiccInfo2(
 
 func (p *EuiccCardControllerProxy) AuthenticateServer(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	matchingId string,
 	serverSigned1 []byte,
@@ -429,9 +428,10 @@ func (p *EuiccCardControllerProxy) AuthenticateServer(
 	serverCertificatein []byte,
 	callback IAuthenticateServerCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteString16(matchingId)
 	if serverSigned1 == nil {
@@ -479,7 +479,6 @@ func (p *EuiccCardControllerProxy) AuthenticateServer(
 
 func (p *EuiccCardControllerProxy) PrepareDownload(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	hashCc []byte,
 	smdpSigned2 []byte,
@@ -487,9 +486,10 @@ func (p *EuiccCardControllerProxy) PrepareDownload(
 	smdpCertificate []byte,
 	callback IPrepareDownloadCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	if hashCc == nil {
 		_data.WriteInt32(-1)
@@ -536,14 +536,14 @@ func (p *EuiccCardControllerProxy) PrepareDownload(
 
 func (p *EuiccCardControllerProxy) LoadBoundProfilePackage(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	boundProfilePackage []byte,
 	callback ILoadBoundProfilePackageCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	if boundProfilePackage == nil {
 		_data.WriteInt32(-1)
@@ -566,15 +566,15 @@ func (p *EuiccCardControllerProxy) LoadBoundProfilePackage(
 
 func (p *EuiccCardControllerProxy) CancelSession(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	transactionId []byte,
 	reason int32,
 	callback ICancelSessionCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	if transactionId == nil {
 		_data.WriteInt32(-1)
@@ -598,14 +598,14 @@ func (p *EuiccCardControllerProxy) CancelSession(
 
 func (p *EuiccCardControllerProxy) ListNotifications(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	events int32,
 	callback IListNotificationsCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteInt32(events)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
@@ -621,14 +621,14 @@ func (p *EuiccCardControllerProxy) ListNotifications(
 
 func (p *EuiccCardControllerProxy) RetrieveNotificationList(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	events int32,
 	callback IRetrieveNotificationListCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteInt32(events)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
@@ -644,14 +644,14 @@ func (p *EuiccCardControllerProxy) RetrieveNotificationList(
 
 func (p *EuiccCardControllerProxy) RetrieveNotification(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	seqNumber int32,
 	callback IRetrieveNotificationCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteInt32(seqNumber)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
@@ -667,14 +667,14 @@ func (p *EuiccCardControllerProxy) RetrieveNotification(
 
 func (p *EuiccCardControllerProxy) RemoveNotificationFromList(
 	ctx context.Context,
-	callingPackage string,
 	cardId string,
 	seqNumber int32,
 	callback IRemoveNotificationFromListCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteInt32(seqNumber)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())

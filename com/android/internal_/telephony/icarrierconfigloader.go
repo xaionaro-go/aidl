@@ -50,13 +50,13 @@ var _ ICarrierConfigLoader = (*CarrierConfigLoaderProxy)(nil)
 func (p *CarrierConfigLoaderProxy) GetConfigForSubId(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICarrierConfigLoader)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICarrierConfigLoader, "getConfigForSubId")
 	if _err != nil {
@@ -79,15 +79,14 @@ func (p *CarrierConfigLoaderProxy) GetConfigForSubId(
 func (p *CarrierConfigLoaderProxy) GetConfigForSubIdWithFeature(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICarrierConfigLoader)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICarrierConfigLoader, "getConfigForSubIdWithFeature")
 	if _err != nil {
@@ -222,16 +221,15 @@ func (p *CarrierConfigLoaderProxy) GetDefaultCarrierServicePackageName(
 func (p *CarrierConfigLoaderProxy) GetConfigSubsetForSubIdWithFeature(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 	carrierConfigs []string,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICarrierConfigLoader)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 	if carrierConfigs == nil {
 		_data.WriteInt32(-1)
 	} else {

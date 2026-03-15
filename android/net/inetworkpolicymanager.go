@@ -330,12 +330,12 @@ func (p *NetworkPolicyManagerProxy) SetNetworkPolicies(
 
 func (p *NetworkPolicyManagerProxy) GetNetworkPolicies(
 	ctx context.Context,
-	callingPackage string,
 ) ([]NetworkPolicy, error) {
 	var _result []NetworkPolicy
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getNetworkPolicies")
 	if _err != nil {
@@ -645,13 +645,13 @@ func (p *NetworkPolicyManagerProxy) NotifyStatsProviderWarningOrLimitReached(
 func (p *NetworkPolicyManagerProxy) GetSubscriptionPlans(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
 ) ([]interface{}, error) {
 	var _result []interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "getSubscriptionPlans")
 	if _err != nil {
@@ -686,8 +686,8 @@ func (p *NetworkPolicyManagerProxy) SetSubscriptionPlans(
 	subId int32,
 	plans []interface{},
 	expirationDurationMillis int64,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 	_data.WriteInt32(subId)
@@ -697,7 +697,7 @@ func (p *NetworkPolicyManagerProxy) SetSubscriptionPlans(
 		_data.WriteInt32(int32(len(plans)))
 	}
 	_data.WriteInt64(expirationDurationMillis)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "setSubscriptionPlans")
 	if _err != nil {
@@ -755,8 +755,8 @@ func (p *NetworkPolicyManagerProxy) SetSubscriptionOverride(
 	overrideValue int32,
 	networkTypes []int32,
 	expirationDurationMillis int64,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
 	_data.WriteInt32(subId)
@@ -771,7 +771,7 @@ func (p *NetworkPolicyManagerProxy) SetSubscriptionOverride(
 		}
 	}
 	_data.WriteInt64(expirationDurationMillis)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "setSubscriptionOverride")
 	if _err != nil {

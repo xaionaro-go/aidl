@@ -78,15 +78,15 @@ func (p *AppFunctionManagerProxy) ExecuteAppFunction(
 
 func (p *AppFunctionManagerProxy) SetAppFunctionEnabled(
 	ctx context.Context,
-	callingPackage string,
 	functionIdentifier string,
 	userHandle os.UserHandle,
 	enabledState int32,
 	callback IAppFunctionEnabledCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppFunctionManager)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(functionIdentifier)
 	_data.WriteInt32(1)
 	if _err := userHandle.MarshalParcel(_data); _err != nil {

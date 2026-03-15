@@ -99,16 +99,16 @@ func (p *FingerprintServiceReceiverProxy) OnAcquired(
 func (p *FingerprintServiceReceiverProxy) OnAuthenticationSucceeded(
 	ctx context.Context,
 	fp Fingerprint,
-	userId int32,
 	isStrongBiometric bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintServiceReceiver)
 	_data.WriteInt32(1)
 	if _err := fp.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(isStrongBiometric)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintServiceReceiver, "onAuthenticationSucceeded")
@@ -123,13 +123,13 @@ func (p *FingerprintServiceReceiverProxy) OnAuthenticationSucceeded(
 func (p *FingerprintServiceReceiverProxy) OnFingerprintDetected(
 	ctx context.Context,
 	sensorId int32,
-	userId int32,
 	isStrongBiometric bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintServiceReceiver)
 	_data.WriteInt32(sensorId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(isStrongBiometric)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintServiceReceiver, "onFingerprintDetected")
@@ -200,13 +200,13 @@ func (p *FingerprintServiceReceiverProxy) OnRemoved(
 func (p *FingerprintServiceReceiverProxy) OnChallengeGenerated(
 	ctx context.Context,
 	sensorId int32,
-	userId int32,
 	challenge int64,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintServiceReceiver)
 	_data.WriteInt32(sensorId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt64(challenge)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintServiceReceiver, "onChallengeGenerated")

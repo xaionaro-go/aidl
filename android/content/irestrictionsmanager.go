@@ -74,13 +74,13 @@ func (p *RestrictionsManagerProxy) GetApplicationRestrictions(
 
 func (p *RestrictionsManagerProxy) GetApplicationRestrictionsPerAdminForUser(
 	ctx context.Context,
-	userId int32,
 	packageName string,
 ) ([]interface{}, error) {
 	var _result []interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRestrictionsManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(packageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRestrictionsManager, "getApplicationRestrictionsPerAdminForUser")

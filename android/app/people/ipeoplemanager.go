@@ -61,14 +61,14 @@ var _ IPeopleManager = (*PeopleManagerProxy)(nil)
 func (p *PeopleManagerProxy) GetConversation(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	shortcutId string,
 ) (ConversationChannel, error) {
 	var _result ConversationChannel
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPeopleManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(shortcutId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "getConversation")
@@ -135,13 +135,13 @@ func (p *PeopleManagerProxy) GetRecentConversations(
 func (p *PeopleManagerProxy) RemoveRecentConversation(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	shortcutId string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPeopleManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(shortcutId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "removeRecentConversation")
@@ -189,14 +189,14 @@ func (p *PeopleManagerProxy) RemoveAllRecentConversations(
 func (p *PeopleManagerProxy) IsConversation(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	shortcutId string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPeopleManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(shortcutId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "isConversation")
@@ -224,14 +224,14 @@ func (p *PeopleManagerProxy) IsConversation(
 func (p *PeopleManagerProxy) GetLastInteraction(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	shortcutId string,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPeopleManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(shortcutId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "getLastInteraction")
@@ -259,14 +259,14 @@ func (p *PeopleManagerProxy) GetLastInteraction(
 func (p *PeopleManagerProxy) AddOrUpdateStatus(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	conversationId string,
 	status ConversationStatus,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPeopleManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(conversationId)
 	_data.WriteInt32(1)
 	if _err := status.MarshalParcel(_data); _err != nil {
@@ -294,14 +294,14 @@ func (p *PeopleManagerProxy) AddOrUpdateStatus(
 func (p *PeopleManagerProxy) ClearStatus(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	conversationId string,
 	statusId string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPeopleManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(conversationId)
 	_data.WriteString16(statusId)
 
@@ -326,13 +326,13 @@ func (p *PeopleManagerProxy) ClearStatus(
 func (p *PeopleManagerProxy) ClearStatuses(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	conversationId string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPeopleManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(conversationId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "clearStatuses")
@@ -356,14 +356,14 @@ func (p *PeopleManagerProxy) ClearStatuses(
 func (p *PeopleManagerProxy) GetStatuses(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	conversationId string,
 ) (pm.ParceledListSlice, error) {
 	var _result pm.ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPeopleManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(conversationId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "getStatuses")
@@ -396,14 +396,14 @@ func (p *PeopleManagerProxy) GetStatuses(
 func (p *PeopleManagerProxy) RegisterConversationListener(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 	shortcutId string,
 	callback IConversationListener,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPeopleManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(shortcutId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 

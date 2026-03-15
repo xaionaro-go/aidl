@@ -232,19 +232,19 @@ func (p *SplitScreenProxy) StartShortcut(
 func (p *SplitScreenProxy) StartIntent(
 	ctx context.Context,
 	intent app.PendingIntent,
-	userId int32,
 	fillInIntent content.Intent,
 	position int32,
 	options os.Bundle,
 	instanceId logging.InstanceId,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISplitScreen)
 	_data.WriteInt32(1)
 	if _err := intent.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := fillInIntent.MarshalParcel(_data); _err != nil {
 		return _err

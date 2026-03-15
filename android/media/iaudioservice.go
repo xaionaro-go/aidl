@@ -819,14 +819,14 @@ func (p *AudioServiceProxy) AdjustStreamVolume(
 	streamType int32,
 	direction int32,
 	flags int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteInt32(streamType)
 	_data.WriteInt32(direction)
 	_data.WriteInt32(flags)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "adjustStreamVolume")
 	if _err != nil {
@@ -851,16 +851,15 @@ func (p *AudioServiceProxy) AdjustStreamVolumeWithAttribution(
 	streamType int32,
 	direction int32,
 	flags int32,
-	callingPackage string,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteInt32(streamType)
 	_data.WriteInt32(direction)
 	_data.WriteInt32(flags)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "adjustStreamVolumeWithAttribution")
 	if _err != nil {
@@ -885,14 +884,14 @@ func (p *AudioServiceProxy) SetStreamVolume(
 	streamType int32,
 	index int32,
 	flags int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteInt32(streamType)
 	_data.WriteInt32(index)
 	_data.WriteInt32(flags)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "setStreamVolume")
 	if _err != nil {
@@ -917,16 +916,15 @@ func (p *AudioServiceProxy) SetStreamVolumeWithAttribution(
 	streamType int32,
 	index int32,
 	flags int32,
-	callingPackage string,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteInt32(streamType)
 	_data.WriteInt32(index)
 	_data.WriteInt32(flags)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "setStreamVolumeWithAttribution")
 	if _err != nil {
@@ -950,8 +948,8 @@ func (p *AudioServiceProxy) SetDeviceVolume(
 	ctx context.Context,
 	vi VolumeInfo,
 	ada AudioDeviceAttributes,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteInt32(1)
@@ -962,7 +960,7 @@ func (p *AudioServiceProxy) SetDeviceVolume(
 	if _err := ada.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "setDeviceVolume")
 	if _err != nil {
@@ -986,9 +984,9 @@ func (p *AudioServiceProxy) GetDeviceVolume(
 	ctx context.Context,
 	vi VolumeInfo,
 	ada AudioDeviceAttributes,
-	callingPackage string,
 ) (VolumeInfo, error) {
 	var _result VolumeInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteInt32(1)
@@ -999,7 +997,7 @@ func (p *AudioServiceProxy) GetDeviceVolume(
 	if _err := ada.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "getDeviceVolume")
 	if _err != nil {
@@ -1032,13 +1030,13 @@ func (p *AudioServiceProxy) HandleVolumeKey(
 	ctx context.Context,
 	event interface{},
 	isOnTv bool,
-	callingPackage string,
 	caller string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteBool(isOnTv)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(caller)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "handleVolumeKey")
@@ -1142,17 +1140,15 @@ func (p *AudioServiceProxy) SetMasterMute(
 	ctx context.Context,
 	mute bool,
 	flags int32,
-	callingPackage string,
-	userId int32,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteBool(mute)
 	_data.WriteInt32(flags)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "setMasterMute")
 	if _err != nil {
@@ -1305,16 +1301,15 @@ func (p *AudioServiceProxy) SetVolumeGroupVolumeIndex(
 	groupId int32,
 	index int32,
 	flags int32,
-	callingPackage string,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteInt32(groupId)
 	_data.WriteInt32(index)
 	_data.WriteInt32(flags)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "setVolumeGroupVolumeIndex")
 	if _err != nil {
@@ -1494,14 +1489,14 @@ func (p *AudioServiceProxy) AdjustVolumeGroupVolume(
 	groupId int32,
 	direction int32,
 	flags int32,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteInt32(groupId)
 	_data.WriteInt32(direction)
 	_data.WriteInt32(flags)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "adjustVolumeGroupVolume")
 	if _err != nil {
@@ -1751,16 +1746,14 @@ func (p *AudioServiceProxy) IsHotwordStreamSupported(
 func (p *AudioServiceProxy) SetMicrophoneMute(
 	ctx context.Context,
 	on bool,
-	callingPackage string,
-	userId int32,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteBool(on)
-	_data.WriteString16(callingPackage)
-	_data.WriteInt32(userId)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "setMicrophoneMute")
 	if _err != nil {
@@ -2193,13 +2186,13 @@ func (p *AudioServiceProxy) SetMode(
 	ctx context.Context,
 	mode int32,
 	cb binder.IBinder,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteInt32(mode)
 	_data.WriteStrongBinder(cb.Handle())
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "setMode")
 	if _err != nil {
@@ -2251,12 +2244,12 @@ func (p *AudioServiceProxy) GetMode(
 func (p *AudioServiceProxy) PlaySoundEffect(
 	ctx context.Context,
 	effectType int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteInt32(effectType)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "playSoundEffect")
 	if _err != nil {
@@ -2777,12 +2770,12 @@ func (p *AudioServiceProxy) RequestAudioFocus(
 	fd IAudioFocusDispatcher,
 	clientId string,
 	callingPackageName string,
-	attributionTag string,
 	flags int32,
 	pcb interface{},
 	sdk int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteInt32(1)
@@ -2794,7 +2787,7 @@ func (p *AudioServiceProxy) RequestAudioFocus(
 	_data.WriteStrongBinder(fd.AsBinder().Handle())
 	_data.WriteString16(clientId)
 	_data.WriteString16(callingPackageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt32(flags)
 	_data.WriteInt32(sdk)
 
@@ -3554,11 +3547,11 @@ func (p *AudioServiceProxy) IsStreamMutableByUi(
 
 func (p *AudioServiceProxy) DisableSafeMediaVolume(
 	ctx context.Context,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "disableSafeMediaVolume")
 	if _err != nil {
@@ -3580,11 +3573,11 @@ func (p *AudioServiceProxy) DisableSafeMediaVolume(
 
 func (p *AudioServiceProxy) LowerVolumeToRs1(
 	ctx context.Context,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "lowerVolumeToRs1")
 	if _err != nil {
@@ -4897,14 +4890,14 @@ func (p *AudioServiceProxy) RemoveUidDeviceAffinity(
 func (p *AudioServiceProxy) SetUserIdDeviceAffinity(
 	ctx context.Context,
 	pcb interface{},
-	userId int32,
 	deviceTypes []int32,
 	deviceAddresses []string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if deviceTypes == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -4947,12 +4940,12 @@ func (p *AudioServiceProxy) SetUserIdDeviceAffinity(
 func (p *AudioServiceProxy) RemoveUserIdDeviceAffinity(
 	ctx context.Context,
 	pcb interface{},
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "removeUserIdDeviceAffinity")
 	if _err != nil {

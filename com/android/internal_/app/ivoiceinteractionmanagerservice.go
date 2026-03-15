@@ -146,12 +146,12 @@ func (p *VoiceInteractionManagerServiceProxy) ShowSession(
 	ctx context.Context,
 	sessionArgs interface{},
 	flags int32,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteInt32(flags)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "showSession")
 	if _err != nil {
@@ -210,14 +210,14 @@ func (p *VoiceInteractionManagerServiceProxy) ShowSessionFromSession(
 	token binder.IBinder,
 	sessionArgs interface{},
 	flags int32,
-	attributionTag string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt32(flags)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "showSessionFromSession")
 	if _err != nil {
@@ -277,14 +277,14 @@ func (p *VoiceInteractionManagerServiceProxy) StartVoiceActivity(
 	token binder.IBinder,
 	intent interface{},
 	resolvedType string,
-	attributionTag string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteString16(resolvedType)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "startVoiceActivity")
 	if _err != nil {
@@ -313,15 +313,15 @@ func (p *VoiceInteractionManagerServiceProxy) StartAssistantActivity(
 	token binder.IBinder,
 	intent interface{},
 	resolvedType string,
-	attributionTag string,
 	bundle interface{},
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteString16(resolvedType)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "startAssistantActivity")
 	if _err != nil {
@@ -742,15 +742,15 @@ func (p *VoiceInteractionManagerServiceProxy) ShowSessionForActiveService(
 	ctx context.Context,
 	args interface{},
 	sourceFlags int32,
-	attributionTag string,
 	showCallback IVoiceInteractionSessionShowCallback,
 	activityToken binder.IBinder,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteInt32(sourceFlags)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteStrongBinder(showCallback.AsBinder().Handle())
 	_data.WriteStrongBinder(activityToken.Handle())
 

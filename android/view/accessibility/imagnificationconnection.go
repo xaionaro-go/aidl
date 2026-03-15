@@ -238,13 +238,13 @@ func (p *MagnificationConnectionProxy) SetConnectionCallback(
 
 func (p *MagnificationConnectionProxy) OnUserMagnificationScaleChanged(
 	ctx context.Context,
-	userId int32,
 	displayId int32,
 	scale float32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMagnificationConnection)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(displayId)
 	_data.WriteFloat32(scale)
 

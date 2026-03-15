@@ -934,12 +934,12 @@ func (p *DisplayManagerProxy) GetStableDisplaySize(
 
 func (p *DisplayManagerProxy) GetBrightnessEvents(
 	ctx context.Context,
-	callingPackage string,
 ) (pm.ParceledListSlice, error) {
 	var _result pm.ParceledListSlice
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayManager)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDisplayManager, "getBrightnessEvents")
 	if _err != nil {
@@ -1005,16 +1005,16 @@ func (p *DisplayManagerProxy) GetAmbientBrightnessStats(
 func (p *DisplayManagerProxy) SetBrightnessConfigurationForUser(
 	ctx context.Context,
 	c BrightnessConfiguration,
-	userId int32,
 	packageName string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayManager)
 	_data.WriteInt32(1)
 	if _err := c.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(packageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDisplayManager, "setBrightnessConfigurationForUser")
@@ -1039,9 +1039,9 @@ func (p *DisplayManagerProxy) SetBrightnessConfigurationForDisplay(
 	ctx context.Context,
 	c BrightnessConfiguration,
 	uniqueDisplayId string,
-	userId int32,
 	packageName string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayManager)
 	_data.WriteInt32(1)
@@ -1049,7 +1049,7 @@ func (p *DisplayManagerProxy) SetBrightnessConfigurationForDisplay(
 		return _err
 	}
 	_data.WriteString16(uniqueDisplayId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(packageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDisplayManager, "setBrightnessConfigurationForDisplay")
@@ -1073,13 +1073,13 @@ func (p *DisplayManagerProxy) SetBrightnessConfigurationForDisplay(
 func (p *DisplayManagerProxy) GetBrightnessConfigurationForDisplay(
 	ctx context.Context,
 	uniqueDisplayId string,
-	userId int32,
 ) (BrightnessConfiguration, error) {
 	var _result BrightnessConfiguration
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayManager)
 	_data.WriteString16(uniqueDisplayId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDisplayManager, "getBrightnessConfigurationForDisplay")
 	if _err != nil {
@@ -1110,12 +1110,12 @@ func (p *DisplayManagerProxy) GetBrightnessConfigurationForDisplay(
 
 func (p *DisplayManagerProxy) GetBrightnessConfigurationForUser(
 	ctx context.Context,
-	userId int32,
 ) (BrightnessConfiguration, error) {
 	var _result BrightnessConfiguration
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDisplayManager, "getBrightnessConfigurationForUser")
 	if _err != nil {

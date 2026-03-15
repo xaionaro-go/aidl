@@ -52,13 +52,13 @@ func (p *UriGrantsManagerProxy) TakePersistableUriPermission(
 	uri interface{},
 	modeFlags int32,
 	toPackage string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUriGrantsManager)
 	_data.WriteInt32(modeFlags)
 	_data.WriteString16(toPackage)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUriGrantsManager, "takePersistableUriPermission")
 	if _err != nil {
@@ -83,13 +83,13 @@ func (p *UriGrantsManagerProxy) ReleasePersistableUriPermission(
 	uri interface{},
 	modeFlags int32,
 	toPackage string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUriGrantsManager)
 	_data.WriteInt32(modeFlags)
 	_data.WriteString16(toPackage)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUriGrantsManager, "releasePersistableUriPermission")
 	if _err != nil {
@@ -149,13 +149,13 @@ func (p *UriGrantsManagerProxy) GrantUriPermissionFromOwner(
 func (p *UriGrantsManagerProxy) GetGrantedUriPermissions(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUriGrantsManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUriGrantsManager, "getGrantedUriPermissions")
 	if _err != nil {
@@ -178,12 +178,12 @@ func (p *UriGrantsManagerProxy) GetGrantedUriPermissions(
 func (p *UriGrantsManagerProxy) ClearGrantedUriPermissions(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUriGrantsManager)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUriGrantsManager, "clearGrantedUriPermissions")
 	if _err != nil {
@@ -240,15 +240,15 @@ func (p *UriGrantsManagerProxy) CheckGrantUriPermission_ignoreNonSystem(
 	targetPkg string,
 	uri interface{},
 	modeFlags int32,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUriGrantsManager)
 	_data.WriteInt32(sourceUid)
 	_data.WriteString16(targetPkg)
 	_data.WriteInt32(modeFlags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUriGrantsManager, "checkGrantUriPermission_ignoreNonSystem")
 	if _err != nil {

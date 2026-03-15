@@ -228,8 +228,6 @@ var _ IActivityTaskManager = (*ActivityTaskManagerProxy)(nil)
 func (p *ActivityTaskManagerProxy) StartActivity(
 	ctx context.Context,
 	caller IApplicationThread,
-	callingPackage string,
-	callingFeatureId string,
 	intent interface{},
 	resolvedType string,
 	resultTo binder.IBinder,
@@ -240,11 +238,12 @@ func (p *ActivityTaskManagerProxy) StartActivity(
 	options interface{},
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityTaskManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(resolvedType)
 	_data.WriteStrongBinder(resultTo.Handle())
 	_data.WriteString16(resultWho)
@@ -280,20 +279,18 @@ func (p *ActivityTaskManagerProxy) StartActivity(
 func (p *ActivityTaskManagerProxy) StartActivities(
 	ctx context.Context,
 	caller IApplicationThread,
-	callingPackage string,
-	callingFeatureId string,
 	intents []interface{},
 	resolvedTypes []string,
 	resultTo binder.IBinder,
 	options interface{},
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityTaskManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 	if intents == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -308,7 +305,7 @@ func (p *ActivityTaskManagerProxy) StartActivities(
 		}
 	}
 	_data.WriteStrongBinder(resultTo.Handle())
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityTaskManager, "startActivities")
 	if _err != nil {
@@ -335,8 +332,6 @@ func (p *ActivityTaskManagerProxy) StartActivities(
 func (p *ActivityTaskManagerProxy) StartActivityAsUser(
 	ctx context.Context,
 	caller IApplicationThread,
-	callingPackage string,
-	callingFeatureId string,
 	intent interface{},
 	resolvedType string,
 	resultTo binder.IBinder,
@@ -345,14 +340,14 @@ func (p *ActivityTaskManagerProxy) StartActivityAsUser(
 	flags int32,
 	profilerInfo ProfilerInfo,
 	options interface{},
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityTaskManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(resolvedType)
 	_data.WriteStrongBinder(resultTo.Handle())
 	_data.WriteString16(resultWho)
@@ -362,7 +357,7 @@ func (p *ActivityTaskManagerProxy) StartActivityAsUser(
 	if _err := profilerInfo.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityTaskManager, "startActivityAsUser")
 	if _err != nil {
@@ -470,8 +465,6 @@ func (p *ActivityTaskManagerProxy) StartActivityIntentSender(
 func (p *ActivityTaskManagerProxy) StartActivityAndWait(
 	ctx context.Context,
 	caller IApplicationThread,
-	callingPackage string,
-	callingFeatureId string,
 	intent interface{},
 	resolvedType string,
 	resultTo binder.IBinder,
@@ -480,14 +473,14 @@ func (p *ActivityTaskManagerProxy) StartActivityAndWait(
 	flags int32,
 	profilerInfo ProfilerInfo,
 	options interface{},
-	userId int32,
 ) (WaitResult, error) {
 	var _result WaitResult
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityTaskManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(resolvedType)
 	_data.WriteStrongBinder(resultTo.Handle())
 	_data.WriteString16(resultWho)
@@ -497,7 +490,7 @@ func (p *ActivityTaskManagerProxy) StartActivityAndWait(
 	if _err := profilerInfo.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityTaskManager, "startActivityAndWait")
 	if _err != nil {
@@ -529,8 +522,6 @@ func (p *ActivityTaskManagerProxy) StartActivityAndWait(
 func (p *ActivityTaskManagerProxy) StartActivityWithConfig(
 	ctx context.Context,
 	caller IApplicationThread,
-	callingPackage string,
-	callingFeatureId string,
 	intent interface{},
 	resolvedType string,
 	resultTo binder.IBinder,
@@ -539,20 +530,20 @@ func (p *ActivityTaskManagerProxy) StartActivityWithConfig(
 	startFlags int32,
 	newConfig interface{},
 	options interface{},
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityTaskManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(resolvedType)
 	_data.WriteStrongBinder(resultTo.Handle())
 	_data.WriteString16(resultWho)
 	_data.WriteInt32(requestCode)
 	_data.WriteInt32(startFlags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityTaskManager, "startActivityWithConfig")
 	if _err != nil {
@@ -578,10 +569,6 @@ func (p *ActivityTaskManagerProxy) StartActivityWithConfig(
 
 func (p *ActivityTaskManagerProxy) StartVoiceActivity(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
-	callingPid int32,
-	callingUid int32,
 	intent interface{},
 	resolvedType string,
 	session interface{},
@@ -589,22 +576,22 @@ func (p *ActivityTaskManagerProxy) StartVoiceActivity(
 	flags int32,
 	profilerInfo ProfilerInfo,
 	options interface{},
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityTaskManager)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
-	_data.WriteInt32(callingPid)
-	_data.WriteInt32(callingUid)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
+	_data.WriteInt32(_identity.PID)
+	_data.WriteInt32(_identity.UID)
 	_data.WriteString16(resolvedType)
 	_data.WriteInt32(flags)
 	_data.WriteInt32(1)
 	if _err := profilerInfo.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityTaskManager, "startVoiceActivity")
 	if _err != nil {
@@ -661,24 +648,20 @@ func (p *ActivityTaskManagerProxy) GetVoiceInteractorPackageName(
 
 func (p *ActivityTaskManagerProxy) StartAssistantActivity(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
-	callingPid int32,
-	callingUid int32,
 	intent interface{},
 	resolvedType string,
 	options interface{},
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityTaskManager)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
-	_data.WriteInt32(callingPid)
-	_data.WriteInt32(callingUid)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
+	_data.WriteInt32(_identity.PID)
+	_data.WriteInt32(_identity.UID)
 	_data.WriteString16(resolvedType)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityTaskManager, "startAssistantActivity")
 	if _err != nil {
@@ -705,24 +688,20 @@ func (p *ActivityTaskManagerProxy) StartAssistantActivity(
 func (p *ActivityTaskManagerProxy) StartActivityFromGameSession(
 	ctx context.Context,
 	caller IApplicationThread,
-	callingPackage string,
-	callingFeatureId string,
-	callingPid int32,
-	callingUid int32,
 	intent interface{},
 	taskId int32,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityTaskManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
-	_data.WriteInt32(callingPid)
-	_data.WriteInt32(callingUid)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
+	_data.WriteInt32(_identity.PID)
+	_data.WriteInt32(_identity.UID)
 	_data.WriteInt32(taskId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityTaskManager, "startActivityFromGameSession")
 	if _err != nil {
@@ -781,7 +760,6 @@ func (p *ActivityTaskManagerProxy) StartActivityFromRecents(
 func (p *ActivityTaskManagerProxy) StartActivityAsCaller(
 	ctx context.Context,
 	caller IApplicationThread,
-	callingPackage string,
 	intent interface{},
 	resolvedType string,
 	resultTo binder.IBinder,
@@ -791,13 +769,13 @@ func (p *ActivityTaskManagerProxy) StartActivityAsCaller(
 	profilerInfo ProfilerInfo,
 	options interface{},
 	ignoreTargetSecurity bool,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityTaskManager)
 	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(resolvedType)
 	_data.WriteStrongBinder(resultTo.Handle())
 	_data.WriteString16(resultWho)
@@ -808,7 +786,7 @@ func (p *ActivityTaskManagerProxy) StartActivityAsCaller(
 		return _result, _err
 	}
 	_data.WriteBool(ignoreTargetSecurity)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityTaskManager, "startActivityAsCaller")
 	if _err != nil {
@@ -862,14 +840,14 @@ func (p *ActivityTaskManagerProxy) IsActivityStartAllowedOnDisplay(
 	displayId int32,
 	intent interface{},
 	resolvedType string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityTaskManager)
 	_data.WriteInt32(displayId)
 	_data.WriteString16(resolvedType)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityTaskManager, "isActivityStartAllowedOnDisplay")
 	if _err != nil {
@@ -1132,15 +1110,15 @@ func (p *ActivityTaskManagerProxy) GetTasks(
 func (p *ActivityTaskManagerProxy) MoveTaskToFront(
 	ctx context.Context,
 	app IApplicationThread,
-	callingPackage string,
 	task int32,
 	flags int32,
 	options interface{},
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityTaskManager)
 	_data.WriteStrongBinder(app.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(task)
 	_data.WriteInt32(flags)
 
@@ -1166,14 +1144,14 @@ func (p *ActivityTaskManagerProxy) GetRecentTasks(
 	ctx context.Context,
 	maxNum int32,
 	flags int32,
-	userId int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityTaskManager)
 	_data.WriteInt32(maxNum)
 	_data.WriteInt32(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityTaskManager, "getRecentTasks")
 	if _err != nil {
@@ -1384,12 +1362,12 @@ func (p *ActivityTaskManagerProxy) FocusTopTask(
 
 func (p *ActivityTaskManagerProxy) UpdateLockTaskPackages(
 	ctx context.Context,
-	userId int32,
 	packages []string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityTaskManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if packages == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1477,12 +1455,12 @@ func (p *ActivityTaskManagerProxy) GetLockTaskModeState(
 
 func (p *ActivityTaskManagerProxy) GetAppTasks(
 	ctx context.Context,
-	callingPackage string,
 ) ([]binder.IBinder, error) {
 	var _result []binder.IBinder
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityTaskManager)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityTaskManager, "getAppTasks")
 	if _err != nil {
@@ -1688,13 +1666,13 @@ func (p *ActivityTaskManagerProxy) ReleaseSomeActivities(
 func (p *ActivityTaskManagerProxy) GetTaskDescriptionIcon(
 	ctx context.Context,
 	filename string,
-	userId int32,
 ) (graphics.Bitmap, error) {
 	var _result graphics.Bitmap
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityTaskManager)
 	_data.WriteString16(filename)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityTaskManager, "getTaskDescriptionIcon")
 	if _err != nil {
@@ -2617,12 +2595,12 @@ func (p *ActivityTaskManagerProxy) UpdateConfiguration(
 
 func (p *ActivityTaskManagerProxy) UpdateLockTaskFeatures(
 	ctx context.Context,
-	userId int32,
 	flags int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityTaskManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityTaskManager, "updateLockTaskFeatures")

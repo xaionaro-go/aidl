@@ -40,14 +40,14 @@ func (p *GameModeListenerProxy) OnGameModeChanged(
 	packageName string,
 	gameModeFrom int32,
 	gameModeTo int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameModeListener)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(gameModeFrom)
 	_data.WriteInt32(gameModeTo)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGameModeListener, "onGameModeChanged")
 	if _err != nil {

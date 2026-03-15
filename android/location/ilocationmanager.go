@@ -162,9 +162,9 @@ func (p *LocationManagerProxy) GetLastLocation(
 	provider string,
 	request LastLocationRequest,
 	packageName string,
-	attributionTag string,
 ) (Location, error) {
 	var _result Location
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteString16(provider)
@@ -173,7 +173,7 @@ func (p *LocationManagerProxy) GetLastLocation(
 		return _result, _err
 	}
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getLastLocation")
 	if _err != nil {
@@ -208,10 +208,10 @@ func (p *LocationManagerProxy) GetCurrentLocation(
 	request LocationRequest,
 	callback ILocationCallback,
 	packageName string,
-	attributionTag string,
 	listenerId string,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteString16(provider)
@@ -221,7 +221,7 @@ func (p *LocationManagerProxy) GetCurrentLocation(
 	}
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(listenerId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "getCurrentLocation")
@@ -248,9 +248,9 @@ func (p *LocationManagerProxy) RegisterLocationListener(
 	request LocationRequest,
 	listener ILocationListener,
 	packageName string,
-	attributionTag string,
 	listenerId string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteString16(provider)
@@ -260,7 +260,7 @@ func (p *LocationManagerProxy) RegisterLocationListener(
 	}
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(listenerId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "registerLocationListener")
@@ -313,8 +313,8 @@ func (p *LocationManagerProxy) RegisterLocationPendingIntent(
 	request LocationRequest,
 	pendingIntent interface{},
 	packageName string,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteString16(provider)
@@ -323,7 +323,7 @@ func (p *LocationManagerProxy) RegisterLocationPendingIntent(
 		return _err
 	}
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "registerLocationPendingIntent")
 	if _err != nil {
@@ -461,8 +461,8 @@ func (p *LocationManagerProxy) RequestGeofence(
 	geofence Geofence,
 	intent interface{},
 	packageName string,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteInt32(1)
@@ -470,7 +470,7 @@ func (p *LocationManagerProxy) RequestGeofence(
 		return _err
 	}
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "requestGeofence")
 	if _err != nil {
@@ -730,14 +730,14 @@ func (p *LocationManagerProxy) RegisterGnssStatusCallback(
 	ctx context.Context,
 	callback IGnssStatusListener,
 	packageName string,
-	attributionTag string,
 	listenerId string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(listenerId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "registerGnssStatusCallback")
@@ -788,14 +788,14 @@ func (p *LocationManagerProxy) RegisterGnssNmeaCallback(
 	ctx context.Context,
 	callback IGnssNmeaListener,
 	packageName string,
-	attributionTag string,
 	listenerId string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(listenerId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "registerGnssNmeaCallback")
@@ -847,9 +847,9 @@ func (p *LocationManagerProxy) AddGnssMeasurementsListener(
 	request GnssMeasurementRequest,
 	listener IGnssMeasurementsListener,
 	packageName string,
-	attributionTag string,
 	listenerId string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteInt32(1)
@@ -858,7 +858,7 @@ func (p *LocationManagerProxy) AddGnssMeasurementsListener(
 	}
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(listenerId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "addGnssMeasurementsListener")
@@ -938,14 +938,14 @@ func (p *LocationManagerProxy) AddGnssNavigationMessageListener(
 	ctx context.Context,
 	listener IGnssNavigationMessageListener,
 	packageName string,
-	attributionTag string,
 	listenerId string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(listenerId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "addGnssNavigationMessageListener")
@@ -996,14 +996,14 @@ func (p *LocationManagerProxy) AddGnssAntennaInfoListener(
 	ctx context.Context,
 	listener IGnssAntennaInfoListener,
 	packageName string,
-	attributionTag string,
 	listenerId string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(listenerId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "addGnssAntennaInfoListener")
@@ -1134,15 +1134,15 @@ func (p *LocationManagerProxy) StartGnssBatch(
 	periodNanos int64,
 	listener ILocationListener,
 	packageName string,
-	attributionTag string,
 	listenerId string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteInt64(periodNanos)
 	_data.WriteStrongBinder(listener.AsBinder().Handle())
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(listenerId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "startGnssBatch")
@@ -1394,14 +1394,14 @@ func (p *LocationManagerProxy) IsProviderPackage(
 	ctx context.Context,
 	provider string,
 	packageName string,
-	attributionTag string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteString16(provider)
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "isProviderPackage")
 	if _err != nil {
@@ -1579,13 +1579,13 @@ func (p *LocationManagerProxy) IsExtraLocationControllerPackageEnabled(
 func (p *LocationManagerProxy) IsProviderEnabledForUser(
 	ctx context.Context,
 	provider string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteString16(provider)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "isProviderEnabledForUser")
 	if _err != nil {
@@ -1611,12 +1611,12 @@ func (p *LocationManagerProxy) IsProviderEnabledForUser(
 
 func (p *LocationManagerProxy) IsLocationEnabledForUser(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "isLocationEnabledForUser")
 	if _err != nil {
@@ -1643,12 +1643,12 @@ func (p *LocationManagerProxy) IsLocationEnabledForUser(
 func (p *LocationManagerProxy) SetLocationEnabledForUser(
 	ctx context.Context,
 	enabled bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteBool(enabled)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "setLocationEnabledForUser")
 	if _err != nil {
@@ -1670,12 +1670,12 @@ func (p *LocationManagerProxy) SetLocationEnabledForUser(
 
 func (p *LocationManagerProxy) IsAdasGnssLocationEnabledForUser(
 	ctx context.Context,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "isAdasGnssLocationEnabledForUser")
 	if _err != nil {
@@ -1702,12 +1702,12 @@ func (p *LocationManagerProxy) IsAdasGnssLocationEnabledForUser(
 func (p *LocationManagerProxy) SetAdasGnssLocationEnabledForUser(
 	ctx context.Context,
 	enabled bool,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteBool(enabled)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "setAdasGnssLocationEnabledForUser")
 	if _err != nil {
@@ -1788,8 +1788,8 @@ func (p *LocationManagerProxy) AddTestProvider(
 	properties interface{},
 	locationTags []string,
 	packageName string,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteString16(name)
@@ -1802,7 +1802,7 @@ func (p *LocationManagerProxy) AddTestProvider(
 		}
 	}
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "addTestProvider")
 	if _err != nil {
@@ -1826,13 +1826,13 @@ func (p *LocationManagerProxy) RemoveTestProvider(
 	ctx context.Context,
 	provider string,
 	packageName string,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteString16(provider)
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "removeTestProvider")
 	if _err != nil {
@@ -1857,8 +1857,8 @@ func (p *LocationManagerProxy) SetTestProviderLocation(
 	provider string,
 	location Location,
 	packageName string,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteString16(provider)
@@ -1867,7 +1867,7 @@ func (p *LocationManagerProxy) SetTestProviderLocation(
 		return _err
 	}
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "setTestProviderLocation")
 	if _err != nil {
@@ -1892,14 +1892,14 @@ func (p *LocationManagerProxy) SetTestProviderEnabled(
 	provider string,
 	enabled bool,
 	packageName string,
-	attributionTag string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteString16(provider)
 	_data.WriteBool(enabled)
 	_data.WriteString16(packageName)
-	_data.WriteString16(attributionTag)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "setTestProviderEnabled")
 	if _err != nil {

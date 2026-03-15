@@ -157,14 +157,13 @@ var _ ISub = (*SubProxy)(nil)
 
 func (p *SubProxy) GetAllSubInfoList(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) ([]androidTelephony.SubscriptionInfo, error) {
 	var _result []androidTelephony.SubscriptionInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "getAllSubInfoList")
 	if _err != nil {
@@ -200,15 +199,14 @@ func (p *SubProxy) GetAllSubInfoList(
 func (p *SubProxy) GetActiveSubscriptionInfo(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (androidTelephony.SubscriptionInfo, error) {
 	var _result androidTelephony.SubscriptionInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "getActiveSubscriptionInfo")
 	if _err != nil {
@@ -240,15 +238,14 @@ func (p *SubProxy) GetActiveSubscriptionInfo(
 func (p *SubProxy) GetActiveSubscriptionInfoForIccId(
 	ctx context.Context,
 	iccId string,
-	callingPackage string,
-	callingFeatureId string,
 ) (androidTelephony.SubscriptionInfo, error) {
 	var _result androidTelephony.SubscriptionInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
 	_data.WriteString16(iccId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "getActiveSubscriptionInfoForIccId")
 	if _err != nil {
@@ -280,15 +277,14 @@ func (p *SubProxy) GetActiveSubscriptionInfoForIccId(
 func (p *SubProxy) GetActiveSubscriptionInfoForSimSlotIndex(
 	ctx context.Context,
 	slotIndex int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (androidTelephony.SubscriptionInfo, error) {
 	var _result androidTelephony.SubscriptionInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
 	_data.WriteInt32(slotIndex)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "getActiveSubscriptionInfoForSimSlotIndex")
 	if _err != nil {
@@ -319,15 +315,14 @@ func (p *SubProxy) GetActiveSubscriptionInfoForSimSlotIndex(
 
 func (p *SubProxy) GetActiveSubscriptionInfoList(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 	isForAllProfiles bool,
 ) ([]androidTelephony.SubscriptionInfo, error) {
 	var _result []androidTelephony.SubscriptionInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteBool(isForAllProfiles)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "getActiveSubscriptionInfoList")
@@ -363,15 +358,14 @@ func (p *SubProxy) GetActiveSubscriptionInfoList(
 
 func (p *SubProxy) GetActiveSubInfoCount(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 	isForAllProfile bool,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteBool(isForAllProfile)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "getActiveSubInfoCount")
@@ -427,14 +421,13 @@ func (p *SubProxy) GetActiveSubInfoCountMax(
 
 func (p *SubProxy) GetAvailableSubscriptionInfoList(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) ([]androidTelephony.SubscriptionInfo, error) {
 	var _result []androidTelephony.SubscriptionInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "getAvailableSubscriptionInfoList")
 	if _err != nil {
@@ -469,12 +462,12 @@ func (p *SubProxy) GetAvailableSubscriptionInfoList(
 
 func (p *SubProxy) GetAccessibleSubscriptionInfoList(
 	ctx context.Context,
-	callingPackage string,
 ) ([]androidTelephony.SubscriptionInfo, error) {
 	var _result []androidTelephony.SubscriptionInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "getAccessibleSubscriptionInfoList")
 	if _err != nil {
@@ -732,14 +725,14 @@ func (p *SubProxy) SetOpportunistic(
 	ctx context.Context,
 	opportunistic bool,
 	subId int32,
-	callingPackage string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
 	_data.WriteBool(opportunistic)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "setOpportunistic")
 	if _err != nil {
@@ -766,9 +759,9 @@ func (p *SubProxy) SetOpportunistic(
 func (p *SubProxy) CreateSubscriptionGroup(
 	ctx context.Context,
 	subIdList []int32,
-	callingPackage string,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
 	if subIdList == nil {
@@ -779,7 +772,7 @@ func (p *SubProxy) CreateSubscriptionGroup(
 			_data.WriteInt32(_item)
 		}
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "createSubscriptionGroup")
 	if _err != nil {
@@ -860,14 +853,13 @@ func (p *SubProxy) GetPreferredDataSubscriptionId(
 
 func (p *SubProxy) GetOpportunisticSubscriptions(
 	ctx context.Context,
-	callingPackage string,
-	callingFeatureId string,
 ) ([]androidTelephony.SubscriptionInfo, error) {
 	var _result []androidTelephony.SubscriptionInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "getOpportunisticSubscriptions")
 	if _err != nil {
@@ -904,8 +896,8 @@ func (p *SubProxy) RemoveSubscriptionsFromGroup(
 	ctx context.Context,
 	subIdList []int32,
 	groupUuid interface{},
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
 	if subIdList == nil {
@@ -916,7 +908,7 @@ func (p *SubProxy) RemoveSubscriptionsFromGroup(
 			_data.WriteInt32(_item)
 		}
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "removeSubscriptionsFromGroup")
 	if _err != nil {
@@ -940,8 +932,8 @@ func (p *SubProxy) AddSubscriptionsIntoGroup(
 	ctx context.Context,
 	subIdList []int32,
 	groupUuid interface{},
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
 	if subIdList == nil {
@@ -952,7 +944,7 @@ func (p *SubProxy) AddSubscriptionsIntoGroup(
 			_data.WriteInt32(_item)
 		}
 	}
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "addSubscriptionsIntoGroup")
 	if _err != nil {
@@ -975,14 +967,13 @@ func (p *SubProxy) AddSubscriptionsIntoGroup(
 func (p *SubProxy) GetSubscriptionsInGroup(
 	ctx context.Context,
 	groupUuid interface{},
-	callingPackage string,
-	callingFeatureId string,
 ) ([]androidTelephony.SubscriptionInfo, error) {
 	var _result []androidTelephony.SubscriptionInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "getSubscriptionsInGroup")
 	if _err != nil {
@@ -1108,12 +1099,12 @@ func (p *SubProxy) GetDefaultSubId(
 
 func (p *SubProxy) GetDefaultSubIdAsUser(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "getDefaultSubIdAsUser")
 	if _err != nil {
@@ -1254,12 +1245,12 @@ func (p *SubProxy) GetDefaultVoiceSubId(
 
 func (p *SubProxy) GetDefaultVoiceSubIdAsUser(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "getDefaultVoiceSubIdAsUser")
 	if _err != nil {
@@ -1340,12 +1331,12 @@ func (p *SubProxy) GetDefaultSmsSubId(
 
 func (p *SubProxy) GetDefaultSmsSubIdAsUser(
 	ctx context.Context,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "getDefaultSmsSubIdAsUser")
 	if _err != nil {
@@ -1470,16 +1461,15 @@ func (p *SubProxy) GetSubscriptionProperty(
 	ctx context.Context,
 	subId int32,
 	propKey string,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
 	_data.WriteInt32(subId)
 	_data.WriteString16(propKey)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "getSubscriptionProperty")
 	if _err != nil {
@@ -1568,15 +1558,14 @@ func (p *SubProxy) GetEnabledSubscriptionId(
 func (p *SubProxy) IsActiveSubId(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "isActiveSubId")
 	if _err != nil {
@@ -1756,16 +1745,15 @@ func (p *SubProxy) GetPhoneNumber(
 	ctx context.Context,
 	subId int32,
 	source int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
 	_data.WriteInt32(subId)
 	_data.WriteInt32(source)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "getPhoneNumber")
 	if _err != nil {
@@ -1792,15 +1780,14 @@ func (p *SubProxy) GetPhoneNumber(
 func (p *SubProxy) GetPhoneNumberFromFirstAvailableSource(
 	ctx context.Context,
 	subId int32,
-	callingPackage string,
-	callingFeatureId string,
 ) (string, error) {
 	var _result string
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "getPhoneNumberFromFirstAvailableSource")
 	if _err != nil {
@@ -1829,16 +1816,15 @@ func (p *SubProxy) SetPhoneNumber(
 	subId int32,
 	source int32,
 	number string,
-	callingPackage string,
-	callingFeatureId string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
 	_data.WriteInt32(subId)
 	_data.WriteInt32(source)
 	_data.WriteString16(number)
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "setPhoneNumber")
 	if _err != nil {
@@ -1862,14 +1848,14 @@ func (p *SubProxy) SetUsageSetting(
 	ctx context.Context,
 	usageSetting int32,
 	subId int32,
-	callingPackage string,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISub)
 	_data.WriteInt32(usageSetting)
 	_data.WriteInt32(subId)
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "setUsageSetting")
 	if _err != nil {

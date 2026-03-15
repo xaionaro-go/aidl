@@ -104,12 +104,12 @@ func (p *AppTaskProxy) GetTaskInfo(
 func (p *AppTaskProxy) MoveToFront(
 	ctx context.Context,
 	appThread IApplicationThread,
-	callingPackage string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppTask)
 	_data.WriteStrongBinder(appThread.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppTask, "moveToFront")
 	if _err != nil {
@@ -132,18 +132,17 @@ func (p *AppTaskProxy) MoveToFront(
 func (p *AppTaskProxy) StartActivity(
 	ctx context.Context,
 	whoThread binder.IBinder,
-	callingPackage string,
-	callingFeatureId string,
 	intent interface{},
 	resolvedType string,
 	options interface{},
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppTask)
 	_data.WriteStrongBinder(whoThread.Handle())
-	_data.WriteString16(callingPackage)
-	_data.WriteString16(callingFeatureId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(resolvedType)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppTask, "startActivity")

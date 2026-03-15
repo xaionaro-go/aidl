@@ -101,16 +101,16 @@ func (p *FaceServiceReceiverProxy) OnAcquired(
 func (p *FaceServiceReceiverProxy) OnAuthenticationSucceeded(
 	ctx context.Context,
 	face Face,
-	userId int32,
 	isStrongBiometric bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceServiceReceiver)
 	_data.WriteInt32(1)
 	if _err := face.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(isStrongBiometric)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFaceServiceReceiver, "onAuthenticationSucceeded")
@@ -125,13 +125,13 @@ func (p *FaceServiceReceiverProxy) OnAuthenticationSucceeded(
 func (p *FaceServiceReceiverProxy) OnFaceDetected(
 	ctx context.Context,
 	sensorId int32,
-	userId int32,
 	isStrongBiometric bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceServiceReceiver)
 	_data.WriteInt32(sensorId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(isStrongBiometric)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFaceServiceReceiver, "onFaceDetected")
@@ -256,13 +256,13 @@ func (p *FaceServiceReceiverProxy) OnFeatureGet(
 func (p *FaceServiceReceiverProxy) OnChallengeGenerated(
 	ctx context.Context,
 	sensorId int32,
-	userId int32,
 	challenge int64,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceServiceReceiver)
 	_data.WriteInt32(sensorId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt64(challenge)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFaceServiceReceiver, "onChallengeGenerated")

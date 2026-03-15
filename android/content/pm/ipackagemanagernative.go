@@ -119,14 +119,14 @@ func (p *PackageManagerNativeProxy) GetPackageUid(
 	ctx context.Context,
 	packageName string,
 	flags int64,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManagerNative)
 	_data.WriteString(packageName)
 	_data.WriteInt64(flags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "getPackageUid")
 	if _err != nil {

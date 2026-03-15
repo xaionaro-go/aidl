@@ -604,13 +604,13 @@ func (p *ApplicationThreadProxy) ScheduleCreateBackupAgent(
 	ctx context.Context,
 	app interface{},
 	backupMode int32,
-	userId int32,
 	operationType int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteInt32(backupMode)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(operationType)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleCreateBackupAgent")
@@ -625,11 +625,11 @@ func (p *ApplicationThreadProxy) ScheduleCreateBackupAgent(
 func (p *ApplicationThreadProxy) ScheduleDestroyBackupAgent(
 	ctx context.Context,
 	app interface{},
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "scheduleDestroyBackupAgent")
 	if _err != nil {
@@ -1427,9 +1427,9 @@ func (p *ApplicationThreadProxy) NotifyContentProviderPublishStatus(
 	ctx context.Context,
 	holder ContentProviderHolder,
 	authorities string,
-	userId int32,
 	published bool,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
 	_data.WriteInt32(1)
@@ -1437,7 +1437,7 @@ func (p *ApplicationThreadProxy) NotifyContentProviderPublishStatus(
 		return _err
 	}
 	_data.WriteString16(authorities)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(published)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIApplicationThread, "notifyContentProviderPublishStatus")

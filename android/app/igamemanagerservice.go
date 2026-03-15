@@ -68,13 +68,13 @@ var _ IGameManagerService = (*GameManagerServiceProxy)(nil)
 func (p *GameManagerServiceProxy) GetGameMode(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "getGameMode")
 	if _err != nil {
@@ -102,13 +102,13 @@ func (p *GameManagerServiceProxy) SetGameMode(
 	ctx context.Context,
 	packageName string,
 	gameMode int32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(gameMode)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "setGameMode")
 	if _err != nil {
@@ -131,13 +131,13 @@ func (p *GameManagerServiceProxy) SetGameMode(
 func (p *GameManagerServiceProxy) GetAvailableGameModes(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) ([]int32, error) {
 	var _result []int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "getAvailableGameModes")
 	if _err != nil {
@@ -174,13 +174,13 @@ func (p *GameManagerServiceProxy) GetAvailableGameModes(
 func (p *GameManagerServiceProxy) IsAngleEnabled(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "isAngleEnabled")
 	if _err != nil {
@@ -207,12 +207,12 @@ func (p *GameManagerServiceProxy) IsAngleEnabled(
 func (p *GameManagerServiceProxy) NotifyGraphicsEnvironmentSetup(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "notifyGraphicsEnvironmentSetup")
 	if _err != nil {
@@ -236,8 +236,8 @@ func (p *GameManagerServiceProxy) SetGameState(
 	ctx context.Context,
 	packageName string,
 	gameState GameState,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
 	_data.WriteString16(packageName)
@@ -245,7 +245,7 @@ func (p *GameManagerServiceProxy) SetGameState(
 	if _err := gameState.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "setGameState")
 	if _err != nil {
@@ -268,13 +268,13 @@ func (p *GameManagerServiceProxy) SetGameState(
 func (p *GameManagerServiceProxy) GetGameModeInfo(
 	ctx context.Context,
 	packageName string,
-	userId int32,
 ) (GameModeInfo, error) {
 	var _result GameModeInfo
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "getGameModeInfo")
 	if _err != nil {
@@ -334,14 +334,14 @@ func (p *GameManagerServiceProxy) UpdateResolutionScalingFactor(
 	packageName string,
 	gameMode int32,
 	scalingFactor float32,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(gameMode)
 	_data.WriteFloat32(scalingFactor)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "updateResolutionScalingFactor")
 	if _err != nil {
@@ -365,14 +365,14 @@ func (p *GameManagerServiceProxy) GetResolutionScalingFactor(
 	ctx context.Context,
 	packageName string,
 	gameMode int32,
-	userId int32,
 ) (float32, error) {
 	var _result float32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(gameMode)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "getResolutionScalingFactor")
 	if _err != nil {
@@ -400,8 +400,8 @@ func (p *GameManagerServiceProxy) UpdateCustomGameModeConfiguration(
 	ctx context.Context,
 	packageName string,
 	gameModeConfig GameModeConfiguration,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
 	_data.WriteString16(packageName)
@@ -409,7 +409,7 @@ func (p *GameManagerServiceProxy) UpdateCustomGameModeConfiguration(
 	if _err := gameModeConfig.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "updateCustomGameModeConfiguration")
 	if _err != nil {

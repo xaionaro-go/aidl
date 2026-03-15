@@ -675,15 +675,15 @@ func (p *DeviceIdleControllerProxy) AddPowerSaveTempWhitelistApp(
 	ctx context.Context,
 	name string,
 	duration int64,
-	userId int32,
 	reasonCode int32,
 	reason string,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDeviceIdleController)
 	_data.WriteString16(name)
 	_data.WriteInt64(duration)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(reasonCode)
 	_data.WriteString16(reason)
 
@@ -708,15 +708,15 @@ func (p *DeviceIdleControllerProxy) AddPowerSaveTempWhitelistApp(
 func (p *DeviceIdleControllerProxy) AddPowerSaveTempWhitelistAppForMms(
 	ctx context.Context,
 	name string,
-	userId int32,
 	reasonCode int32,
 	reason string,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDeviceIdleController)
 	_data.WriteString16(name)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(reasonCode)
 	_data.WriteString16(reason)
 
@@ -745,15 +745,15 @@ func (p *DeviceIdleControllerProxy) AddPowerSaveTempWhitelistAppForMms(
 func (p *DeviceIdleControllerProxy) AddPowerSaveTempWhitelistAppForSms(
 	ctx context.Context,
 	name string,
-	userId int32,
 	reasonCode int32,
 	reason string,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDeviceIdleController)
 	_data.WriteString16(name)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(reasonCode)
 	_data.WriteString16(reason)
 
@@ -782,15 +782,15 @@ func (p *DeviceIdleControllerProxy) AddPowerSaveTempWhitelistAppForSms(
 func (p *DeviceIdleControllerProxy) WhitelistAppTemporarily(
 	ctx context.Context,
 	name string,
-	userId int32,
 	reasonCode int32,
 	reason string,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDeviceIdleController)
 	_data.WriteString16(name)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(reasonCode)
 	_data.WriteString16(reason)
 

@@ -1000,15 +1000,15 @@ func (p *ActivityClientControllerProxy) CheckActivityCallerContentUriPermission(
 	callerToken binder.IBinder,
 	uri interface{},
 	modeFlags int32,
-	userId int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
 	_data.WriteStrongBinder(activityToken.Handle())
 	_data.WriteStrongBinder(callerToken.Handle())
 	_data.WriteInt32(modeFlags)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "checkActivityCallerContentUriPermission")
 	if _err != nil {

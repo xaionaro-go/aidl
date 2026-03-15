@@ -73,14 +73,14 @@ func (p *AuthServiceProxy) CreateTestSession(
 	ctx context.Context,
 	sensorId int32,
 	callback ITestSessionCallback,
-	opPackageName string,
 ) (ITestSession, error) {
 	var _result ITestSession
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
 	_data.WriteInt32(sensorId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "createTestSession")
 	if _err != nil {
@@ -107,12 +107,12 @@ func (p *AuthServiceProxy) CreateTestSession(
 
 func (p *AuthServiceProxy) GetSensorProperties(
 	ctx context.Context,
-	opPackageName string,
 ) ([]SensorPropertiesInternal, error) {
 	var _result []SensorPropertiesInternal
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "getSensorProperties")
 	if _err != nil {
@@ -178,19 +178,18 @@ func (p *AuthServiceProxy) Authenticate(
 	ctx context.Context,
 	token binder.IBinder,
 	sessionId int64,
-	userId int32,
 	receiver IBiometricServiceReceiver,
-	opPackageName string,
 	promptInfo PromptInfo,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
 	_data.WriteStrongBinder(token.Handle())
 	_data.WriteInt64(sessionId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteStrongBinder(receiver.AsBinder().Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := promptInfo.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -221,13 +220,13 @@ func (p *AuthServiceProxy) Authenticate(
 func (p *AuthServiceProxy) CancelAuthentication(
 	ctx context.Context,
 	token binder.IBinder,
-	opPackageName string,
 	requestId int64,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
 	_data.WriteStrongBinder(token.Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt64(requestId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "cancelAuthentication")
@@ -250,15 +249,14 @@ func (p *AuthServiceProxy) CancelAuthentication(
 
 func (p *AuthServiceProxy) CanAuthenticate(
 	ctx context.Context,
-	opPackageName string,
-	userId int32,
 	authenticators int32,
 ) (int32, error) {
 	var _result int32
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
-	_data.WriteString16(opPackageName)
-	_data.WriteInt32(userId)
+	_data.WriteString16(_identity.PackageName)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(authenticators)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "canAuthenticate")
@@ -285,13 +283,13 @@ func (p *AuthServiceProxy) CanAuthenticate(
 
 func (p *AuthServiceProxy) GetLastAuthenticationTime(
 	ctx context.Context,
-	userId int32,
 	authenticators int32,
 ) (int64, error) {
 	var _result int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(authenticators)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "getLastAuthenticationTime")
@@ -318,14 +316,13 @@ func (p *AuthServiceProxy) GetLastAuthenticationTime(
 
 func (p *AuthServiceProxy) HasEnrolledBiometrics(
 	ctx context.Context,
-	userId int32,
-	opPackageName string,
 ) (bool, error) {
 	var _result bool
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
-	_data.WriteInt32(userId)
-	_data.WriteString16(opPackageName)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "hasEnrolledBiometrics")
 	if _err != nil {
@@ -429,13 +426,13 @@ func (p *AuthServiceProxy) UnregisterAuthenticationStateListener(
 
 func (p *AuthServiceProxy) InvalidateAuthenticatorIds(
 	ctx context.Context,
-	userId int32,
 	fromSensorId int32,
 	callback IInvalidationCallback,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(fromSensorId)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
@@ -459,12 +456,12 @@ func (p *AuthServiceProxy) InvalidateAuthenticatorIds(
 
 func (p *AuthServiceProxy) GetAuthenticatorIds(
 	ctx context.Context,
-	userId int32,
 ) ([]int64, error) {
 	var _result []int64
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "getAuthenticatorIds")
 	if _err != nil {
@@ -501,17 +498,16 @@ func (p *AuthServiceProxy) GetAuthenticatorIds(
 func (p *AuthServiceProxy) ResetLockoutTimeBound(
 	ctx context.Context,
 	token binder.IBinder,
-	opPackageName string,
 	fromSensorId int32,
-	userId int32,
 	hardwareAuthToken []byte,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
 	_data.WriteStrongBinder(token.Handle())
-	_data.WriteString16(opPackageName)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(fromSensorId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if hardwareAuthToken == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -541,12 +537,12 @@ func (p *AuthServiceProxy) ResetLockoutTimeBound(
 
 func (p *AuthServiceProxy) ResetLockout(
 	ctx context.Context,
-	userId int32,
 	hardwareAuthToken []byte,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	if hardwareAuthToken == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -576,15 +572,14 @@ func (p *AuthServiceProxy) ResetLockout(
 
 func (p *AuthServiceProxy) GetButtonLabel(
 	ctx context.Context,
-	userId int32,
-	opPackageName string,
 	authenticators int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
-	_data.WriteInt32(userId)
-	_data.WriteString16(opPackageName)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(authenticators)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "getButtonLabel")
@@ -607,15 +602,14 @@ func (p *AuthServiceProxy) GetButtonLabel(
 
 func (p *AuthServiceProxy) GetPromptMessage(
 	ctx context.Context,
-	userId int32,
-	opPackageName string,
 	authenticators int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
-	_data.WriteInt32(userId)
-	_data.WriteString16(opPackageName)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(authenticators)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "getPromptMessage")
@@ -638,15 +632,14 @@ func (p *AuthServiceProxy) GetPromptMessage(
 
 func (p *AuthServiceProxy) GetSettingName(
 	ctx context.Context,
-	userId int32,
-	opPackageName string,
 	authenticators int32,
 ) (interface{}, error) {
 	var _result interface{}
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
-	_data.WriteInt32(userId)
-	_data.WriteString16(opPackageName)
+	_data.WriteInt32(_identity.UserID)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(authenticators)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "getSettingName")

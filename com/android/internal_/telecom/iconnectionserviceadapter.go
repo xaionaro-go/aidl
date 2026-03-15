@@ -538,13 +538,13 @@ func (p *ConnectionServiceAdapterProxy) OnPostDialChar(
 func (p *ConnectionServiceAdapterProxy) QueryRemoteConnectionServices(
 	ctx context.Context,
 	callback RemoteServiceCallback,
-	callingPackage string,
 	sessionInfo Logging.SessionInfo,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIConnectionServiceAdapter)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteString16(callingPackage)
+	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := sessionInfo.MarshalParcel(_data); _err != nil {
 		return _err

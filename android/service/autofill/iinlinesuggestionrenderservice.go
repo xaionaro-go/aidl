@@ -47,9 +47,9 @@ func (p *InlineSuggestionRenderServiceProxy) RenderSuggestion(
 	height int32,
 	hostInputToken binder.IBinder,
 	displayId int32,
-	userId int32,
 	sessionId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInlineSuggestionRenderService)
 	_data.WriteStrongBinder(callback.AsBinder().Handle())
@@ -61,7 +61,7 @@ func (p *InlineSuggestionRenderServiceProxy) RenderSuggestion(
 	_data.WriteInt32(height)
 	_data.WriteStrongBinder(hostInputToken.Handle())
 	_data.WriteInt32(displayId)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(sessionId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInlineSuggestionRenderService, "renderSuggestion")
@@ -91,12 +91,12 @@ func (p *InlineSuggestionRenderServiceProxy) GetInlineSuggestionsRendererInfo(
 
 func (p *InlineSuggestionRenderServiceProxy) DestroySuggestionViews(
 	ctx context.Context,
-	userId int32,
 	sessionId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInlineSuggestionRenderService)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(sessionId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInlineSuggestionRenderService, "destroySuggestionViews")

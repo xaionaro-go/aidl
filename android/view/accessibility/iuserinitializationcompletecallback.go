@@ -37,11 +37,11 @@ var _ IUserInitializationCompleteCallback = (*UserInitializationCompleteCallback
 
 func (p *UserInitializationCompleteCallbackProxy) OnUserInitializationComplete(
 	ctx context.Context,
-	userId int32,
 ) error {
+	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserInitializationCompleteCallback)
-	_data.WriteInt32(userId)
+	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserInitializationCompleteCallback, "onUserInitializationComplete")
 	if _err != nil {
