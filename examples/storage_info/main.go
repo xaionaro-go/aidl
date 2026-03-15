@@ -12,12 +12,12 @@ import (
 	"os"
 	"time"
 
-	"github.com/xaionaro-go/aidl/binder"
-	"github.com/xaionaro-go/aidl/binder/versionaware"
-	"github.com/xaionaro-go/aidl/android/hardware/usb"
-	"github.com/xaionaro-go/aidl/android/os/storage"
-	"github.com/xaionaro-go/aidl/kernelbinder"
-	"github.com/xaionaro-go/aidl/servicemanager"
+	"github.com/xaionaro-go/binder/binder"
+	"github.com/xaionaro-go/binder/binder/versionaware"
+	"github.com/xaionaro-go/binder/android/hardware/usb"
+	"github.com/xaionaro-go/binder/android/os/storage"
+	"github.com/xaionaro-go/binder/kernelbinder"
+	"github.com/xaionaro-go/binder/servicemanager"
 )
 
 func main() {

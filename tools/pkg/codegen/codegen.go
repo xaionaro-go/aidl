@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/xaionaro-go/aidl/tools/pkg/parser"
-	"github.com/xaionaro-go/aidl/tools/pkg/resolver"
-	"github.com/xaionaro-go/aidl/tools/pkg/validate"
+	"github.com/xaionaro-go/binder/tools/pkg/parser"
+	"github.com/xaionaro-go/binder/tools/pkg/resolver"
+	"github.com/xaionaro-go/binder/tools/pkg/validate"
 )
 
 // Generator generates Go code from AIDL files.

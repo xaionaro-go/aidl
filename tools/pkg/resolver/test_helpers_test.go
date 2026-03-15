@@ -1,7 +1,7 @@
 package resolver
 
 import (
-	"github.com/xaionaro-go/aidl/tools/pkg/parser"
+	"github.com/xaionaro-go/binder/tools/pkg/parser"
 )
 
 func parseTestFile(

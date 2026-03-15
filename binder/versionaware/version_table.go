@@ -1,6 +1,6 @@
 package versionaware
 
-import "github.com/xaionaro-go/aidl/binder"
+import "github.com/xaionaro-go/binder/binder"
 
 // VersionTable maps descriptor -> methodName -> transaction code.
 type VersionTable map[string]map[string]binder.TransactionCode

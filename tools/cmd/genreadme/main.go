@@ -11,7 +11,7 @@ import (
 const (
 	beginMarker = "<!-- BEGIN GENERATED PACKAGES -->"
 	endMarker   = "<!-- END GENERATED PACKAGES -->"
-	moduleBase  = "github.com/xaionaro-go/aidl"
+	moduleBase  = "github.com/xaionaro-go/binder"
 )
 
 // generatedDirs lists the top-level directories containing generated code.

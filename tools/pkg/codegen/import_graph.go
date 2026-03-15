@@ -3,8 +3,8 @@ package codegen
 import (
 	"strings"
 
-	"github.com/xaionaro-go/aidl/tools/pkg/parser"
-	"github.com/xaionaro-go/aidl/tools/pkg/resolver"
+	"github.com/xaionaro-go/binder/tools/pkg/parser"
+	"github.com/xaionaro-go/binder/tools/pkg/resolver"
 )
 
 // ImportGraph represents the directed dependency graph between AIDL packages.

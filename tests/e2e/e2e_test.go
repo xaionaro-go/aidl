@@ -13,12 +13,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/xaionaro-go/aidl/binder"
-	"github.com/xaionaro-go/aidl/binder/versionaware"
-	aidlerrors "github.com/xaionaro-go/aidl/errors"
-	"github.com/xaionaro-go/aidl/kernelbinder"
-	"github.com/xaionaro-go/aidl/parcel"
-	"github.com/xaionaro-go/aidl/servicemanager"
+	"github.com/xaionaro-go/binder/binder"
+	"github.com/xaionaro-go/binder/binder/versionaware"
+	aidlerrors "github.com/xaionaro-go/binder/errors"
+	"github.com/xaionaro-go/binder/kernelbinder"
+	"github.com/xaionaro-go/binder/parcel"
+	"github.com/xaionaro-go/binder/servicemanager"
 )
 
 func openBinder(t *testing.T) *versionaware.Transport {

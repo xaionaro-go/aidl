@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/facebookincubator/go-belt/tool/logger"
-	"github.com/xaionaro-go/aidl/binder"
-	"github.com/xaionaro-go/aidl/parcel"
+	"github.com/xaionaro-go/binder/binder"
+	"github.com/xaionaro-go/binder/parcel"
 )
 
 const (

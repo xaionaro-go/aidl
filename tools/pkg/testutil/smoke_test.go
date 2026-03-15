@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/xaionaro-go/aidl/binder"
-	"github.com/xaionaro-go/aidl/parcel"
+	"github.com/xaionaro-go/binder/binder"
+	"github.com/xaionaro-go/binder/parcel"
 )
 
 // nilPanicker is a custom interface used to trigger a nil-dereference

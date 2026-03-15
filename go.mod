@@ -1,4 +1,4 @@
-module github.com/xaionaro-go/aidl
+module github.com/xaionaro-go/binder
 
 go 1.25.0
 

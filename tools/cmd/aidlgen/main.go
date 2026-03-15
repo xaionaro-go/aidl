@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/xaionaro-go/aidl/tools/pkg/codegen"
-	"github.com/xaionaro-go/aidl/tools/pkg/resolver"
+	"github.com/xaionaro-go/binder/tools/pkg/codegen"
+	"github.com/xaionaro-go/binder/tools/pkg/resolver"
 )
 
 type searchPathsFlag []string

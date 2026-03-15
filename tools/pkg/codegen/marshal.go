@@ -3,8 +3,8 @@ package codegen
 import (
 	"strings"
 
-	"github.com/xaionaro-go/aidl/tools/pkg/parser"
-	"github.com/xaionaro-go/aidl/tools/pkg/resolver"
+	"github.com/xaionaro-go/binder/tools/pkg/parser"
+	"github.com/xaionaro-go/binder/tools/pkg/resolver"
 )
 
 // MarshalInfo contains the parcel read/write expressions for a type.

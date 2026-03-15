@@ -10,9 +10,9 @@ import (
 	"strings"
 
 	"github.com/facebookincubator/go-belt/tool/logger"
-	"github.com/xaionaro-go/aidl/binder"
-	"github.com/xaionaro-go/aidl/binder/versionaware/dex"
-	"github.com/xaionaro-go/aidl/parcel"
+	"github.com/xaionaro-go/binder/binder"
+	"github.com/xaionaro-go/binder/binder/versionaware/dex"
+	"github.com/xaionaro-go/binder/parcel"
 )
 
 // Transport wraps a binder.Transport and adds version-aware
@@ -152,8 +152,8 @@ const (
 // with AIDL $Stub classes and TRANSACTION_* constants.
 const frameworkJARDir = "/system/framework"
 
-// cacheDir is where aidlcli stores cached transaction code tables.
-const cacheDir = "/data/local/tmp/.aidl_cache"
+// cacheDir is where bindercli stores cached transaction code tables.
+const cacheDir = "/data/local/tmp/.binder_cache"
 
 // extractTransactionCodesFromDevice scans all JARs in /system/framework/
 // and extracts definitive transaction codes from DEX bytecode.

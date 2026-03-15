@@ -1,5 +1,5 @@
 .PHONY: generate genversions test e2e vet build build-examples lint clean readme smoke \
-       aidlcli genaidlcli list-commands check-generated release
+       bindercli genbindercli list-commands check-generated release
 
 # Generated top-level directories.
 GENERATED_DIRS := android com fuzztest libgui_test_server parcelables src
@@ -33,11 +33,11 @@ build:
 	go build ./cmd/...
 	@for d in examples/*/; do echo "Building $$d..."; go build "./$$d"; done
 
-# Build aidlcli release binaries for arm64 and amd64.
+# Build bindercli release binaries for arm64 and amd64.
 release:
 	@mkdir -p builds
-	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o builds/aidlcli-linux-arm64 ./cmd/aidlcli/
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o builds/aidlcli-linux-amd64 ./cmd/aidlcli/
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o builds/bindercli-linux-arm64 ./cmd/bindercli/
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o builds/bindercli-linux-amd64 ./cmd/bindercli/
 
 # Run linter.
 lint:
@@ -51,18 +51,18 @@ readme:
 smoke:
 	go run ./tools/cmd/gen_e2e_smoke .
 
-# Regenerate aidlcli registry and command dispatch code.
-genaidlcli:
-	go run ./tools/cmd/genaidlcli
+# Regenerate bindercli registry and command dispatch code.
+genbindercli:
+	go run ./tools/cmd/genbindercli
 
-# Build the aidlcli tool.
-aidlcli:
+# Build the bindercli tool.
+bindercli:
 	@mkdir -p builds
-	go build -o builds/aidlcli ./cmd/aidlcli
+	go build -o builds/bindercli ./cmd/bindercli
 
-# List all available aidlcli subcommands.
+# List all available bindercli subcommands.
 list-commands:
-	go run ./cmd/aidlcli --help 2>&1 | grep '^ ' | awk '{print $$1}'
+	go run ./cmd/bindercli --help 2>&1 | grep '^ ' | awk '{print $$1}'
 
 # Verify generated code matches a clean regeneration.
 check-generated:

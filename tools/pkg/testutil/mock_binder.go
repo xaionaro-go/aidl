@@ -3,9 +3,9 @@ package testutil
 import (
 	"context"
 
-	"github.com/xaionaro-go/aidl/binder"
-	aidlerrors "github.com/xaionaro-go/aidl/errors"
-	"github.com/xaionaro-go/aidl/parcel"
+	"github.com/xaionaro-go/binder/binder"
+	aidlerrors "github.com/xaionaro-go/binder/errors"
+	"github.com/xaionaro-go/binder/parcel"
 )
 
 // MockBinder is a test double for binder.IBinder that returns a

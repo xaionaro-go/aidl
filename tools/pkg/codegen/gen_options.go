@@ -1,8 +1,8 @@
 package codegen
 
 import (
-	"github.com/xaionaro-go/aidl/tools/pkg/parser"
-	"github.com/xaionaro-go/aidl/tools/pkg/resolver"
+	"github.com/xaionaro-go/binder/tools/pkg/parser"
+	"github.com/xaionaro-go/binder/tools/pkg/resolver"
 )
 
 // GenOptions holds optional parameters for code generation functions.

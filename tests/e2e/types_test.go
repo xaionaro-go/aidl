@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/xaionaro-go/aidl/binder"
-	"github.com/xaionaro-go/aidl/parcel"
+	"github.com/xaionaro-go/binder/binder"
+	"github.com/xaionaro-go/binder/parcel"
 )
 
 // --- int[] return type ---

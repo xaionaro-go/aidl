@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/xaionaro-go/aidl/binder"
+	"github.com/xaionaro-go/binder/binder"
 )
 
 // skippedMethods lists infrastructure methods that are not AIDL

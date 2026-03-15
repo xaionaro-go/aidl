@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	aidlerrors "github.com/xaionaro-go/aidl/errors"
-	"github.com/xaionaro-go/aidl/parcel"
+	aidlerrors "github.com/xaionaro-go/binder/errors"
+	"github.com/xaionaro-go/binder/parcel"
 )
 
 func TestReadStatus_ExceptionNone(t *testing.T) {

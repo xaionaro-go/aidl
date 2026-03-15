@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	aidlparser "github.com/xaionaro-go/aidl/tools/pkg/parser"
+	aidlparser "github.com/xaionaro-go/binder/tools/pkg/parser"
 )
 
 type codegenFailureRecord struct {

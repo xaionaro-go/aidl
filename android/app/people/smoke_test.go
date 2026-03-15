@@ -1,7 +1,7 @@
 package people
 
 import (
-	"github.com/xaionaro-go/aidl/tools/pkg/testutil"
+	"github.com/xaionaro-go/binder/tools/pkg/testutil"
 	"testing"
 )
 

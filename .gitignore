@@ -1,5 +1,5 @@
 /aidlgen
-/aidlcli
+/bindercli
 *.test
 *.out
 *.prof

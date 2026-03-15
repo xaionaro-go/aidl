@@ -11,11 +11,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/xaionaro-go/aidl/binder"
-	"github.com/xaionaro-go/aidl/binder/versionaware"
-	genOs "github.com/xaionaro-go/aidl/android/os"
-	"github.com/xaionaro-go/aidl/kernelbinder"
-	"github.com/xaionaro-go/aidl/servicemanager"
+	"github.com/xaionaro-go/binder/binder"
+	"github.com/xaionaro-go/binder/binder/versionaware"
+	genOs "github.com/xaionaro-go/binder/android/os"
+	"github.com/xaionaro-go/binder/kernelbinder"
+	"github.com/xaionaro-go/binder/servicemanager"
 )
 
 func main() {

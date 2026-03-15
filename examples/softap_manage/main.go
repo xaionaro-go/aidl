@@ -19,11 +19,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/xaionaro-go/aidl/binder"
-	"github.com/xaionaro-go/aidl/binder/versionaware"
-	"github.com/xaionaro-go/aidl/android/hardware/wifi/hostapd"
-	"github.com/xaionaro-go/aidl/kernelbinder"
-	"github.com/xaionaro-go/aidl/servicemanager"
+	"github.com/xaionaro-go/binder/binder"
+	"github.com/xaionaro-go/binder/binder/versionaware"
+	"github.com/xaionaro-go/binder/android/hardware/wifi/hostapd"
+	"github.com/xaionaro-go/binder/kernelbinder"
+	"github.com/xaionaro-go/binder/servicemanager"
 )
 
 const halServiceName = "android.hardware.wifi.hostapd.IHostapd/default"

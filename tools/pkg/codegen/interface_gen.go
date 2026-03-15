@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/xaionaro-go/aidl/tools/pkg/parser"
+	"github.com/xaionaro-go/binder/tools/pkg/parser"
 )
 
 // GenerateInterface generates Go source for an AIDL interface declaration.
@@ -24,10 +24,10 @@ func GenerateInterface(
 	opts := applyGenOptions(options)
 	f := NewGoFile(pkg)
 	typeRef := opts.newTypeRefResolver(f)
-	f.AddImport("github.com/xaionaro-go/aidl/binder", "")
+	f.AddImport("github.com/xaionaro-go/binder/binder", "")
 	if len(decl.Methods) > 0 {
 		f.AddImport("context", "")
-		f.AddImport("github.com/xaionaro-go/aidl/parcel", "")
+		f.AddImport("github.com/xaionaro-go/binder/parcel", "")
 	}
 
 	interfaceName := AIDLToGoName(decl.IntfName)

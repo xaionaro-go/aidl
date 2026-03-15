@@ -9,22 +9,22 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	genAccessibility "github.com/xaionaro-go/aidl/android/view/accessibility"
+	genAccessibility "github.com/xaionaro-go/binder/android/view/accessibility"
 
-	genAccounts "github.com/xaionaro-go/aidl/android/accounts"
+	genAccounts "github.com/xaionaro-go/binder/android/accounts"
 
-	genApp "github.com/xaionaro-go/aidl/android/app"
+	genApp "github.com/xaionaro-go/binder/android/app"
 
-	genDebug "github.com/xaionaro-go/aidl/android/debug"
+	genDebug "github.com/xaionaro-go/binder/android/debug"
 
-	genCameraProvider "github.com/xaionaro-go/aidl/android/hardware/camera/provider"
-	genCas "github.com/xaionaro-go/aidl/android/hardware/cas"
-	genContextHub "github.com/xaionaro-go/aidl/android/hardware/contexthub"
-	genDrm "github.com/xaionaro-go/aidl/android/hardware/drm"
-	genComposer3 "github.com/xaionaro-go/aidl/android/hardware/graphics/composer3"
-	genHealth "github.com/xaionaro-go/aidl/android/hardware/health"
-	genIdentity "github.com/xaionaro-go/aidl/android/hardware/identity"
-	"github.com/xaionaro-go/aidl/servicemanager"
+	genCameraProvider "github.com/xaionaro-go/binder/android/hardware/camera/provider"
+	genCas "github.com/xaionaro-go/binder/android/hardware/cas"
+	genContextHub "github.com/xaionaro-go/binder/android/hardware/contexthub"
+	genDrm "github.com/xaionaro-go/binder/android/hardware/drm"
+	genComposer3 "github.com/xaionaro-go/binder/android/hardware/graphics/composer3"
+	genHealth "github.com/xaionaro-go/binder/android/hardware/health"
+	genIdentity "github.com/xaionaro-go/binder/android/hardware/identity"
+	"github.com/xaionaro-go/binder/servicemanager"
 )
 
 // --- Framework services ---

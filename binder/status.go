@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/xaionaro-go/aidl/parcel"
+	"github.com/xaionaro-go/binder/parcel"
 
-	aidlerrors "github.com/xaionaro-go/aidl/errors"
+	aidlerrors "github.com/xaionaro-go/binder/errors"
 )
 
 // ReadStatus reads an AIDL Status from a reply parcel.

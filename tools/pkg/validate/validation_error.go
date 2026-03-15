@@ -3,7 +3,7 @@ package validate
 import (
 	"fmt"
 
-	"github.com/xaionaro-go/aidl/tools/pkg/parser"
+	"github.com/xaionaro-go/binder/tools/pkg/parser"
 )
 
 // ValidationError represents a semantic validation error.

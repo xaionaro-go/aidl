@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/xaionaro-go/aidl/tools/pkg/parser"
+	"github.com/xaionaro-go/binder/tools/pkg/parser"
 )
 
 // Resolver resolves AIDL imports and builds a TypeRegistry.

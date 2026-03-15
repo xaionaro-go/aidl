@@ -6,7 +6,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/xaionaro-go/aidl/servicemanager"
+	"github.com/xaionaro-go/binder/servicemanager"
 )
 
 func TestGenBatch6_PingServices(t *testing.T) {

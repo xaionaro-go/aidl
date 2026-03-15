@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/xaionaro-go/aidl/binder"
-	aidlerrors "github.com/xaionaro-go/aidl/errors"
-	"github.com/xaionaro-go/aidl/parcel"
+	"github.com/xaionaro-go/binder/binder"
+	aidlerrors "github.com/xaionaro-go/binder/errors"
+	"github.com/xaionaro-go/binder/parcel"
 )
 
 func TestMockBinder_Transact_ReturnsSecurityException(t *testing.T) {

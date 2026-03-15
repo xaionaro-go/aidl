@@ -18,9 +18,9 @@ import (
 const (
 	emulatorPath    = "/home/streaming/Android/Sdk/emulator/emulator"
 	avdName         = "Pixel_7_API_35"
-	aidlcliBinary   = "/tmp/aidlcli-test"
+	bindercliBinary   = "/tmp/bindercli-test"
 	deviceBinaryDir = "/data/local/tmp"
-	deviceBinary    = deviceBinaryDir + "/aidlcli"
+	deviceBinary    = deviceBinaryDir + "/bindercli"
 	bootTimeout     = 120 * time.Second
 	bootPollPeriod  = 2 * time.Second
 )
@@ -50,12 +50,12 @@ func TestMain(m *testing.M) {
 		logAndExit("emulator boot timeout: " + err.Error())
 	}
 
-	if err := buildAidlcli(); err != nil {
-		logAndExit("build aidlcli: " + err.Error())
+	if err := buildBindercli(); err != nil {
+		logAndExit("build bindercli: " + err.Error())
 	}
 
-	if err := pushAidlcli(); err != nil {
-		logAndExit("push aidlcli: " + err.Error())
+	if err := pushBindercli(); err != nil {
+		logAndExit("push bindercli: " + err.Error())
 	}
 
 	code := m.Run()
@@ -134,27 +134,27 @@ func waitForBoot() error {
 	return os.ErrDeadlineExceeded
 }
 
-// buildAidlcli cross-compiles the CLI for the emulator (x86_64 Linux).
-func buildAidlcli() error {
+// buildBindercli cross-compiles the CLI for the emulator (x86_64 Linux).
+func buildBindercli() error {
 	cmd := exec.Command(
 		"go", "build",
-		"-o", aidlcliBinary,
-		"./cmd/aidlcli/",
+		"-o", bindercliBinary,
+		"./cmd/bindercli/",
 	)
 	cmd.Env = append(os.Environ(),
 		"GOOS=linux",
 		"GOARCH=amd64",
 		"CGO_ENABLED=0",
 	)
-	cmd.Dir = "/home/streaming/go/src/github.com/xaionaro-go/aidl"
+	cmd.Dir = "/home/streaming/go/src/github.com/xaionaro-go/binder"
 	cmd.Stdout = os.Stderr
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
 }
 
-// pushAidlcli copies the built binary to the emulator and makes it executable.
-func pushAidlcli() error {
-	if out, err := adbCmd("push", aidlcliBinary, deviceBinary).CombinedOutput(); err != nil {
+// pushBindercli copies the built binary to the emulator and makes it executable.
+func pushBindercli() error {
+	if out, err := adbCmd("push", bindercliBinary, deviceBinary).CombinedOutput(); err != nil {
 		return &pushError{output: string(out), err: err}
 	}
 	if out, err := adbCmd("shell", "chmod", "755", deviceBinary).CombinedOutput(); err != nil {
@@ -186,11 +186,11 @@ func logAndExit(msg string) {
 	os.Exit(1)
 }
 
-// runAidlcli executes aidlcli on the emulator via `adb -s <serial> shell`.
+// runBindercli executes bindercli on the emulator via `adb -s <serial> shell`.
 // It always injects --format json for machine-parseable output.
 // Arguments are joined into a single shell command string to preserve
 // empty/quoted values across the adb shell boundary.
-func runAidlcli(args ...string) (string, string, error) {
+func runBindercli(args ...string) (string, string, error) {
 	parts := make([]string, 0, len(args)+3)
 	parts = append(parts, deviceBinary, "--format", "json")
 	for _, a := range args {
@@ -217,10 +217,10 @@ func shellQuote(s string) string {
 	return "'" + strings.ReplaceAll(s, "'", "'\\''") + "'"
 }
 
-// runAidlcliOrSkip runs aidlcli; skips the test when the service is unavailable.
-func runAidlcliOrSkip(t *testing.T, args ...string) string {
+// runBindercliOrSkip runs bindercli; skips the test when the service is unavailable.
+func runBindercliOrSkip(t *testing.T, args ...string) string {
 	t.Helper()
-	stdout, stderr, err := runAidlcli(args...)
+	stdout, stderr, err := runBindercli(args...)
 	if err != nil {
 		combined := stderr + stdout
 		switch {
@@ -228,15 +228,15 @@ func runAidlcliOrSkip(t *testing.T, args ...string) string {
 			strings.Contains(combined, "no service with descriptor"):
 			t.Skipf("service unavailable: %s", strings.TrimSpace(combined))
 		}
-		t.Fatalf("aidlcli %v failed: %v\nstdout: %s\nstderr: %s", args, err, stdout, stderr)
+		t.Fatalf("bindercli %v failed: %v\nstdout: %s\nstderr: %s", args, err, stdout, stderr)
 	}
 	return stdout
 }
 
 // --- Core service tests ---
 
-func TestAidlcli_ServiceList(t *testing.T) {
-	stdout := runAidlcliOrSkip(t, "service", "list")
+func TestBindercli_ServiceList(t *testing.T) {
+	stdout := runBindercliOrSkip(t, "service", "list")
 
 	var rows []map[string]string
 	require.NoError(t, json.Unmarshal([]byte(stdout), &rows), "unmarshal service list")
@@ -264,8 +264,8 @@ func TestAidlcli_ServiceList(t *testing.T) {
 	assert.True(t, foundWellKnown, "expected SurfaceFlinger or activity in service list")
 }
 
-func TestAidlcli_ServiceInspect(t *testing.T) {
-	stdout := runAidlcliOrSkip(t, "service", "inspect", "SurfaceFlinger")
+func TestBindercli_ServiceInspect(t *testing.T) {
+	stdout := runBindercliOrSkip(t, "service", "inspect", "SurfaceFlinger")
 
 	var result map[string]any
 	require.NoError(t, json.Unmarshal([]byte(stdout), &result), "unmarshal inspect result")
@@ -285,8 +285,8 @@ func TestAidlcli_ServiceInspect(t *testing.T) {
 
 // --- GPS/Location ---
 
-func TestAidlcli_Location_GetAllProviders(t *testing.T) {
-	stdout := runAidlcliOrSkip(t,
+func TestBindercli_Location_GetAllProviders(t *testing.T) {
+	stdout := runBindercliOrSkip(t,
 		"android.location.ILocationManager", "get-all-providers",
 	)
 
@@ -311,8 +311,8 @@ func TestAidlcli_Location_GetAllProviders(t *testing.T) {
 	t.Logf("providers: %v", providerStrings)
 }
 
-func TestAidlcli_Location_IsProviderEnabled(t *testing.T) {
-	stdout := runAidlcliOrSkip(t,
+func TestBindercli_Location_IsProviderEnabled(t *testing.T) {
+	stdout := runBindercliOrSkip(t,
 		"android.location.ILocationManager", "is-provider-enabled-for-user",
 		"--provider", "passive", "--userId", "0",
 	)
@@ -328,8 +328,8 @@ func TestAidlcli_Location_IsProviderEnabled(t *testing.T) {
 	t.Logf("isProviderEnabledForUser(passive, 0): %v", raw)
 }
 
-func TestAidlcli_Location_GetGnssHardwareModelName(t *testing.T) {
-	stdout, stderr, err := runAidlcli(
+func TestBindercli_Location_GetGnssHardwareModelName(t *testing.T) {
+	stdout, stderr, err := runBindercli(
 		"android.location.ILocationManager", "get-gnss-hardware-model-name",
 	)
 	if err != nil {
@@ -355,8 +355,8 @@ func TestAidlcli_Location_GetGnssHardwareModelName(t *testing.T) {
 
 // --- ActivityManager ---
 
-func TestAidlcli_ActivityManager_IsUserAMonkey(t *testing.T) {
-	stdout := runAidlcliOrSkip(t,
+func TestBindercli_ActivityManager_IsUserAMonkey(t *testing.T) {
+	stdout := runBindercliOrSkip(t,
 		"android.app.IActivityManager", "is-user-a-monkey",
 	)
 
@@ -372,8 +372,8 @@ func TestAidlcli_ActivityManager_IsUserAMonkey(t *testing.T) {
 	t.Logf("isUserAMonkey: %v", val)
 }
 
-func TestAidlcli_ActivityManager_GetProcessLimit(t *testing.T) {
-	stdout := runAidlcliOrSkip(t,
+func TestBindercli_ActivityManager_GetProcessLimit(t *testing.T) {
+	stdout := runBindercliOrSkip(t,
 		"android.app.IActivityManager", "get-process-limit",
 	)
 
@@ -389,8 +389,8 @@ func TestAidlcli_ActivityManager_GetProcessLimit(t *testing.T) {
 	t.Logf("getProcessLimit: %v", raw)
 }
 
-func TestAidlcli_ActivityManager_CheckPermission(t *testing.T) {
-	stdout := runAidlcliOrSkip(t,
+func TestBindercli_ActivityManager_CheckPermission(t *testing.T) {
+	stdout := runBindercliOrSkip(t,
 		"android.app.IActivityManager", "check-permission",
 		"--permission", "android.permission.INTERNET",
 		"--pid", "1",
@@ -409,8 +409,8 @@ func TestAidlcli_ActivityManager_CheckPermission(t *testing.T) {
 	t.Logf("checkPermission(INTERNET, pid=1, uid=0): %v", val)
 }
 
-func TestAidlcli_ActivityManager_IsAppFreezerSupported(t *testing.T) {
-	stdout := runAidlcliOrSkip(t,
+func TestBindercli_ActivityManager_IsAppFreezerSupported(t *testing.T) {
+	stdout := runBindercliOrSkip(t,
 		"android.app.IActivityManager", "is-app-freezer-supported",
 	)
 
@@ -427,8 +427,8 @@ func TestAidlcli_ActivityManager_IsAppFreezerSupported(t *testing.T) {
 
 // --- PackageManager ---
 
-func TestAidlcli_PackageManager_IsPackageAvailable(t *testing.T) {
-	stdout := runAidlcliOrSkip(t,
+func TestBindercli_PackageManager_IsPackageAvailable(t *testing.T) {
+	stdout := runBindercliOrSkip(t,
 		"android.content.pm.IPackageManager", "is-package-available",
 		"--packageName", "com.android.settings",
 		"--userId", "0",
@@ -446,8 +446,8 @@ func TestAidlcli_PackageManager_IsPackageAvailable(t *testing.T) {
 	t.Logf("isPackageAvailable(com.android.settings, 0): %v", val)
 }
 
-func TestAidlcli_PackageManager_CheckPermission(t *testing.T) {
-	stdout := runAidlcliOrSkip(t,
+func TestBindercli_PackageManager_CheckPermission(t *testing.T) {
+	stdout := runBindercliOrSkip(t,
 		"android.content.pm.IPackageManager", "check-permission",
 		"--permName", "android.permission.INTERNET",
 		"--pkgName", "com.android.settings",
@@ -467,8 +467,8 @@ func TestAidlcli_PackageManager_CheckPermission(t *testing.T) {
 
 // --- Power/Battery/Thermal ---
 
-func TestAidlcli_PowerManager_IsPowerSaveMode(t *testing.T) {
-	stdout := runAidlcliOrSkip(t,
+func TestBindercli_PowerManager_IsPowerSaveMode(t *testing.T) {
+	stdout := runBindercliOrSkip(t,
 		"android.os.IPowerManager", "is-power-save-mode",
 	)
 
@@ -483,8 +483,8 @@ func TestAidlcli_PowerManager_IsPowerSaveMode(t *testing.T) {
 	t.Logf("isPowerSaveMode: %v", raw)
 }
 
-func TestAidlcli_PowerManager_IsInteractive(t *testing.T) {
-	stdout := runAidlcliOrSkip(t,
+func TestBindercli_PowerManager_IsInteractive(t *testing.T) {
+	stdout := runBindercliOrSkip(t,
 		"android.os.IPowerManager", "is-interactive",
 	)
 
@@ -499,8 +499,8 @@ func TestAidlcli_PowerManager_IsInteractive(t *testing.T) {
 	t.Logf("isInteractive: %v", raw)
 }
 
-func TestAidlcli_ThermalService_GetCurrentThermalStatus(t *testing.T) {
-	stdout := runAidlcliOrSkip(t,
+func TestBindercli_ThermalService_GetCurrentThermalStatus(t *testing.T) {
+	stdout := runBindercliOrSkip(t,
 		"android.os.IThermalService", "get-current-thermal-status",
 	)
 
@@ -515,8 +515,8 @@ func TestAidlcli_ThermalService_GetCurrentThermalStatus(t *testing.T) {
 	t.Logf("getCurrentThermalStatus: %v", raw)
 }
 
-func TestAidlcli_Health_GetCapacity(t *testing.T) {
-	stdout, stderr, err := runAidlcli(
+func TestBindercli_Health_GetCapacity(t *testing.T) {
+	stdout, stderr, err := runBindercli(
 		"android.hardware.health.IHealth", "get-capacity",
 	)
 	if err != nil {
@@ -541,8 +541,8 @@ func TestAidlcli_Health_GetCapacity(t *testing.T) {
 
 // --- Display ---
 
-func TestAidlcli_Display_GetDisplayIds(t *testing.T) {
-	stdout := runAidlcliOrSkip(t,
+func TestBindercli_Display_GetDisplayIds(t *testing.T) {
+	stdout := runBindercliOrSkip(t,
 		"android.hardware.display.IDisplayManager", "get-display-ids",
 		"--includeDisabled", "false",
 	)
@@ -561,10 +561,10 @@ func TestAidlcli_Display_GetDisplayIds(t *testing.T) {
 
 // --- Clipboard ---
 
-func TestAidlcli_Clipboard_HasClipboardText(t *testing.T) {
+func TestBindercli_Clipboard_HasClipboardText(t *testing.T) {
 	// Note: pass attributionTag as a non-empty placeholder to avoid
 	// adb shell stripping the empty argument and shifting subsequent flags.
-	stdout := runAidlcliOrSkip(t,
+	stdout := runBindercliOrSkip(t,
 		"android.content.IClipboard", "has-clipboard-text",
 		"--callingPackage=com.android.shell",
 		"--attributionTag=none",
@@ -585,8 +585,8 @@ func TestAidlcli_Clipboard_HasClipboardText(t *testing.T) {
 
 // --- Telephony ---
 
-func TestAidlcli_Telephony_GetActivePhoneType(t *testing.T) {
-	stdout := runAidlcliOrSkip(t,
+func TestBindercli_Telephony_GetActivePhoneType(t *testing.T) {
+	stdout := runBindercliOrSkip(t,
 		"com.android.internal.telephony.ITelephony", "get-active-phone-type",
 	)
 
@@ -603,8 +603,8 @@ func TestAidlcli_Telephony_GetActivePhoneType(t *testing.T) {
 
 // --- HAL services (likely skip in emulator) ---
 
-func TestAidlcli_WiFi_ListNetworks(t *testing.T) {
-	stdout, stderr, err := runAidlcli(
+func TestBindercli_WiFi_ListNetworks(t *testing.T) {
+	stdout, stderr, err := runBindercli(
 		"android.hardware.wifi.supplicant.ISupplicantStaIface", "list-networks",
 	)
 	if err != nil {
@@ -627,8 +627,8 @@ func TestAidlcli_WiFi_ListNetworks(t *testing.T) {
 	t.Logf("listNetworks: %d entries", len(arr))
 }
 
-func TestAidlcli_Camera_GetCameraIdList(t *testing.T) {
-	stdout, stderr, err := runAidlcli(
+func TestBindercli_Camera_GetCameraIdList(t *testing.T) {
+	stdout, stderr, err := runBindercli(
 		"android.hardware.camera.provider.ICameraProvider", "get-camera-id-list",
 	)
 	if err != nil {
@@ -651,8 +651,8 @@ func TestAidlcli_Camera_GetCameraIdList(t *testing.T) {
 	t.Logf("getCameraIdList: %v", arr)
 }
 
-func TestAidlcli_Bluetooth_Close(t *testing.T) {
-	stdout, stderr, err := runAidlcli(
+func TestBindercli_Bluetooth_Close(t *testing.T) {
+	stdout, stderr, err := runBindercli(
 		"android.hardware.bluetooth.IBluetoothHci", "close",
 	)
 	if err != nil {
@@ -676,17 +676,17 @@ func TestAidlcli_Bluetooth_Close(t *testing.T) {
 	t.Logf("bluetooth close: status=%s", val)
 }
 
-// runAidlcliHALOrSkip runs aidlcli for a HAL service and skips the test
+// runBindercliHALOrSkip runs bindercli for a HAL service and skips the test
 // when the service is unavailable or returns any error.
 // HAL services are typically absent on emulators, so all errors are treated as skip-worthy.
-func runAidlcliHALOrSkip(
+func runBindercliHALOrSkip(
 	t *testing.T,
 	serviceName string,
 	args ...string,
 ) string {
 	t.Helper()
 	fullArgs := append([]string{serviceName}, args...)
-	stdout, stderr, err := runAidlcli(fullArgs...)
+	stdout, stderr, err := runBindercli(fullArgs...)
 	if err != nil {
 		combined := stderr + stdout
 		switch {
@@ -701,8 +701,8 @@ func runAidlcliHALOrSkip(
 
 // --- Core service commands (additional) ---
 
-func TestAidlcli_ServiceMethods(t *testing.T) {
-	stdout := runAidlcliOrSkip(t, "service", "methods", "activity")
+func TestBindercli_ServiceMethods(t *testing.T) {
+	stdout := runBindercliOrSkip(t, "service", "methods", "activity")
 
 	var envelope map[string]any
 	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
@@ -725,9 +725,9 @@ func TestAidlcli_ServiceMethods(t *testing.T) {
 	t.Logf("activity interface %s has %d methods, first: %s", descriptor, len(methods), name)
 }
 
-func TestAidlcli_ServiceTransact(t *testing.T) {
+func TestBindercli_ServiceTransact(t *testing.T) {
 	// Transaction code 64 on SurfaceFlinger queries active color mode.
-	stdout := runAidlcliOrSkip(t, "service", "transact", "SurfaceFlinger", "64")
+	stdout := runBindercliOrSkip(t, "service", "transact", "SurfaceFlinger", "64")
 
 	var envelope map[string]any
 	require.NoError(t, json.Unmarshal([]byte(stdout), &envelope), "unmarshal response")
@@ -745,8 +745,8 @@ func TestAidlcli_ServiceTransact(t *testing.T) {
 
 // --- Location (additional) ---
 
-func TestAidlcli_Location_GetGnssYearOfHardware(t *testing.T) {
-	stdout, stderr, err := runAidlcli(
+func TestBindercli_Location_GetGnssYearOfHardware(t *testing.T) {
+	stdout, stderr, err := runBindercli(
 		"android.location.ILocationManager", "get-gnss-year-of-hardware",
 	)
 	if err != nil {
@@ -777,8 +777,8 @@ func TestAidlcli_Location_GetGnssYearOfHardware(t *testing.T) {
 	t.Logf("getGnssYearOfHardware: %d", year)
 }
 
-func TestAidlcli_Location_GetLastLocation(t *testing.T) {
-	stdout, stderr, err := runAidlcli(
+func TestBindercli_Location_GetLastLocation(t *testing.T) {
+	stdout, stderr, err := runBindercli(
 		"android.location.ILocationManager", "get-last-location",
 		"--provider=gps",
 		"--packageName=com.android.shell",
@@ -808,8 +808,8 @@ func TestAidlcli_Location_GetLastLocation(t *testing.T) {
 
 // --- PackageManager (additional) ---
 
-func TestAidlcli_PackageManager_GetInstallerPackageName(t *testing.T) {
-	stdout := runAidlcliOrSkip(t,
+func TestBindercli_PackageManager_GetInstallerPackageName(t *testing.T) {
+	stdout := runBindercliOrSkip(t,
 		"android.content.pm.IPackageManager", "get-installer-package-name",
 		"--packageName=com.android.settings",
 	)
@@ -826,8 +826,8 @@ func TestAidlcli_PackageManager_GetInstallerPackageName(t *testing.T) {
 
 // --- Telephony (additional) ---
 
-func TestAidlcli_Telephony_GetNetworkCountryIso(t *testing.T) {
-	stdout, stderr, err := runAidlcli(
+func TestBindercli_Telephony_GetNetworkCountryIso(t *testing.T) {
+	stdout, stderr, err := runBindercli(
 		"com.android.internal.telephony.ITelephony", "get-network-country-iso-for-phone",
 		"--phoneId=0",
 	)
@@ -859,8 +859,8 @@ func TestAidlcli_Telephony_GetNetworkCountryIso(t *testing.T) {
 
 // --- WiFi supplicant (additional) ---
 
-func TestAidlcli_WiFi_AddNetwork(t *testing.T) {
-	stdout := runAidlcliHALOrSkip(t,
+func TestBindercli_WiFi_AddNetwork(t *testing.T) {
+	stdout := runBindercliHALOrSkip(t,
 		"android.hardware.wifi.supplicant.ISupplicantStaIface", "add-network",
 	)
 
@@ -869,8 +869,8 @@ func TestAidlcli_WiFi_AddNetwork(t *testing.T) {
 	t.Logf("addNetwork: %v", envelope)
 }
 
-func TestAidlcli_WiFi_Disconnect(t *testing.T) {
-	stdout := runAidlcliHALOrSkip(t,
+func TestBindercli_WiFi_Disconnect(t *testing.T) {
+	stdout := runBindercliHALOrSkip(t,
 		"android.hardware.wifi.supplicant.ISupplicantStaIface", "disconnect",
 	)
 
@@ -879,9 +879,9 @@ func TestAidlcli_WiFi_Disconnect(t *testing.T) {
 	t.Logf("disconnect: %v", envelope)
 }
 
-func TestAidlcli_WiFi_SetSsid(t *testing.T) {
+func TestBindercli_WiFi_SetSsid(t *testing.T) {
 	// "test" in hex = 74657374
-	stdout := runAidlcliHALOrSkip(t,
+	stdout := runBindercliHALOrSkip(t,
 		"android.hardware.wifi.supplicant.ISupplicantStaNetwork", "set-ssid",
 		"--ssid=74657374",
 	)
@@ -891,8 +891,8 @@ func TestAidlcli_WiFi_SetSsid(t *testing.T) {
 	t.Logf("setSsid: %v", envelope)
 }
 
-func TestAidlcli_WiFi_SetPskPassphrase(t *testing.T) {
-	stdout := runAidlcliHALOrSkip(t,
+func TestBindercli_WiFi_SetPskPassphrase(t *testing.T) {
+	stdout := runBindercliHALOrSkip(t,
 		"android.hardware.wifi.supplicant.ISupplicantStaNetwork", "set-psk-passphrase",
 		"--psk=testpassphrase",
 	)
@@ -902,8 +902,8 @@ func TestAidlcli_WiFi_SetPskPassphrase(t *testing.T) {
 	t.Logf("setPskPassphrase: %v", envelope)
 }
 
-func TestAidlcli_WiFi_SetKeyMgmt(t *testing.T) {
-	stdout := runAidlcliHALOrSkip(t,
+func TestBindercli_WiFi_SetKeyMgmt(t *testing.T) {
+	stdout := runBindercliHALOrSkip(t,
 		"android.hardware.wifi.supplicant.ISupplicantStaNetwork", "set-key-mgmt",
 		"--keyMgmtMask=2",
 	)
@@ -913,8 +913,8 @@ func TestAidlcli_WiFi_SetKeyMgmt(t *testing.T) {
 	t.Logf("setKeyMgmt: %v", envelope)
 }
 
-func TestAidlcli_WiFi_Enable(t *testing.T) {
-	stdout := runAidlcliHALOrSkip(t,
+func TestBindercli_WiFi_Enable(t *testing.T) {
+	stdout := runBindercliHALOrSkip(t,
 		"android.hardware.wifi.supplicant.ISupplicantStaNetwork", "enable",
 		"--noConnect=false",
 	)
@@ -926,8 +926,8 @@ func TestAidlcli_WiFi_Enable(t *testing.T) {
 
 // --- Camera (additional) ---
 
-func TestAidlcli_Camera_GetCameraCharacteristics(t *testing.T) {
-	stdout := runAidlcliHALOrSkip(t,
+func TestBindercli_Camera_GetCameraCharacteristics(t *testing.T) {
+	stdout := runBindercliHALOrSkip(t,
 		"android.hardware.camera.device.ICameraDevice", "get-camera-characteristics",
 	)
 
@@ -939,8 +939,8 @@ func TestAidlcli_Camera_GetCameraCharacteristics(t *testing.T) {
 	t.Logf("getCameraCharacteristics: result present")
 }
 
-func TestAidlcli_Camera_SetTorchMode(t *testing.T) {
-	stdout := runAidlcliHALOrSkip(t,
+func TestBindercli_Camera_SetTorchMode(t *testing.T) {
+	stdout := runBindercliHALOrSkip(t,
 		"android.hardware.camera.provider.ICameraProvider", "set-torch-mode",
 		"--cameraDeviceName=0",
 		"--enabled=true",
@@ -953,8 +953,8 @@ func TestAidlcli_Camera_SetTorchMode(t *testing.T) {
 
 // --- Audio (HAL) ---
 
-func TestAidlcli_Audio_GetActiveMicrophones(t *testing.T) {
-	stdout := runAidlcliHALOrSkip(t,
+func TestBindercli_Audio_GetActiveMicrophones(t *testing.T) {
+	stdout := runBindercliHALOrSkip(t,
 		"android.hardware.audio.core.IStreamIn", "get-active-microphones",
 	)
 
@@ -966,9 +966,9 @@ func TestAidlcli_Audio_GetActiveMicrophones(t *testing.T) {
 	t.Logf("getActiveMicrophones: %v", envelope["result"])
 }
 
-func TestAidlcli_Audio_SetMicrophoneDirection(t *testing.T) {
+func TestBindercli_Audio_SetMicrophoneDirection(t *testing.T) {
 	// Direction: 1 = FRONT.
-	stdout := runAidlcliHALOrSkip(t,
+	stdout := runBindercliHALOrSkip(t,
 		"android.hardware.audio.core.IStreamIn", "set-microphone-direction",
 		"--direction=1",
 	)
@@ -978,8 +978,8 @@ func TestAidlcli_Audio_SetMicrophoneDirection(t *testing.T) {
 	t.Logf("setMicrophoneDirection: %v", envelope)
 }
 
-func TestAidlcli_Audio_SetMicrophoneFieldDimension(t *testing.T) {
-	stdout := runAidlcliHALOrSkip(t,
+func TestBindercli_Audio_SetMicrophoneFieldDimension(t *testing.T) {
+	stdout := runBindercliHALOrSkip(t,
 		"android.hardware.audio.core.IStreamIn", "set-microphone-field-dimension",
 		"--zoom=1.0",
 	)
@@ -991,8 +991,8 @@ func TestAidlcli_Audio_SetMicrophoneFieldDimension(t *testing.T) {
 
 // --- Bluetooth (additional) ---
 
-func TestAidlcli_Bluetooth_Initialize(t *testing.T) {
-	stdout := runAidlcliHALOrSkip(t,
+func TestBindercli_Bluetooth_Initialize(t *testing.T) {
+	stdout := runBindercliHALOrSkip(t,
 		"android.hardware.bluetooth.IBluetoothHci", "initialize",
 	)
 
@@ -1001,10 +1001,10 @@ func TestAidlcli_Bluetooth_Initialize(t *testing.T) {
 	t.Logf("bluetooth initialize: %v", envelope)
 }
 
-func TestAidlcli_Bluetooth_SendHciCommand(t *testing.T) {
+func TestBindercli_Bluetooth_SendHciCommand(t *testing.T) {
 	// HCI Reset command: OGF=0x03, OCF=0x0003 => opcode 0x0C03, param_len=0
 	// Wire bytes: 01 03 0c 00
-	stdout := runAidlcliHALOrSkip(t,
+	stdout := runBindercliHALOrSkip(t,
 		"android.hardware.bluetooth.IBluetoothHci", "send-hci-command",
 		"--command=01030c00",
 	)

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/xaionaro-go/aidl/tools/pkg/parser"
+	"github.com/xaionaro-go/binder/tools/pkg/parser"
 )
 
 // aidlPrimitiveToGo maps AIDL primitive type names to Go type strings.

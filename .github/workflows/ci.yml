@@ -58,6 +58,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            builds/aidlcli-linux-arm64
-            builds/aidlcli-linux-amd64
+            builds/bindercli-linux-arm64
+            builds/bindercli-linux-amd64
           generate_release_notes: true

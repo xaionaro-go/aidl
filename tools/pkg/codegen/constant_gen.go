@@ -3,7 +3,7 @@ package codegen
 import (
 	"fmt"
 
-	"github.com/xaionaro-go/aidl/tools/pkg/parser"
+	"github.com/xaionaro-go/binder/tools/pkg/parser"
 )
 
 // GenerateConstants writes const declarations to the given GoFile.

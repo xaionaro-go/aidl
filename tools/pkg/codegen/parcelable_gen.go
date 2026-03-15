@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/xaionaro-go/aidl/tools/pkg/parser"
+	"github.com/xaionaro-go/binder/tools/pkg/parser"
 )
 
 // GenerateParcelable generates Go source for an AIDL parcelable declaration.
@@ -30,11 +30,11 @@ func GenerateParcelable(
 
 	f := NewGoFile(pkg)
 	typeRef := opts.newTypeRefResolver(f)
-	f.AddImport("github.com/xaionaro-go/aidl/parcel", "")
+	f.AddImport("github.com/xaionaro-go/binder/parcel", "")
 
 	// Add binder import if any field is an interface or IBinder type.
 	if hasBinderField(decl.Fields, opts, typeRef) {
-		f.AddImport("github.com/xaionaro-go/aidl/binder", "")
+		f.AddImport("github.com/xaionaro-go/binder/binder", "")
 	}
 
 	structName := AIDLToGoName(decl.ParcName)

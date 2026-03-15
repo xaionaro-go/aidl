@@ -1,7 +1,7 @@
 package validate
 
 import (
-	"github.com/xaionaro-go/aidl/tools/pkg/parser"
+	"github.com/xaionaro-go/binder/tools/pkg/parser"
 )
 
 // validPrimitiveBackingTypes is the set of valid backing types for AIDL enums.

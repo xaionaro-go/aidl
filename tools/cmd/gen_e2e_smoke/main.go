@@ -139,7 +139,7 @@ func main() {
 	}
 
 	// Build proxyInfo list.
-	const modulePath = "github.com/xaionaro-go/aidl"
+	const modulePath = "github.com/xaionaro-go/binder"
 	var proxies []proxyInfo
 	for _, e := range entries {
 		importPath := modulePath + "/" + filepath.ToSlash(e.dir)
@@ -179,8 +179,8 @@ func main() {
 
 	buf.WriteString("import (\n")
 	buf.WriteString("\t\"testing\"\n\n")
-	buf.WriteString("\t\"github.com/xaionaro-go/aidl/binder\"\n")
-	buf.WriteString("\t\"github.com/xaionaro-go/aidl/tools/pkg/testutil\"\n\n")
+	buf.WriteString("\t\"github.com/xaionaro-go/binder/binder\"\n")
+	buf.WriteString("\t\"github.com/xaionaro-go/binder/tools/pkg/testutil\"\n\n")
 	for _, imp := range imports {
 		fmt.Fprintf(&buf, "\t%s %q\n", imp.alias, imp.path)
 	}
