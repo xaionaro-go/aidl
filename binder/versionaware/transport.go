@@ -184,34 +184,58 @@ func probeRevision(
 
 // rawCheckService performs a raw ServiceManager CheckService transaction
 // to look up a service handle without going through the versionaware layer.
-// Uses the version tables to determine the correct checkService transaction
-// code for the given API level.
+// Tries all distinct checkService codes from the version tables for the
+// given API level, since we don't yet know which revision the device runs.
 func rawCheckService(
 	ctx context.Context,
 	inner binder.Transport,
 	apiLevel int,
 	serviceName string,
 ) (uint32, error) {
-	// Look up the checkService transaction code from the version tables.
-	// The ServiceManager's method ordering varies across API levels.
-	checkServiceCode := binder.TransactionCode(0)
+	// Collect distinct checkService codes across revisions for this API level.
+	seen := map[binder.TransactionCode]bool{}
+	var codes []binder.TransactionCode
 	for _, rev := range Revisions[apiLevel] {
-		if table, ok := Tables[rev]; ok {
-			checkServiceCode = table.Resolve(serviceManagerDescriptor, "checkService")
-			if checkServiceCode != 0 {
-				break
-			}
+		table, ok := Tables[rev]
+		if !ok {
+			continue
+		}
+		code := table.Resolve(serviceManagerDescriptor, "checkService")
+		if code != 0 && !seen[code] {
+			seen[code] = true
+			codes = append(codes, code)
 		}
 	}
-	if checkServiceCode == 0 {
+	if len(codes) == 0 {
 		return 0, fmt.Errorf("cannot determine checkService transaction code for API %d", apiLevel)
 	}
 
+	// Try each candidate code. The correct one returns a parseable reply
+	// with a binder handle; wrong codes return errors or empty replies.
+	for _, code := range codes {
+		handle, err := tryCheckService(ctx, inner, code, serviceName)
+		if err != nil {
+			logger.Debugf(ctx, "rawCheckService: code %d failed: %v", code, err)
+			continue
+		}
+		return handle, nil
+	}
+
+	return 0, fmt.Errorf("CheckService(%q): all %d candidate codes failed for API %d", serviceName, len(codes), apiLevel)
+}
+
+// tryCheckService attempts a single CheckService transaction at the given code.
+func tryCheckService(
+	ctx context.Context,
+	inner binder.Transport,
+	code binder.TransactionCode,
+	serviceName string,
+) (uint32, error) {
 	data := parcel.New()
 	data.WriteInterfaceToken(serviceManagerDescriptor)
 	data.WriteString16(serviceName)
 
-	reply, err := inner.Transact(ctx, serviceManagerHandle, checkServiceCode, 0, data)
+	reply, err := inner.Transact(ctx, serviceManagerHandle, code, 0, data)
 	if err != nil {
 		return 0, fmt.Errorf("CheckService(%q): transact: %w", serviceName, err)
 	}
