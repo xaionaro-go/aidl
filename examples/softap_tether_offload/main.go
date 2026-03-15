@@ -16,6 +16,7 @@ import (
 	"os"
 
 	"github.com/xaionaro-go/aidl/binder"
+	"github.com/xaionaro-go/aidl/binder/versionaware"
 	genOs "github.com/xaionaro-go/aidl/android/os"
 	"github.com/xaionaro-go/aidl/android/hardware/tetheroffload"
 	"github.com/xaionaro-go/aidl/kernelbinder"
@@ -32,7 +33,13 @@ func main() {
 	}
 	defer driver.Close(ctx)
 
-	sm := servicemanager.New(driver)
+	transport, err := versionaware.NewTransport(ctx, driver, 0)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "version-aware transport: %v\n", err)
+		os.Exit(1)
+	}
+
+	sm := servicemanager.New(transport)
 
 	// First list network interfaces to know which upstreams exist.
 	netSvc, err := sm.GetService(ctx, "network_management")

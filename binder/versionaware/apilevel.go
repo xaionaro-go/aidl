@@ -29,21 +29,26 @@ func detectViaBuildFlags() int {
 	return 0
 }
 
-// buildFlags is the top-level structure of /etc/build_flags.json.
-type buildFlags struct {
-	Flags []buildFlag `json:"flags"`
+// buildFlagsFile handles two JSON schemas found on Android devices:
+//   - API 36+ (Pixel 8a): {"flags": [{"flag_declaration": {...}, "value": {...}}]}
+//   - API 35  (emulator): {"flag_artifacts": [{"flag_declaration": {...}, "val": {...}}]}
+type buildFlagsFile struct {
+	Flags         []buildFlagEntry `json:"flags"`
+	FlagArtifacts []buildFlagEntry `json:"flag_artifacts"`
 }
 
-type buildFlag struct {
+type buildFlagEntry struct {
 	Declaration buildFlagDeclaration `json:"flag_declaration"`
-	Value       buildFlagValue       `json:"value"`
+	// "value" (API 36 schema) or "val" (API 35 schema) — try both.
+	Value buildFlagVal `json:"value"`
+	Val   buildFlagVal `json:"val"`
 }
 
 type buildFlagDeclaration struct {
 	Name string `json:"name"`
 }
 
-type buildFlagValue struct {
+type buildFlagVal struct {
 	Val map[string]json.RawMessage `json:"Val"`
 }
 
@@ -53,19 +58,28 @@ func parseBuildFlags(path string) int {
 		return 0
 	}
 
-	var flags buildFlags
-	if err := json.Unmarshal(data, &flags); err != nil {
+	var file buildFlagsFile
+	if err := json.Unmarshal(data, &file); err != nil {
 		return 0
 	}
 
-	for _, f := range flags.Flags {
+	// Merge both arrays — one will be empty depending on the schema.
+	entries := append(file.Flags, file.FlagArtifacts...)
+
+	for _, f := range entries {
 		if f.Declaration.Name != "RELEASE_PLATFORM_SDK_VERSION" {
 			continue
 		}
+
+		// Try "value" field first (API 36 schema), then "val" (API 35 schema).
 		raw, ok := f.Value.Val["StringValue"]
+		if !ok {
+			raw, ok = f.Val.Val["StringValue"]
+		}
 		if !ok {
 			return 0
 		}
+
 		var s string
 		if err := json.Unmarshal(raw, &s); err != nil {
 			return 0

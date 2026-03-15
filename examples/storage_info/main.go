@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/xaionaro-go/aidl/binder"
+	"github.com/xaionaro-go/aidl/binder/versionaware"
 	"github.com/xaionaro-go/aidl/android/hardware/usb"
 	"github.com/xaionaro-go/aidl/android/os/storage"
 	"github.com/xaionaro-go/aidl/kernelbinder"
@@ -29,7 +30,13 @@ func main() {
 	}
 	defer driver.Close(ctx)
 
-	sm := servicemanager.New(driver)
+	transport, err := versionaware.NewTransport(ctx, driver, 0)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "version-aware transport: %v\n", err)
+		os.Exit(1)
+	}
+
+	sm := servicemanager.New(transport)
 
 	// Storage Manager
 	mountSvc, err := sm.GetService(ctx, "mount")

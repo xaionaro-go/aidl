@@ -23,6 +23,7 @@ import (
 	"os"
 
 	"github.com/xaionaro-go/aidl/binder"
+	"github.com/xaionaro-go/aidl/binder/versionaware"
 	"github.com/xaionaro-go/aidl/android/hardware/wifi"
 	"github.com/xaionaro-go/aidl/kernelbinder"
 	"github.com/xaionaro-go/aidl/servicemanager"
@@ -40,7 +41,13 @@ func main() {
 	}
 	defer driver.Close(ctx)
 
-	sm := servicemanager.New(driver)
+	transport, err := versionaware.NewTransport(ctx, driver, 0)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "version-aware transport: %v\n", err)
+		os.Exit(1)
+	}
+
+	sm := servicemanager.New(transport)
 
 	svc, err := sm.GetService(ctx, wifiHalService)
 	if err != nil {

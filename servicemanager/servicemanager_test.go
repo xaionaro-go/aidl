@@ -59,6 +59,10 @@ func (m *mockTransport) ClearDeathNotification(
 
 func (m *mockTransport) Close(_ context.Context) error { return nil }
 
+func (m *mockTransport) ResolveCode(_ string, _ string) (binder.TransactionCode, error) {
+	return binder.FirstCallTransaction, nil
+}
+
 func buildSuccessReply(
 	writePayload func(p *parcel.Parcel),
 ) func() *parcel.Parcel {

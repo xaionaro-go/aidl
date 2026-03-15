@@ -13,6 +13,7 @@ import (
 	"os"
 
 	"github.com/xaionaro-go/aidl/binder"
+	"github.com/xaionaro-go/aidl/binder/versionaware"
 	"github.com/xaionaro-go/aidl/android/hardware/input"
 	"github.com/xaionaro-go/aidl/android/location"
 	genOs "github.com/xaionaro-go/aidl/android/os"
@@ -31,7 +32,13 @@ func main() {
 	}
 	defer driver.Close(ctx)
 
-	sm := servicemanager.New(driver)
+	transport, err := versionaware.NewTransport(ctx, driver, 0)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "version-aware transport: %v\n", err)
+		os.Exit(1)
+	}
+
+	sm := servicemanager.New(transport)
 
 	// Thermal status
 	thermalSvc, err := sm.GetService(ctx, "thermalservice")
