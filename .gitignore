@@ -1,5 +1,7 @@
 /aidlgen
 /bindercli
+/genaccessors
+/genbindercli
 *.test
 *.out
 *.prof
