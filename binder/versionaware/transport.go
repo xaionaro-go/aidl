@@ -3,12 +3,15 @@ package versionaware
 import (
 	"context"
 	"debug/elf"
+	"encoding/json"
 	"fmt"
+	"os"
 	"sort"
 	"strings"
 
 	"github.com/facebookincubator/go-belt/tool/logger"
 	"github.com/xaionaro-go/aidl/binder"
+	"github.com/xaionaro-go/aidl/binder/versionaware/dex"
 	"github.com/xaionaro-go/aidl/parcel"
 )
 
@@ -57,9 +60,27 @@ func NewTransport(
 		return nil, fmt.Errorf("versionaware: unable to detect Android API level; pass --target-api explicitly or ensure /etc/build_flags.json is readable; supported API levels: %v", supportedAPILevels())
 	}
 
+	// Primary: extract transaction codes directly from the device's
+	// framework JAR files. This is definitive — no version guessing.
+	table := extractTransactionCodesFromDevice()
+	if table != nil {
+		logger.Debugf(ctx, "versionaware: extracted transaction codes from device framework JARs (%d interfaces)", len(table))
+		return &Transport{
+			inner:    inner,
+			apiLevel: targetAPI,
+			table:    table,
+			version:  fmt.Sprintf("%d.device", targetAPI),
+		}, nil
+	}
+
+	// Fallback: use compiled version tables with revision detection.
+	// This is less reliable than DEX extraction — log at Error level
+	// so users know the primary method failed.
+	logger.Errorf(ctx, "versionaware: framework JARs not available or unreadable at %s; falling back to compiled version tables (transaction codes may be inaccurate)", frameworkJARDir)
+
 	revisions := Revisions[targetAPI]
 	if len(revisions) == 0 {
-		return nil, fmt.Errorf("versionaware: API level %d is not supported; supported API levels: %v", targetAPI, supportedAPILevels())
+		return nil, fmt.Errorf("versionaware: API level %d is not supported and framework JARs not readable; supported API levels: %v", targetAPI, supportedAPILevels())
 	}
 
 	// Narrow revision candidates by checking which methods exist in
@@ -85,7 +106,7 @@ func NewTransport(
 		return nil, fmt.Errorf("versionaware: no transaction code table for version %q", version)
 	}
 
-	logger.Debugf(ctx, "versionaware: detected version %s (%d interfaces)", version, len(table))
+	logger.Debugf(ctx, "versionaware: using compiled version table %s (%d interfaces)", version, len(table))
 
 	return &Transport{
 		inner:    inner,
@@ -126,6 +147,142 @@ const (
 	serviceManagerDescriptor  = "android.os.IServiceManager"
 	activityManagerDescriptor = "android.app.IActivityManager"
 )
+
+// frameworkJARDir is the directory containing framework JARs
+// with AIDL $Stub classes and TRANSACTION_* constants.
+const frameworkJARDir = "/system/framework"
+
+// cacheDir is where aidlcli stores cached transaction code tables.
+const cacheDir = "/data/local/tmp/.aidl_cache"
+
+// extractTransactionCodesFromDevice scans all JARs in /system/framework/
+// and extracts definitive transaction codes from DEX bytecode.
+// Caches the result to disk for fast subsequent startups.
+// Returns nil if the directory is not readable or no codes are found.
+func extractTransactionCodesFromDevice() VersionTable {
+	fingerprint := frameworkFingerprint()
+	if fingerprint == "" {
+		return nil
+	}
+
+	// Try loading from cache.
+	if table := loadCachedTable(fingerprint); table != nil {
+		return table
+	}
+
+	// Scan all JARs.
+	entries, err := os.ReadDir(frameworkJARDir)
+	if err != nil {
+		return nil
+	}
+
+	table := VersionTable{}
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".jar") {
+			continue
+		}
+		jarPath := frameworkJARDir + "/" + entry.Name()
+		codes, err := dex.ExtractFromJAR(jarPath)
+		if err != nil {
+			continue
+		}
+		for descriptor, methods := range codes {
+			if table[descriptor] == nil {
+				table[descriptor] = make(map[string]binder.TransactionCode)
+			}
+			for method, code := range methods {
+				table[descriptor][method] = binder.TransactionCode(code)
+			}
+		}
+	}
+
+	if len(table) == 0 {
+		return nil
+	}
+
+	// Cache for next time.
+	saveCachedTable(fingerprint, table)
+	return table
+}
+
+// frameworkFingerprint returns a string identifying the current set of
+// framework JARs by their names and sizes. Changes when the OS is updated.
+func frameworkFingerprint() string {
+	entries, err := os.ReadDir(frameworkJARDir)
+	if err != nil {
+		return ""
+	}
+
+	var b strings.Builder
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".jar") {
+			continue
+		}
+		info, err := entry.Info()
+		if err != nil {
+			continue
+		}
+		fmt.Fprintf(&b, "%s:%d;", entry.Name(), info.Size())
+	}
+	return b.String()
+}
+
+// loadCachedTable reads a cached VersionTable from disk.
+// Returns nil if cache is missing, corrupted, or fingerprint doesn't match.
+func loadCachedTable(fingerprint string) VersionTable {
+	cachePath := cacheDir + "/codes.json"
+	data, err := os.ReadFile(cachePath)
+	if err != nil {
+		return nil
+	}
+
+	var cached struct {
+		Fingerprint string                       `json:"fingerprint"`
+		Table       map[string]map[string]uint32 `json:"table"`
+	}
+	if err := json.Unmarshal(data, &cached); err != nil {
+		return nil
+	}
+	if cached.Fingerprint != fingerprint {
+		return nil
+	}
+
+	table := VersionTable{}
+	for desc, methods := range cached.Table {
+		table[desc] = make(map[string]binder.TransactionCode)
+		for method, code := range methods {
+			table[desc][method] = binder.TransactionCode(code)
+		}
+	}
+	return table
+}
+
+// saveCachedTable writes a VersionTable to disk for future use.
+func saveCachedTable(fingerprint string, table VersionTable) {
+	_ = os.MkdirAll(cacheDir, 0o755)
+
+	raw := make(map[string]map[string]uint32)
+	for desc, methods := range table {
+		raw[desc] = make(map[string]uint32)
+		for method, code := range methods {
+			raw[desc][method] = uint32(code)
+		}
+	}
+
+	cached := struct {
+		Fingerprint string                       `json:"fingerprint"`
+		Table       map[string]map[string]uint32 `json:"table"`
+	}{
+		Fingerprint: fingerprint,
+		Table:       raw,
+	}
+
+	data, err := json.Marshal(cached)
+	if err != nil {
+		return
+	}
+	_ = os.WriteFile(cacheDir+"/codes.json", data, 0o644)
+}
 
 // filterRevisionsBySOMethodSet reads BpServiceManager symbols from
 // /system/lib64/libbinder.so to determine which methods exist on
