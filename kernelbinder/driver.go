@@ -222,30 +222,76 @@ func (d *Driver) Transact(
 		readBuffer:  uint64(uintptr(unsafe.Pointer(&readBuf[0]))),
 	}
 
-	_, _, errno := unix.Syscall(
-		unix.SYS_IOCTL,
-		uintptr(d.fd),
-		binderWriteReadIoctl,
-		uintptr(unsafe.Pointer(&bwr)),
-	)
-	if errno != 0 {
-		return nil, &aidlerrors.BinderError{Op: "ioctl(BINDER_WRITE_READ)", Err: errno}
+	for {
+		_, _, errno := unix.Syscall(
+			unix.SYS_IOCTL,
+			uintptr(d.fd),
+			binderWriteReadIoctl,
+			uintptr(unsafe.Pointer(&bwr)),
+		)
+		switch errno {
+		case 0:
+			// Success — proceed to parse.
+		case unix.EINTR:
+			// Retry on interrupted system call.
+			// Reset write buffer (already consumed) but keep read buffer.
+			bwr.writeSize = 0
+			continue
+		default:
+			return nil, &aidlerrors.BinderError{Op: "ioctl(BINDER_WRITE_READ)", Err: errno}
+		}
+		break
 	}
 
-	// Parse the read buffer for BR codes.
-	reply, err := d.parseReadBuffer(ctx, readBuf[:bwr.readConsumed])
-	if err != nil {
-		return nil, err
-	}
+	// Parse the read buffer for BR codes. The kernel may split
+	// BR_TRANSACTION_COMPLETE and BR_REPLY across separate ioctl reads —
+	// if we got TC but no reply yet, read again to wait for BR_REPLY.
+	isOneway := flags&binder.FlagOneway != 0
+	for {
+		reply, gotReply, err := d.parseReadBuffer(ctx, readBuf[:bwr.readConsumed])
+		if err != nil {
+			return nil, err
+		}
 
-	return reply, nil
+		// If we received BR_REPLY (even with empty data), or this is
+		// a oneway transaction, return the result.
+		if gotReply || isOneway {
+			return reply, nil
+		}
+
+		// BR_TRANSACTION_COMPLETE without BR_REPLY — the service hasn't
+		// responded yet. Issue a read-only ioctl to wait for BR_REPLY.
+		logger.Debugf(ctx, "Transact: got BR_TRANSACTION_COMPLETE without BR_REPLY, reading again")
+		bwr.writeSize = 0
+		bwr.writeConsumed = 0
+		bwr.readConsumed = 0
+		for {
+			_, _, errno := unix.Syscall(
+				unix.SYS_IOCTL,
+				uintptr(d.fd),
+				binderWriteReadIoctl,
+				uintptr(unsafe.Pointer(&bwr)),
+			)
+			switch errno {
+			case 0:
+			case unix.EINTR:
+				continue
+			default:
+				return nil, &aidlerrors.BinderError{Op: "ioctl(BINDER_WRITE_READ/read)", Err: errno}
+			}
+			break
+		}
+	}
 }
 
-// parseReadBuffer processes BR_* codes from the read buffer and returns the reply parcel.
+// parseReadBuffer processes BR_* codes from the read buffer.
+// Returns the reply parcel and whether BR_REPLY was seen.
+// gotReply is false when only BR_TRANSACTION_COMPLETE was received
+// (the service hasn't responded yet — caller should read again).
 func (d *Driver) parseReadBuffer(
 	ctx context.Context,
 	buf []byte,
-) (_reply *parcel.Parcel, _err error) {
+) (_reply *parcel.Parcel, _gotReply bool, _err error) {
 	logger.Tracef(ctx, "parseReadBuffer")
 	defer func() { logger.Tracef(ctx, "/parseReadBuffer: %v", _err) }()
 
@@ -254,7 +300,7 @@ func (d *Driver) parseReadBuffer(
 
 	for offset < len(buf) {
 		if offset+4 > len(buf) {
-			return nil, fmt.Errorf("binder: truncated BR code at offset %d", offset)
+			return nil, false, fmt.Errorf("binder: truncated BR code at offset %d", offset)
 		}
 
 		cmd := binary.LittleEndian.Uint32(buf[offset:])
@@ -274,14 +320,14 @@ func (d *Driver) parseReadBuffer(
 			logger.Debugf(ctx, "BR_REPLY")
 			txnSize := int(unsafe.Sizeof(binderTransactionData{}))
 			if offset+txnSize > len(buf) {
-				return nil, fmt.Errorf("binder: truncated BR_REPLY data at offset %d", offset)
+				return nil, true, fmt.Errorf("binder: truncated BR_REPLY data at offset %d", offset)
 			}
 
 			var txn binderTransactionData
 			copyBytesToStruct(unsafe.Pointer(&txn), buf[offset:], unsafe.Sizeof(txn))
 
 			if txn.dataSize == 0 {
-				return parcel.New(), nil
+				return parcel.New(), true, nil
 			}
 
 			// Copy data from the mmap'd region into a new parcel.
@@ -297,26 +343,26 @@ func (d *Driver) parseReadBuffer(
 				logger.Warnf(ctx, "failed to free binder buffer: %v", err)
 			}
 
-			return parcel.FromBytes(replyData), nil
+			return parcel.FromBytes(replyData), true, nil
 
 		case brDeadReply:
 			logger.Debugf(ctx, "BR_DEAD_REPLY")
-			return nil, &aidlerrors.TransactionError{
+			return nil, true, &aidlerrors.TransactionError{
 				Code: aidlerrors.TransactionErrorDeadObject,
 			}
 
 		case brFailedReply:
 			logger.Debugf(ctx, "BR_FAILED_REPLY")
-			return nil, &aidlerrors.TransactionError{
+			return nil, true, &aidlerrors.TransactionError{
 				Code: aidlerrors.TransactionErrorFailedTransaction,
 			}
 
 		case brError:
 			if offset+4 > len(buf) {
-				return nil, fmt.Errorf("binder: truncated BR_ERROR data")
+				return nil, false, fmt.Errorf("binder: truncated BR_ERROR data")
 			}
 			errCode := int32(binary.LittleEndian.Uint32(buf[offset:]))
-			return nil, fmt.Errorf("binder: BR_ERROR %d", errCode)
+			return nil, false, fmt.Errorf("binder: BR_ERROR %d", errCode)
 
 		case brSpawnLooper:
 			logger.Debugf(ctx, "BR_SPAWN_LOOPER (ignored)")
@@ -324,16 +370,17 @@ func (d *Driver) parseReadBuffer(
 
 		default:
 			logger.Warnf(ctx, "binder: unknown BR code 0x%08x at offset %d", cmd, offset-4)
-			return nil, fmt.Errorf("binder: unknown BR code 0x%08x", cmd)
+			return nil, false, fmt.Errorf("binder: unknown BR code 0x%08x", cmd)
 		}
 	}
 
 	if !gotTransactionComplete {
-		return nil, fmt.Errorf("binder: did not receive BR_TRANSACTION_COMPLETE")
+		return nil, false, fmt.Errorf("binder: did not receive BR_TRANSACTION_COMPLETE")
 	}
 
-	// BR_TRANSACTION_COMPLETE without BR_REPLY means a one-way transaction.
-	return parcel.New(), nil
+	// BR_TRANSACTION_COMPLETE without BR_REPLY — the service hasn't
+	// responded yet. Caller should issue another read ioctl.
+	return parcel.New(), false, nil
 }
 
 // acquireReplyHandles scans the reply's flat_binder_objects (located via the
@@ -496,17 +543,24 @@ func (d *Driver) writeCommand(
 		writeBuffer: uint64(uintptr(unsafe.Pointer(&writeBuf[0]))),
 	}
 
-	_, _, errno := unix.Syscall(
-		unix.SYS_IOCTL,
-		uintptr(d.fd),
-		binderWriteReadIoctl,
-		uintptr(unsafe.Pointer(&bwr)),
-	)
-	if errno != 0 {
-		return &aidlerrors.BinderError{Op: "ioctl(BINDER_WRITE_READ)", Err: errno}
+	for {
+		_, _, errno := unix.Syscall(
+			unix.SYS_IOCTL,
+			uintptr(d.fd),
+			binderWriteReadIoctl,
+			uintptr(unsafe.Pointer(&bwr)),
+		)
+		switch errno {
+		case 0:
+			return nil
+		case unix.EINTR:
+			// Retry on interrupted system call — the command was not
+			// processed and must be resent.
+			continue
+		default:
+			return &aidlerrors.BinderError{Op: "ioctl(BINDER_WRITE_READ)", Err: errno}
+		}
 	}
-
-	return nil
 }
 
 // copyStructToBytes copies a struct's raw memory into a byte slice.

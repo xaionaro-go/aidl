@@ -191,7 +191,6 @@ func logAndExit(msg string) {
 // Arguments are joined into a single shell command string to preserve
 // empty/quoted values across the adb shell boundary.
 func runAidlcli(args ...string) (string, string, error) {
-	// Build a single shell command string to avoid adb shell arg splitting issues.
 	parts := make([]string, 0, len(args)+3)
 	parts = append(parts, deviceBinary, "--format", "json")
 	for _, a := range args {
