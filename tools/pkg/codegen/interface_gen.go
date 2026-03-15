@@ -63,6 +63,10 @@ func GenerateInterface(
 		writeProxyMethod(f, proxyName, descriptorConst, m, i, decl.Oneway, opts, typeRef)
 	}
 
+	// Stub type (server-side transaction dispatcher).
+	stubName := deriveStubName(interfaceName)
+	writeStubType(f, interfaceName, stubName, descriptorConst, decl, opts, typeRef)
+
 	return f.Bytes()
 }
 
@@ -74,6 +78,346 @@ func deriveProxyName(interfaceName string) string {
 		base = interfaceName[1:]
 	}
 	return base + "Proxy"
+}
+
+// deriveStubName derives a stub struct name from an interface name.
+// IFoo -> FooStub, Foo -> FooStub.
+func deriveStubName(interfaceName string) string {
+	base := interfaceName
+	if strings.HasPrefix(interfaceName, "I") && len(interfaceName) > 1 {
+		base = interfaceName[1:]
+	}
+	return base + "Stub"
+}
+
+// writeStubType writes the server-side stub struct, interface compliance
+// assertion, and OnTransaction dispatcher method. The stub unmarshals
+// incoming binder transactions and dispatches them to a typed Go
+// interface implementation.
+func writeStubType(
+	f *GoFile,
+	interfaceName string,
+	stubName string,
+	descriptorConst string,
+	decl *parser.InterfaceDecl,
+	opts GenOptions,
+	typeRef *TypeRefResolver,
+) {
+	f.AddImport("fmt", "")
+
+	// Stub struct.
+	f.P("// %s dispatches incoming binder transactions", stubName)
+	f.P("// to a typed %s implementation.", interfaceName)
+	f.P("type %s struct {", stubName)
+	f.P("\tImpl %s", interfaceName)
+	f.P("}")
+	f.P("")
+
+	// Interface compliance assertion.
+	f.P("var _ binder.TransactionReceiver = (*%s)(nil)", stubName)
+	f.P("")
+
+	// OnTransaction method.
+	f.P("func (s *%s) OnTransaction(", stubName)
+	f.P("\tctx context.Context,")
+	f.P("\tcode binder.TransactionCode,")
+	f.P("\tdata *parcel.Parcel,")
+	f.P(") (*parcel.Parcel, error) {")
+	f.P("\tswitch code {")
+
+	for _, m := range decl.Methods {
+		writeStubCase(f, interfaceName, descriptorConst, m, decl.Oneway, opts, typeRef)
+	}
+
+	f.P("\tdefault:")
+	f.P("\t\treturn nil, fmt.Errorf(\"unknown transaction code %%d\", code)")
+	f.P("\t}")
+	f.P("}")
+	f.P("")
+}
+
+// writeStubCase writes a single case in the OnTransaction switch for a method.
+func writeStubCase(
+	f *GoFile,
+	interfaceName string,
+	descriptorConst string,
+	m *parser.MethodDecl,
+	interfaceOneway bool,
+	opts GenOptions,
+	typeRef *TypeRefResolver,
+) {
+	goName := AIDLToGoName(m.MethodName)
+	constName := "Transaction" + interfaceName + goName
+	isOneway := m.Oneway || interfaceOneway
+	hasReturn := m.ReturnType != nil && m.ReturnType.Name != "void"
+
+	f.P("\tcase %s:", constName)
+
+	// Read the interface token (always the first thing in the data parcel).
+	f.P("\t\tif _, _err := data.ReadString16(); _err != nil {")
+	f.P("\t\t\treturn nil, _err")
+	f.P("\t\t}")
+
+	// Read parameters from data parcel. Track whether _err has been
+	// declared in this case scope so we can use = vs := correctly.
+	regularParams, _ := classifyParams(m.Params)
+	paramVarNames := make([]string, 0, len(regularParams))
+	errDeclared := false
+
+	for _, param := range m.Params {
+		if param.Direction == parser.DirectionOut {
+			// Out-only params are not read from data; they are written in
+			// the reply. Skip for v1 stub generation.
+			continue
+		}
+
+		_, isIdentity := identityParamNames[param.ParamName]
+		if isIdentity && identityFieldForParam(param) != "" {
+			// Identity params are still on the wire but discarded by the stub.
+			writeStubDiscardParam(f, param, opts, typeRef)
+			continue
+		}
+
+		varName := "_arg_" + sanitizeGoIdent(param.ParamName)
+		paramVarNames = append(paramVarNames, varName)
+		declared := writeStubReadParam(f, param, varName, opts, typeRef, errDeclared)
+		errDeclared = errDeclared || declared
+	}
+
+	// Build the call expression.
+	var callArgs []string
+	callArgs = append(callArgs, "ctx")
+	paramIdx := 0
+	for _, param := range m.Params {
+		if identityFieldForParam(param) != "" {
+			continue
+		}
+		if param.Direction == parser.DirectionOut {
+			continue
+		}
+		if paramIdx < len(paramVarNames) {
+			callArgs = append(callArgs, paramVarNames[paramIdx])
+			paramIdx++
+		}
+	}
+
+	// When there's a return value, _result is always new, so := works.
+	// When there's no return value and _err was already declared by
+	// param reads, use = to avoid "no new variables" error.
+	if hasReturn {
+		f.P("\t\t_result, _err := s.Impl.%s(%s)", goName, strings.Join(callArgs, ", "))
+	} else if errDeclared {
+		f.P("\t\t_err = s.Impl.%s(%s)", goName, strings.Join(callArgs, ", "))
+	} else {
+		f.P("\t\t_err := s.Impl.%s(%s)", goName, strings.Join(callArgs, ", "))
+	}
+
+	if isOneway {
+		// Oneway methods have no reply.
+		f.P("\t\t_ = _err")
+		f.P("\t\treturn nil, nil")
+	} else {
+		// Write the reply parcel.
+		f.P("\t\t_reply := parcel.New()")
+		f.P("\t\tif _err != nil {")
+		f.P("\t\t\tbinder.WriteStatus(_reply, _err)")
+		f.P("\t\t\treturn _reply, nil")
+		f.P("\t\t}")
+		f.P("\t\tbinder.WriteStatus(_reply, nil)")
+
+		if hasReturn {
+			writeStubWriteReturn(f, m.ReturnType, opts, typeRef)
+		}
+
+		f.P("\t\treturn _reply, nil")
+	}
+}
+
+// writeStubDiscardParam generates code to read (and discard) an identity
+// parameter from the data parcel. The wire format includes these fields
+// even though the stub does not pass them to the implementation.
+func writeStubDiscardParam(
+	f *GoFile,
+	param *parser.ParamDecl,
+	opts GenOptions,
+	typeRef *TypeRefResolver,
+) {
+	info := marshalForTypeWithCycleCheck(param.Type, opts, typeRef)
+	readExpr := stubDataReadExpr(info.ReadExpr)
+	if readExpr == "" {
+		return
+	}
+
+	if strings.Contains(info.ReadExpr, ".UnmarshalParcel") {
+		// Parcelable identity param (unusual, but handle gracefully).
+		return
+	}
+
+	f.P("\t\tif _, _err := %s; _err != nil {", readExpr)
+	f.P("\t\t\treturn nil, _err")
+	f.P("\t\t}")
+}
+
+// writeStubReadParam generates code to read a single parameter from the
+// data parcel into a local variable. errDeclared indicates whether _err
+// has already been declared in the enclosing scope. Returns true if this
+// call declares _err (via := with a read expression).
+func writeStubReadParam(
+	f *GoFile,
+	param *parser.ParamDecl,
+	varName string,
+	opts GenOptions,
+	typeRef *TypeRefResolver,
+	errDeclared bool,
+) bool {
+	// Skip complex types with a TODO comment for v1.
+	if param.Type.IsArray || param.Type.Name == "List" {
+		goType := resolveTypeRef(typeRef, param.Type)
+		f.P("\t\t// TODO: array/list param unmarshaling not yet supported in stubs")
+		f.P("\t\tvar %s %s", varName, goType)
+		f.P("\t\t_ = %s", varName)
+		return false
+	}
+
+	if param.Type.Name == "Map" {
+		goType := resolveTypeRef(typeRef, param.Type)
+		f.P("\t\t// TODO: map param unmarshaling not yet supported in stubs")
+		f.P("\t\tvar %s %s", varName, goType)
+		f.P("\t\t_ = %s", varName)
+		return false
+	}
+
+	info := marshalForTypeWithCycleCheck(param.Type, opts, typeRef)
+	readExpr := stubDataReadExpr(info.ReadExpr)
+	if readExpr == "" {
+		goType := resolveTypeRef(typeRef, param.Type)
+		f.P("\t\tvar %s %s", varName, goType)
+		return false
+	}
+
+	isNullable := hasAnnotation(param.Type.Annots, "nullable")
+
+	if strings.Contains(info.ReadExpr, ".UnmarshalParcel") {
+		goType := resolveTypeRef(typeRef, param.Type)
+		// Parcelable: read null indicator, then unmarshal.
+		// Use a block scope to avoid _nullInd redeclaration across
+		// multiple parcelable params.
+		f.P("\t\tvar %s %s", varName, goType)
+		f.P("\t\t{")
+		f.P("\t\t\t_nullInd, _err := data.ReadInt32()")
+		f.P("\t\t\tif _err != nil {")
+		f.P("\t\t\t\treturn nil, _err")
+		f.P("\t\t\t}")
+		f.P("\t\t\tif _nullInd != 0 {")
+		f.P("\t\t\t\tif _err = %s.UnmarshalParcel(data); _err != nil {", varName)
+		f.P("\t\t\t\t\treturn nil, _err")
+		f.P("\t\t\t\t}")
+		f.P("\t\t\t}")
+		f.P("\t\t}")
+		// _err was declared inside a block scope, so it does not affect
+		// the outer scope.
+		return false
+	}
+
+	if info.IsInterface || info.IsIBinder {
+		f.P("\t\t// TODO: interface/IBinder param unmarshaling not yet supported in stubs")
+		goType := resolveTypeRef(typeRef, param.Type)
+		f.P("\t\tvar %s %s", varName, goType)
+		f.P("\t\t_ = %s", varName)
+		return false
+	}
+
+	if info.NeedsCast {
+		goType := resolveTypeRef(typeRef, param.Type)
+		rawVar := "_raw_" + sanitizeGoIdent(param.ParamName)
+		// rawVar is always new, so := works regardless of errDeclared.
+		f.P("\t\t%s, _err := %s", rawVar, readExpr)
+		f.P("\t\tif _err != nil {")
+		f.P("\t\t\treturn nil, _err")
+		f.P("\t\t}")
+		if isNullable && len(goType) > 0 && goType[0] == '*' {
+			baseType := goType[1:]
+			f.P("\t\t_%s := %s(%s)", sanitizeGoIdent(param.ParamName), baseType, rawVar)
+			f.P("\t\t%s := &_%s", varName, sanitizeGoIdent(param.ParamName))
+		} else {
+			f.P("\t\t%s := %s(%s)", varName, goType, rawVar)
+		}
+		return true
+	}
+
+	f.P("\t\t%s, _err := %s", varName, readExpr)
+	f.P("\t\tif _err != nil {")
+	f.P("\t\t\treturn nil, _err")
+	f.P("\t\t}")
+	// varName is always new, so := always works.
+	return true
+}
+
+// writeStubWriteReturn generates code to write a return value to the
+// reply parcel.
+func writeStubWriteReturn(
+	f *GoFile,
+	retType *parser.TypeSpecifier,
+	opts GenOptions,
+	typeRef *TypeRefResolver,
+) {
+	// Skip complex return types with a TODO for v1.
+	if retType.IsArray || retType.Name == "List" {
+		f.P("\t\t// TODO: array/list return marshaling not yet supported in stubs")
+		f.P("\t\t_ = _result")
+		return
+	}
+
+	if retType.Name == "Map" {
+		f.P("\t\t// TODO: map return marshaling not yet supported in stubs")
+		f.P("\t\t_ = _result")
+		return
+	}
+
+	info := marshalForTypeWithCycleCheck(retType, opts, typeRef)
+	writeExpr := stubReplyWriteExpr(info.WriteExpr)
+	if writeExpr == "" {
+		f.P("\t\t_ = _result")
+		return
+	}
+
+	if strings.Contains(info.WriteExpr, ".MarshalParcel") {
+		// Parcelable return: write non-null indicator + marshal.
+		f.P("\t\t_reply.WriteInt32(1)")
+		marshalExpr := strings.ReplaceAll(info.WriteExpr, "_data", "_reply")
+		marshalExpr = fmt.Sprintf(marshalExpr, "_result")
+		f.P("\t\tif _err := %s; _err != nil {", marshalExpr)
+		f.P("\t\t\treturn nil, _err")
+		f.P("\t\t}")
+		return
+	}
+
+	if info.IsInterface || info.IsIBinder {
+		f.P("\t\t// TODO: interface/IBinder return marshaling not yet supported in stubs")
+		f.P("\t\t_ = _result")
+		return
+	}
+
+	formatted := fmt.Sprintf(writeExpr, "_result")
+	f.P("\t\t%s", formatted)
+}
+
+// stubDataReadExpr converts a MarshalInfo ReadExpr (which references _reply)
+// to read from the data parcel instead.
+func stubDataReadExpr(readExpr string) string {
+	if readExpr == "" {
+		return ""
+	}
+	return strings.ReplaceAll(readExpr, "_reply", "data")
+}
+
+// stubReplyWriteExpr converts a MarshalInfo WriteExpr (which references _data)
+// to write to the _reply parcel instead.
+func stubReplyWriteExpr(writeExpr string) string {
+	if writeExpr == "" {
+		return ""
+	}
+	return strings.ReplaceAll(writeExpr, "_data", "_reply")
 }
 
 // writeTransactionCodes writes const declarations for each method's transaction code.
@@ -933,8 +1277,8 @@ var goKeywords = map[string]bool{
 var goReservedIdents = map[string]bool{
 	"binder": true, "parcel": true, "context": true,
 	"error": true, "string": true,
-	// Proxy methods use "p" as the receiver name.
-	"p": true,
+	// Proxy methods use "p" and stub methods use "s" as receiver names.
+	"p": true, "s": true,
 }
 
 func sanitizeGoIdent(name string) string {

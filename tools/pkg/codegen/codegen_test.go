@@ -100,6 +100,19 @@ func TestGenerateInterface_Simple(t *testing.T) {
 	// Check proxy methods use parcel operations.
 	assert.Contains(t, srcStr, "WriteInterfaceToken(DescriptorIServiceManager)")
 	assert.Contains(t, srcStr, "binder.ReadStatus(_reply)")
+
+	// Check stub struct.
+	assert.Contains(t, srcStr, "type ServiceManagerStub struct")
+	assert.Contains(t, srcStr, "Impl IServiceManager")
+	assert.Contains(t, srcStr, "var _ binder.TransactionReceiver = (*ServiceManagerStub)(nil)")
+
+	// Check stub OnTransaction method.
+	assert.Contains(t, srcStr, "func (s *ServiceManagerStub) OnTransaction(")
+	assert.Contains(t, srcStr, "case TransactionIServiceManagerGetService:")
+	assert.Contains(t, srcStr, "case TransactionIServiceManagerIsDeclared:")
+	assert.Contains(t, srcStr, "s.Impl.IsDeclared(ctx, _arg_name)")
+	assert.Contains(t, srcStr, "binder.WriteStatus(_reply, _err)")
+	assert.Contains(t, srcStr, "binder.WriteStatus(_reply, nil)")
 }
 
 func TestGenerateInterface_Oneway(t *testing.T) {
@@ -918,4 +931,131 @@ func TestElementTypeSpec(t *testing.T) {
 		elem := elementTypeSpec(ts)
 		assert.Equal(t, "int", elem.Name)
 	})
+}
+
+func TestDeriveStubName(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{"IServiceManager", "ServiceManagerStub"},
+		{"IFoo", "FooStub"},
+		{"Foo", "FooStub"},
+		{"I", "IStub"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.input, func(t *testing.T) {
+			assert.Equal(t, tt.expected, deriveStubName(tt.input))
+		})
+	}
+}
+
+func TestGenerateInterface_StubPrimitiveReturn(t *testing.T) {
+	doc := parseAIDL(t, `
+		package test;
+		interface ICounter {
+			int getCount();
+			void setCount(int count);
+		}
+	`)
+
+	require.Len(t, doc.Definitions, 1)
+	decl := doc.Definitions[0].(*aidlparser.InterfaceDecl)
+
+	src, err := GenerateInterface(decl, "test", "test.ICounter")
+	require.NoError(t, err)
+
+	assertValidGo(t, src)
+	assertFormattedGo(t, src)
+
+	srcStr := string(src)
+
+	// Stub struct and compliance.
+	assert.Contains(t, srcStr, "type CounterStub struct")
+	assert.Contains(t, srcStr, "Impl ICounter")
+	assert.Contains(t, srcStr, "var _ binder.TransactionReceiver = (*CounterStub)(nil)")
+
+	// OnTransaction dispatcher.
+	assert.Contains(t, srcStr, "func (s *CounterStub) OnTransaction(")
+	assert.Contains(t, srcStr, "case TransactionICounterGetCount:")
+	assert.Contains(t, srcStr, "case TransactionICounterSetCount:")
+
+	// GetCount: calls impl and writes result.
+	assert.Contains(t, srcStr, "s.Impl.GetCount(ctx)")
+	assert.Contains(t, srcStr, "_reply.WriteInt32(_result)")
+
+	// SetCount: reads param from data, calls impl.
+	assert.Contains(t, srcStr, "s.Impl.SetCount(ctx, _arg_count)")
+}
+
+func TestGenerateInterface_StubOneway(t *testing.T) {
+	doc := parseAIDL(t, `
+		package test;
+		oneway interface INotify {
+			void onEvent(int eventId, String detail);
+		}
+	`)
+
+	require.Len(t, doc.Definitions, 1)
+	decl := doc.Definitions[0].(*aidlparser.InterfaceDecl)
+
+	src, err := GenerateInterface(decl, "test", "test.INotify")
+	require.NoError(t, err)
+
+	assertValidGo(t, src)
+	assertFormattedGo(t, src)
+
+	srcStr := string(src)
+
+	// Oneway stubs return nil, nil (no reply).
+	assert.Contains(t, srcStr, "type NotifyStub struct")
+	assert.Contains(t, srcStr, "return nil, nil")
+	assert.Contains(t, srcStr, "s.Impl.OnEvent(ctx, _arg_eventId, _arg_detail)")
+}
+
+func TestGenerateInterface_StubNoMethods(t *testing.T) {
+	doc := parseAIDL(t, `
+		package test;
+		interface IEmpty {
+		}
+	`)
+
+	require.Len(t, doc.Definitions, 1)
+	decl := doc.Definitions[0].(*aidlparser.InterfaceDecl)
+
+	src, err := GenerateInterface(decl, "test", "test.IEmpty")
+	require.NoError(t, err)
+
+	assertValidGo(t, src)
+
+	srcStr := string(src)
+
+	// Stub is still generated for empty interfaces.
+	assert.Contains(t, srcStr, "type EmptyStub struct")
+	assert.Contains(t, srcStr, "Impl IEmpty")
+}
+
+func TestGenerateInterface_StubVoidNoParams(t *testing.T) {
+	doc := parseAIDL(t, `
+		package test;
+		interface IPing {
+			void ping();
+		}
+	`)
+
+	require.Len(t, doc.Definitions, 1)
+	decl := doc.Definitions[0].(*aidlparser.InterfaceDecl)
+
+	src, err := GenerateInterface(decl, "test", "test.IPing")
+	require.NoError(t, err)
+
+	assertValidGo(t, src)
+	assertFormattedGo(t, src)
+
+	srcStr := string(src)
+
+	assert.Contains(t, srcStr, "type PingStub struct")
+	// void + no params: should use := for _err since it's the first declaration.
+	assert.Contains(t, srcStr, "s.Impl.Ping(ctx)")
 }
