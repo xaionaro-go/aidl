@@ -2,8 +2,10 @@ package versionaware
 
 import (
 	"context"
+	"debug/elf"
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/facebookincubator/go-belt/tool/logger"
 	"github.com/xaionaro-go/aidl/binder"
@@ -60,6 +62,12 @@ func NewTransport(
 		return nil, fmt.Errorf("versionaware: API level %d is not supported; supported API levels: %v", targetAPI, supportedAPILevels())
 	}
 
+	// Narrow revision candidates by checking which methods exist in
+	// libbinder.so's BpServiceManager. This distinguishes old-style
+	// (no getService2/checkService2) from new-style method ordering
+	// without any binder transactions.
+	revisions = filterRevisionsBySOMethodSet(revisions)
+
 	var version string
 	switch len(revisions) {
 	case 1:
@@ -114,10 +122,163 @@ func supportedAPILevels() []int {
 }
 
 const (
-	serviceManagerHandle     = uint32(0)
-	serviceManagerDescriptor = "android.os.IServiceManager"
+	serviceManagerHandle      = uint32(0)
+	serviceManagerDescriptor  = "android.os.IServiceManager"
 	activityManagerDescriptor = "android.app.IActivityManager"
 )
+
+// filterRevisionsBySOMethodSet reads BpServiceManager symbols from
+// /system/lib64/libbinder.so to determine which methods exist on
+// the device, then filters revision candidates to those whose method
+// set matches.
+func filterRevisionsBySOMethodSet(revisions []string) []string {
+	deviceMethods := readBpServiceManagerMethods()
+	if len(deviceMethods) == 0 {
+		return revisions // can't read .so, don't filter
+	}
+
+	var filtered []string
+	for _, rev := range revisions {
+		table, ok := Tables[rev]
+		if !ok {
+			continue
+		}
+		smMethods := table[serviceManagerDescriptor]
+		if smMethods == nil {
+			continue
+		}
+		if methodSetMatches(smMethods, deviceMethods) {
+			filtered = append(filtered, rev)
+		}
+	}
+
+	if len(filtered) == 0 {
+		return revisions // no match found, don't filter
+	}
+	return filtered
+}
+
+// methodSetMatches returns true if the version table's method set for
+// an interface matches the methods found in the device's .so.
+// A match means: every method in the table exists in the device methods,
+// and no device methods are missing from the table.
+func methodSetMatches(
+	tableMethods map[string]binder.TransactionCode,
+	deviceMethods map[string]bool,
+) bool {
+	// Check that every method in the table exists on the device.
+	for method := range tableMethods {
+		if !deviceMethods[method] {
+			return false
+		}
+	}
+	// Check that every device method exists in the table.
+	for method := range deviceMethods {
+		if _, ok := tableMethods[method]; !ok {
+			return false
+		}
+	}
+	return true
+}
+
+// readBpServiceManagerMethods reads libbinder.so and extracts the
+// method names from BpServiceManager symbols.
+func readBpServiceManagerMethods() map[string]bool {
+	paths := []string{
+		"/system/lib64/libbinder.so",
+		"/system/lib/libbinder.so",
+	}
+
+	for _, path := range paths {
+		methods := parseBpMethods(path, "BpServiceManager")
+		if len(methods) > 0 {
+			return methods
+		}
+	}
+	return nil
+}
+
+// parseBpMethods reads an ELF shared library and extracts method names
+// from the BpXxx class's exported symbols. Returns a set of method names.
+func parseBpMethods(
+	path string,
+	className string,
+) map[string]bool {
+	f, err := elf.Open(path)
+	if err != nil {
+		return nil
+	}
+	defer f.Close()
+
+	symbols, err := f.DynamicSymbols()
+	if err != nil {
+		return nil
+	}
+
+	// Match demangled C++ symbols like:
+	// _ZN7android2os16BpServiceManager10getServiceE...
+	// The method name is after the class name length+name prefix.
+	prefix := className
+	methods := map[string]bool{}
+
+	for _, sym := range symbols {
+		if sym.Info&0xf != uint8(elf.STT_FUNC) {
+			continue
+		}
+		name := sym.Name
+		// Look for mangled name containing the class name.
+		idx := findMangledMethod(name, prefix)
+		if idx == "" {
+			continue
+		}
+		methods[idx] = true
+	}
+
+	return methods
+}
+
+// findMangledMethod extracts the method name from a C++ mangled symbol
+// that belongs to the given class. Returns "" if not a match.
+// Handles Itanium name mangling: _ZN<len><namespace><len><class><len><method>E...
+func findMangledMethod(
+	mangled string,
+	className string,
+) string {
+	// Quick filter: must contain the class name.
+	classLen := fmt.Sprintf("%d%s", len(className), className)
+	idx := strings.Index(mangled, classLen)
+	if idx < 0 {
+		return ""
+	}
+
+	// Skip constructors/destructors (C1, C2, D0, D1, D2).
+	rest := mangled[idx+len(classLen):]
+	if len(rest) < 2 {
+		return ""
+	}
+	if rest[0] == 'C' || rest[0] == 'D' {
+		return ""
+	}
+
+	// Parse the method name length + name.
+	nameLen := 0
+	i := 0
+	for i < len(rest) && rest[i] >= '0' && rest[i] <= '9' {
+		nameLen = nameLen*10 + int(rest[i]-'0')
+		i++
+	}
+	if nameLen == 0 || i+nameLen > len(rest) {
+		return ""
+	}
+
+	methodName := rest[i : i+nameLen]
+	// Convert to camelCase (first letter lowercase) to match AIDL method names.
+	if len(methodName) > 0 && methodName[0] >= 'A' && methodName[0] <= 'Z' {
+		methodName = string(methodName[0]+32) + methodName[1:]
+	}
+
+	return methodName
+}
 
 // probeRevision determines which revision of the given API level matches
 // the running device by calling a distinguishing method on IActivityManager.

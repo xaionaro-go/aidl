@@ -1,16 +1,91 @@
 package versionaware
 
 import (
+	"debug/elf"
+	"encoding/binary"
 	"encoding/json"
 	"os"
 	"strconv"
+	"strings"
 )
 
 // detectAPILevel returns the Android API level of the running device.
-// Reads /etc/build_flags.json (world-readable, no root needed, no fork).
+// Tries multiple detection methods in order:
+// 1. Parse .note.android.ident from /system/lib64/libbinder_ndk.so (ELF note, always readable)
+// 2. Read RELEASE_PLATFORM_SDK_VERSION from /etc/build_flags.json
 // Returns 0 if detection fails (e.g. when running outside Android).
 func detectAPILevel() int {
+	if n := detectViaBinderNDKNote(); n > 0 {
+		return n
+	}
 	return detectViaBuildFlags()
+}
+
+// binderNDKPaths lists candidate locations for libbinder_ndk.so.
+var binderNDKPaths = []string{
+	"/system/lib64/libbinder_ndk.so",
+	"/system/lib/libbinder_ndk.so",
+}
+
+// detectViaBinderNDKNote reads the .note.android.ident ELF note from
+// libbinder_ndk.so to extract the Android API level. This note is
+// present in all Android system libraries and is always readable.
+func detectViaBinderNDKNote() int {
+	for _, path := range binderNDKPaths {
+		n := parseELFAndroidAPILevel(path)
+		if n > 0 {
+			return n
+		}
+	}
+	return 0
+}
+
+// parseELFAndroidAPILevel reads the .note.android.ident section from
+// an ELF binary and returns the API level stored in it.
+func parseELFAndroidAPILevel(path string) int {
+	f, err := elf.Open(path)
+	if err != nil {
+		return 0
+	}
+	defer f.Close()
+
+	section := f.Section(".note.android.ident")
+	if section == nil {
+		return 0
+	}
+
+	data, err := section.Data()
+	if err != nil {
+		return 0
+	}
+
+	// Parse ELF note format: namesz(4) + descsz(4) + type(4) + name(aligned) + desc(aligned)
+	for len(data) >= 12 {
+		namesz := binary.LittleEndian.Uint32(data[0:4])
+		descsz := binary.LittleEndian.Uint32(data[4:8])
+		// noteType := binary.LittleEndian.Uint32(data[8:12])
+
+		nameOff := uint32(12)
+		nameEnd := nameOff + namesz
+		// Align to 4 bytes.
+		descOff := (nameEnd + 3) &^ 3
+		descEnd := descOff + descsz
+		nextOff := (descEnd + 3) &^ 3
+
+		if uint32(len(data)) < descEnd {
+			break
+		}
+
+		name := strings.TrimRight(string(data[nameOff:nameEnd]), "\x00")
+		if name == "Android" && descsz >= 4 {
+			apiLevel := binary.LittleEndian.Uint32(data[descOff : descOff+4])
+			return int(apiLevel)
+		}
+
+		data = data[nextOff:]
+	}
+
+	return 0
 }
 
 // buildFlagsPaths lists candidate locations for the build flags file.
