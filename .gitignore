@@ -2,6 +2,7 @@
 /bindercli
 /genaccessors
 /genbindercli
+/genconstants
 *.test
 *.out
 *.prof

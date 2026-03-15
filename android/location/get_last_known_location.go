@@ -7,21 +7,20 @@ import (
 	"github.com/xaionaro-go/binder/servicemanager"
 )
 
-// GetLastKnownLocation returns the last known location from the given
-// provider ("fused", "gps", "network", or "passive").
+// GetLastKnownLocation returns the last known location from the given provider.
 //
 // Returns nil if no cached location is available for the provider.
 func GetLastKnownLocation(
 	ctx context.Context,
 	sm *servicemanager.ServiceManager,
-	provider string,
+	provider LocationProvider,
 ) (*Location, error) {
 	mgr, err := GetLocationManager(ctx, sm)
 	if err != nil {
 		return nil, fmt.Errorf("GetLastKnownLocation: %w", err)
 	}
 
-	loc, err := mgr.GetLastLocation(ctx, provider, LastLocationRequest{}, "com.android.shell", "")
+	loc, err := mgr.GetLastLocation(ctx, string(provider), LastLocationRequest{}, "com.android.shell", "")
 	if err != nil {
 		return nil, fmt.Errorf("GetLastKnownLocation: %w", err)
 	}
