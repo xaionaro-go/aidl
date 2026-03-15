@@ -1780,6 +1780,8 @@ These verify:
 
 Unit tests run automatically on every push and pull request via [GitHub Actions](.github/workflows/ci.yml). E2E tests require an Android device and must be run manually.
 
+A [weekly workflow](.github/workflows/check-aosp-updates.yml) checks for new AOSP revision tags, regenerates version tables and proxy code, and opens a PR automatically if anything changed.
+
 ## Project Layout
 
 ```
@@ -1789,7 +1791,9 @@ Unit tests run automatically on every push and pull request via [GitHub Actions]
 │   │   ├── aidlgen/          AIDL-to-Go compiler CLI
 │   │   ├── aospgen/          Bulk AOSP code generator
 │   │   ├── gen_e2e_smoke/    Smoke test generator
-│   │   └── genreadme/        README package table generator
+│   │   ├── genaidlcli/       aidlcli command dispatcher generator
+│   │   ├── genreadme/        README package table generator
+│   │   └── genversions/      Version-aware transaction code table generator
 │   └── pkg/
 │       └── aidlc/            AIDL processing pipeline
 │           ├── parser/       Lexer + recursive-descent AIDL parser
