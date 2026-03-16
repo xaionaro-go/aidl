@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -86,9 +87,9 @@ type IAppOpsService interface {
 	ShouldCollectNotes(ctx context.Context, opCode int32) (bool, error)
 	SetCameraAudioRestriction(ctx context.Context, mode int32) error
 	StartWatchingModeWithFlags(ctx context.Context, op int32, packageName string, flags int32, callback IAppOpsCallback) error
-	NoteProxyOperation(ctx context.Context, code int32, attributionSource interface{}, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool) (interface{}, error)
-	StartProxyOperation(ctx context.Context, clientId binder.IBinder, code int32, attributionSource interface{}, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool, proxyAttributionFlags int32, proxiedAttributionFlags int32, attributionChainId int32) (interface{}, error)
-	FinishProxyOperation(ctx context.Context, clientId binder.IBinder, code int32, attributionSource interface{}, skipProxyOperation bool) error
+	NoteProxyOperation(ctx context.Context, code int32, attributionSource content.AttributionSource, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool) (interface{}, error)
+	StartProxyOperation(ctx context.Context, clientId binder.IBinder, code int32, attributionSource content.AttributionSource, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool, proxyAttributionFlags int32, proxiedAttributionFlags int32, attributionChainId int32) (interface{}, error)
+	FinishProxyOperation(ctx context.Context, clientId binder.IBinder, code int32, attributionSource content.AttributionSource, skipProxyOperation bool) error
 	CheckPackage(ctx context.Context, uid int32, packageName string) (int32, error)
 	CollectRuntimeAppOpAccessMessage(ctx context.Context) (interface{}, error)
 	ReportRuntimeAppOpAccessMessageAndGetConfig(ctx context.Context, packageName string, appOp interface{}, message string) (MessageSamplingConfig, error)
@@ -125,9 +126,9 @@ type IAppOpsService interface {
 	CheckOperationRaw(ctx context.Context, code int32, uid int32, packageName string) (int32, error)
 	ReloadNonHistoricalState(ctx context.Context) error
 	CollectNoteOpCallsForValidation(ctx context.Context, stackTrace string, op int32, packageName string, version int64) error
-	NoteProxyOperationWithState(ctx context.Context, code int32, attributionSourceStateState interface{}, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool) (interface{}, error)
-	StartProxyOperationWithState(ctx context.Context, clientId binder.IBinder, code int32, attributionSourceStateState interface{}, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool, proxyAttributionFlags int32, proxiedAttributionFlags int32, attributionChainId int32) (interface{}, error)
-	FinishProxyOperationWithState(ctx context.Context, clientId binder.IBinder, code int32, attributionSourceStateState interface{}, skipProxyOperation bool) error
+	NoteProxyOperationWithState(ctx context.Context, code int32, attributionSourceStateState content.AttributionSourceState, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool) (interface{}, error)
+	StartProxyOperationWithState(ctx context.Context, clientId binder.IBinder, code int32, attributionSourceStateState content.AttributionSourceState, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool, proxyAttributionFlags int32, proxiedAttributionFlags int32, attributionChainId int32) (interface{}, error)
+	FinishProxyOperationWithState(ctx context.Context, clientId binder.IBinder, code int32, attributionSourceStateState content.AttributionSourceState, skipProxyOperation bool) error
 	CheckOperationRawForDevice(ctx context.Context, code int32, uid int32, packageName string, virtualDeviceId int32) (int32, error)
 	CheckOperationForDevice(ctx context.Context, code int32, uid int32, packageName string, virtualDeviceId int32) (int32, error)
 	NoteOperationForDevice(ctx context.Context, code int32, uid int32, packageName string, virtualDeviceId int32, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool) (interface{}, error)
@@ -523,7 +524,7 @@ func (p *AppOpsServiceProxy) StartWatchingModeWithFlags(
 func (p *AppOpsServiceProxy) NoteProxyOperation(
 	ctx context.Context,
 	code int32,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 	shouldCollectAsyncNotedOp bool,
 	message string,
 	shouldCollectMessage bool,
@@ -533,6 +534,10 @@ func (p *AppOpsServiceProxy) NoteProxyOperation(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteInt32(code)
+	_data.WriteInt32(1)
+	if _err := attributionSource.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteBool(shouldCollectAsyncNotedOp)
 	_data.WriteString16(message)
 	_data.WriteBool(shouldCollectMessage)
@@ -560,7 +565,7 @@ func (p *AppOpsServiceProxy) StartProxyOperation(
 	ctx context.Context,
 	clientId binder.IBinder,
 	code int32,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 	startIfModeDefault bool,
 	shouldCollectAsyncNotedOp bool,
 	message string,
@@ -575,6 +580,10 @@ func (p *AppOpsServiceProxy) StartProxyOperation(
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	binder.WriteBinderToParcel(ctx, _data, clientId, p.remote.Transport())
 	_data.WriteInt32(code)
+	_data.WriteInt32(1)
+	if _err := attributionSource.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteBool(startIfModeDefault)
 	_data.WriteBool(shouldCollectAsyncNotedOp)
 	_data.WriteString16(message)
@@ -606,13 +615,17 @@ func (p *AppOpsServiceProxy) FinishProxyOperation(
 	ctx context.Context,
 	clientId binder.IBinder,
 	code int32,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 	skipProxyOperation bool,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	binder.WriteBinderToParcel(ctx, _data, clientId, p.remote.Transport())
 	_data.WriteInt32(code)
+	_data.WriteInt32(1)
+	if _err := attributionSource.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteBool(skipProxyOperation)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "finishProxyOperation")
@@ -1814,7 +1827,7 @@ func (p *AppOpsServiceProxy) CollectNoteOpCallsForValidation(
 func (p *AppOpsServiceProxy) NoteProxyOperationWithState(
 	ctx context.Context,
 	code int32,
-	attributionSourceStateState interface{},
+	attributionSourceStateState content.AttributionSourceState,
 	shouldCollectAsyncNotedOp bool,
 	message string,
 	shouldCollectMessage bool,
@@ -1824,6 +1837,10 @@ func (p *AppOpsServiceProxy) NoteProxyOperationWithState(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteInt32(code)
+	_data.WriteInt32(1)
+	if _err := attributionSourceStateState.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteBool(shouldCollectAsyncNotedOp)
 	_data.WriteString16(message)
 	_data.WriteBool(shouldCollectMessage)
@@ -1851,7 +1868,7 @@ func (p *AppOpsServiceProxy) StartProxyOperationWithState(
 	ctx context.Context,
 	clientId binder.IBinder,
 	code int32,
-	attributionSourceStateState interface{},
+	attributionSourceStateState content.AttributionSourceState,
 	startIfModeDefault bool,
 	shouldCollectAsyncNotedOp bool,
 	message string,
@@ -1866,6 +1883,10 @@ func (p *AppOpsServiceProxy) StartProxyOperationWithState(
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	binder.WriteBinderToParcel(ctx, _data, clientId, p.remote.Transport())
 	_data.WriteInt32(code)
+	_data.WriteInt32(1)
+	if _err := attributionSourceStateState.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteBool(startIfModeDefault)
 	_data.WriteBool(shouldCollectAsyncNotedOp)
 	_data.WriteString16(message)
@@ -1897,13 +1918,17 @@ func (p *AppOpsServiceProxy) FinishProxyOperationWithState(
 	ctx context.Context,
 	clientId binder.IBinder,
 	code int32,
-	attributionSourceStateState interface{},
+	attributionSourceStateState content.AttributionSourceState,
 	skipProxyOperation bool,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	binder.WriteBinderToParcel(ctx, _data, clientId, p.remote.Transport())
 	_data.WriteInt32(code)
+	_data.WriteInt32(1)
+	if _err := attributionSourceStateState.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteBool(skipProxyOperation)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "finishProxyOperationWithState")
@@ -2490,7 +2515,18 @@ func (s *AppOpsServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource interface{}
+		var _arg_attributionSource content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_shouldCollectAsyncNotedOp, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -2527,7 +2563,18 @@ func (s *AppOpsServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource interface{}
+		var _arg_attributionSource content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_startIfModeDefault, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -2580,7 +2627,18 @@ func (s *AppOpsServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource interface{}
+		var _arg_attributionSource content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_skipProxyOperation, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -3371,7 +3429,18 @@ func (s *AppOpsServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSourceStateState interface{}
+		var _arg_attributionSourceStateState content.AttributionSourceState
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSourceStateState.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_shouldCollectAsyncNotedOp, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -3408,7 +3477,18 @@ func (s *AppOpsServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSourceStateState interface{}
+		var _arg_attributionSourceStateState content.AttributionSourceState
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSourceStateState.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_startIfModeDefault, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -3461,7 +3541,18 @@ func (s *AppOpsServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSourceStateState interface{}
+		var _arg_attributionSourceStateState content.AttributionSourceState
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSourceStateState.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_skipProxyOperation, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -3716,9 +3807,9 @@ type IAppOpsServiceServer interface {
 	ShouldCollectNotes(ctx context.Context, opCode int32) (bool, error)
 	SetCameraAudioRestriction(ctx context.Context, mode int32) error
 	StartWatchingModeWithFlags(ctx context.Context, op int32, packageName string, flags int32, callback IAppOpsCallback) error
-	NoteProxyOperation(ctx context.Context, code int32, attributionSource interface{}, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool) (interface{}, error)
-	StartProxyOperation(ctx context.Context, clientId binder.IBinder, code int32, attributionSource interface{}, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool, proxyAttributionFlags int32, proxiedAttributionFlags int32, attributionChainId int32) (interface{}, error)
-	FinishProxyOperation(ctx context.Context, clientId binder.IBinder, code int32, attributionSource interface{}, skipProxyOperation bool) error
+	NoteProxyOperation(ctx context.Context, code int32, attributionSource content.AttributionSource, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool) (interface{}, error)
+	StartProxyOperation(ctx context.Context, clientId binder.IBinder, code int32, attributionSource content.AttributionSource, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool, proxyAttributionFlags int32, proxiedAttributionFlags int32, attributionChainId int32) (interface{}, error)
+	FinishProxyOperation(ctx context.Context, clientId binder.IBinder, code int32, attributionSource content.AttributionSource, skipProxyOperation bool) error
 	CheckPackage(ctx context.Context, uid int32, packageName string) (int32, error)
 	CollectRuntimeAppOpAccessMessage(ctx context.Context) (interface{}, error)
 	ReportRuntimeAppOpAccessMessageAndGetConfig(ctx context.Context, packageName string, appOp interface{}, message string) (MessageSamplingConfig, error)
@@ -3755,9 +3846,9 @@ type IAppOpsServiceServer interface {
 	CheckOperationRaw(ctx context.Context, code int32, uid int32, packageName string) (int32, error)
 	ReloadNonHistoricalState(ctx context.Context) error
 	CollectNoteOpCallsForValidation(ctx context.Context, stackTrace string, op int32, packageName string, version int64) error
-	NoteProxyOperationWithState(ctx context.Context, code int32, attributionSourceStateState interface{}, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool) (interface{}, error)
-	StartProxyOperationWithState(ctx context.Context, clientId binder.IBinder, code int32, attributionSourceStateState interface{}, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool, proxyAttributionFlags int32, proxiedAttributionFlags int32, attributionChainId int32) (interface{}, error)
-	FinishProxyOperationWithState(ctx context.Context, clientId binder.IBinder, code int32, attributionSourceStateState interface{}, skipProxyOperation bool) error
+	NoteProxyOperationWithState(ctx context.Context, code int32, attributionSourceStateState content.AttributionSourceState, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool) (interface{}, error)
+	StartProxyOperationWithState(ctx context.Context, clientId binder.IBinder, code int32, attributionSourceStateState content.AttributionSourceState, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool, proxyAttributionFlags int32, proxiedAttributionFlags int32, attributionChainId int32) (interface{}, error)
+	FinishProxyOperationWithState(ctx context.Context, clientId binder.IBinder, code int32, attributionSourceStateState content.AttributionSourceState, skipProxyOperation bool) error
 	CheckOperationRawForDevice(ctx context.Context, code int32, uid int32, packageName string, virtualDeviceId int32) (int32, error)
 	CheckOperationForDevice(ctx context.Context, code int32, uid int32, packageName string, virtualDeviceId int32) (int32, error)
 	NoteOperationForDevice(ctx context.Context, code int32, uid int32, packageName string, virtualDeviceId int32, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool) (interface{}, error)
@@ -3882,7 +3973,7 @@ func (w *appOpsServiceStubWrapper) StartWatchingModeWithFlags(
 func (w *appOpsServiceStubWrapper) NoteProxyOperation(
 	ctx context.Context,
 	code int32,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 	shouldCollectAsyncNotedOp bool,
 	message string,
 	shouldCollectMessage bool,
@@ -3895,7 +3986,7 @@ func (w *appOpsServiceStubWrapper) StartProxyOperation(
 	ctx context.Context,
 	clientId binder.IBinder,
 	code int32,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 	startIfModeDefault bool,
 	shouldCollectAsyncNotedOp bool,
 	message string,
@@ -3912,7 +4003,7 @@ func (w *appOpsServiceStubWrapper) FinishProxyOperation(
 	ctx context.Context,
 	clientId binder.IBinder,
 	code int32,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 	skipProxyOperation bool,
 ) error {
 	return w.impl.FinishProxyOperation(ctx, clientId, code, attributionSource, skipProxyOperation)
@@ -4222,7 +4313,7 @@ func (w *appOpsServiceStubWrapper) CollectNoteOpCallsForValidation(
 func (w *appOpsServiceStubWrapper) NoteProxyOperationWithState(
 	ctx context.Context,
 	code int32,
-	attributionSourceStateState interface{},
+	attributionSourceStateState content.AttributionSourceState,
 	shouldCollectAsyncNotedOp bool,
 	message string,
 	shouldCollectMessage bool,
@@ -4235,7 +4326,7 @@ func (w *appOpsServiceStubWrapper) StartProxyOperationWithState(
 	ctx context.Context,
 	clientId binder.IBinder,
 	code int32,
-	attributionSourceStateState interface{},
+	attributionSourceStateState content.AttributionSourceState,
 	startIfModeDefault bool,
 	shouldCollectAsyncNotedOp bool,
 	message string,
@@ -4252,7 +4343,7 @@ func (w *appOpsServiceStubWrapper) FinishProxyOperationWithState(
 	ctx context.Context,
 	clientId binder.IBinder,
 	code int32,
-	attributionSourceStateState interface{},
+	attributionSourceStateState content.AttributionSourceState,
 	skipProxyOperation bool,
 ) error {
 	return w.impl.FinishProxyOperationWithState(ctx, clientId, code, attributionSourceStateState, skipProxyOperation)

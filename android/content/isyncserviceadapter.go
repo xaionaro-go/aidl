@@ -3,7 +3,6 @@ package content
 import (
 	"context"
 	"fmt"
-	os "github.com/xaionaro-go/binder/android/os"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -19,7 +18,7 @@ const (
 
 type ISyncServiceAdapter interface {
 	AsBinder() binder.IBinder
-	StartSync(ctx context.Context, syncContext ISyncContext, extras os.Bundle) error
+	StartSync(ctx context.Context, syncContext ISyncContext, extras interface{}) error
 	CancelSync(ctx context.Context, syncContext ISyncContext) error
 }
 
@@ -42,15 +41,11 @@ var _ ISyncServiceAdapter = (*SyncServiceAdapterProxy)(nil)
 func (p *SyncServiceAdapterProxy) StartSync(
 	ctx context.Context,
 	syncContext ISyncContext,
-	extras os.Bundle,
+	extras interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISyncServiceAdapter)
 	binder.WriteBinderToParcel(ctx, _data, syncContext.AsBinder(), p.remote.Transport())
-	_data.WriteInt32(1)
-	if _err := extras.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorISyncServiceAdapter, "startSync")
 	if _err != nil {
@@ -99,18 +94,7 @@ func (s *SyncServiceAdapterStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_syncContext ISyncContext
 		_ = _arg_syncContext
-		var _arg_extras os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_extras.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_extras interface{}
 		_err := s.Impl.StartSync(ctx, _arg_syncContext, _arg_extras)
 		_ = _err
 		return nil, nil
@@ -133,7 +117,7 @@ func (s *SyncServiceAdapterStub) OnTransaction(
 // provide to NewSyncServiceAdapterStub. It contains only the business methods,
 // without AsBinder (which is provided by the stub itself).
 type ISyncServiceAdapterServer interface {
-	StartSync(ctx context.Context, syncContext ISyncContext, extras os.Bundle) error
+	StartSync(ctx context.Context, syncContext ISyncContext, extras interface{}) error
 	CancelSync(ctx context.Context, syncContext ISyncContext) error
 }
 
@@ -149,7 +133,7 @@ func (w *syncServiceAdapterStubWrapper) AsBinder() binder.IBinder {
 func (w *syncServiceAdapterStubWrapper) StartSync(
 	ctx context.Context,
 	syncContext ISyncContext,
-	extras os.Bundle,
+	extras interface{},
 ) error {
 	return w.impl.StartSync(ctx, syncContext, extras)
 }

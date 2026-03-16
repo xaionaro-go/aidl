@@ -3,6 +3,7 @@ package speech
 import (
 	"context"
 	"fmt"
+	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -21,11 +22,11 @@ const (
 
 type IRecognitionService interface {
 	AsBinder() binder.IBinder
-	StartListening(ctx context.Context, recognizerIntent interface{}, listener IRecognitionListener, attributionSource interface{}) error
+	StartListening(ctx context.Context, recognizerIntent content.Intent, listener IRecognitionListener, attributionSource content.AttributionSource) error
 	StopListening(ctx context.Context, listener IRecognitionListener) error
 	Cancel(ctx context.Context, listener IRecognitionListener, isShutdown bool) error
-	CheckRecognitionSupport(ctx context.Context, recognizerIntent interface{}, attributionSource interface{}, listener IRecognitionSupportCallback) error
-	TriggerModelDownload(ctx context.Context, recognizerIntent interface{}, attributionSource interface{}, listener IModelDownloadListener) error
+	CheckRecognitionSupport(ctx context.Context, recognizerIntent content.Intent, attributionSource content.AttributionSource, listener IRecognitionSupportCallback) error
+	TriggerModelDownload(ctx context.Context, recognizerIntent content.Intent, attributionSource content.AttributionSource, listener IModelDownloadListener) error
 }
 
 type RecognitionServiceProxy struct {
@@ -46,13 +47,21 @@ var _ IRecognitionService = (*RecognitionServiceProxy)(nil)
 
 func (p *RecognitionServiceProxy) StartListening(
 	ctx context.Context,
-	recognizerIntent interface{},
+	recognizerIntent content.Intent,
 	listener IRecognitionListener,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecognitionService)
+	_data.WriteInt32(1)
+	if _err := recognizerIntent.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
+	_data.WriteInt32(1)
+	if _err := attributionSource.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionService, "startListening")
 	if _err != nil {
@@ -101,12 +110,20 @@ func (p *RecognitionServiceProxy) Cancel(
 
 func (p *RecognitionServiceProxy) CheckRecognitionSupport(
 	ctx context.Context,
-	recognizerIntent interface{},
-	attributionSource interface{},
+	recognizerIntent content.Intent,
+	attributionSource content.AttributionSource,
 	listener IRecognitionSupportCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecognitionService)
+	_data.WriteInt32(1)
+	if _err := recognizerIntent.MarshalParcel(_data); _err != nil {
+		return _err
+	}
+	_data.WriteInt32(1)
+	if _err := attributionSource.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionService, "checkRecognitionSupport")
@@ -120,12 +137,20 @@ func (p *RecognitionServiceProxy) CheckRecognitionSupport(
 
 func (p *RecognitionServiceProxy) TriggerModelDownload(
 	ctx context.Context,
-	recognizerIntent interface{},
-	attributionSource interface{},
+	recognizerIntent content.Intent,
+	attributionSource content.AttributionSource,
 	listener IModelDownloadListener,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecognitionService)
+	_data.WriteInt32(1)
+	if _err := recognizerIntent.MarshalParcel(_data); _err != nil {
+		return _err
+	}
+	_data.WriteInt32(1)
+	if _err := attributionSource.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionService, "triggerModelDownload")
@@ -155,11 +180,33 @@ func (s *RecognitionServiceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_recognizerIntent interface{}
+		var _arg_recognizerIntent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_recognizerIntent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_listener IRecognitionListener
 		_ = _arg_listener
-		var _arg_attributionSource interface{}
+		var _arg_attributionSource content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.StartListening(ctx, _arg_recognizerIntent, _arg_listener, _arg_attributionSource)
 		_ = _err
 		return nil, nil
@@ -191,8 +238,30 @@ func (s *RecognitionServiceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_recognizerIntent interface{}
-		var _arg_attributionSource interface{}
+		var _arg_recognizerIntent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_recognizerIntent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
+		var _arg_attributionSource content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_listener IRecognitionSupportCallback
 		_ = _arg_listener
@@ -203,8 +272,30 @@ func (s *RecognitionServiceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_recognizerIntent interface{}
-		var _arg_attributionSource interface{}
+		var _arg_recognizerIntent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_recognizerIntent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
+		var _arg_attributionSource content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_listener IModelDownloadListener
 		_ = _arg_listener
@@ -220,11 +311,11 @@ func (s *RecognitionServiceStub) OnTransaction(
 // provide to NewRecognitionServiceStub. It contains only the business methods,
 // without AsBinder (which is provided by the stub itself).
 type IRecognitionServiceServer interface {
-	StartListening(ctx context.Context, recognizerIntent interface{}, listener IRecognitionListener, attributionSource interface{}) error
+	StartListening(ctx context.Context, recognizerIntent content.Intent, listener IRecognitionListener, attributionSource content.AttributionSource) error
 	StopListening(ctx context.Context, listener IRecognitionListener) error
 	Cancel(ctx context.Context, listener IRecognitionListener, isShutdown bool) error
-	CheckRecognitionSupport(ctx context.Context, recognizerIntent interface{}, attributionSource interface{}, listener IRecognitionSupportCallback) error
-	TriggerModelDownload(ctx context.Context, recognizerIntent interface{}, attributionSource interface{}, listener IModelDownloadListener) error
+	CheckRecognitionSupport(ctx context.Context, recognizerIntent content.Intent, attributionSource content.AttributionSource, listener IRecognitionSupportCallback) error
+	TriggerModelDownload(ctx context.Context, recognizerIntent content.Intent, attributionSource content.AttributionSource, listener IModelDownloadListener) error
 }
 
 type recognitionServiceStubWrapper struct {
@@ -238,9 +329,9 @@ func (w *recognitionServiceStubWrapper) AsBinder() binder.IBinder {
 
 func (w *recognitionServiceStubWrapper) StartListening(
 	ctx context.Context,
-	recognizerIntent interface{},
+	recognizerIntent content.Intent,
 	listener IRecognitionListener,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 ) error {
 	return w.impl.StartListening(ctx, recognizerIntent, listener, attributionSource)
 }
@@ -262,8 +353,8 @@ func (w *recognitionServiceStubWrapper) Cancel(
 
 func (w *recognitionServiceStubWrapper) CheckRecognitionSupport(
 	ctx context.Context,
-	recognizerIntent interface{},
-	attributionSource interface{},
+	recognizerIntent content.Intent,
+	attributionSource content.AttributionSource,
 	listener IRecognitionSupportCallback,
 ) error {
 	return w.impl.CheckRecognitionSupport(ctx, recognizerIntent, attributionSource, listener)
@@ -271,8 +362,8 @@ func (w *recognitionServiceStubWrapper) CheckRecognitionSupport(
 
 func (w *recognitionServiceStubWrapper) TriggerModelDownload(
 	ctx context.Context,
-	recognizerIntent interface{},
-	attributionSource interface{},
+	recognizerIntent content.Intent,
+	attributionSource content.AttributionSource,
 	listener IModelDownloadListener,
 ) error {
 	return w.impl.TriggerModelDownload(ctx, recognizerIntent, attributionSource, listener)

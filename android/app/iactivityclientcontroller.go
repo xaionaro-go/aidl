@@ -4,9 +4,8 @@ import (
 	"context"
 	"fmt"
 	ondeviceintelligence "github.com/xaionaro-go/binder/android/app/ondeviceintelligence"
-	res "github.com/xaionaro-go/binder/android/content/res"
+	content "github.com/xaionaro-go/binder/android/content"
 	net "github.com/xaionaro-go/binder/android/net"
-	window "github.com/xaionaro-go/binder/android/window"
 	"github.com/xaionaro-go/binder/binder"
 	policy "github.com/xaionaro-go/binder/com/android/internal_/policy"
 	"github.com/xaionaro-go/binder/parcel"
@@ -90,7 +89,7 @@ const (
 
 type IActivityClientController interface {
 	AsBinder() binder.IBinder
-	ActivityIdle(ctx context.Context, token binder.IBinder, config res.Configuration, stopProfiling bool) error
+	ActivityIdle(ctx context.Context, token binder.IBinder, config interface{}, stopProfiling bool) error
 	ActivityResumed(ctx context.Context, token binder.IBinder, handleSplashScreenExit bool) error
 	ActivityRefreshed(ctx context.Context, token binder.IBinder) error
 	ActivityTopResumedStateLost(ctx context.Context) error
@@ -99,12 +98,12 @@ type IActivityClientController interface {
 	ActivityDestroyed(ctx context.Context, token binder.IBinder) error
 	ActivityLocalRelaunch(ctx context.Context, token binder.IBinder) error
 	ActivityRelaunched(ctx context.Context, token binder.IBinder) error
-	ReportSizeConfigurations(ctx context.Context, token binder.IBinder, sizeConfigurations window.SizeConfigurationBuckets) error
+	ReportSizeConfigurations(ctx context.Context, token binder.IBinder, sizeConfigurations interface{}) error
 	MoveActivityTaskToBack(ctx context.Context, token binder.IBinder, nonRoot bool) (bool, error)
 	ShouldUpRecreateTask(ctx context.Context, token binder.IBinder, destAffinity string) (bool, error)
-	NavigateUpTo(ctx context.Context, token binder.IBinder, target interface{}, resolvedType string, resultCode int32, resultData interface{}) (bool, error)
+	NavigateUpTo(ctx context.Context, token binder.IBinder, target content.Intent, resolvedType string, resultCode int32, resultData content.Intent) (bool, error)
 	ReleaseActivityInstance(ctx context.Context, token binder.IBinder) (bool, error)
-	FinishActivity(ctx context.Context, token binder.IBinder, code int32, data interface{}, finishTask int32) (bool, error)
+	FinishActivity(ctx context.Context, token binder.IBinder, code int32, data content.Intent, finishTask int32) (bool, error)
 	FinishActivityAffinity(ctx context.Context, token binder.IBinder) (bool, error)
 	FinishSubActivity(ctx context.Context, token binder.IBinder, resultWho string, requestCode int32) error
 	SetForceSendResultForMediaProjection(ctx context.Context, token binder.IBinder) error
@@ -112,9 +111,9 @@ type IActivityClientController interface {
 	WillActivityBeVisible(ctx context.Context, token binder.IBinder) (bool, error)
 	GetDisplayId(ctx context.Context, activityToken binder.IBinder) (int32, error)
 	GetTaskForActivity(ctx context.Context, token binder.IBinder, onlyRoot bool) (int32, error)
-	GetTaskConfiguration(ctx context.Context, activityToken binder.IBinder) (res.Configuration, error)
+	GetTaskConfiguration(ctx context.Context, activityToken binder.IBinder) (interface{}, error)
 	GetActivityTokenBelow(ctx context.Context, token binder.IBinder) (binder.IBinder, error)
-	GetCallingActivity(ctx context.Context, token binder.IBinder) (interface{}, error)
+	GetCallingActivity(ctx context.Context, token binder.IBinder) (content.ComponentName, error)
 	GetCallingPackage(ctx context.Context, token binder.IBinder) (string, error)
 	GetLaunchedFromUid(ctx context.Context, token binder.IBinder) (int32, error)
 	GetActivityCallerUid(ctx context.Context, activityToken binder.IBinder, callerToken binder.IBinder) (int32, error)
@@ -148,7 +147,7 @@ type IActivityClientController interface {
 	OverrideActivityTransition(ctx context.Context, token binder.IBinder, open bool, enterAnim int32, exitAnim int32, backgroundColor int32) error
 	ClearOverrideActivityTransition(ctx context.Context, token binder.IBinder, open bool) error
 	OverridePendingTransition(ctx context.Context, token binder.IBinder, packageName string, enterAnim int32, exitAnim int32, backgroundColor int32) error
-	SetVrMode(ctx context.Context, token binder.IBinder, enabled bool, packageName interface{}) (int32, error)
+	SetVrMode(ctx context.Context, token binder.IBinder, enabled bool, packageName content.ComponentName) (int32, error)
 	SetRecentsScreenshotEnabled(ctx context.Context, token binder.IBinder, enabled bool) error
 	InvalidateHomeTaskSnapshot(ctx context.Context, homeToken binder.IBinder) error
 	DismissKeyguard(ctx context.Context, token binder.IBinder, callback policy.IKeyguardDismissCallback, message interface{}) error
@@ -180,16 +179,12 @@ var _ IActivityClientController = (*ActivityClientControllerProxy)(nil)
 func (p *ActivityClientControllerProxy) ActivityIdle(
 	ctx context.Context,
 	token binder.IBinder,
-	config res.Configuration,
+	config interface{},
 	stopProfiling bool,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
 	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
-	_data.WriteInt32(1)
-	if _err := config.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteBool(stopProfiling)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "activityIdle")
@@ -361,15 +356,11 @@ func (p *ActivityClientControllerProxy) ActivityRelaunched(
 func (p *ActivityClientControllerProxy) ReportSizeConfigurations(
 	ctx context.Context,
 	token binder.IBinder,
-	sizeConfigurations window.SizeConfigurationBuckets,
+	sizeConfigurations interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
 	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
-	_data.WriteInt32(1)
-	if _err := sizeConfigurations.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "reportSizeConfigurations")
 	if _err != nil {
@@ -449,17 +440,25 @@ func (p *ActivityClientControllerProxy) ShouldUpRecreateTask(
 func (p *ActivityClientControllerProxy) NavigateUpTo(
 	ctx context.Context,
 	token binder.IBinder,
-	target interface{},
+	target content.Intent,
 	resolvedType string,
 	resultCode int32,
-	resultData interface{},
+	resultData content.Intent,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
 	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
+	_data.WriteInt32(1)
+	if _err := target.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteString16(resolvedType)
 	_data.WriteInt32(resultCode)
+	_data.WriteInt32(1)
+	if _err := resultData.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "navigateUpTo")
 	if _err != nil {
@@ -518,7 +517,7 @@ func (p *ActivityClientControllerProxy) FinishActivity(
 	ctx context.Context,
 	token binder.IBinder,
 	code int32,
-	data interface{},
+	data content.Intent,
 	finishTask int32,
 ) (bool, error) {
 	var _result bool
@@ -526,6 +525,10 @@ func (p *ActivityClientControllerProxy) FinishActivity(
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
 	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(code)
+	_data.WriteInt32(1)
+	if _err := data.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteInt32(finishTask)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "finishActivity")
@@ -766,8 +769,8 @@ func (p *ActivityClientControllerProxy) GetTaskForActivity(
 func (p *ActivityClientControllerProxy) GetTaskConfiguration(
 	ctx context.Context,
 	activityToken binder.IBinder,
-) (res.Configuration, error) {
-	var _result res.Configuration
+) (interface{}, error) {
+	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
 	binder.WriteBinderToParcel(ctx, _data, activityToken, p.remote.Transport())
@@ -787,15 +790,6 @@ func (p *ActivityClientControllerProxy) GetTaskConfiguration(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
@@ -834,8 +828,8 @@ func (p *ActivityClientControllerProxy) GetActivityTokenBelow(
 func (p *ActivityClientControllerProxy) GetCallingActivity(
 	ctx context.Context,
 	token binder.IBinder,
-) (interface{}, error) {
-	var _result interface{}
+) (content.ComponentName, error) {
+	var _result content.ComponentName
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
 	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
@@ -855,6 +849,15 @@ func (p *ActivityClientControllerProxy) GetCallingActivity(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
@@ -1775,13 +1778,17 @@ func (p *ActivityClientControllerProxy) SetVrMode(
 	ctx context.Context,
 	token binder.IBinder,
 	enabled bool,
-	packageName interface{},
+	packageName content.ComponentName,
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
 	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(enabled)
+	_data.WriteInt32(1)
+	if _err := packageName.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "setVrMode")
 	if _err != nil {
@@ -2067,18 +2074,7 @@ func (s *ActivityClientControllerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
-		var _arg_config res.Configuration
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_config.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_config interface{}
 		_arg_stopProfiling, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -2187,18 +2183,7 @@ func (s *ActivityClientControllerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
-		var _arg_sizeConfigurations window.SizeConfigurationBuckets
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_sizeConfigurations.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_sizeConfigurations interface{}
 		_err := s.Impl.ReportSizeConfigurations(ctx, _arg_token, _arg_sizeConfigurations)
 		_ = _err
 		return nil, nil
@@ -2249,7 +2234,18 @@ func (s *ActivityClientControllerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
-		var _arg_target interface{}
+		var _arg_target content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_target.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -2258,7 +2254,18 @@ func (s *ActivityClientControllerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_resultData interface{}
+		var _arg_resultData content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_resultData.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_result, _err := s.Impl.NavigateUpTo(ctx, _arg_token, _arg_target, _arg_resolvedType, _arg_resultCode, _arg_resultData)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2295,7 +2302,18 @@ func (s *ActivityClientControllerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_data interface{}
+		var _arg_data content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_data.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_finishTask, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -2445,10 +2463,7 @@ func (s *ActivityClientControllerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIActivityClientControllerGetActivityTokenBelow:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -2481,7 +2496,10 @@ func (s *ActivityClientControllerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIActivityClientControllerGetCallingPackage:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -3099,7 +3117,18 @@ func (s *ActivityClientControllerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_packageName interface{}
+		var _arg_packageName content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_packageName.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_result, _err := s.Impl.SetVrMode(ctx, _arg_token, _arg_enabled, _arg_packageName)
 		_reply := parcel.New()
 		if _err != nil {
@@ -3268,7 +3297,7 @@ func (s *ActivityClientControllerStub) OnTransaction(
 // provide to NewActivityClientControllerStub. It contains only the business methods,
 // without AsBinder (which is provided by the stub itself).
 type IActivityClientControllerServer interface {
-	ActivityIdle(ctx context.Context, token binder.IBinder, config res.Configuration, stopProfiling bool) error
+	ActivityIdle(ctx context.Context, token binder.IBinder, config interface{}, stopProfiling bool) error
 	ActivityResumed(ctx context.Context, token binder.IBinder, handleSplashScreenExit bool) error
 	ActivityRefreshed(ctx context.Context, token binder.IBinder) error
 	ActivityTopResumedStateLost(ctx context.Context) error
@@ -3277,12 +3306,12 @@ type IActivityClientControllerServer interface {
 	ActivityDestroyed(ctx context.Context, token binder.IBinder) error
 	ActivityLocalRelaunch(ctx context.Context, token binder.IBinder) error
 	ActivityRelaunched(ctx context.Context, token binder.IBinder) error
-	ReportSizeConfigurations(ctx context.Context, token binder.IBinder, sizeConfigurations window.SizeConfigurationBuckets) error
+	ReportSizeConfigurations(ctx context.Context, token binder.IBinder, sizeConfigurations interface{}) error
 	MoveActivityTaskToBack(ctx context.Context, token binder.IBinder, nonRoot bool) (bool, error)
 	ShouldUpRecreateTask(ctx context.Context, token binder.IBinder, destAffinity string) (bool, error)
-	NavigateUpTo(ctx context.Context, token binder.IBinder, target interface{}, resolvedType string, resultCode int32, resultData interface{}) (bool, error)
+	NavigateUpTo(ctx context.Context, token binder.IBinder, target content.Intent, resolvedType string, resultCode int32, resultData content.Intent) (bool, error)
 	ReleaseActivityInstance(ctx context.Context, token binder.IBinder) (bool, error)
-	FinishActivity(ctx context.Context, token binder.IBinder, code int32, data interface{}, finishTask int32) (bool, error)
+	FinishActivity(ctx context.Context, token binder.IBinder, code int32, data content.Intent, finishTask int32) (bool, error)
 	FinishActivityAffinity(ctx context.Context, token binder.IBinder) (bool, error)
 	FinishSubActivity(ctx context.Context, token binder.IBinder, resultWho string, requestCode int32) error
 	SetForceSendResultForMediaProjection(ctx context.Context, token binder.IBinder) error
@@ -3290,9 +3319,9 @@ type IActivityClientControllerServer interface {
 	WillActivityBeVisible(ctx context.Context, token binder.IBinder) (bool, error)
 	GetDisplayId(ctx context.Context, activityToken binder.IBinder) (int32, error)
 	GetTaskForActivity(ctx context.Context, token binder.IBinder, onlyRoot bool) (int32, error)
-	GetTaskConfiguration(ctx context.Context, activityToken binder.IBinder) (res.Configuration, error)
+	GetTaskConfiguration(ctx context.Context, activityToken binder.IBinder) (interface{}, error)
 	GetActivityTokenBelow(ctx context.Context, token binder.IBinder) (binder.IBinder, error)
-	GetCallingActivity(ctx context.Context, token binder.IBinder) (interface{}, error)
+	GetCallingActivity(ctx context.Context, token binder.IBinder) (content.ComponentName, error)
 	GetCallingPackage(ctx context.Context, token binder.IBinder) (string, error)
 	GetLaunchedFromUid(ctx context.Context, token binder.IBinder) (int32, error)
 	GetActivityCallerUid(ctx context.Context, activityToken binder.IBinder, callerToken binder.IBinder) (int32, error)
@@ -3326,7 +3355,7 @@ type IActivityClientControllerServer interface {
 	OverrideActivityTransition(ctx context.Context, token binder.IBinder, open bool, enterAnim int32, exitAnim int32, backgroundColor int32) error
 	ClearOverrideActivityTransition(ctx context.Context, token binder.IBinder, open bool) error
 	OverridePendingTransition(ctx context.Context, token binder.IBinder, packageName string, enterAnim int32, exitAnim int32, backgroundColor int32) error
-	SetVrMode(ctx context.Context, token binder.IBinder, enabled bool, packageName interface{}) (int32, error)
+	SetVrMode(ctx context.Context, token binder.IBinder, enabled bool, packageName content.ComponentName) (int32, error)
 	SetRecentsScreenshotEnabled(ctx context.Context, token binder.IBinder, enabled bool) error
 	InvalidateHomeTaskSnapshot(ctx context.Context, homeToken binder.IBinder) error
 	DismissKeyguard(ctx context.Context, token binder.IBinder, callback policy.IKeyguardDismissCallback, message interface{}) error
@@ -3351,7 +3380,7 @@ func (w *activityClientControllerStubWrapper) AsBinder() binder.IBinder {
 func (w *activityClientControllerStubWrapper) ActivityIdle(
 	ctx context.Context,
 	token binder.IBinder,
-	config res.Configuration,
+	config interface{},
 	stopProfiling bool,
 ) error {
 	return w.impl.ActivityIdle(ctx, token, config, stopProfiling)
@@ -3419,7 +3448,7 @@ func (w *activityClientControllerStubWrapper) ActivityRelaunched(
 func (w *activityClientControllerStubWrapper) ReportSizeConfigurations(
 	ctx context.Context,
 	token binder.IBinder,
-	sizeConfigurations window.SizeConfigurationBuckets,
+	sizeConfigurations interface{},
 ) error {
 	return w.impl.ReportSizeConfigurations(ctx, token, sizeConfigurations)
 }
@@ -3443,10 +3472,10 @@ func (w *activityClientControllerStubWrapper) ShouldUpRecreateTask(
 func (w *activityClientControllerStubWrapper) NavigateUpTo(
 	ctx context.Context,
 	token binder.IBinder,
-	target interface{},
+	target content.Intent,
 	resolvedType string,
 	resultCode int32,
-	resultData interface{},
+	resultData content.Intent,
 ) (bool, error) {
 	return w.impl.NavigateUpTo(ctx, token, target, resolvedType, resultCode, resultData)
 }
@@ -3462,7 +3491,7 @@ func (w *activityClientControllerStubWrapper) FinishActivity(
 	ctx context.Context,
 	token binder.IBinder,
 	code int32,
-	data interface{},
+	data content.Intent,
 	finishTask int32,
 ) (bool, error) {
 	return w.impl.FinishActivity(ctx, token, code, data, finishTask)
@@ -3523,7 +3552,7 @@ func (w *activityClientControllerStubWrapper) GetTaskForActivity(
 func (w *activityClientControllerStubWrapper) GetTaskConfiguration(
 	ctx context.Context,
 	activityToken binder.IBinder,
-) (res.Configuration, error) {
+) (interface{}, error) {
 	return w.impl.GetTaskConfiguration(ctx, activityToken)
 }
 
@@ -3537,7 +3566,7 @@ func (w *activityClientControllerStubWrapper) GetActivityTokenBelow(
 func (w *activityClientControllerStubWrapper) GetCallingActivity(
 	ctx context.Context,
 	token binder.IBinder,
-) (interface{}, error) {
+) (content.ComponentName, error) {
 	return w.impl.GetCallingActivity(ctx, token)
 }
 
@@ -3806,7 +3835,7 @@ func (w *activityClientControllerStubWrapper) SetVrMode(
 	ctx context.Context,
 	token binder.IBinder,
 	enabled bool,
-	packageName interface{},
+	packageName content.ComponentName,
 ) (int32, error) {
 	return w.impl.SetVrMode(ctx, token, enabled, packageName)
 }

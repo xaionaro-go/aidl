@@ -5,7 +5,6 @@ import (
 	"fmt"
 	accessibilityservice "github.com/xaionaro-go/binder/android/accessibilityservice"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
-	window "github.com/xaionaro-go/binder/android/window"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -50,8 +49,8 @@ type IUiAutomationConnection interface {
 	InjectInputEventToInputFilter(ctx context.Context, event interface{}) error
 	SyncInputTransactions(ctx context.Context, waitForAnimations bool) error
 	SetRotation(ctx context.Context, rotation int32) (bool, error)
-	TakeScreenshot(ctx context.Context, crop graphics.Rect, listener window.ScreenCaptureScreenCaptureListener, displayId int32) (bool, error)
-	TakeSurfaceControlScreenshot(ctx context.Context, surfaceControl interface{}, listener window.ScreenCaptureScreenCaptureListener) (bool, error)
+	TakeScreenshot(ctx context.Context, crop graphics.Rect, listener interface{}, displayId int32) (bool, error)
+	TakeSurfaceControlScreenshot(ctx context.Context, surfaceControl interface{}, listener interface{}) (bool, error)
 	ClearWindowContentFrameStats(ctx context.Context, windowId int32) (bool, error)
 	GetWindowContentFrameStats(ctx context.Context, windowId int32) (interface{}, error)
 	ClearWindowAnimationFrameStats(ctx context.Context) error
@@ -258,7 +257,7 @@ func (p *UiAutomationConnectionProxy) SetRotation(
 func (p *UiAutomationConnectionProxy) TakeScreenshot(
 	ctx context.Context,
 	crop graphics.Rect,
-	listener window.ScreenCaptureScreenCaptureListener,
+	listener interface{},
 	displayId int32,
 ) (bool, error) {
 	var _result bool
@@ -266,10 +265,6 @@ func (p *UiAutomationConnectionProxy) TakeScreenshot(
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 	_data.WriteInt32(1)
 	if _err := crop.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteInt32(1)
-	if _err := listener.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
 	_data.WriteInt32(displayId)
@@ -299,15 +294,11 @@ func (p *UiAutomationConnectionProxy) TakeScreenshot(
 func (p *UiAutomationConnectionProxy) TakeSurfaceControlScreenshot(
 	ctx context.Context,
 	surfaceControl interface{},
-	listener window.ScreenCaptureScreenCaptureListener,
+	listener interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
-	_data.WriteInt32(1)
-	if _err := listener.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "takeSurfaceControlScreenshot")
 	if _err != nil {
@@ -949,18 +940,7 @@ func (s *UiAutomationConnectionStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_listener window.ScreenCaptureScreenCaptureListener
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_listener.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_listener interface{}
 		_arg_displayId, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -979,18 +959,7 @@ func (s *UiAutomationConnectionStub) OnTransaction(
 			return nil, _err
 		}
 		var _arg_surfaceControl interface{}
-		var _arg_listener window.ScreenCaptureScreenCaptureListener
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_listener.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_listener interface{}
 		_result, _err := s.Impl.TakeSurfaceControlScreenshot(ctx, _arg_surfaceControl, _arg_listener)
 		_reply := parcel.New()
 		if _err != nil {
@@ -1323,8 +1292,8 @@ type IUiAutomationConnectionServer interface {
 	InjectInputEventToInputFilter(ctx context.Context, event interface{}) error
 	SyncInputTransactions(ctx context.Context, waitForAnimations bool) error
 	SetRotation(ctx context.Context, rotation int32) (bool, error)
-	TakeScreenshot(ctx context.Context, crop graphics.Rect, listener window.ScreenCaptureScreenCaptureListener, displayId int32) (bool, error)
-	TakeSurfaceControlScreenshot(ctx context.Context, surfaceControl interface{}, listener window.ScreenCaptureScreenCaptureListener) (bool, error)
+	TakeScreenshot(ctx context.Context, crop graphics.Rect, listener interface{}, displayId int32) (bool, error)
+	TakeSurfaceControlScreenshot(ctx context.Context, surfaceControl interface{}, listener interface{}) (bool, error)
 	ClearWindowContentFrameStats(ctx context.Context, windowId int32) (bool, error)
 	GetWindowContentFrameStats(ctx context.Context, windowId int32) (interface{}, error)
 	ClearWindowAnimationFrameStats(ctx context.Context) error
@@ -1400,7 +1369,7 @@ func (w *uiAutomationConnectionStubWrapper) SetRotation(
 func (w *uiAutomationConnectionStubWrapper) TakeScreenshot(
 	ctx context.Context,
 	crop graphics.Rect,
-	listener window.ScreenCaptureScreenCaptureListener,
+	listener interface{},
 	displayId int32,
 ) (bool, error) {
 	return w.impl.TakeScreenshot(ctx, crop, listener, displayId)
@@ -1409,7 +1378,7 @@ func (w *uiAutomationConnectionStubWrapper) TakeScreenshot(
 func (w *uiAutomationConnectionStubWrapper) TakeSurfaceControlScreenshot(
 	ctx context.Context,
 	surfaceControl interface{},
-	listener window.ScreenCaptureScreenCaptureListener,
+	listener interface{},
 ) (bool, error) {
 	return w.impl.TakeSurfaceControlScreenshot(ctx, surfaceControl, listener)
 }

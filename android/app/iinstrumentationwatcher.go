@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -18,8 +19,8 @@ const (
 
 type IInstrumentationWatcher interface {
 	AsBinder() binder.IBinder
-	InstrumentationStatus(ctx context.Context, name interface{}, resultCode int32, results interface{}) error
-	InstrumentationFinished(ctx context.Context, name interface{}, resultCode int32, results interface{}) error
+	InstrumentationStatus(ctx context.Context, name content.ComponentName, resultCode int32, results interface{}) error
+	InstrumentationFinished(ctx context.Context, name content.ComponentName, resultCode int32, results interface{}) error
 }
 
 type InstrumentationWatcherProxy struct {
@@ -40,12 +41,16 @@ var _ IInstrumentationWatcher = (*InstrumentationWatcherProxy)(nil)
 
 func (p *InstrumentationWatcherProxy) InstrumentationStatus(
 	ctx context.Context,
-	name interface{},
+	name content.ComponentName,
 	resultCode int32,
 	results interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstrumentationWatcher)
+	_data.WriteInt32(1)
+	if _err := name.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteInt32(resultCode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInstrumentationWatcher, "instrumentationStatus")
@@ -68,12 +73,16 @@ func (p *InstrumentationWatcherProxy) InstrumentationStatus(
 
 func (p *InstrumentationWatcherProxy) InstrumentationFinished(
 	ctx context.Context,
-	name interface{},
+	name content.ComponentName,
 	resultCode int32,
 	results interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstrumentationWatcher)
+	_data.WriteInt32(1)
+	if _err := name.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteInt32(resultCode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInstrumentationWatcher, "instrumentationFinished")
@@ -112,7 +121,18 @@ func (s *InstrumentationWatcherStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_name interface{}
+		var _arg_name content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_name.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_resultCode, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -130,7 +150,18 @@ func (s *InstrumentationWatcherStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_name interface{}
+		var _arg_name content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_name.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_resultCode, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -153,8 +184,8 @@ func (s *InstrumentationWatcherStub) OnTransaction(
 // provide to NewInstrumentationWatcherStub. It contains only the business methods,
 // without AsBinder (which is provided by the stub itself).
 type IInstrumentationWatcherServer interface {
-	InstrumentationStatus(ctx context.Context, name interface{}, resultCode int32, results interface{}) error
-	InstrumentationFinished(ctx context.Context, name interface{}, resultCode int32, results interface{}) error
+	InstrumentationStatus(ctx context.Context, name content.ComponentName, resultCode int32, results interface{}) error
+	InstrumentationFinished(ctx context.Context, name content.ComponentName, resultCode int32, results interface{}) error
 }
 
 type instrumentationWatcherStubWrapper struct {
@@ -168,7 +199,7 @@ func (w *instrumentationWatcherStubWrapper) AsBinder() binder.IBinder {
 
 func (w *instrumentationWatcherStubWrapper) InstrumentationStatus(
 	ctx context.Context,
-	name interface{},
+	name content.ComponentName,
 	resultCode int32,
 	results interface{},
 ) error {
@@ -177,7 +208,7 @@ func (w *instrumentationWatcherStubWrapper) InstrumentationStatus(
 
 func (w *instrumentationWatcherStubWrapper) InstrumentationFinished(
 	ctx context.Context,
-	name interface{},
+	name content.ComponentName,
 	resultCode int32,
 	results interface{},
 ) error {

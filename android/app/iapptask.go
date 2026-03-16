@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -24,7 +25,7 @@ type IAppTask interface {
 	FinishAndRemoveTask(ctx context.Context) error
 	GetTaskInfo(ctx context.Context) (ActivityManagerRecentTaskInfo, error)
 	MoveToFront(ctx context.Context, appThread IApplicationThread) error
-	StartActivity(ctx context.Context, whoThread binder.IBinder, intent interface{}, resolvedType string, options interface{}) (int32, error)
+	StartActivity(ctx context.Context, whoThread binder.IBinder, intent content.Intent, resolvedType string, options interface{}) (int32, error)
 	SetExcludeFromRecents(ctx context.Context, exclude bool) error
 }
 
@@ -133,7 +134,7 @@ func (p *AppTaskProxy) MoveToFront(
 func (p *AppTaskProxy) StartActivity(
 	ctx context.Context,
 	whoThread binder.IBinder,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	options interface{},
 ) (int32, error) {
@@ -144,6 +145,10 @@ func (p *AppTaskProxy) StartActivity(
 	binder.WriteBinderToParcel(ctx, _data, whoThread, p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(_identity.AttributionTag)
+	_data.WriteInt32(1)
+	if _err := intent.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteString16(resolvedType)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppTask, "startActivity")
@@ -267,7 +272,18 @@ func (s *AppTaskStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent interface{}
+		var _arg_intent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -310,7 +326,7 @@ type IAppTaskServer interface {
 	FinishAndRemoveTask(ctx context.Context) error
 	GetTaskInfo(ctx context.Context) (ActivityManagerRecentTaskInfo, error)
 	MoveToFront(ctx context.Context, appThread IApplicationThread) error
-	StartActivity(ctx context.Context, whoThread binder.IBinder, intent interface{}, resolvedType string, options interface{}) (int32, error)
+	StartActivity(ctx context.Context, whoThread binder.IBinder, intent content.Intent, resolvedType string, options interface{}) (int32, error)
 	SetExcludeFromRecents(ctx context.Context, exclude bool) error
 }
 
@@ -345,7 +361,7 @@ func (w *appTaskStubWrapper) MoveToFront(
 func (w *appTaskStubWrapper) StartActivity(
 	ctx context.Context,
 	whoThread binder.IBinder,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	options interface{},
 ) (int32, error) {

@@ -3,7 +3,6 @@ package location
 import (
 	"context"
 	"fmt"
-	app "github.com/xaionaro-go/binder/android/app"
 	ondeviceintelligence "github.com/xaionaro-go/binder/android/app/ondeviceintelligence"
 	locationProvider "github.com/xaionaro-go/binder/android/location/provider"
 	"github.com/xaionaro-go/binder/binder"
@@ -85,13 +84,13 @@ type ILocationManager interface {
 	GetCurrentLocation(ctx context.Context, provider string, request LocationRequest, callback ILocationCallback, packageName string, listenerId string) (ondeviceintelligence.ICancellationSignal, error)
 	RegisterLocationListener(ctx context.Context, provider string, request LocationRequest, listener ILocationListener, packageName string, listenerId string) error
 	UnregisterLocationListener(ctx context.Context, listener ILocationListener) error
-	RegisterLocationPendingIntent(ctx context.Context, provider string, request LocationRequest, pendingIntent app.PendingIntent, packageName string) error
-	UnregisterLocationPendingIntent(ctx context.Context, pendingIntent app.PendingIntent) error
+	RegisterLocationPendingIntent(ctx context.Context, provider string, request LocationRequest, pendingIntent interface{}, packageName string) error
+	UnregisterLocationPendingIntent(ctx context.Context, pendingIntent interface{}) error
 	InjectLocation(ctx context.Context, location Location) error
 	RequestListenerFlush(ctx context.Context, provider string, listener ILocationListener, requestCode int32) error
-	RequestPendingIntentFlush(ctx context.Context, provider string, pendingIntent app.PendingIntent, requestCode int32) error
-	RequestGeofence(ctx context.Context, geofence Geofence, intent app.PendingIntent, packageName string) error
-	RemoveGeofence(ctx context.Context, intent app.PendingIntent) error
+	RequestPendingIntentFlush(ctx context.Context, provider string, pendingIntent interface{}, requestCode int32) error
+	RequestGeofence(ctx context.Context, geofence Geofence, intent interface{}, packageName string) error
+	RemoveGeofence(ctx context.Context, intent interface{}) error
 	IsGeocodeAvailable(ctx context.Context) (bool, error)
 	ReverseGeocode(ctx context.Context, request locationProvider.ReverseGeocodeRequest, callback locationProvider.IGeocodeCallback) error
 	ForwardGeocode(ctx context.Context, request locationProvider.ForwardGeocodeRequest, callback locationProvider.IGeocodeCallback) error
@@ -320,7 +319,7 @@ func (p *LocationManagerProxy) RegisterLocationPendingIntent(
 	ctx context.Context,
 	provider string,
 	request LocationRequest,
-	pendingIntent app.PendingIntent,
+	pendingIntent interface{},
 	packageName string,
 ) error {
 	_identity := p.remote.Identity()
@@ -329,10 +328,6 @@ func (p *LocationManagerProxy) RegisterLocationPendingIntent(
 	_data.WriteString16(provider)
 	_data.WriteInt32(1)
 	if _err := request.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := pendingIntent.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 	_data.WriteString16(packageName)
@@ -358,14 +353,10 @@ func (p *LocationManagerProxy) RegisterLocationPendingIntent(
 
 func (p *LocationManagerProxy) UnregisterLocationPendingIntent(
 	ctx context.Context,
-	pendingIntent app.PendingIntent,
+	pendingIntent interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
-	_data.WriteInt32(1)
-	if _err := pendingIntent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "unregisterLocationPendingIntent")
 	if _err != nil {
@@ -447,16 +438,12 @@ func (p *LocationManagerProxy) RequestListenerFlush(
 func (p *LocationManagerProxy) RequestPendingIntentFlush(
 	ctx context.Context,
 	provider string,
-	pendingIntent app.PendingIntent,
+	pendingIntent interface{},
 	requestCode int32,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteString16(provider)
-	_data.WriteInt32(1)
-	if _err := pendingIntent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteInt32(requestCode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "requestPendingIntentFlush")
@@ -480,7 +467,7 @@ func (p *LocationManagerProxy) RequestPendingIntentFlush(
 func (p *LocationManagerProxy) RequestGeofence(
 	ctx context.Context,
 	geofence Geofence,
-	intent app.PendingIntent,
+	intent interface{},
 	packageName string,
 ) error {
 	_identity := p.remote.Identity()
@@ -488,10 +475,6 @@ func (p *LocationManagerProxy) RequestGeofence(
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteInt32(1)
 	if _err := geofence.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 	_data.WriteString16(packageName)
@@ -517,14 +500,10 @@ func (p *LocationManagerProxy) RequestGeofence(
 
 func (p *LocationManagerProxy) RemoveGeofence(
 	ctx context.Context,
-	intent app.PendingIntent,
+	intent interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "removeGeofence")
 	if _err != nil {
@@ -2299,18 +2278,7 @@ func (s *LocationManagerStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_pendingIntent app.PendingIntent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_pendingIntent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_pendingIntent interface{}
 		_arg_packageName, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -2330,18 +2298,7 @@ func (s *LocationManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_pendingIntent app.PendingIntent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_pendingIntent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_pendingIntent interface{}
 		_err := s.Impl.UnregisterLocationPendingIntent(ctx, _arg_pendingIntent)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2405,18 +2362,7 @@ func (s *LocationManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_pendingIntent app.PendingIntent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_pendingIntent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_pendingIntent interface{}
 		_arg_requestCode, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -2445,18 +2391,7 @@ func (s *LocationManagerStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_intent app.PendingIntent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		_arg_packageName, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -2476,18 +2411,7 @@ func (s *LocationManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent app.PendingIntent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		_err := s.Impl.RemoveGeofence(ctx, _arg_intent)
 		_reply := parcel.New()
 		if _err != nil {
@@ -3499,13 +3423,13 @@ type ILocationManagerServer interface {
 	GetCurrentLocation(ctx context.Context, provider string, request LocationRequest, callback ILocationCallback, packageName string, listenerId string) (ondeviceintelligence.ICancellationSignal, error)
 	RegisterLocationListener(ctx context.Context, provider string, request LocationRequest, listener ILocationListener, packageName string, listenerId string) error
 	UnregisterLocationListener(ctx context.Context, listener ILocationListener) error
-	RegisterLocationPendingIntent(ctx context.Context, provider string, request LocationRequest, pendingIntent app.PendingIntent, packageName string) error
-	UnregisterLocationPendingIntent(ctx context.Context, pendingIntent app.PendingIntent) error
+	RegisterLocationPendingIntent(ctx context.Context, provider string, request LocationRequest, pendingIntent interface{}, packageName string) error
+	UnregisterLocationPendingIntent(ctx context.Context, pendingIntent interface{}) error
 	InjectLocation(ctx context.Context, location Location) error
 	RequestListenerFlush(ctx context.Context, provider string, listener ILocationListener, requestCode int32) error
-	RequestPendingIntentFlush(ctx context.Context, provider string, pendingIntent app.PendingIntent, requestCode int32) error
-	RequestGeofence(ctx context.Context, geofence Geofence, intent app.PendingIntent, packageName string) error
-	RemoveGeofence(ctx context.Context, intent app.PendingIntent) error
+	RequestPendingIntentFlush(ctx context.Context, provider string, pendingIntent interface{}, requestCode int32) error
+	RequestGeofence(ctx context.Context, geofence Geofence, intent interface{}, packageName string) error
+	RemoveGeofence(ctx context.Context, intent interface{}) error
 	IsGeocodeAvailable(ctx context.Context) (bool, error)
 	ReverseGeocode(ctx context.Context, request locationProvider.ReverseGeocodeRequest, callback locationProvider.IGeocodeCallback) error
 	ForwardGeocode(ctx context.Context, request locationProvider.ForwardGeocodeRequest, callback locationProvider.IGeocodeCallback) error
@@ -3610,7 +3534,7 @@ func (w *locationManagerStubWrapper) RegisterLocationPendingIntent(
 	ctx context.Context,
 	provider string,
 	request LocationRequest,
-	pendingIntent app.PendingIntent,
+	pendingIntent interface{},
 	packageName string,
 ) error {
 	return w.impl.RegisterLocationPendingIntent(ctx, provider, request, pendingIntent, packageName)
@@ -3618,7 +3542,7 @@ func (w *locationManagerStubWrapper) RegisterLocationPendingIntent(
 
 func (w *locationManagerStubWrapper) UnregisterLocationPendingIntent(
 	ctx context.Context,
-	pendingIntent app.PendingIntent,
+	pendingIntent interface{},
 ) error {
 	return w.impl.UnregisterLocationPendingIntent(ctx, pendingIntent)
 }
@@ -3642,7 +3566,7 @@ func (w *locationManagerStubWrapper) RequestListenerFlush(
 func (w *locationManagerStubWrapper) RequestPendingIntentFlush(
 	ctx context.Context,
 	provider string,
-	pendingIntent app.PendingIntent,
+	pendingIntent interface{},
 	requestCode int32,
 ) error {
 	return w.impl.RequestPendingIntentFlush(ctx, provider, pendingIntent, requestCode)
@@ -3651,7 +3575,7 @@ func (w *locationManagerStubWrapper) RequestPendingIntentFlush(
 func (w *locationManagerStubWrapper) RequestGeofence(
 	ctx context.Context,
 	geofence Geofence,
-	intent app.PendingIntent,
+	intent interface{},
 	packageName string,
 ) error {
 	return w.impl.RequestGeofence(ctx, geofence, intent, packageName)
@@ -3659,7 +3583,7 @@ func (w *locationManagerStubWrapper) RequestGeofence(
 
 func (w *locationManagerStubWrapper) RemoveGeofence(
 	ctx context.Context,
-	intent app.PendingIntent,
+	intent interface{},
 ) error {
 	return w.impl.RemoveGeofence(ctx, intent)
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	accounts "github.com/xaionaro-go/binder/android/accounts"
-	os "github.com/xaionaro-go/binder/android/os"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -22,7 +21,7 @@ const (
 type ISyncAdapter interface {
 	AsBinder() binder.IBinder
 	OnUnsyncableAccount(ctx context.Context, cb ISyncAdapterUnsyncableAccountCallback) error
-	StartSync(ctx context.Context, syncContext ISyncContext, authority string, account accounts.Account, extras os.Bundle) error
+	StartSync(ctx context.Context, syncContext ISyncContext, authority string, account accounts.Account, extras interface{}) error
 	CancelSync(ctx context.Context, syncContext ISyncContext) error
 }
 
@@ -64,7 +63,7 @@ func (p *SyncAdapterProxy) StartSync(
 	syncContext ISyncContext,
 	authority string,
 	account accounts.Account,
-	extras os.Bundle,
+	extras interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISyncAdapter)
@@ -72,10 +71,6 @@ func (p *SyncAdapterProxy) StartSync(
 	_data.WriteString16(authority)
 	_data.WriteInt32(1)
 	if _err := account.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := extras.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 
@@ -152,18 +147,7 @@ func (s *SyncAdapterStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_extras os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_extras.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_extras interface{}
 		_err = s.Impl.StartSync(ctx, _arg_syncContext, _arg_authority, _arg_account, _arg_extras)
 		_ = _err
 		return nil, nil
@@ -187,7 +171,7 @@ func (s *SyncAdapterStub) OnTransaction(
 // without AsBinder (which is provided by the stub itself).
 type ISyncAdapterServer interface {
 	OnUnsyncableAccount(ctx context.Context, cb ISyncAdapterUnsyncableAccountCallback) error
-	StartSync(ctx context.Context, syncContext ISyncContext, authority string, account accounts.Account, extras os.Bundle) error
+	StartSync(ctx context.Context, syncContext ISyncContext, authority string, account accounts.Account, extras interface{}) error
 	CancelSync(ctx context.Context, syncContext ISyncContext) error
 }
 
@@ -212,7 +196,7 @@ func (w *syncAdapterStubWrapper) StartSync(
 	syncContext ISyncContext,
 	authority string,
 	account accounts.Account,
-	extras os.Bundle,
+	extras interface{},
 ) error {
 	return w.impl.StartSync(ctx, syncContext, authority, account, extras)
 }

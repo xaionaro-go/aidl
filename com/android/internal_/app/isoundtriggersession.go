@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	content "github.com/xaionaro-go/binder/android/content"
 	soundtrigger "github.com/xaionaro-go/binder/android/hardware/soundtrigger"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
@@ -40,7 +41,7 @@ type ISoundTriggerSession interface {
 	StopRecognition(ctx context.Context, soundModelId interface{}, callback soundtrigger.IRecognitionStatusCallback) (int32, error)
 	LoadGenericSoundModel(ctx context.Context, soundModel soundtrigger.SoundTriggerGenericSoundModel) (int32, error)
 	LoadKeyphraseSoundModel(ctx context.Context, soundModel soundtrigger.SoundTriggerKeyphraseSoundModel) (int32, error)
-	StartRecognitionForService(ctx context.Context, soundModelId interface{}, params interface{}, callbackIntent interface{}, config soundtrigger.SoundTriggerRecognitionConfig) (int32, error)
+	StartRecognitionForService(ctx context.Context, soundModelId interface{}, params interface{}, callbackIntent content.ComponentName, config soundtrigger.SoundTriggerRecognitionConfig) (int32, error)
 	StopRecognitionForService(ctx context.Context, soundModelId interface{}) (int32, error)
 	UnloadSoundModel(ctx context.Context, soundModelId interface{}) (int32, error)
 	IsRecognitionActive(ctx context.Context, parcelUuid interface{}) (bool, error)
@@ -303,12 +304,16 @@ func (p *SoundTriggerSessionProxy) StartRecognitionForService(
 	ctx context.Context,
 	soundModelId interface{},
 	params interface{},
-	callbackIntent interface{},
+	callbackIntent content.ComponentName,
 	config soundtrigger.SoundTriggerRecognitionConfig,
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerSession)
+	_data.WriteInt32(1)
+	if _err := callbackIntent.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteInt32(1)
 	if _err := config.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -778,7 +783,18 @@ func (s *SoundTriggerSessionStub) OnTransaction(
 		}
 		var _arg_soundModelId interface{}
 		var _arg_params interface{}
-		var _arg_callbackIntent interface{}
+		var _arg_callbackIntent content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_callbackIntent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		var _arg_config soundtrigger.SoundTriggerRecognitionConfig
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -952,7 +968,7 @@ type ISoundTriggerSessionServer interface {
 	StopRecognition(ctx context.Context, soundModelId interface{}, callback soundtrigger.IRecognitionStatusCallback) (int32, error)
 	LoadGenericSoundModel(ctx context.Context, soundModel soundtrigger.SoundTriggerGenericSoundModel) (int32, error)
 	LoadKeyphraseSoundModel(ctx context.Context, soundModel soundtrigger.SoundTriggerKeyphraseSoundModel) (int32, error)
-	StartRecognitionForService(ctx context.Context, soundModelId interface{}, params interface{}, callbackIntent interface{}, config soundtrigger.SoundTriggerRecognitionConfig) (int32, error)
+	StartRecognitionForService(ctx context.Context, soundModelId interface{}, params interface{}, callbackIntent content.ComponentName, config soundtrigger.SoundTriggerRecognitionConfig) (int32, error)
 	StopRecognitionForService(ctx context.Context, soundModelId interface{}) (int32, error)
 	UnloadSoundModel(ctx context.Context, soundModelId interface{}) (int32, error)
 	IsRecognitionActive(ctx context.Context, parcelUuid interface{}) (bool, error)
@@ -1029,7 +1045,7 @@ func (w *soundTriggerSessionStubWrapper) StartRecognitionForService(
 	ctx context.Context,
 	soundModelId interface{},
 	params interface{},
-	callbackIntent interface{},
+	callbackIntent content.ComponentName,
 	config soundtrigger.SoundTriggerRecognitionConfig,
 ) (int32, error) {
 	return w.impl.StartRecognitionForService(ctx, soundModelId, params, callbackIntent, config)

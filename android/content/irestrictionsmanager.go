@@ -3,7 +3,6 @@ package content
 import (
 	"context"
 	"fmt"
-	os "github.com/xaionaro-go/binder/android/os"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -23,8 +22,8 @@ const (
 
 type IRestrictionsManager interface {
 	AsBinder() binder.IBinder
-	GetApplicationRestrictions(ctx context.Context, packageName string) (os.Bundle, error)
-	GetApplicationRestrictionsPerAdminForUser(ctx context.Context, packageName string) ([]os.Bundle, error)
+	GetApplicationRestrictions(ctx context.Context, packageName string) (interface{}, error)
+	GetApplicationRestrictionsPerAdminForUser(ctx context.Context, packageName string) ([]interface{}, error)
 	HasRestrictionsProvider(ctx context.Context) (bool, error)
 	RequestPermission(ctx context.Context, packageName string, requestType string, requestId string, requestData interface{}) error
 	NotifyPermissionResponse(ctx context.Context, packageName string, response interface{}) error
@@ -50,8 +49,8 @@ var _ IRestrictionsManager = (*RestrictionsManagerProxy)(nil)
 func (p *RestrictionsManagerProxy) GetApplicationRestrictions(
 	ctx context.Context,
 	packageName string,
-) (os.Bundle, error) {
-	var _result os.Bundle
+) (interface{}, error) {
+	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRestrictionsManager)
 	_data.WriteString16(packageName)
@@ -71,23 +70,14 @@ func (p *RestrictionsManagerProxy) GetApplicationRestrictions(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
 func (p *RestrictionsManagerProxy) GetApplicationRestrictionsPerAdminForUser(
 	ctx context.Context,
 	packageName string,
-) ([]os.Bundle, error) {
-	var _result []os.Bundle
+) ([]interface{}, error) {
+	var _result []interface{}
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRestrictionsManager)
@@ -115,11 +105,8 @@ func (p *RestrictionsManagerProxy) GetApplicationRestrictionsPerAdminForUser(
 	}
 
 	if _count >= 0 {
-		_result = make([]os.Bundle, _count)
+		_result = make([]interface{}, _count)
 		for _i := int32(0); _i < _count; _i++ {
-			if _err = _result[_i].UnmarshalParcel(_reply); _err != nil {
-				return _result, _err
-			}
 		}
 	}
 	return _result, nil
@@ -275,10 +262,7 @@ func (s *RestrictionsManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIRestrictionsManagerGetApplicationRestrictionsPerAdminForUser:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -381,8 +365,8 @@ func (s *RestrictionsManagerStub) OnTransaction(
 // provide to NewRestrictionsManagerStub. It contains only the business methods,
 // without AsBinder (which is provided by the stub itself).
 type IRestrictionsManagerServer interface {
-	GetApplicationRestrictions(ctx context.Context, packageName string) (os.Bundle, error)
-	GetApplicationRestrictionsPerAdminForUser(ctx context.Context, packageName string) ([]os.Bundle, error)
+	GetApplicationRestrictions(ctx context.Context, packageName string) (interface{}, error)
+	GetApplicationRestrictionsPerAdminForUser(ctx context.Context, packageName string) ([]interface{}, error)
 	HasRestrictionsProvider(ctx context.Context) (bool, error)
 	RequestPermission(ctx context.Context, packageName string, requestType string, requestId string, requestData interface{}) error
 	NotifyPermissionResponse(ctx context.Context, packageName string, response interface{}) error
@@ -401,14 +385,14 @@ func (w *restrictionsManagerStubWrapper) AsBinder() binder.IBinder {
 func (w *restrictionsManagerStubWrapper) GetApplicationRestrictions(
 	ctx context.Context,
 	packageName string,
-) (os.Bundle, error) {
+) (interface{}, error) {
 	return w.impl.GetApplicationRestrictions(ctx, packageName)
 }
 
 func (w *restrictionsManagerStubWrapper) GetApplicationRestrictionsPerAdminForUser(
 	ctx context.Context,
 	packageName string,
-) ([]os.Bundle, error) {
+) ([]interface{}, error) {
 	return w.impl.GetApplicationRestrictionsPerAdminForUser(ctx, packageName)
 }
 

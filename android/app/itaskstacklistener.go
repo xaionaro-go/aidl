@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -51,7 +52,7 @@ type ITaskStackListener interface {
 	OnActivityDismissingDockedTask(ctx context.Context) error
 	OnActivityLaunchOnSecondaryDisplayFailed(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo, requestedDisplayId int32) error
 	OnActivityLaunchOnSecondaryDisplayRerouted(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo, requestedDisplayId int32) error
-	OnTaskCreated(ctx context.Context, taskId int32, componentName interface{}) error
+	OnTaskCreated(ctx context.Context, taskId int32, componentName content.ComponentName) error
 	OnTaskRemoved(ctx context.Context, taskId int32) error
 	OnTaskMovedToFront(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
 	OnTaskDescriptionChanged(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
@@ -255,11 +256,15 @@ func (p *TaskStackListenerProxy) OnActivityLaunchOnSecondaryDisplayRerouted(
 func (p *TaskStackListenerProxy) OnTaskCreated(
 	ctx context.Context,
 	taskId int32,
-	componentName interface{},
+	componentName content.ComponentName,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITaskStackListener)
 	_data.WriteInt32(taskId)
+	_data.WriteInt32(1)
+	if _err := componentName.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorITaskStackListener, "onTaskCreated")
 	if _err != nil {
@@ -764,7 +769,18 @@ func (s *TaskStackListenerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_componentName interface{}
+		var _arg_componentName content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_componentName.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err = s.Impl.OnTaskCreated(ctx, _arg_taskId, _arg_componentName)
 		_ = _err
 		return nil, nil
@@ -1047,7 +1063,7 @@ type ITaskStackListenerServer interface {
 	OnActivityDismissingDockedTask(ctx context.Context) error
 	OnActivityLaunchOnSecondaryDisplayFailed(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo, requestedDisplayId int32) error
 	OnActivityLaunchOnSecondaryDisplayRerouted(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo, requestedDisplayId int32) error
-	OnTaskCreated(ctx context.Context, taskId int32, componentName interface{}) error
+	OnTaskCreated(ctx context.Context, taskId int32, componentName content.ComponentName) error
 	OnTaskRemoved(ctx context.Context, taskId int32) error
 	OnTaskMovedToFront(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
 	OnTaskDescriptionChanged(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
@@ -1142,7 +1158,7 @@ func (w *taskStackListenerStubWrapper) OnActivityLaunchOnSecondaryDisplayReroute
 func (w *taskStackListenerStubWrapper) OnTaskCreated(
 	ctx context.Context,
 	taskId int32,
-	componentName interface{},
+	componentName content.ComponentName,
 ) error {
 	return w.impl.OnTaskCreated(ctx, taskId, componentName)
 }

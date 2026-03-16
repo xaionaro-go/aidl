@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
-	window "github.com/xaionaro-go/binder/android/window"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -36,7 +35,7 @@ type IAccessibilityInteractionConnection interface {
 	PerformAccessibilityAction(ctx context.Context, accessibilityNodeId int64, action int32, arguments interface{}, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64) error
 	ClearAccessibilityFocus(ctx context.Context) error
 	NotifyOutsideTouch(ctx context.Context) error
-	TakeScreenshotOfWindow(ctx context.Context, interactionId int32, listener window.ScreenCaptureScreenCaptureListener, callback IAccessibilityInteractionConnectionCallback) error
+	TakeScreenshotOfWindow(ctx context.Context, interactionId int32, listener interface{}, callback IAccessibilityInteractionConnectionCallback) error
 	AttachAccessibilityOverlayToWindow(ctx context.Context, sc interface{}, interactionId int32, callback IAccessibilityInteractionConnectionCallback) error
 }
 
@@ -338,16 +337,12 @@ func (p *AccessibilityInteractionConnectionProxy) NotifyOutsideTouch(
 func (p *AccessibilityInteractionConnectionProxy) TakeScreenshotOfWindow(
 	ctx context.Context,
 	interactionId int32,
-	listener window.ScreenCaptureScreenCaptureListener,
+	listener interface{},
 	callback IAccessibilityInteractionConnectionCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityInteractionConnection)
 	_data.WriteInt32(interactionId)
-	_data.WriteInt32(1)
-	if _err := listener.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityInteractionConnection, "takeScreenshotOfWindow")
@@ -697,18 +692,7 @@ func (s *AccessibilityInteractionConnectionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_listener window.ScreenCaptureScreenCaptureListener
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_listener.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_listener interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_callback IAccessibilityInteractionConnectionCallback
 		_ = _arg_callback
@@ -747,7 +731,7 @@ type IAccessibilityInteractionConnectionServer interface {
 	PerformAccessibilityAction(ctx context.Context, accessibilityNodeId int64, action int32, arguments interface{}, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64) error
 	ClearAccessibilityFocus(ctx context.Context) error
 	NotifyOutsideTouch(ctx context.Context) error
-	TakeScreenshotOfWindow(ctx context.Context, interactionId int32, listener window.ScreenCaptureScreenCaptureListener, callback IAccessibilityInteractionConnectionCallback) error
+	TakeScreenshotOfWindow(ctx context.Context, interactionId int32, listener interface{}, callback IAccessibilityInteractionConnectionCallback) error
 	AttachAccessibilityOverlayToWindow(ctx context.Context, sc interface{}, interactionId int32, callback IAccessibilityInteractionConnectionCallback) error
 }
 
@@ -869,7 +853,7 @@ func (w *accessibilityInteractionConnectionStubWrapper) NotifyOutsideTouch(
 func (w *accessibilityInteractionConnectionStubWrapper) TakeScreenshotOfWindow(
 	ctx context.Context,
 	interactionId int32,
-	listener window.ScreenCaptureScreenCaptureListener,
+	listener interface{},
 	callback IAccessibilityInteractionConnectionCallback,
 ) error {
 	return w.impl.TakeScreenshotOfWindow(ctx, interactionId, listener, callback)

@@ -3,6 +3,7 @@ package session
 import (
 	"context"
 	"fmt"
+	content "github.com/xaionaro-go/binder/android/content"
 	net "github.com/xaionaro-go/binder/android/net"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
@@ -42,8 +43,8 @@ const (
 type ISessionCallback interface {
 	AsBinder() binder.IBinder
 	OnCommand(ctx context.Context, packageName string, pid int32, uid int32, command string, args interface{}, cb interface{}) error
-	OnMediaButton(ctx context.Context, packageName string, pid int32, uid int32, mediaButtonIntent interface{}, sequenceNumber int32, cb interface{}) error
-	OnMediaButtonFromController(ctx context.Context, packageName string, pid int32, uid int32, mediaButtonIntent interface{}) error
+	OnMediaButton(ctx context.Context, packageName string, pid int32, uid int32, mediaButtonIntent content.Intent, sequenceNumber int32, cb interface{}) error
+	OnMediaButtonFromController(ctx context.Context, packageName string, pid int32, uid int32, mediaButtonIntent content.Intent) error
 	OnPrepare(ctx context.Context, packageName string, pid int32, uid int32) error
 	OnPrepareFromMediaId(ctx context.Context, packageName string, pid int32, uid int32, mediaId string, extras interface{}) error
 	OnPrepareFromSearch(ctx context.Context, packageName string, pid int32, uid int32, query string, extras interface{}) error
@@ -113,7 +114,7 @@ func (p *SessionCallbackProxy) OnMediaButton(
 	packageName string,
 	pid int32,
 	uid int32,
-	mediaButtonIntent interface{},
+	mediaButtonIntent content.Intent,
 	sequenceNumber int32,
 	cb interface{},
 ) error {
@@ -122,6 +123,10 @@ func (p *SessionCallbackProxy) OnMediaButton(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(pid)
 	_data.WriteInt32(uid)
+	_data.WriteInt32(1)
+	if _err := mediaButtonIntent.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteInt32(sequenceNumber)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISessionCallback, "onMediaButton")
@@ -138,13 +143,17 @@ func (p *SessionCallbackProxy) OnMediaButtonFromController(
 	packageName string,
 	pid int32,
 	uid int32,
-	mediaButtonIntent interface{},
+	mediaButtonIntent content.Intent,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionCallback)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(pid)
 	_data.WriteInt32(uid)
+	_data.WriteInt32(1)
+	if _err := mediaButtonIntent.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorISessionCallback, "onMediaButtonFromController")
 	if _err != nil {
@@ -689,7 +698,18 @@ func (s *SessionCallbackStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_mediaButtonIntent interface{}
+		var _arg_mediaButtonIntent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_mediaButtonIntent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_sequenceNumber, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -714,7 +734,18 @@ func (s *SessionCallbackStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_mediaButtonIntent interface{}
+		var _arg_mediaButtonIntent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_mediaButtonIntent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err = s.Impl.OnMediaButtonFromController(ctx, _arg_packageName, _arg_pid, _arg_uid, _arg_mediaButtonIntent)
 		_ = _err
 		return nil, nil
@@ -1199,8 +1230,8 @@ func (s *SessionCallbackStub) OnTransaction(
 // without AsBinder (which is provided by the stub itself).
 type ISessionCallbackServer interface {
 	OnCommand(ctx context.Context, packageName string, pid int32, uid int32, command string, args interface{}, cb interface{}) error
-	OnMediaButton(ctx context.Context, packageName string, pid int32, uid int32, mediaButtonIntent interface{}, sequenceNumber int32, cb interface{}) error
-	OnMediaButtonFromController(ctx context.Context, packageName string, pid int32, uid int32, mediaButtonIntent interface{}) error
+	OnMediaButton(ctx context.Context, packageName string, pid int32, uid int32, mediaButtonIntent content.Intent, sequenceNumber int32, cb interface{}) error
+	OnMediaButtonFromController(ctx context.Context, packageName string, pid int32, uid int32, mediaButtonIntent content.Intent) error
 	OnPrepare(ctx context.Context, packageName string, pid int32, uid int32) error
 	OnPrepareFromMediaId(ctx context.Context, packageName string, pid int32, uid int32, mediaId string, extras interface{}) error
 	OnPrepareFromSearch(ctx context.Context, packageName string, pid int32, uid int32, query string, extras interface{}) error
@@ -1250,7 +1281,7 @@ func (w *sessionCallbackStubWrapper) OnMediaButton(
 	packageName string,
 	pid int32,
 	uid int32,
-	mediaButtonIntent interface{},
+	mediaButtonIntent content.Intent,
 	sequenceNumber int32,
 	cb interface{},
 ) error {
@@ -1262,7 +1293,7 @@ func (w *sessionCallbackStubWrapper) OnMediaButtonFromController(
 	packageName string,
 	pid int32,
 	uid int32,
-	mediaButtonIntent interface{},
+	mediaButtonIntent content.Intent,
 ) error {
 	return w.impl.OnMediaButtonFromController(ctx, packageName, pid, uid, mediaButtonIntent)
 }

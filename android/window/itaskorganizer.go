@@ -3,6 +3,7 @@ package window
 import (
 	"context"
 	"fmt"
+	app "github.com/xaionaro-go/binder/android/app"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -29,10 +30,10 @@ type ITaskOrganizer interface {
 	RemoveStartingWindow(ctx context.Context, removalInfo StartingWindowRemovalInfo) error
 	CopySplashScreenView(ctx context.Context, taskId int32) error
 	OnAppSplashScreenViewRemoved(ctx context.Context, taskId int32) error
-	OnTaskAppeared(ctx context.Context, taskInfo interface{}, leash interface{}) error
-	OnTaskVanished(ctx context.Context, taskInfo interface{}) error
-	OnTaskInfoChanged(ctx context.Context, taskInfo interface{}) error
-	OnBackPressedOnTaskRoot(ctx context.Context, taskInfo interface{}) error
+	OnTaskAppeared(ctx context.Context, taskInfo app.ActivityManagerRunningTaskInfo, leash interface{}) error
+	OnTaskVanished(ctx context.Context, taskInfo app.ActivityManagerRunningTaskInfo) error
+	OnTaskInfoChanged(ctx context.Context, taskInfo app.ActivityManagerRunningTaskInfo) error
+	OnBackPressedOnTaskRoot(ctx context.Context, taskInfo app.ActivityManagerRunningTaskInfo) error
 	OnImeDrawnOnTask(ctx context.Context, taskId int32) error
 }
 
@@ -128,11 +129,15 @@ func (p *TaskOrganizerProxy) OnAppSplashScreenViewRemoved(
 
 func (p *TaskOrganizerProxy) OnTaskAppeared(
 	ctx context.Context,
-	taskInfo interface{},
+	taskInfo app.ActivityManagerRunningTaskInfo,
 	leash interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITaskOrganizer)
+	_data.WriteInt32(1)
+	if _err := taskInfo.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorITaskOrganizer, "onTaskAppeared")
 	if _err != nil {
@@ -145,10 +150,14 @@ func (p *TaskOrganizerProxy) OnTaskAppeared(
 
 func (p *TaskOrganizerProxy) OnTaskVanished(
 	ctx context.Context,
-	taskInfo interface{},
+	taskInfo app.ActivityManagerRunningTaskInfo,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITaskOrganizer)
+	_data.WriteInt32(1)
+	if _err := taskInfo.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorITaskOrganizer, "onTaskVanished")
 	if _err != nil {
@@ -161,10 +170,14 @@ func (p *TaskOrganizerProxy) OnTaskVanished(
 
 func (p *TaskOrganizerProxy) OnTaskInfoChanged(
 	ctx context.Context,
-	taskInfo interface{},
+	taskInfo app.ActivityManagerRunningTaskInfo,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITaskOrganizer)
+	_data.WriteInt32(1)
+	if _err := taskInfo.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorITaskOrganizer, "onTaskInfoChanged")
 	if _err != nil {
@@ -177,10 +190,14 @@ func (p *TaskOrganizerProxy) OnTaskInfoChanged(
 
 func (p *TaskOrganizerProxy) OnBackPressedOnTaskRoot(
 	ctx context.Context,
-	taskInfo interface{},
+	taskInfo app.ActivityManagerRunningTaskInfo,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITaskOrganizer)
+	_data.WriteInt32(1)
+	if _err := taskInfo.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorITaskOrganizer, "onBackPressedOnTaskRoot")
 	if _err != nil {
@@ -286,7 +303,18 @@ func (s *TaskOrganizerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_taskInfo interface{}
+		var _arg_taskInfo app.ActivityManagerRunningTaskInfo
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_taskInfo.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		var _arg_leash interface{}
 		_err := s.Impl.OnTaskAppeared(ctx, _arg_taskInfo, _arg_leash)
 		_ = _err
@@ -295,7 +323,18 @@ func (s *TaskOrganizerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_taskInfo interface{}
+		var _arg_taskInfo app.ActivityManagerRunningTaskInfo
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_taskInfo.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.OnTaskVanished(ctx, _arg_taskInfo)
 		_ = _err
 		return nil, nil
@@ -303,7 +342,18 @@ func (s *TaskOrganizerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_taskInfo interface{}
+		var _arg_taskInfo app.ActivityManagerRunningTaskInfo
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_taskInfo.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.OnTaskInfoChanged(ctx, _arg_taskInfo)
 		_ = _err
 		return nil, nil
@@ -311,7 +361,18 @@ func (s *TaskOrganizerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_taskInfo interface{}
+		var _arg_taskInfo app.ActivityManagerRunningTaskInfo
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_taskInfo.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.OnBackPressedOnTaskRoot(ctx, _arg_taskInfo)
 		_ = _err
 		return nil, nil
@@ -339,10 +400,10 @@ type ITaskOrganizerServer interface {
 	RemoveStartingWindow(ctx context.Context, removalInfo StartingWindowRemovalInfo) error
 	CopySplashScreenView(ctx context.Context, taskId int32) error
 	OnAppSplashScreenViewRemoved(ctx context.Context, taskId int32) error
-	OnTaskAppeared(ctx context.Context, taskInfo interface{}, leash interface{}) error
-	OnTaskVanished(ctx context.Context, taskInfo interface{}) error
-	OnTaskInfoChanged(ctx context.Context, taskInfo interface{}) error
-	OnBackPressedOnTaskRoot(ctx context.Context, taskInfo interface{}) error
+	OnTaskAppeared(ctx context.Context, taskInfo app.ActivityManagerRunningTaskInfo, leash interface{}) error
+	OnTaskVanished(ctx context.Context, taskInfo app.ActivityManagerRunningTaskInfo) error
+	OnTaskInfoChanged(ctx context.Context, taskInfo app.ActivityManagerRunningTaskInfo) error
+	OnBackPressedOnTaskRoot(ctx context.Context, taskInfo app.ActivityManagerRunningTaskInfo) error
 	OnImeDrawnOnTask(ctx context.Context, taskId int32) error
 }
 
@@ -385,7 +446,7 @@ func (w *taskOrganizerStubWrapper) OnAppSplashScreenViewRemoved(
 
 func (w *taskOrganizerStubWrapper) OnTaskAppeared(
 	ctx context.Context,
-	taskInfo interface{},
+	taskInfo app.ActivityManagerRunningTaskInfo,
 	leash interface{},
 ) error {
 	return w.impl.OnTaskAppeared(ctx, taskInfo, leash)
@@ -393,21 +454,21 @@ func (w *taskOrganizerStubWrapper) OnTaskAppeared(
 
 func (w *taskOrganizerStubWrapper) OnTaskVanished(
 	ctx context.Context,
-	taskInfo interface{},
+	taskInfo app.ActivityManagerRunningTaskInfo,
 ) error {
 	return w.impl.OnTaskVanished(ctx, taskInfo)
 }
 
 func (w *taskOrganizerStubWrapper) OnTaskInfoChanged(
 	ctx context.Context,
-	taskInfo interface{},
+	taskInfo app.ActivityManagerRunningTaskInfo,
 ) error {
 	return w.impl.OnTaskInfoChanged(ctx, taskInfo)
 }
 
 func (w *taskOrganizerStubWrapper) OnBackPressedOnTaskRoot(
 	ctx context.Context,
-	taskInfo interface{},
+	taskInfo app.ActivityManagerRunningTaskInfo,
 ) error {
 	return w.impl.OnBackPressedOnTaskRoot(ctx, taskInfo)
 }

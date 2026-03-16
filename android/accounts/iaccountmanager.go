@@ -3,7 +3,6 @@ package accounts
 import (
 	"context"
 	"fmt"
-	os "github.com/xaionaro-go/binder/android/os"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -72,7 +71,7 @@ type IAccountManager interface {
 	HasFeatures(ctx context.Context, response IAccountManagerResponse, account Account, features []string) error
 	GetAccountByTypeAndFeatures(ctx context.Context, response IAccountManagerResponse, accountType string, features []string) error
 	GetAccountsByFeatures(ctx context.Context, response IAccountManagerResponse, accountType string, features []string) error
-	AddAccountExplicitly(ctx context.Context, account Account, password string, extras os.Bundle) (bool, error)
+	AddAccountExplicitly(ctx context.Context, account Account, password string, extras interface{}) (bool, error)
 	RemoveAccountAsUser(ctx context.Context, response IAccountManagerResponse, account Account, expectActivityLaunch bool) error
 	RemoveAccountExplicitly(ctx context.Context, account Account) (bool, error)
 	CopyAccountToUser(ctx context.Context, response IAccountManagerResponse, account Account, userFrom int32, userTo int32) error
@@ -83,31 +82,31 @@ type IAccountManager interface {
 	ClearPassword(ctx context.Context, account Account) error
 	SetUserData(ctx context.Context, account Account, key string, value string) error
 	UpdateAppPermission(ctx context.Context, account Account, authTokenType string, uid int32, value bool) error
-	GetAuthToken(ctx context.Context, response IAccountManagerResponse, account Account, authTokenType string, notifyOnAuthFailure bool, expectActivityLaunch bool, options os.Bundle) error
-	AddAccount(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string, requiredFeatures []string, expectActivityLaunch bool, options os.Bundle) error
-	AddAccountAsUser(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string, requiredFeatures []string, expectActivityLaunch bool, options os.Bundle) error
-	UpdateCredentials(ctx context.Context, response IAccountManagerResponse, account Account, authTokenType string, expectActivityLaunch bool, options os.Bundle) error
+	GetAuthToken(ctx context.Context, response IAccountManagerResponse, account Account, authTokenType string, notifyOnAuthFailure bool, expectActivityLaunch bool, options interface{}) error
+	AddAccount(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string, requiredFeatures []string, expectActivityLaunch bool, options interface{}) error
+	AddAccountAsUser(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string, requiredFeatures []string, expectActivityLaunch bool, options interface{}) error
+	UpdateCredentials(ctx context.Context, response IAccountManagerResponse, account Account, authTokenType string, expectActivityLaunch bool, options interface{}) error
 	EditProperties(ctx context.Context, response IAccountManagerResponse, accountType string, expectActivityLaunch bool) error
-	ConfirmCredentialsAsUser(ctx context.Context, response IAccountManagerResponse, account Account, options os.Bundle, expectActivityLaunch bool) error
+	ConfirmCredentialsAsUser(ctx context.Context, response IAccountManagerResponse, account Account, options interface{}, expectActivityLaunch bool) error
 	AccountAuthenticated(ctx context.Context, account Account) (bool, error)
 	GetAuthTokenLabel(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string) error
 	AddSharedAccountsFromParentUser(ctx context.Context, parentUserId int32) error
 	RenameAccount(ctx context.Context, response IAccountManagerResponse, accountToRename Account, newName string) error
 	GetPreviousName(ctx context.Context, account Account) (string, error)
-	StartAddAccountSession(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string, requiredFeatures []string, expectActivityLaunch bool, options os.Bundle) error
-	StartUpdateCredentialsSession(ctx context.Context, response IAccountManagerResponse, account Account, authTokenType string, expectActivityLaunch bool, options os.Bundle) error
-	FinishSessionAsUser(ctx context.Context, response IAccountManagerResponse, sessionBundle os.Bundle, expectActivityLaunch bool, appInfo os.Bundle) error
+	StartAddAccountSession(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string, requiredFeatures []string, expectActivityLaunch bool, options interface{}) error
+	StartUpdateCredentialsSession(ctx context.Context, response IAccountManagerResponse, account Account, authTokenType string, expectActivityLaunch bool, options interface{}) error
+	FinishSessionAsUser(ctx context.Context, response IAccountManagerResponse, sessionBundle interface{}, expectActivityLaunch bool, appInfo interface{}) error
 	SomeUserHasAccount(ctx context.Context, account Account) (bool, error)
 	IsCredentialsUpdateSuggested(ctx context.Context, response IAccountManagerResponse, account Account, statusToken string) error
 	GetPackagesAndVisibilityForAccount(ctx context.Context, account Account) (map[interface{}]interface{}, error)
-	AddAccountExplicitlyWithVisibility(ctx context.Context, account Account, password string, extras os.Bundle, visibility map[interface{}]interface{}) (bool, error)
+	AddAccountExplicitlyWithVisibility(ctx context.Context, account Account, password string, extras interface{}, visibility map[interface{}]interface{}) (bool, error)
 	SetAccountVisibility(ctx context.Context, a Account, packageName string, newVisibility int32) (bool, error)
 	GetAccountVisibility(ctx context.Context, a Account, packageName string) (int32, error)
 	GetAccountsAndVisibilityForPackage(ctx context.Context, packageName string, accountType string) (map[interface{}]interface{}, error)
 	RegisterAccountListener(ctx context.Context, accountTypes []string) error
 	UnregisterAccountListener(ctx context.Context, accountTypes []string) error
-	HasAccountAccess(ctx context.Context, account Account, packageName string, userHandle os.UserHandle) (bool, error)
-	CreateRequestAccountAccessIntentSenderAsUser(ctx context.Context, account Account, packageName string, userHandle os.UserHandle) (interface{}, error)
+	HasAccountAccess(ctx context.Context, account Account, packageName string, userHandle interface{}) (bool, error)
+	CreateRequestAccountAccessIntentSenderAsUser(ctx context.Context, account Account, packageName string, userHandle interface{}) (interface{}, error)
 	OnAccountAccessed(ctx context.Context, token string) error
 }
 
@@ -493,7 +492,7 @@ func (p *AccountManagerProxy) AddAccountExplicitly(
 	ctx context.Context,
 	account Account,
 	password string,
-	extras os.Bundle,
+	extras interface{},
 ) (bool, error) {
 	var _result bool
 	_identity := p.remote.Identity()
@@ -504,10 +503,6 @@ func (p *AccountManagerProxy) AddAccountExplicitly(
 		return _result, _err
 	}
 	_data.WriteString16(password)
-	_data.WriteInt32(1)
-	if _err := extras.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "addAccountExplicitly")
@@ -868,7 +863,7 @@ func (p *AccountManagerProxy) GetAuthToken(
 	authTokenType string,
 	notifyOnAuthFailure bool,
 	expectActivityLaunch bool,
-	options os.Bundle,
+	options interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
@@ -880,10 +875,6 @@ func (p *AccountManagerProxy) GetAuthToken(
 	_data.WriteString16(authTokenType)
 	_data.WriteBool(notifyOnAuthFailure)
 	_data.WriteBool(expectActivityLaunch)
-	_data.WriteInt32(1)
-	if _err := options.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "getAuthToken")
 	if _err != nil {
@@ -910,7 +901,7 @@ func (p *AccountManagerProxy) AddAccount(
 	authTokenType string,
 	requiredFeatures []string,
 	expectActivityLaunch bool,
-	options os.Bundle,
+	options interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
@@ -926,10 +917,6 @@ func (p *AccountManagerProxy) AddAccount(
 		}
 	}
 	_data.WriteBool(expectActivityLaunch)
-	_data.WriteInt32(1)
-	if _err := options.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "addAccount")
 	if _err != nil {
@@ -956,7 +943,7 @@ func (p *AccountManagerProxy) AddAccountAsUser(
 	authTokenType string,
 	requiredFeatures []string,
 	expectActivityLaunch bool,
-	options os.Bundle,
+	options interface{},
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
@@ -973,10 +960,6 @@ func (p *AccountManagerProxy) AddAccountAsUser(
 		}
 	}
 	_data.WriteBool(expectActivityLaunch)
-	_data.WriteInt32(1)
-	if _err := options.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "addAccountAsUser")
@@ -1003,7 +986,7 @@ func (p *AccountManagerProxy) UpdateCredentials(
 	account Account,
 	authTokenType string,
 	expectActivityLaunch bool,
-	options os.Bundle,
+	options interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
@@ -1014,10 +997,6 @@ func (p *AccountManagerProxy) UpdateCredentials(
 	}
 	_data.WriteString16(authTokenType)
 	_data.WriteBool(expectActivityLaunch)
-	_data.WriteInt32(1)
-	if _err := options.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "updateCredentials")
 	if _err != nil {
@@ -1071,7 +1050,7 @@ func (p *AccountManagerProxy) ConfirmCredentialsAsUser(
 	ctx context.Context,
 	response IAccountManagerResponse,
 	account Account,
-	options os.Bundle,
+	options interface{},
 	expectActivityLaunch bool,
 ) error {
 	_identity := p.remote.Identity()
@@ -1080,10 +1059,6 @@ func (p *AccountManagerProxy) ConfirmCredentialsAsUser(
 	binder.WriteBinderToParcel(ctx, _data, response.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := account.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := options.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 	_data.WriteBool(expectActivityLaunch)
@@ -1274,7 +1249,7 @@ func (p *AccountManagerProxy) StartAddAccountSession(
 	authTokenType string,
 	requiredFeatures []string,
 	expectActivityLaunch bool,
-	options os.Bundle,
+	options interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
@@ -1290,10 +1265,6 @@ func (p *AccountManagerProxy) StartAddAccountSession(
 		}
 	}
 	_data.WriteBool(expectActivityLaunch)
-	_data.WriteInt32(1)
-	if _err := options.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "startAddAccountSession")
 	if _err != nil {
@@ -1319,7 +1290,7 @@ func (p *AccountManagerProxy) StartUpdateCredentialsSession(
 	account Account,
 	authTokenType string,
 	expectActivityLaunch bool,
-	options os.Bundle,
+	options interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
@@ -1330,10 +1301,6 @@ func (p *AccountManagerProxy) StartUpdateCredentialsSession(
 	}
 	_data.WriteString16(authTokenType)
 	_data.WriteBool(expectActivityLaunch)
-	_data.WriteInt32(1)
-	if _err := options.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "startUpdateCredentialsSession")
 	if _err != nil {
@@ -1356,23 +1323,15 @@ func (p *AccountManagerProxy) StartUpdateCredentialsSession(
 func (p *AccountManagerProxy) FinishSessionAsUser(
 	ctx context.Context,
 	response IAccountManagerResponse,
-	sessionBundle os.Bundle,
+	sessionBundle interface{},
 	expectActivityLaunch bool,
-	appInfo os.Bundle,
+	appInfo interface{},
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManager)
 	binder.WriteBinderToParcel(ctx, _data, response.AsBinder(), p.remote.Transport())
-	_data.WriteInt32(1)
-	if _err := sessionBundle.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteBool(expectActivityLaunch)
-	_data.WriteInt32(1)
-	if _err := appInfo.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "finishSessionAsUser")
@@ -1512,7 +1471,7 @@ func (p *AccountManagerProxy) AddAccountExplicitlyWithVisibility(
 	ctx context.Context,
 	account Account,
 	password string,
-	extras os.Bundle,
+	extras interface{},
 	visibility map[interface{}]interface{},
 ) (bool, error) {
 	var _result bool
@@ -1524,10 +1483,6 @@ func (p *AccountManagerProxy) AddAccountExplicitlyWithVisibility(
 		return _result, _err
 	}
 	_data.WriteString16(password)
-	_data.WriteInt32(1)
-	if _err := extras.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	if visibility == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1756,7 +1711,7 @@ func (p *AccountManagerProxy) HasAccountAccess(
 	ctx context.Context,
 	account Account,
 	packageName string,
-	userHandle os.UserHandle,
+	userHandle interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
@@ -1766,10 +1721,6 @@ func (p *AccountManagerProxy) HasAccountAccess(
 		return _result, _err
 	}
 	_data.WriteString16(packageName)
-	_data.WriteInt32(1)
-	if _err := userHandle.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "hasAccountAccess")
 	if _err != nil {
@@ -1797,7 +1748,7 @@ func (p *AccountManagerProxy) CreateRequestAccountAccessIntentSenderAsUser(
 	ctx context.Context,
 	account Account,
 	packageName string,
-	userHandle os.UserHandle,
+	userHandle interface{},
 ) (interface{}, error) {
 	var _result interface{}
 	_data := parcel.New()
@@ -1807,10 +1758,6 @@ func (p *AccountManagerProxy) CreateRequestAccountAccessIntentSenderAsUser(
 		return _result, _err
 	}
 	_data.WriteString16(packageName)
-	_data.WriteInt32(1)
-	if _err := userHandle.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManager, "createRequestAccountAccessIntentSenderAsUser")
 	if _err != nil {
@@ -2121,18 +2068,7 @@ func (s *AccountManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_extras os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_extras.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_extras interface{}
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
@@ -2471,18 +2407,7 @@ func (s *AccountManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_options os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_options interface{}
 		_err = s.Impl.GetAuthToken(ctx, _arg_response, _arg_account, _arg_authTokenType, _arg_notifyOnAuthFailure, _arg_expectActivityLaunch, _arg_options)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2513,18 +2438,7 @@ func (s *AccountManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_options os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_options interface{}
 		_err = s.Impl.AddAccount(ctx, _arg_response, _arg_accountType, _arg_authTokenType, _arg_requiredFeatures, _arg_expectActivityLaunch, _arg_options)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2555,18 +2469,7 @@ func (s *AccountManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_options os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_options interface{}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -2605,18 +2508,7 @@ func (s *AccountManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_options os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_options interface{}
 		_err = s.Impl.UpdateCredentials(ctx, _arg_response, _arg_account, _arg_authTokenType, _arg_expectActivityLaunch, _arg_options)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2667,18 +2559,7 @@ func (s *AccountManagerStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_options os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_options interface{}
 		_arg_expectActivityLaunch, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -2842,18 +2723,7 @@ func (s *AccountManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_options os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_options interface{}
 		_err = s.Impl.StartAddAccountSession(ctx, _arg_response, _arg_accountType, _arg_authTokenType, _arg_requiredFeatures, _arg_expectActivityLaunch, _arg_options)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2889,18 +2759,7 @@ func (s *AccountManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_options os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_options interface{}
 		_err = s.Impl.StartUpdateCredentialsSession(ctx, _arg_response, _arg_account, _arg_authTokenType, _arg_expectActivityLaunch, _arg_options)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2916,34 +2775,12 @@ func (s *AccountManagerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_response IAccountManagerResponse
 		_ = _arg_response
-		var _arg_sessionBundle os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_sessionBundle.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_sessionBundle interface{}
 		_arg_expectActivityLaunch, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_appInfo os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_appInfo.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_appInfo interface{}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -3057,18 +2894,7 @@ func (s *AccountManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_extras os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_extras.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_extras interface{}
 		// TODO: map param unmarshaling not yet supported in stubs
 		var _arg_visibility map[interface{}]interface{}
 		_ = _arg_visibility
@@ -3224,18 +3050,7 @@ func (s *AccountManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_userHandle os.UserHandle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_userHandle.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_userHandle interface{}
 		_result, _err := s.Impl.HasAccountAccess(ctx, _arg_account, _arg_packageName, _arg_userHandle)
 		_reply := parcel.New()
 		if _err != nil {
@@ -3265,18 +3080,7 @@ func (s *AccountManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_userHandle os.UserHandle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_userHandle.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_userHandle interface{}
 		_result, _err := s.Impl.CreateRequestAccountAccessIntentSenderAsUser(ctx, _arg_account, _arg_packageName, _arg_userHandle)
 		_reply := parcel.New()
 		if _err != nil {
@@ -3320,7 +3124,7 @@ type IAccountManagerServer interface {
 	HasFeatures(ctx context.Context, response IAccountManagerResponse, account Account, features []string) error
 	GetAccountByTypeAndFeatures(ctx context.Context, response IAccountManagerResponse, accountType string, features []string) error
 	GetAccountsByFeatures(ctx context.Context, response IAccountManagerResponse, accountType string, features []string) error
-	AddAccountExplicitly(ctx context.Context, account Account, password string, extras os.Bundle) (bool, error)
+	AddAccountExplicitly(ctx context.Context, account Account, password string, extras interface{}) (bool, error)
 	RemoveAccountAsUser(ctx context.Context, response IAccountManagerResponse, account Account, expectActivityLaunch bool) error
 	RemoveAccountExplicitly(ctx context.Context, account Account) (bool, error)
 	CopyAccountToUser(ctx context.Context, response IAccountManagerResponse, account Account, userFrom int32, userTo int32) error
@@ -3331,31 +3135,31 @@ type IAccountManagerServer interface {
 	ClearPassword(ctx context.Context, account Account) error
 	SetUserData(ctx context.Context, account Account, key string, value string) error
 	UpdateAppPermission(ctx context.Context, account Account, authTokenType string, uid int32, value bool) error
-	GetAuthToken(ctx context.Context, response IAccountManagerResponse, account Account, authTokenType string, notifyOnAuthFailure bool, expectActivityLaunch bool, options os.Bundle) error
-	AddAccount(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string, requiredFeatures []string, expectActivityLaunch bool, options os.Bundle) error
-	AddAccountAsUser(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string, requiredFeatures []string, expectActivityLaunch bool, options os.Bundle) error
-	UpdateCredentials(ctx context.Context, response IAccountManagerResponse, account Account, authTokenType string, expectActivityLaunch bool, options os.Bundle) error
+	GetAuthToken(ctx context.Context, response IAccountManagerResponse, account Account, authTokenType string, notifyOnAuthFailure bool, expectActivityLaunch bool, options interface{}) error
+	AddAccount(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string, requiredFeatures []string, expectActivityLaunch bool, options interface{}) error
+	AddAccountAsUser(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string, requiredFeatures []string, expectActivityLaunch bool, options interface{}) error
+	UpdateCredentials(ctx context.Context, response IAccountManagerResponse, account Account, authTokenType string, expectActivityLaunch bool, options interface{}) error
 	EditProperties(ctx context.Context, response IAccountManagerResponse, accountType string, expectActivityLaunch bool) error
-	ConfirmCredentialsAsUser(ctx context.Context, response IAccountManagerResponse, account Account, options os.Bundle, expectActivityLaunch bool) error
+	ConfirmCredentialsAsUser(ctx context.Context, response IAccountManagerResponse, account Account, options interface{}, expectActivityLaunch bool) error
 	AccountAuthenticated(ctx context.Context, account Account) (bool, error)
 	GetAuthTokenLabel(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string) error
 	AddSharedAccountsFromParentUser(ctx context.Context, parentUserId int32) error
 	RenameAccount(ctx context.Context, response IAccountManagerResponse, accountToRename Account, newName string) error
 	GetPreviousName(ctx context.Context, account Account) (string, error)
-	StartAddAccountSession(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string, requiredFeatures []string, expectActivityLaunch bool, options os.Bundle) error
-	StartUpdateCredentialsSession(ctx context.Context, response IAccountManagerResponse, account Account, authTokenType string, expectActivityLaunch bool, options os.Bundle) error
-	FinishSessionAsUser(ctx context.Context, response IAccountManagerResponse, sessionBundle os.Bundle, expectActivityLaunch bool, appInfo os.Bundle) error
+	StartAddAccountSession(ctx context.Context, response IAccountManagerResponse, accountType string, authTokenType string, requiredFeatures []string, expectActivityLaunch bool, options interface{}) error
+	StartUpdateCredentialsSession(ctx context.Context, response IAccountManagerResponse, account Account, authTokenType string, expectActivityLaunch bool, options interface{}) error
+	FinishSessionAsUser(ctx context.Context, response IAccountManagerResponse, sessionBundle interface{}, expectActivityLaunch bool, appInfo interface{}) error
 	SomeUserHasAccount(ctx context.Context, account Account) (bool, error)
 	IsCredentialsUpdateSuggested(ctx context.Context, response IAccountManagerResponse, account Account, statusToken string) error
 	GetPackagesAndVisibilityForAccount(ctx context.Context, account Account) (map[interface{}]interface{}, error)
-	AddAccountExplicitlyWithVisibility(ctx context.Context, account Account, password string, extras os.Bundle, visibility map[interface{}]interface{}) (bool, error)
+	AddAccountExplicitlyWithVisibility(ctx context.Context, account Account, password string, extras interface{}, visibility map[interface{}]interface{}) (bool, error)
 	SetAccountVisibility(ctx context.Context, a Account, packageName string, newVisibility int32) (bool, error)
 	GetAccountVisibility(ctx context.Context, a Account, packageName string) (int32, error)
 	GetAccountsAndVisibilityForPackage(ctx context.Context, packageName string, accountType string) (map[interface{}]interface{}, error)
 	RegisterAccountListener(ctx context.Context, accountTypes []string) error
 	UnregisterAccountListener(ctx context.Context, accountTypes []string) error
-	HasAccountAccess(ctx context.Context, account Account, packageName string, userHandle os.UserHandle) (bool, error)
-	CreateRequestAccountAccessIntentSenderAsUser(ctx context.Context, account Account, packageName string, userHandle os.UserHandle) (interface{}, error)
+	HasAccountAccess(ctx context.Context, account Account, packageName string, userHandle interface{}) (bool, error)
+	CreateRequestAccountAccessIntentSenderAsUser(ctx context.Context, account Account, packageName string, userHandle interface{}) (interface{}, error)
 	OnAccountAccessed(ctx context.Context, token string) error
 }
 
@@ -3443,7 +3247,7 @@ func (w *accountManagerStubWrapper) AddAccountExplicitly(
 	ctx context.Context,
 	account Account,
 	password string,
-	extras os.Bundle,
+	extras interface{},
 ) (bool, error) {
 	return w.impl.AddAccountExplicitly(ctx, account, password, extras)
 }
@@ -3540,7 +3344,7 @@ func (w *accountManagerStubWrapper) GetAuthToken(
 	authTokenType string,
 	notifyOnAuthFailure bool,
 	expectActivityLaunch bool,
-	options os.Bundle,
+	options interface{},
 ) error {
 	return w.impl.GetAuthToken(ctx, response, account, authTokenType, notifyOnAuthFailure, expectActivityLaunch, options)
 }
@@ -3552,7 +3356,7 @@ func (w *accountManagerStubWrapper) AddAccount(
 	authTokenType string,
 	requiredFeatures []string,
 	expectActivityLaunch bool,
-	options os.Bundle,
+	options interface{},
 ) error {
 	return w.impl.AddAccount(ctx, response, accountType, authTokenType, requiredFeatures, expectActivityLaunch, options)
 }
@@ -3564,7 +3368,7 @@ func (w *accountManagerStubWrapper) AddAccountAsUser(
 	authTokenType string,
 	requiredFeatures []string,
 	expectActivityLaunch bool,
-	options os.Bundle,
+	options interface{},
 ) error {
 	return w.impl.AddAccountAsUser(ctx, response, accountType, authTokenType, requiredFeatures, expectActivityLaunch, options)
 }
@@ -3575,7 +3379,7 @@ func (w *accountManagerStubWrapper) UpdateCredentials(
 	account Account,
 	authTokenType string,
 	expectActivityLaunch bool,
-	options os.Bundle,
+	options interface{},
 ) error {
 	return w.impl.UpdateCredentials(ctx, response, account, authTokenType, expectActivityLaunch, options)
 }
@@ -3593,7 +3397,7 @@ func (w *accountManagerStubWrapper) ConfirmCredentialsAsUser(
 	ctx context.Context,
 	response IAccountManagerResponse,
 	account Account,
-	options os.Bundle,
+	options interface{},
 	expectActivityLaunch bool,
 ) error {
 	return w.impl.ConfirmCredentialsAsUser(ctx, response, account, options, expectActivityLaunch)
@@ -3645,7 +3449,7 @@ func (w *accountManagerStubWrapper) StartAddAccountSession(
 	authTokenType string,
 	requiredFeatures []string,
 	expectActivityLaunch bool,
-	options os.Bundle,
+	options interface{},
 ) error {
 	return w.impl.StartAddAccountSession(ctx, response, accountType, authTokenType, requiredFeatures, expectActivityLaunch, options)
 }
@@ -3656,7 +3460,7 @@ func (w *accountManagerStubWrapper) StartUpdateCredentialsSession(
 	account Account,
 	authTokenType string,
 	expectActivityLaunch bool,
-	options os.Bundle,
+	options interface{},
 ) error {
 	return w.impl.StartUpdateCredentialsSession(ctx, response, account, authTokenType, expectActivityLaunch, options)
 }
@@ -3664,9 +3468,9 @@ func (w *accountManagerStubWrapper) StartUpdateCredentialsSession(
 func (w *accountManagerStubWrapper) FinishSessionAsUser(
 	ctx context.Context,
 	response IAccountManagerResponse,
-	sessionBundle os.Bundle,
+	sessionBundle interface{},
 	expectActivityLaunch bool,
-	appInfo os.Bundle,
+	appInfo interface{},
 ) error {
 	return w.impl.FinishSessionAsUser(ctx, response, sessionBundle, expectActivityLaunch, appInfo)
 }
@@ -3698,7 +3502,7 @@ func (w *accountManagerStubWrapper) AddAccountExplicitlyWithVisibility(
 	ctx context.Context,
 	account Account,
 	password string,
-	extras os.Bundle,
+	extras interface{},
 	visibility map[interface{}]interface{},
 ) (bool, error) {
 	return w.impl.AddAccountExplicitlyWithVisibility(ctx, account, password, extras, visibility)
@@ -3747,7 +3551,7 @@ func (w *accountManagerStubWrapper) HasAccountAccess(
 	ctx context.Context,
 	account Account,
 	packageName string,
-	userHandle os.UserHandle,
+	userHandle interface{},
 ) (bool, error) {
 	return w.impl.HasAccountAccess(ctx, account, packageName, userHandle)
 }
@@ -3756,7 +3560,7 @@ func (w *accountManagerStubWrapper) CreateRequestAccountAccessIntentSenderAsUser
 	ctx context.Context,
 	account Account,
 	packageName string,
-	userHandle os.UserHandle,
+	userHandle interface{},
 ) (interface{}, error) {
 	return w.impl.CreateRequestAccountAccessIntentSenderAsUser(ctx, account, packageName, userHandle)
 }

@@ -2,6 +2,7 @@ package BusConfig
 
 import (
 	"fmt"
+	can "github.com/xaionaro-go/binder/android/hardware/automotive/can"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -16,69 +17,69 @@ const (
 
 type InterfaceId struct {
 	Tag       int32
-	Virtualif interface{}
-	Nativeif  interface{}
-	Slcan     interface{}
-	Indexed   interface{}
+	Virtualif can.VirtualInterface
+	Nativeif  can.NativeInterface
+	Slcan     can.SlcanInterface
+	Indexed   can.IndexedInterface
 }
 
 var _ parcel.Parcelable = (*InterfaceId)(nil)
 
-func (u *InterfaceId) GetVirtualif() (interface{}, bool) {
+func (u *InterfaceId) GetVirtualif() (can.VirtualInterface, bool) {
 	if u.Tag != InterfaceIdTagVirtualif {
-		var _zero interface{}
+		var _zero can.VirtualInterface
 		return _zero, false
 	}
 	return u.Virtualif, true
 }
 
 func (u *InterfaceId) SetVirtualif(
-	v interface{},
+	v can.VirtualInterface,
 ) {
 	u.Tag = InterfaceIdTagVirtualif
 	u.Virtualif = v
 }
 
-func (u *InterfaceId) GetNativeif() (interface{}, bool) {
+func (u *InterfaceId) GetNativeif() (can.NativeInterface, bool) {
 	if u.Tag != InterfaceIdTagNativeif {
-		var _zero interface{}
+		var _zero can.NativeInterface
 		return _zero, false
 	}
 	return u.Nativeif, true
 }
 
 func (u *InterfaceId) SetNativeif(
-	v interface{},
+	v can.NativeInterface,
 ) {
 	u.Tag = InterfaceIdTagNativeif
 	u.Nativeif = v
 }
 
-func (u *InterfaceId) GetSlcan() (interface{}, bool) {
+func (u *InterfaceId) GetSlcan() (can.SlcanInterface, bool) {
 	if u.Tag != InterfaceIdTagSlcan {
-		var _zero interface{}
+		var _zero can.SlcanInterface
 		return _zero, false
 	}
 	return u.Slcan, true
 }
 
 func (u *InterfaceId) SetSlcan(
-	v interface{},
+	v can.SlcanInterface,
 ) {
 	u.Tag = InterfaceIdTagSlcan
 	u.Slcan = v
 }
 
-func (u *InterfaceId) GetIndexed() (interface{}, bool) {
+func (u *InterfaceId) GetIndexed() (can.IndexedInterface, bool) {
 	if u.Tag != InterfaceIdTagIndexed {
-		var _zero interface{}
+		var _zero can.IndexedInterface
 		return _zero, false
 	}
 	return u.Indexed, true
 }
 
 func (u *InterfaceId) SetIndexed(
-	v interface{},
+	v can.IndexedInterface,
 ) {
 	u.Tag = InterfaceIdTagIndexed
 	u.Indexed = v
@@ -92,9 +93,21 @@ func (u *InterfaceId) MarshalParcel(
 
 	switch u.Tag {
 	case InterfaceIdTagVirtualif:
+		if _err := u.Virtualif.MarshalParcel(p); _err != nil {
+			return _err
+		}
 	case InterfaceIdTagNativeif:
+		if _err := u.Nativeif.MarshalParcel(p); _err != nil {
+			return _err
+		}
 	case InterfaceIdTagSlcan:
+		if _err := u.Slcan.MarshalParcel(p); _err != nil {
+			return _err
+		}
 	case InterfaceIdTagIndexed:
+		if _err := u.Indexed.MarshalParcel(p); _err != nil {
+			return _err
+		}
 	default:
 		return fmt.Errorf("unknown union tag %d for InterfaceId", u.Tag)
 	}
@@ -118,9 +131,21 @@ func (u *InterfaceId) UnmarshalParcel(
 
 	switch u.Tag {
 	case InterfaceIdTagVirtualif:
+		if _err = u.Virtualif.UnmarshalParcel(p); _err != nil {
+			return _err
+		}
 	case InterfaceIdTagNativeif:
+		if _err = u.Nativeif.UnmarshalParcel(p); _err != nil {
+			return _err
+		}
 	case InterfaceIdTagSlcan:
+		if _err = u.Slcan.UnmarshalParcel(p); _err != nil {
+			return _err
+		}
 	case InterfaceIdTagIndexed:
+		if _err = u.Indexed.UnmarshalParcel(p); _err != nil {
+			return _err
+		}
 	default:
 		return fmt.Errorf("unknown union tag %d for InterfaceId", u.Tag)
 	}

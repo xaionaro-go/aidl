@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	ondeviceintelligence "github.com/xaionaro-go/binder/android/app/ondeviceintelligence"
+	content "github.com/xaionaro-go/binder/android/content"
 	autofill "github.com/xaionaro-go/binder/android/view/autofill"
 	"github.com/xaionaro-go/binder/binder"
 	os "github.com/xaionaro-go/binder/com/android/internal_/os"
@@ -36,7 +37,7 @@ type ITranslationManager interface {
 	RegisterUiTranslationStateCallback(ctx context.Context, callback ondeviceintelligence.IRemoteCallback) error
 	UnregisterUiTranslationStateCallback(ctx context.Context, callback ondeviceintelligence.IRemoteCallback) error
 	GetServiceSettingsActivity(ctx context.Context, result os.IResultReceiver) error
-	OnTranslationFinished(ctx context.Context, activityDestroyed bool, token binder.IBinder, componentName interface{}) error
+	OnTranslationFinished(ctx context.Context, activityDestroyed bool, token binder.IBinder, componentName content.ComponentName) error
 }
 
 type TranslationManagerProxy struct {
@@ -251,13 +252,17 @@ func (p *TranslationManagerProxy) OnTranslationFinished(
 	ctx context.Context,
 	activityDestroyed bool,
 	token binder.IBinder,
-	componentName interface{},
+	componentName content.ComponentName,
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationManager)
 	_data.WriteBool(activityDestroyed)
 	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
+	_data.WriteInt32(1)
+	if _err := componentName.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationManager, "onTranslationFinished")
@@ -467,7 +472,18 @@ func (s *TranslationManagerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
-		var _arg_componentName interface{}
+		var _arg_componentName content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_componentName.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -491,7 +507,7 @@ type ITranslationManagerServer interface {
 	RegisterUiTranslationStateCallback(ctx context.Context, callback ondeviceintelligence.IRemoteCallback) error
 	UnregisterUiTranslationStateCallback(ctx context.Context, callback ondeviceintelligence.IRemoteCallback) error
 	GetServiceSettingsActivity(ctx context.Context, result os.IResultReceiver) error
-	OnTranslationFinished(ctx context.Context, activityDestroyed bool, token binder.IBinder, componentName interface{}) error
+	OnTranslationFinished(ctx context.Context, activityDestroyed bool, token binder.IBinder, componentName content.ComponentName) error
 }
 
 type translationManagerStubWrapper struct {
@@ -573,7 +589,7 @@ func (w *translationManagerStubWrapper) OnTranslationFinished(
 	ctx context.Context,
 	activityDestroyed bool,
 	token binder.IBinder,
-	componentName interface{},
+	componentName content.ComponentName,
 ) error {
 	return w.impl.OnTranslationFinished(ctx, activityDestroyed, token, componentName)
 }

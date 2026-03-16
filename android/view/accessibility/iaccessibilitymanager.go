@@ -3,7 +3,7 @@ package accessibility
 import (
 	"context"
 	"fmt"
-	pm "github.com/xaionaro-go/binder/android/content/pm"
+	content "github.com/xaionaro-go/binder/android/content"
 	accessibilityIAccessibilityManager "github.com/xaionaro-go/binder/android/view/accessibility/IAccessibilityManager"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
@@ -70,7 +70,7 @@ type IAccessibilityManager interface {
 	SendAccessibilityEvent(ctx context.Context, uiEvent AccessibilityEvent) error
 	AddClient(ctx context.Context, client IAccessibilityManagerClient) (int64, error)
 	RemoveClient(ctx context.Context, client IAccessibilityManagerClient) (bool, error)
-	GetInstalledAccessibilityServiceList(ctx context.Context) (pm.ParceledListSlice, error)
+	GetInstalledAccessibilityServiceList(ctx context.Context) (interface{}, error)
 	GetEnabledAccessibilityServiceList(ctx context.Context, feedbackType int32) ([]interface{}, error)
 	AddAccessibilityInteractionConnection(ctx context.Context, windowToken interface{}, leashToken binder.IBinder, connection IAccessibilityInteractionConnection, packageName string) (int32, error)
 	RemoveAccessibilityInteractionConnection(ctx context.Context, windowToken interface{}) error
@@ -109,7 +109,7 @@ type IAccessibilityManager interface {
 	IsAccessibilityServiceWarningRequired(ctx context.Context, info interface{}) (bool, error)
 	GetWindowTransformationSpec(ctx context.Context, windowId int32) (accessibilityIAccessibilityManager.WindowTransformationSpec, error)
 	AttachAccessibilityOverlayToDisplay(ctx context.Context, displayId int32, surfaceControl interface{}) error
-	NotifyQuickSettingsTilesChanged(ctx context.Context, tileComponentNames []interface{}) error
+	NotifyQuickSettingsTilesChanged(ctx context.Context, tileComponentNames []content.ComponentName) error
 	EnableShortcutsForTargets(ctx context.Context, enable bool, shortcutTypes int32, shortcutTargets []string) error
 	GetA11yFeatureToTileMap(ctx context.Context) (interface{}, error)
 	RegisterUserInitializationCompleteCallback(ctx context.Context, callback IUserInitializationCompleteCallback) error
@@ -239,8 +239,8 @@ func (p *AccessibilityManagerProxy) RemoveClient(
 
 func (p *AccessibilityManagerProxy) GetInstalledAccessibilityServiceList(
 	ctx context.Context,
-) (pm.ParceledListSlice, error) {
-	var _result pm.ParceledListSlice
+) (interface{}, error) {
+	var _result interface{}
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityManager)
@@ -261,15 +261,6 @@ func (p *AccessibilityManagerProxy) GetInstalledAccessibilityServiceList(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
@@ -1394,7 +1385,7 @@ func (p *AccessibilityManagerProxy) AttachAccessibilityOverlayToDisplay(
 
 func (p *AccessibilityManagerProxy) NotifyQuickSettingsTilesChanged(
 	ctx context.Context,
-	tileComponentNames []interface{},
+	tileComponentNames []content.ComponentName,
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
@@ -1404,6 +1395,11 @@ func (p *AccessibilityManagerProxy) NotifyQuickSettingsTilesChanged(
 		_data.WriteInt32(-1)
 	} else {
 		_data.WriteInt32(int32(len(tileComponentNames)))
+		for _, _item := range tileComponentNames {
+			if _err := _item.MarshalParcel(_data); _err != nil {
+				return _err
+			}
+		}
 	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityManager, "notifyQuickSettingsTilesChanged")
@@ -1622,10 +1618,7 @@ func (s *AccessibilityManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIAccessibilityManagerGetEnabledAccessibilityServiceList:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -2311,7 +2304,7 @@ func (s *AccessibilityManagerStub) OnTransaction(
 			return nil, _err
 		}
 		// TODO: array/list param unmarshaling not yet supported in stubs
-		var _arg_tileComponentNames []interface{}
+		var _arg_tileComponentNames []content.ComponentName
 		_ = _arg_tileComponentNames
 		_err := s.Impl.NotifyQuickSettingsTilesChanged(ctx, _arg_tileComponentNames)
 		_ = _err
@@ -2396,7 +2389,7 @@ type IAccessibilityManagerServer interface {
 	SendAccessibilityEvent(ctx context.Context, uiEvent AccessibilityEvent) error
 	AddClient(ctx context.Context, client IAccessibilityManagerClient) (int64, error)
 	RemoveClient(ctx context.Context, client IAccessibilityManagerClient) (bool, error)
-	GetInstalledAccessibilityServiceList(ctx context.Context) (pm.ParceledListSlice, error)
+	GetInstalledAccessibilityServiceList(ctx context.Context) (interface{}, error)
 	GetEnabledAccessibilityServiceList(ctx context.Context, feedbackType int32) ([]interface{}, error)
 	AddAccessibilityInteractionConnection(ctx context.Context, windowToken interface{}, leashToken binder.IBinder, connection IAccessibilityInteractionConnection, packageName string) (int32, error)
 	RemoveAccessibilityInteractionConnection(ctx context.Context, windowToken interface{}) error
@@ -2435,7 +2428,7 @@ type IAccessibilityManagerServer interface {
 	IsAccessibilityServiceWarningRequired(ctx context.Context, info interface{}) (bool, error)
 	GetWindowTransformationSpec(ctx context.Context, windowId int32) (accessibilityIAccessibilityManager.WindowTransformationSpec, error)
 	AttachAccessibilityOverlayToDisplay(ctx context.Context, displayId int32, surfaceControl interface{}) error
-	NotifyQuickSettingsTilesChanged(ctx context.Context, tileComponentNames []interface{}) error
+	NotifyQuickSettingsTilesChanged(ctx context.Context, tileComponentNames []content.ComponentName) error
 	EnableShortcutsForTargets(ctx context.Context, enable bool, shortcutTypes int32, shortcutTargets []string) error
 	GetA11yFeatureToTileMap(ctx context.Context) (interface{}, error)
 	RegisterUserInitializationCompleteCallback(ctx context.Context, callback IUserInitializationCompleteCallback) error
@@ -2480,7 +2473,7 @@ func (w *accessibilityManagerStubWrapper) RemoveClient(
 
 func (w *accessibilityManagerStubWrapper) GetInstalledAccessibilityServiceList(
 	ctx context.Context,
-) (pm.ParceledListSlice, error) {
+) (interface{}, error) {
 	return w.impl.GetInstalledAccessibilityServiceList(ctx)
 }
 
@@ -2768,7 +2761,7 @@ func (w *accessibilityManagerStubWrapper) AttachAccessibilityOverlayToDisplay(
 
 func (w *accessibilityManagerStubWrapper) NotifyQuickSettingsTilesChanged(
 	ctx context.Context,
-	tileComponentNames []interface{},
+	tileComponentNames []content.ComponentName,
 ) error {
 	return w.impl.NotifyQuickSettingsTilesChanged(ctx, tileComponentNames)
 }

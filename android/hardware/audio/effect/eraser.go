@@ -2,7 +2,6 @@ package effect
 
 import (
 	"fmt"
-	res "github.com/xaionaro-go/binder/android/content/res"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -18,7 +17,7 @@ type Eraser struct {
 	Tag           int32
 	Vendor        VendorExtension
 	Capability    Capability
-	Configuration res.Configuration
+	Configuration interface{}
 }
 
 var _ parcel.Parcelable = (*Eraser)(nil)
@@ -53,16 +52,16 @@ func (u *Eraser) SetCapability(
 	u.Capability = v
 }
 
-func (u *Eraser) GetConfiguration() (res.Configuration, bool) {
+func (u *Eraser) GetConfiguration() (interface{}, bool) {
 	if u.Tag != EraserTagConfiguration {
-		var _zero res.Configuration
+		var _zero interface{}
 		return _zero, false
 	}
 	return u.Configuration, true
 }
 
 func (u *Eraser) SetConfiguration(
-	v res.Configuration,
+	v interface{},
 ) {
 	u.Tag = EraserTagConfiguration
 	u.Configuration = v
@@ -84,9 +83,6 @@ func (u *Eraser) MarshalParcel(
 			return _err
 		}
 	case EraserTagConfiguration:
-		if _err := u.Configuration.MarshalParcel(p); _err != nil {
-			return _err
-		}
 	default:
 		return fmt.Errorf("unknown union tag %d for Eraser", u.Tag)
 	}
@@ -118,9 +114,6 @@ func (u *Eraser) UnmarshalParcel(
 			return _err
 		}
 	case EraserTagConfiguration:
-		if _err = u.Configuration.UnmarshalParcel(p); _err != nil {
-			return _err
-		}
 	default:
 		return fmt.Errorf("unknown union tag %d for Eraser", u.Tag)
 	}

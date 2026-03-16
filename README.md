@@ -243,7 +243,7 @@ See the full [bindercli reference](#bindercli) for all subcommands and more exam
 
 <!-- BEGIN GENERATED PACKAGES -->
 
-632 packages, 5847 generated Go files.
+632 packages, 5846 generated Go files.
 
 <details>
 <summary><strong>android</strong> (1 packages)</summary>
@@ -780,7 +780,7 @@ See the full [bindercli reference](#bindercli) for all subcommands and more exam
 
 | Package | Files | Import Path |
 |---|---|---|
-| [`android/media`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media) | 198 | `github.com/xaionaro-go/binder/android/media` |
+| [`android/media`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media) | 197 | `github.com/xaionaro-go/binder/android/media` |
 | [`android/media/AidlColorAspects`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/AidlColorAspects) | 4 | `github.com/xaionaro-go/binder/android/media/AidlColorAspects` |
 | [`android/media/AudioHalVersion`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/AudioHalVersion) | 1 | `github.com/xaionaro-go/binder/android/media/AudioHalVersion` |
 | [`android/media/IAidlNode`](https://pkg.go.dev/github.com/xaionaro-go/binder/android/media/IAidlNode) | 1 | `github.com/xaionaro-go/binder/android/media/IAidlNode` |

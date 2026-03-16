@@ -3,8 +3,6 @@ package session
 import (
 	"context"
 	"fmt"
-	app "github.com/xaionaro-go/binder/android/app"
-	pm "github.com/xaionaro-go/binder/android/content/pm"
 	net "github.com/xaionaro-go/binder/android/net"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
@@ -63,7 +61,7 @@ type ISessionController interface {
 	GetPackageName(ctx context.Context) (string, error)
 	GetTag(ctx context.Context) (string, error)
 	GetSessionInfo(ctx context.Context) (interface{}, error)
-	GetLaunchPendingIntent(ctx context.Context) (app.PendingIntent, error)
+	GetLaunchPendingIntent(ctx context.Context) (interface{}, error)
 	GetFlags(ctx context.Context) (int64, error)
 	GetVolumeAttributes(ctx context.Context) (MediaControllerPlaybackInfo, error)
 	AdjustVolume(ctx context.Context, packageName string, direction int32, flags int32) error
@@ -89,7 +87,7 @@ type ISessionController interface {
 	SendCustomAction(ctx context.Context, packageName string, action string, args interface{}) error
 	GetMetadata(ctx context.Context) (interface{}, error)
 	GetPlaybackState(ctx context.Context) (PlaybackState, error)
-	GetQueue(ctx context.Context) (pm.ParceledListSlice, error)
+	GetQueue(ctx context.Context) (interface{}, error)
 	GetQueueTitle(ctx context.Context) (interface{}, error)
 	GetExtras(ctx context.Context) (interface{}, error)
 	GetRatingType(ctx context.Context) (int32, error)
@@ -312,8 +310,8 @@ func (p *SessionControllerProxy) GetSessionInfo(
 
 func (p *SessionControllerProxy) GetLaunchPendingIntent(
 	ctx context.Context,
-) (app.PendingIntent, error) {
-	var _result app.PendingIntent
+) (interface{}, error) {
+	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionController)
 
@@ -332,15 +330,6 @@ func (p *SessionControllerProxy) GetLaunchPendingIntent(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
@@ -1060,8 +1049,8 @@ func (p *SessionControllerProxy) GetPlaybackState(
 
 func (p *SessionControllerProxy) GetQueue(
 	ctx context.Context,
-) (pm.ParceledListSlice, error) {
-	var _result pm.ParceledListSlice
+) (interface{}, error) {
+	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionController)
 
@@ -1080,15 +1069,6 @@ func (p *SessionControllerProxy) GetQueue(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
@@ -1309,10 +1289,7 @@ func (s *SessionControllerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionISessionControllerGetFlags:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -1805,10 +1782,7 @@ func (s *SessionControllerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionISessionControllerGetQueueTitle:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -1865,7 +1839,7 @@ type ISessionControllerServer interface {
 	GetPackageName(ctx context.Context) (string, error)
 	GetTag(ctx context.Context) (string, error)
 	GetSessionInfo(ctx context.Context) (interface{}, error)
-	GetLaunchPendingIntent(ctx context.Context) (app.PendingIntent, error)
+	GetLaunchPendingIntent(ctx context.Context) (interface{}, error)
 	GetFlags(ctx context.Context) (int64, error)
 	GetVolumeAttributes(ctx context.Context) (MediaControllerPlaybackInfo, error)
 	AdjustVolume(ctx context.Context, packageName string, direction int32, flags int32) error
@@ -1891,7 +1865,7 @@ type ISessionControllerServer interface {
 	SendCustomAction(ctx context.Context, packageName string, action string, args interface{}) error
 	GetMetadata(ctx context.Context) (interface{}, error)
 	GetPlaybackState(ctx context.Context) (PlaybackState, error)
-	GetQueue(ctx context.Context) (pm.ParceledListSlice, error)
+	GetQueue(ctx context.Context) (interface{}, error)
 	GetQueueTitle(ctx context.Context) (interface{}, error)
 	GetExtras(ctx context.Context) (interface{}, error)
 	GetRatingType(ctx context.Context) (int32, error)
@@ -1959,7 +1933,7 @@ func (w *sessionControllerStubWrapper) GetSessionInfo(
 
 func (w *sessionControllerStubWrapper) GetLaunchPendingIntent(
 	ctx context.Context,
-) (app.PendingIntent, error) {
+) (interface{}, error) {
 	return w.impl.GetLaunchPendingIntent(ctx)
 }
 
@@ -2158,7 +2132,7 @@ func (w *sessionControllerStubWrapper) GetPlaybackState(
 
 func (w *sessionControllerStubWrapper) GetQueue(
 	ctx context.Context,
-) (pm.ParceledListSlice, error) {
+) (interface{}, error) {
 	return w.impl.GetQueue(ctx)
 }
 

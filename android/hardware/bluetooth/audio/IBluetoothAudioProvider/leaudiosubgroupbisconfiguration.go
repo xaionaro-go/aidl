@@ -1,6 +1,7 @@
 package IBluetoothAudioProvider
 
 import (
+	audio "github.com/xaionaro-go/binder/android/hardware/bluetooth/audio"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -8,7 +9,7 @@ import (
 
 type LeAudioSubgroupBisConfiguration struct {
 	NumBis           int32
-	BisConfiguration interface{}
+	BisConfiguration audio.LeAudioBisConfiguration
 }
 
 var _ parcel.Parcelable = (*LeAudioSubgroupBisConfiguration)(nil)
@@ -18,6 +19,9 @@ func (s *LeAudioSubgroupBisConfiguration) MarshalParcel(
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
 	p.WriteInt32(s.NumBis)
+	if _err := s.BisConfiguration.MarshalParcel(p); _err != nil {
+		return _err
+	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil
@@ -33,6 +37,10 @@ func (s *LeAudioSubgroupBisConfiguration) UnmarshalParcel(
 
 	s.NumBis, _err = p.ReadInt32()
 	if _err != nil {
+		return _err
+	}
+
+	if _err = s.BisConfiguration.UnmarshalParcel(p); _err != nil {
 		return _err
 	}
 

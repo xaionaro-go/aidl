@@ -3,7 +3,7 @@ package contentcapture
 import (
 	"context"
 	"fmt"
-	pm "github.com/xaionaro-go/binder/android/content/pm"
+	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	os "github.com/xaionaro-go/binder/com/android/internal_/os"
 	"github.com/xaionaro-go/binder/parcel"
@@ -31,7 +31,7 @@ const (
 
 type IContentCaptureManager interface {
 	AsBinder() binder.IBinder
-	StartSession(ctx context.Context, activityToken binder.IBinder, shareableActivityToken binder.IBinder, componentName interface{}, sessionId int32, flags int32, result os.IResultReceiver) error
+	StartSession(ctx context.Context, activityToken binder.IBinder, shareableActivityToken binder.IBinder, componentName content.ComponentName, sessionId int32, flags int32, result os.IResultReceiver) error
 	FinishSession(ctx context.Context, sessionId int32) error
 	GetServiceComponentName(ctx context.Context, result os.IResultReceiver) error
 	RemoveData(ctx context.Context, request DataRemovalRequest) error
@@ -43,7 +43,7 @@ type IContentCaptureManager interface {
 	SetTemporaryService(ctx context.Context, serviceName string, duration int32) error
 	SetDefaultServiceEnabled(ctx context.Context, enabled bool) error
 	RegisterContentCaptureOptionsCallback(ctx context.Context, packageName string, callback IContentCaptureOptionsCallback) error
-	OnLoginDetected(ctx context.Context, events pm.ParceledListSlice) error
+	OnLoginDetected(ctx context.Context, events interface{}) error
 }
 
 type ContentCaptureManagerProxy struct {
@@ -66,7 +66,7 @@ func (p *ContentCaptureManagerProxy) StartSession(
 	ctx context.Context,
 	activityToken binder.IBinder,
 	shareableActivityToken binder.IBinder,
-	componentName interface{},
+	componentName content.ComponentName,
 	sessionId int32,
 	flags int32,
 	result os.IResultReceiver,
@@ -75,6 +75,10 @@ func (p *ContentCaptureManagerProxy) StartSession(
 	_data.WriteInterfaceToken(DescriptorIContentCaptureManager)
 	binder.WriteBinderToParcel(ctx, _data, activityToken, p.remote.Transport())
 	binder.WriteBinderToParcel(ctx, _data, shareableActivityToken, p.remote.Transport())
+	_data.WriteInt32(1)
+	if _err := componentName.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteInt32(sessionId)
 	_data.WriteInt32(flags)
 	binder.WriteBinderToParcel(ctx, _data, result.AsBinder(), p.remote.Transport())
@@ -295,14 +299,10 @@ func (p *ContentCaptureManagerProxy) RegisterContentCaptureOptionsCallback(
 
 func (p *ContentCaptureManagerProxy) OnLoginDetected(
 	ctx context.Context,
-	events pm.ParceledListSlice,
+	events interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentCaptureManager)
-	_data.WriteInt32(1)
-	if _err := events.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureManager, "onLoginDetected")
 	if _err != nil {
@@ -337,7 +337,18 @@ func (s *ContentCaptureManagerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_shareableActivityToken binder.IBinder
 		_ = _arg_shareableActivityToken
-		var _arg_componentName interface{}
+		var _arg_componentName content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_componentName.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_sessionId, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -508,18 +519,7 @@ func (s *ContentCaptureManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_events pm.ParceledListSlice
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_events.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_events interface{}
 		_err := s.Impl.OnLoginDetected(ctx, _arg_events)
 		_ = _err
 		return nil, nil
@@ -532,7 +532,7 @@ func (s *ContentCaptureManagerStub) OnTransaction(
 // provide to NewContentCaptureManagerStub. It contains only the business methods,
 // without AsBinder (which is provided by the stub itself).
 type IContentCaptureManagerServer interface {
-	StartSession(ctx context.Context, activityToken binder.IBinder, shareableActivityToken binder.IBinder, componentName interface{}, sessionId int32, flags int32, result os.IResultReceiver) error
+	StartSession(ctx context.Context, activityToken binder.IBinder, shareableActivityToken binder.IBinder, componentName content.ComponentName, sessionId int32, flags int32, result os.IResultReceiver) error
 	FinishSession(ctx context.Context, sessionId int32) error
 	GetServiceComponentName(ctx context.Context, result os.IResultReceiver) error
 	RemoveData(ctx context.Context, request DataRemovalRequest) error
@@ -544,7 +544,7 @@ type IContentCaptureManagerServer interface {
 	SetTemporaryService(ctx context.Context, serviceName string, duration int32) error
 	SetDefaultServiceEnabled(ctx context.Context, enabled bool) error
 	RegisterContentCaptureOptionsCallback(ctx context.Context, packageName string, callback IContentCaptureOptionsCallback) error
-	OnLoginDetected(ctx context.Context, events pm.ParceledListSlice) error
+	OnLoginDetected(ctx context.Context, events interface{}) error
 }
 
 type contentCaptureManagerStubWrapper struct {
@@ -560,7 +560,7 @@ func (w *contentCaptureManagerStubWrapper) StartSession(
 	ctx context.Context,
 	activityToken binder.IBinder,
 	shareableActivityToken binder.IBinder,
-	componentName interface{},
+	componentName content.ComponentName,
 	sessionId int32,
 	flags int32,
 	result os.IResultReceiver,
@@ -650,7 +650,7 @@ func (w *contentCaptureManagerStubWrapper) RegisterContentCaptureOptionsCallback
 
 func (w *contentCaptureManagerStubWrapper) OnLoginDetected(
 	ctx context.Context,
-	events pm.ParceledListSlice,
+	events interface{},
 ) error {
 	return w.impl.OnLoginDetected(ctx, events)
 }

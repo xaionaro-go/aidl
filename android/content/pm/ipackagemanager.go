@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	ondeviceintelligence "github.com/xaionaro-go/binder/android/app/ondeviceintelligence"
+	content "github.com/xaionaro-go/binder/android/content"
 	dex "github.com/xaionaro-go/binder/android/content/pm/dex"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
 	"github.com/xaionaro-go/binder/binder"
@@ -252,11 +253,11 @@ type IPackageManager interface {
 	CanonicalToCurrentPackageNames(ctx context.Context, names []string) ([]string, error)
 	GetApplicationInfo(ctx context.Context, packageName string, flags int64) (ApplicationInfo, error)
 	GetTargetSdkVersion(ctx context.Context, packageName string) (int32, error)
-	GetActivityInfo(ctx context.Context, className interface{}, flags int64) (ActivityInfo, error)
-	ActivitySupportsIntentAsUser(ctx context.Context, className interface{}, intent interface{}, resolvedType string) (bool, error)
-	GetReceiverInfo(ctx context.Context, className interface{}, flags int64) (ActivityInfo, error)
-	GetServiceInfo(ctx context.Context, className interface{}, flags int64) (ServiceInfo, error)
-	GetProviderInfo(ctx context.Context, className interface{}, flags int64) (ProviderInfo, error)
+	GetActivityInfo(ctx context.Context, className content.ComponentName, flags int64) (ActivityInfo, error)
+	ActivitySupportsIntentAsUser(ctx context.Context, className content.ComponentName, intent content.Intent, resolvedType string) (bool, error)
+	GetReceiverInfo(ctx context.Context, className content.ComponentName, flags int64) (ActivityInfo, error)
+	GetServiceInfo(ctx context.Context, className content.ComponentName, flags int64) (ServiceInfo, error)
+	GetProviderInfo(ctx context.Context, className content.ComponentName, flags int64) (ProviderInfo, error)
 	IsProtectedBroadcast(ctx context.Context, actionName string) (bool, error)
 	CheckSignatures(ctx context.Context, pkg1 string, pkg2 string) (int32, error)
 	CheckUidSignatures(ctx context.Context, uid1 int32, uid2 int32) (int32, error)
@@ -268,15 +269,15 @@ type IPackageManager interface {
 	GetFlagsForUid(ctx context.Context, uid int32) (int32, error)
 	GetPrivateFlagsForUid(ctx context.Context, uid int32) (int32, error)
 	IsUidPrivileged(ctx context.Context, uid int32) (bool, error)
-	ResolveIntent(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ResolveInfo, error)
-	FindPersistentPreferredActivity(ctx context.Context, intent interface{}) (ResolveInfo, error)
-	CanForwardTo(ctx context.Context, intent interface{}, resolvedType string, sourceUserId int32, targetUserId int32) (bool, error)
-	QueryIntentActivities(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ParceledListSlice, error)
-	QueryIntentActivityOptions(ctx context.Context, caller interface{}, specifics []interface{}, specificTypes []string, intent interface{}, resolvedType string, flags int64) (ParceledListSlice, error)
-	QueryIntentReceivers(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ParceledListSlice, error)
-	ResolveService(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ResolveInfo, error)
-	QueryIntentServices(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ParceledListSlice, error)
-	QueryIntentContentProviders(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ParceledListSlice, error)
+	ResolveIntent(ctx context.Context, intent content.Intent, resolvedType string, flags int64) (ResolveInfo, error)
+	FindPersistentPreferredActivity(ctx context.Context, intent content.Intent) (ResolveInfo, error)
+	CanForwardTo(ctx context.Context, intent content.Intent, resolvedType string, sourceUserId int32, targetUserId int32) (bool, error)
+	QueryIntentActivities(ctx context.Context, intent content.Intent, resolvedType string, flags int64) (ParceledListSlice, error)
+	QueryIntentActivityOptions(ctx context.Context, caller content.ComponentName, specifics []content.Intent, specificTypes []string, intent content.Intent, resolvedType string, flags int64) (ParceledListSlice, error)
+	QueryIntentReceivers(ctx context.Context, intent content.Intent, resolvedType string, flags int64) (ParceledListSlice, error)
+	ResolveService(ctx context.Context, intent content.Intent, resolvedType string, flags int64) (ResolveInfo, error)
+	QueryIntentServices(ctx context.Context, intent content.Intent, resolvedType string, flags int64) (ParceledListSlice, error)
+	QueryIntentContentProviders(ctx context.Context, intent content.Intent, resolvedType string, flags int64) (ParceledListSlice, error)
 	GetInstalledPackages(ctx context.Context, flags int64) (ParceledListSlice, error)
 	GetAppMetadataFd(ctx context.Context, packageName string) (int32, error)
 	GetPackagesHoldingPermissions(ctx context.Context, permissions []string, flags int64) (ParceledListSlice, error)
@@ -285,7 +286,7 @@ type IPackageManager interface {
 	ResolveContentProvider(ctx context.Context, name string, flags int64) (ProviderInfo, error)
 	QuerySyncProviders(ctx context.Context, outNames []string, outInfo []ProviderInfo) error
 	QueryContentProviders(ctx context.Context, processName string, uid int32, flags int64, metaDataKey string) (ParceledListSlice, error)
-	GetInstrumentationInfoAsUser(ctx context.Context, className interface{}, flags int32) (InstrumentationInfo, error)
+	GetInstrumentationInfoAsUser(ctx context.Context, className content.ComponentName, flags int32) (InstrumentationInfo, error)
 	QueryInstrumentationAsUser(ctx context.Context, targetPackage string, flags int32) (ParceledListSlice, error)
 	FinishPackageInstall(ctx context.Context, token int32, didLaunch bool) error
 	SetInstallerPackageName(ctx context.Context, targetPackage string, installerPackageName string) error
@@ -297,17 +298,17 @@ type IPackageManager interface {
 	GetInstallerPackageName(ctx context.Context, packageName string) (string, error)
 	GetInstallSourceInfo(ctx context.Context, packageName string) (InstallSourceInfo, error)
 	ResetApplicationPreferences(ctx context.Context) error
-	GetLastChosenActivity(ctx context.Context, intent interface{}, resolvedType string, flags int32) (ResolveInfo, error)
-	SetLastChosenActivity(ctx context.Context, intent interface{}, resolvedType string, flags int32, filter interface{}, match int32, activity interface{}) error
-	AddPreferredActivity(ctx context.Context, filter interface{}, match int32, set []interface{}, activity interface{}, removeExisting bool) error
-	ReplacePreferredActivity(ctx context.Context, filter interface{}, match int32, set []interface{}, activity interface{}) error
+	GetLastChosenActivity(ctx context.Context, intent content.Intent, resolvedType string, flags int32) (ResolveInfo, error)
+	SetLastChosenActivity(ctx context.Context, intent content.Intent, resolvedType string, flags int32, filter content.IntentFilter, match int32, activity content.ComponentName) error
+	AddPreferredActivity(ctx context.Context, filter content.IntentFilter, match int32, set []content.ComponentName, activity content.ComponentName, removeExisting bool) error
+	ReplacePreferredActivity(ctx context.Context, filter content.IntentFilter, match int32, set []content.ComponentName, activity content.ComponentName) error
 	ClearPackagePreferredActivities(ctx context.Context, packageName string) error
-	GetPreferredActivities(ctx context.Context, outFilters []interface{}, outActivities []interface{}, packageName string) (int32, error)
-	AddPersistentPreferredActivity(ctx context.Context, filter interface{}, activity interface{}) error
+	GetPreferredActivities(ctx context.Context, outFilters []content.IntentFilter, outActivities []content.ComponentName, packageName string) (int32, error)
+	AddPersistentPreferredActivity(ctx context.Context, filter content.IntentFilter, activity content.ComponentName) error
 	ClearPackagePersistentPreferredActivities(ctx context.Context, packageName string) error
-	ClearPersistentPreferredActivity(ctx context.Context, filter interface{}) error
-	AddCrossProfileIntentFilter(ctx context.Context, intentFilter interface{}, ownerPackage string, sourceUserId int32, targetUserId int32, flags int32) error
-	RemoveCrossProfileIntentFilter(ctx context.Context, intentFilter interface{}, ownerPackage string, sourceUserId int32, targetUserId int32, flags int32) (bool, error)
+	ClearPersistentPreferredActivity(ctx context.Context, filter content.IntentFilter) error
+	AddCrossProfileIntentFilter(ctx context.Context, intentFilter content.IntentFilter, ownerPackage string, sourceUserId int32, targetUserId int32, flags int32) error
+	RemoveCrossProfileIntentFilter(ctx context.Context, intentFilter content.IntentFilter, ownerPackage string, sourceUserId int32, targetUserId int32, flags int32) (bool, error)
 	ClearCrossProfileIntentFilters(ctx context.Context, sourceUserId int32, ownerPackage string) error
 	SetDistractingPackageRestrictionsAsUser(ctx context.Context, packageNames []string, restrictionFlags int32) ([]string, error)
 	SetPackagesSuspendedAsUser(ctx context.Context, packageNames []string, suspended bool, appExtras interface{}, launcherExtras interface{}, dialogInfo SuspendDialogInfo, flags int32, suspendingPackage string, suspendingUserId int32, targetUserId int32) ([]string, error)
@@ -323,20 +324,20 @@ type IPackageManager interface {
 	RestoreDefaultApps(ctx context.Context, backup []byte) error
 	GetDomainVerificationBackup(ctx context.Context) ([]byte, error)
 	RestoreDomainVerification(ctx context.Context, backup []byte) error
-	GetHomeActivities(ctx context.Context, outHomeCandidates []ResolveInfo) (interface{}, error)
-	SetHomeActivity(ctx context.Context, className interface{}) error
-	OverrideLabelAndIcon(ctx context.Context, componentName interface{}, nonLocalizedLabel string, icon int32) error
-	RestoreLabelAndIcon(ctx context.Context, componentName interface{}) error
-	SetComponentEnabledSetting(ctx context.Context, componentName interface{}, newState int32, flags int32) error
+	GetHomeActivities(ctx context.Context, outHomeCandidates []ResolveInfo) (content.ComponentName, error)
+	SetHomeActivity(ctx context.Context, className content.ComponentName) error
+	OverrideLabelAndIcon(ctx context.Context, componentName content.ComponentName, nonLocalizedLabel string, icon int32) error
+	RestoreLabelAndIcon(ctx context.Context, componentName content.ComponentName) error
+	SetComponentEnabledSetting(ctx context.Context, componentName content.ComponentName, newState int32, flags int32) error
 	SetComponentEnabledSettings(ctx context.Context, settings []PackageManagerComponentEnabledSetting) error
-	GetComponentEnabledSetting(ctx context.Context, componentName interface{}) (int32, error)
+	GetComponentEnabledSetting(ctx context.Context, componentName content.ComponentName) (int32, error)
 	SetApplicationEnabledSetting(ctx context.Context, packageName string, newState int32, flags int32) error
 	GetApplicationEnabledSetting(ctx context.Context, packageName string) (int32, error)
 	LogAppProcessStartIfNeeded(ctx context.Context, packageName string, processName string, uid int32, seinfo string, apkFile string, pid int32) error
 	FlushPackageRestrictionsAsUser(ctx context.Context) error
 	SetPackageStoppedState(ctx context.Context, packageName string, stopped bool) error
 	FreeStorageAndNotify(ctx context.Context, volumeUuid string, freeStorageSize int64, storageFlags int32, observer IPackageDataObserver) error
-	FreeStorage(ctx context.Context, volumeUuid string, freeStorageSize int64, storageFlags int32, pi interface{}) error
+	FreeStorage(ctx context.Context, volumeUuid string, freeStorageSize int64, storageFlags int32, pi content.IntentSender) error
 	DeleteApplicationCacheFiles(ctx context.Context, packageName string, observer IPackageDataObserver) error
 	DeleteApplicationCacheFilesAsUser(ctx context.Context, packageName string, observer IPackageDataObserver) error
 	ClearApplicationUserData(ctx context.Context, packageName string, observer IPackageDataObserver) error
@@ -403,9 +404,9 @@ type IPackageManager interface {
 	GetDeclaredSharedLibraries(ctx context.Context, packageName string, flags int64) (ParceledListSlice, error)
 	CanRequestPackageInstalls(ctx context.Context, packageName string) (bool, error)
 	DeletePreloadsFileCache(ctx context.Context) error
-	GetInstantAppResolverComponent(ctx context.Context) (interface{}, error)
-	GetInstantAppResolverSettingsComponent(ctx context.Context) (interface{}, error)
-	GetInstantAppInstallerComponent(ctx context.Context) (interface{}, error)
+	GetInstantAppResolverComponent(ctx context.Context) (content.ComponentName, error)
+	GetInstantAppResolverSettingsComponent(ctx context.Context) (content.ComponentName, error)
+	GetInstantAppInstallerComponent(ctx context.Context) (content.ComponentName, error)
 	GetInstantAppAndroidId(ctx context.Context, packageName string) (string, error)
 	GetArtManager(ctx context.Context) (dex.IArtManager, error)
 	SetHarmfulAppWarning(ctx context.Context, packageName string, warning interface{}) error
@@ -429,7 +430,7 @@ type IPackageManager interface {
 	SetRuntimePermissionsVersion(ctx context.Context, version int32) error
 	NotifyPackagesReplacedReceived(ctx context.Context, packages []string) error
 	RequestPackageChecksums(ctx context.Context, packageName string, includeSplits bool, optional int32, required int32, trustedInstallers []interface{}, onChecksumsReadyListener IOnChecksumsReadyListener) error
-	GetLaunchIntentSenderForPackage(ctx context.Context, packageName string, featureId string) (interface{}, error)
+	GetLaunchIntentSenderForPackage(ctx context.Context, packageName string, featureId string) (content.IntentSender, error)
 	GetAppOpPermissionPackages(ctx context.Context, permissionName string) ([]string, error)
 	GetPermissionGroupInfo(ctx context.Context, name string, flags int32) (PermissionGroupInfo, error)
 	AddPermission(ctx context.Context, info PermissionInfo) (bool, error)
@@ -460,7 +461,7 @@ type IPackageManager interface {
 	GetArchivedAppIcon(ctx context.Context, packageName string, user interface{}, callingPackageName string) (graphics.Bitmap, error)
 	IsAppArchivable(ctx context.Context, packageName string, user interface{}) (bool, error)
 	GetAppMetadataSource(ctx context.Context, packageName string) (int32, error)
-	GetDomainVerificationAgent(ctx context.Context) (interface{}, error)
+	GetDomainVerificationAgent(ctx context.Context) (content.ComponentName, error)
 	SetPageSizeAppCompatFlagsSettingsOverride(ctx context.Context, packageName string, enabled bool) error
 	IsPageSizeCompatEnabled(ctx context.Context, packageName string) (bool, error)
 	GetPageSizeCompatWarningMessage(ctx context.Context, packageName string) (string, error)
@@ -876,13 +877,17 @@ func (p *PackageManagerProxy) GetTargetSdkVersion(
 
 func (p *PackageManagerProxy) GetActivityInfo(
 	ctx context.Context,
-	className interface{},
+	className content.ComponentName,
 	flags int64,
 ) (ActivityInfo, error) {
 	var _result ActivityInfo
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := className.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteInt64(flags)
 	_data.WriteInt32(_identity.UserID)
 
@@ -915,14 +920,22 @@ func (p *PackageManagerProxy) GetActivityInfo(
 
 func (p *PackageManagerProxy) ActivitySupportsIntentAsUser(
 	ctx context.Context,
-	className interface{},
-	intent interface{},
+	className content.ComponentName,
+	intent content.Intent,
 	resolvedType string,
 ) (bool, error) {
 	var _result bool
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := className.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
+	_data.WriteInt32(1)
+	if _err := intent.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteString16(resolvedType)
 	_data.WriteInt32(_identity.UserID)
 
@@ -950,13 +963,17 @@ func (p *PackageManagerProxy) ActivitySupportsIntentAsUser(
 
 func (p *PackageManagerProxy) GetReceiverInfo(
 	ctx context.Context,
-	className interface{},
+	className content.ComponentName,
 	flags int64,
 ) (ActivityInfo, error) {
 	var _result ActivityInfo
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := className.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteInt64(flags)
 	_data.WriteInt32(_identity.UserID)
 
@@ -989,13 +1006,17 @@ func (p *PackageManagerProxy) GetReceiverInfo(
 
 func (p *PackageManagerProxy) GetServiceInfo(
 	ctx context.Context,
-	className interface{},
+	className content.ComponentName,
 	flags int64,
 ) (ServiceInfo, error) {
 	var _result ServiceInfo
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := className.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteInt64(flags)
 	_data.WriteInt32(_identity.UserID)
 
@@ -1028,13 +1049,17 @@ func (p *PackageManagerProxy) GetServiceInfo(
 
 func (p *PackageManagerProxy) GetProviderInfo(
 	ctx context.Context,
-	className interface{},
+	className content.ComponentName,
 	flags int64,
 ) (ProviderInfo, error) {
 	var _result ProviderInfo
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := className.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteInt64(flags)
 	_data.WriteInt32(_identity.UserID)
 
@@ -1449,7 +1474,7 @@ func (p *PackageManagerProxy) IsUidPrivileged(
 
 func (p *PackageManagerProxy) ResolveIntent(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int64,
 ) (ResolveInfo, error) {
@@ -1457,6 +1482,10 @@ func (p *PackageManagerProxy) ResolveIntent(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := intent.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteString16(resolvedType)
 	_data.WriteInt64(flags)
 	_data.WriteInt32(_identity.UserID)
@@ -1490,12 +1519,16 @@ func (p *PackageManagerProxy) ResolveIntent(
 
 func (p *PackageManagerProxy) FindPersistentPreferredActivity(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 ) (ResolveInfo, error) {
 	var _result ResolveInfo
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := intent.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "findPersistentPreferredActivity")
@@ -1527,7 +1560,7 @@ func (p *PackageManagerProxy) FindPersistentPreferredActivity(
 
 func (p *PackageManagerProxy) CanForwardTo(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	sourceUserId int32,
 	targetUserId int32,
@@ -1535,6 +1568,10 @@ func (p *PackageManagerProxy) CanForwardTo(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := intent.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteString16(resolvedType)
 	_data.WriteInt32(sourceUserId)
 	_data.WriteInt32(targetUserId)
@@ -1563,7 +1600,7 @@ func (p *PackageManagerProxy) CanForwardTo(
 
 func (p *PackageManagerProxy) QueryIntentActivities(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int64,
 ) (ParceledListSlice, error) {
@@ -1571,6 +1608,10 @@ func (p *PackageManagerProxy) QueryIntentActivities(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := intent.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteString16(resolvedType)
 	_data.WriteInt64(flags)
 	_data.WriteInt32(_identity.UserID)
@@ -1604,10 +1645,10 @@ func (p *PackageManagerProxy) QueryIntentActivities(
 
 func (p *PackageManagerProxy) QueryIntentActivityOptions(
 	ctx context.Context,
-	caller interface{},
-	specifics []interface{},
+	caller content.ComponentName,
+	specifics []content.Intent,
 	specificTypes []string,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int64,
 ) (ParceledListSlice, error) {
@@ -1615,10 +1656,19 @@ func (p *PackageManagerProxy) QueryIntentActivityOptions(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := caller.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	if specifics == nil {
 		_data.WriteInt32(-1)
 	} else {
 		_data.WriteInt32(int32(len(specifics)))
+		for _, _item := range specifics {
+			if _err := _item.MarshalParcel(_data); _err != nil {
+				return _result, _err
+			}
+		}
 	}
 	if specificTypes == nil {
 		_data.WriteInt32(-1)
@@ -1627,6 +1677,10 @@ func (p *PackageManagerProxy) QueryIntentActivityOptions(
 		for _, _item := range specificTypes {
 			_data.WriteString16(_item)
 		}
+	}
+	_data.WriteInt32(1)
+	if _err := intent.MarshalParcel(_data); _err != nil {
+		return _result, _err
 	}
 	_data.WriteString16(resolvedType)
 	_data.WriteInt64(flags)
@@ -1661,7 +1715,7 @@ func (p *PackageManagerProxy) QueryIntentActivityOptions(
 
 func (p *PackageManagerProxy) QueryIntentReceivers(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int64,
 ) (ParceledListSlice, error) {
@@ -1669,6 +1723,10 @@ func (p *PackageManagerProxy) QueryIntentReceivers(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := intent.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteString16(resolvedType)
 	_data.WriteInt64(flags)
 	_data.WriteInt32(_identity.UserID)
@@ -1702,7 +1760,7 @@ func (p *PackageManagerProxy) QueryIntentReceivers(
 
 func (p *PackageManagerProxy) ResolveService(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int64,
 ) (ResolveInfo, error) {
@@ -1710,6 +1768,10 @@ func (p *PackageManagerProxy) ResolveService(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := intent.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteString16(resolvedType)
 	_data.WriteInt64(flags)
 	_data.WriteInt32(_identity.UserID)
@@ -1743,7 +1805,7 @@ func (p *PackageManagerProxy) ResolveService(
 
 func (p *PackageManagerProxy) QueryIntentServices(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int64,
 ) (ParceledListSlice, error) {
@@ -1751,6 +1813,10 @@ func (p *PackageManagerProxy) QueryIntentServices(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := intent.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteString16(resolvedType)
 	_data.WriteInt64(flags)
 	_data.WriteInt32(_identity.UserID)
@@ -1784,7 +1850,7 @@ func (p *PackageManagerProxy) QueryIntentServices(
 
 func (p *PackageManagerProxy) QueryIntentContentProviders(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int64,
 ) (ParceledListSlice, error) {
@@ -1792,6 +1858,10 @@ func (p *PackageManagerProxy) QueryIntentContentProviders(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := intent.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteString16(resolvedType)
 	_data.WriteInt64(flags)
 	_data.WriteInt32(_identity.UserID)
@@ -2168,13 +2238,17 @@ func (p *PackageManagerProxy) QueryContentProviders(
 
 func (p *PackageManagerProxy) GetInstrumentationInfoAsUser(
 	ctx context.Context,
-	className interface{},
+	className content.ComponentName,
 	flags int32,
 ) (InstrumentationInfo, error) {
 	var _result InstrumentationInfo
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := className.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteInt32(flags)
 	_data.WriteInt32(_identity.UserID)
 
@@ -2556,13 +2630,17 @@ func (p *PackageManagerProxy) ResetApplicationPreferences(
 
 func (p *PackageManagerProxy) GetLastChosenActivity(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int32,
 ) (ResolveInfo, error) {
 	var _result ResolveInfo
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := intent.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteString16(resolvedType)
 	_data.WriteInt32(flags)
 
@@ -2595,18 +2673,30 @@ func (p *PackageManagerProxy) GetLastChosenActivity(
 
 func (p *PackageManagerProxy) SetLastChosenActivity(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int32,
-	filter interface{},
+	filter content.IntentFilter,
 	match int32,
-	activity interface{},
+	activity content.ComponentName,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := intent.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteString16(resolvedType)
 	_data.WriteInt32(flags)
+	_data.WriteInt32(1)
+	if _err := filter.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteInt32(match)
+	_data.WriteInt32(1)
+	if _err := activity.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "setLastChosenActivity")
 	if _err != nil {
@@ -2628,20 +2718,33 @@ func (p *PackageManagerProxy) SetLastChosenActivity(
 
 func (p *PackageManagerProxy) AddPreferredActivity(
 	ctx context.Context,
-	filter interface{},
+	filter content.IntentFilter,
 	match int32,
-	set []interface{},
-	activity interface{},
+	set []content.ComponentName,
+	activity content.ComponentName,
 	removeExisting bool,
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := filter.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteInt32(match)
 	if set == nil {
 		_data.WriteInt32(-1)
 	} else {
 		_data.WriteInt32(int32(len(set)))
+		for _, _item := range set {
+			if _err := _item.MarshalParcel(_data); _err != nil {
+				return _err
+			}
+		}
+	}
+	_data.WriteInt32(1)
+	if _err := activity.MarshalParcel(_data); _err != nil {
+		return _err
 	}
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(removeExisting)
@@ -2666,19 +2769,32 @@ func (p *PackageManagerProxy) AddPreferredActivity(
 
 func (p *PackageManagerProxy) ReplacePreferredActivity(
 	ctx context.Context,
-	filter interface{},
+	filter content.IntentFilter,
 	match int32,
-	set []interface{},
-	activity interface{},
+	set []content.ComponentName,
+	activity content.ComponentName,
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := filter.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteInt32(match)
 	if set == nil {
 		_data.WriteInt32(-1)
 	} else {
 		_data.WriteInt32(int32(len(set)))
+		for _, _item := range set {
+			if _err := _item.MarshalParcel(_data); _err != nil {
+				return _err
+			}
+		}
+	}
+	_data.WriteInt32(1)
+	if _err := activity.MarshalParcel(_data); _err != nil {
+		return _err
 	}
 	_data.WriteInt32(_identity.UserID)
 
@@ -2728,8 +2844,8 @@ func (p *PackageManagerProxy) ClearPackagePreferredActivities(
 
 func (p *PackageManagerProxy) GetPreferredActivities(
 	ctx context.Context,
-	outFilters []interface{},
-	outActivities []interface{},
+	outFilters []content.IntentFilter,
+	outActivities []content.ComponentName,
 	packageName string,
 ) (int32, error) {
 	var _result int32
@@ -2756,14 +2872,24 @@ func (p *PackageManagerProxy) GetPreferredActivities(
 		return _result, _err
 	}
 	if _outCount0 >= 0 {
-		outFilters = make([]interface{}, _outCount0)
+		outFilters = make([]content.IntentFilter, _outCount0)
+		for _i := int32(0); _i < _outCount0; _i++ {
+			if _err = outFilters[_i].UnmarshalParcel(_reply); _err != nil {
+				return _result, _err
+			}
+		}
 	}
 	_outCount1, _err := _reply.ReadInt32()
 	if _err != nil {
 		return _result, _err
 	}
 	if _outCount1 >= 0 {
-		outActivities = make([]interface{}, _outCount1)
+		outActivities = make([]content.ComponentName, _outCount1)
+		for _i := int32(0); _i < _outCount1; _i++ {
+			if _err = outActivities[_i].UnmarshalParcel(_reply); _err != nil {
+				return _result, _err
+			}
+		}
 	}
 
 	_result, _err = _reply.ReadInt32()
@@ -2775,12 +2901,20 @@ func (p *PackageManagerProxy) GetPreferredActivities(
 
 func (p *PackageManagerProxy) AddPersistentPreferredActivity(
 	ctx context.Context,
-	filter interface{},
-	activity interface{},
+	filter content.IntentFilter,
+	activity content.ComponentName,
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := filter.MarshalParcel(_data); _err != nil {
+		return _err
+	}
+	_data.WriteInt32(1)
+	if _err := activity.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "addPersistentPreferredActivity")
@@ -2831,11 +2965,15 @@ func (p *PackageManagerProxy) ClearPackagePersistentPreferredActivities(
 
 func (p *PackageManagerProxy) ClearPersistentPreferredActivity(
 	ctx context.Context,
-	filter interface{},
+	filter content.IntentFilter,
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := filter.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "clearPersistentPreferredActivity")
@@ -2858,7 +2996,7 @@ func (p *PackageManagerProxy) ClearPersistentPreferredActivity(
 
 func (p *PackageManagerProxy) AddCrossProfileIntentFilter(
 	ctx context.Context,
-	intentFilter interface{},
+	intentFilter content.IntentFilter,
 	ownerPackage string,
 	sourceUserId int32,
 	targetUserId int32,
@@ -2866,6 +3004,10 @@ func (p *PackageManagerProxy) AddCrossProfileIntentFilter(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := intentFilter.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteString16(ownerPackage)
 	_data.WriteInt32(sourceUserId)
 	_data.WriteInt32(targetUserId)
@@ -2891,7 +3033,7 @@ func (p *PackageManagerProxy) AddCrossProfileIntentFilter(
 
 func (p *PackageManagerProxy) RemoveCrossProfileIntentFilter(
 	ctx context.Context,
-	intentFilter interface{},
+	intentFilter content.IntentFilter,
 	ownerPackage string,
 	sourceUserId int32,
 	targetUserId int32,
@@ -2900,6 +3042,10 @@ func (p *PackageManagerProxy) RemoveCrossProfileIntentFilter(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := intentFilter.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteString16(ownerPackage)
 	_data.WriteInt32(sourceUserId)
 	_data.WriteInt32(targetUserId)
@@ -3514,8 +3660,8 @@ func (p *PackageManagerProxy) RestoreDomainVerification(
 func (p *PackageManagerProxy) GetHomeActivities(
 	ctx context.Context,
 	outHomeCandidates []ResolveInfo,
-) (interface{}, error) {
-	var _result interface{}
+) (content.ComponentName, error) {
+	var _result content.ComponentName
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 
@@ -3546,16 +3692,29 @@ func (p *PackageManagerProxy) GetHomeActivities(
 		}
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
 func (p *PackageManagerProxy) SetHomeActivity(
 	ctx context.Context,
-	className interface{},
+	className content.ComponentName,
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := className.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "setHomeActivity")
@@ -3578,13 +3737,17 @@ func (p *PackageManagerProxy) SetHomeActivity(
 
 func (p *PackageManagerProxy) OverrideLabelAndIcon(
 	ctx context.Context,
-	componentName interface{},
+	componentName content.ComponentName,
 	nonLocalizedLabel string,
 	icon int32,
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := componentName.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteString16(nonLocalizedLabel)
 	_data.WriteInt32(icon)
 	_data.WriteInt32(_identity.UserID)
@@ -3609,11 +3772,15 @@ func (p *PackageManagerProxy) OverrideLabelAndIcon(
 
 func (p *PackageManagerProxy) RestoreLabelAndIcon(
 	ctx context.Context,
-	componentName interface{},
+	componentName content.ComponentName,
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := componentName.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "restoreLabelAndIcon")
@@ -3636,13 +3803,17 @@ func (p *PackageManagerProxy) RestoreLabelAndIcon(
 
 func (p *PackageManagerProxy) SetComponentEnabledSetting(
 	ctx context.Context,
-	componentName interface{},
+	componentName content.ComponentName,
 	newState int32,
 	flags int32,
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := componentName.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteInt32(newState)
 	_data.WriteInt32(flags)
 	_data.WriteInt32(_identity.UserID)
@@ -3706,12 +3877,16 @@ func (p *PackageManagerProxy) SetComponentEnabledSettings(
 
 func (p *PackageManagerProxy) GetComponentEnabledSetting(
 	ctx context.Context,
-	componentName interface{},
+	componentName content.ComponentName,
 ) (int32, error) {
 	var _result int32
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
+	_data.WriteInt32(1)
+	if _err := componentName.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "getComponentEnabledSetting")
@@ -3931,13 +4106,17 @@ func (p *PackageManagerProxy) FreeStorage(
 	volumeUuid string,
 	freeStorageSize int64,
 	storageFlags int32,
-	pi interface{},
+	pi content.IntentSender,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 	_data.WriteString16(volumeUuid)
 	_data.WriteInt64(freeStorageSize)
 	_data.WriteInt32(storageFlags)
+	_data.WriteInt32(1)
+	if _err := pi.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManager, "freeStorage")
 	if _err != nil {
@@ -6112,8 +6291,8 @@ func (p *PackageManagerProxy) DeletePreloadsFileCache(
 
 func (p *PackageManagerProxy) GetInstantAppResolverComponent(
 	ctx context.Context,
-) (interface{}, error) {
-	var _result interface{}
+) (content.ComponentName, error) {
+	var _result content.ComponentName
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 
@@ -6132,13 +6311,22 @@ func (p *PackageManagerProxy) GetInstantAppResolverComponent(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
 func (p *PackageManagerProxy) GetInstantAppResolverSettingsComponent(
 	ctx context.Context,
-) (interface{}, error) {
-	var _result interface{}
+) (content.ComponentName, error) {
+	var _result content.ComponentName
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 
@@ -6157,13 +6345,22 @@ func (p *PackageManagerProxy) GetInstantAppResolverSettingsComponent(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
 func (p *PackageManagerProxy) GetInstantAppInstallerComponent(
 	ctx context.Context,
-) (interface{}, error) {
-	var _result interface{}
+) (content.ComponentName, error) {
+	var _result content.ComponentName
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
 
@@ -6182,6 +6379,15 @@ func (p *PackageManagerProxy) GetInstantAppInstallerComponent(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
@@ -6924,8 +7130,8 @@ func (p *PackageManagerProxy) GetLaunchIntentSenderForPackage(
 	ctx context.Context,
 	packageName string,
 	featureId string,
-) (interface{}, error) {
-	var _result interface{}
+) (content.IntentSender, error) {
+	var _result content.IntentSender
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
@@ -6949,6 +7155,15 @@ func (p *PackageManagerProxy) GetLaunchIntentSenderForPackage(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
@@ -7972,8 +8187,8 @@ func (p *PackageManagerProxy) GetAppMetadataSource(
 
 func (p *PackageManagerProxy) GetDomainVerificationAgent(
 	ctx context.Context,
-) (interface{}, error) {
-	var _result interface{}
+) (content.ComponentName, error) {
+	var _result content.ComponentName
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManager)
@@ -7994,6 +8209,15 @@ func (p *PackageManagerProxy) GetDomainVerificationAgent(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
@@ -8372,7 +8596,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_className interface{}
+		var _arg_className content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_className.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_flags, _err := _data.ReadInt64()
 		if _err != nil {
 			return nil, _err
@@ -8396,8 +8631,30 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_className interface{}
-		var _arg_intent interface{}
+		var _arg_className content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_className.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
+		var _arg_intent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -8418,7 +8675,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_className interface{}
+		var _arg_className content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_className.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_flags, _err := _data.ReadInt64()
 		if _err != nil {
 			return nil, _err
@@ -8442,7 +8710,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_className interface{}
+		var _arg_className content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_className.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_flags, _err := _data.ReadInt64()
 		if _err != nil {
 			return nil, _err
@@ -8466,7 +8745,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_className interface{}
+		var _arg_className content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_className.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_flags, _err := _data.ReadInt64()
 		if _err != nil {
 			return nil, _err
@@ -8686,7 +8976,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent interface{}
+		var _arg_intent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -8714,7 +9015,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent interface{}
+		var _arg_intent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -8734,7 +9046,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent interface{}
+		var _arg_intent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -8760,7 +9083,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent interface{}
+		var _arg_intent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -8788,14 +9122,36 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_caller interface{}
+		var _arg_caller content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_caller.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		// TODO: array/list param unmarshaling not yet supported in stubs
-		var _arg_specifics []interface{}
+		var _arg_specifics []content.Intent
 		_ = _arg_specifics
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_specificTypes []string
 		_ = _arg_specificTypes
-		var _arg_intent interface{}
+		var _arg_intent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -8823,7 +9179,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent interface{}
+		var _arg_intent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -8851,7 +9218,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent interface{}
+		var _arg_intent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -8879,7 +9257,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent interface{}
+		var _arg_intent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -8907,7 +9296,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent interface{}
+		var _arg_intent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -9124,7 +9524,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_className interface{}
+		var _arg_className content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_className.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_flags, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -9404,7 +9815,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent interface{}
+		var _arg_intent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -9429,7 +9851,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent interface{}
+		var _arg_intent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -9438,12 +9871,34 @@ func (s *PackageManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_filter interface{}
+		var _arg_filter content.IntentFilter
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_filter.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_match, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_activity interface{}
+		var _arg_activity content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_activity.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err = s.Impl.SetLastChosenActivity(ctx, _arg_intent, _arg_resolvedType, _arg_flags, _arg_filter, _arg_match, _arg_activity)
 		_reply := parcel.New()
 		if _err != nil {
@@ -9456,15 +9911,37 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_filter interface{}
+		var _arg_filter content.IntentFilter
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_filter.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_match, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
 		}
 		// TODO: array/list param unmarshaling not yet supported in stubs
-		var _arg_set []interface{}
+		var _arg_set []content.ComponentName
 		_ = _arg_set
-		var _arg_activity interface{}
+		var _arg_activity content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_activity.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -9484,15 +9961,37 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_filter interface{}
+		var _arg_filter content.IntentFilter
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_filter.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_match, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
 		}
 		// TODO: array/list param unmarshaling not yet supported in stubs
-		var _arg_set []interface{}
+		var _arg_set []content.ComponentName
 		_ = _arg_set
-		var _arg_activity interface{}
+		var _arg_activity content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_activity.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -9524,8 +10023,8 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_outFilters []interface{}
-		var _arg_outActivities []interface{}
+		var _arg_outFilters []content.IntentFilter
+		var _arg_outActivities []content.ComponentName
 		_arg_packageName, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -9543,8 +10042,30 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_filter interface{}
-		var _arg_activity interface{}
+		var _arg_filter content.IntentFilter
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_filter.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
+		var _arg_activity content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_activity.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -9579,7 +10100,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_filter interface{}
+		var _arg_filter content.IntentFilter
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_filter.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -9595,7 +10127,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intentFilter interface{}
+		var _arg_intentFilter content.IntentFilter
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intentFilter.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_ownerPackage, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -9624,7 +10167,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intentFilter interface{}
+		var _arg_intentFilter content.IntentFilter
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intentFilter.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_ownerPackage, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -9982,13 +10536,27 @@ func (s *PackageManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIPackageManagerSetHomeActivity:
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_className interface{}
+		var _arg_className content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_className.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -10004,7 +10572,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_componentName interface{}
+		var _arg_componentName content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_componentName.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_nonLocalizedLabel, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -10028,7 +10607,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_componentName interface{}
+		var _arg_componentName content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_componentName.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -10044,7 +10634,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_componentName interface{}
+		var _arg_componentName content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_componentName.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_newState, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -10092,7 +10693,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_componentName interface{}
+		var _arg_componentName content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_componentName.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -10272,7 +10884,18 @@ func (s *PackageManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_pi interface{}
+		var _arg_pi content.IntentSender
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_pi.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err = s.Impl.FreeStorage(ctx, _arg_volumeUuid, _arg_freeStorageSize, _arg_storageFlags, _arg_pi)
 		_reply := parcel.New()
 		if _err != nil {
@@ -11572,7 +12195,10 @@ func (s *PackageManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIPackageManagerGetInstantAppResolverSettingsComponent:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -11585,7 +12211,10 @@ func (s *PackageManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIPackageManagerGetInstantAppInstallerComponent:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -11598,7 +12227,10 @@ func (s *PackageManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIPackageManagerGetInstantAppAndroidId:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -12025,7 +12657,10 @@ func (s *PackageManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIPackageManagerGetAppOpPermissionPackages:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -12675,7 +13310,10 @@ func (s *PackageManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIPackageManagerSetPageSizeAppCompatFlagsSettingsOverride:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -12764,11 +13402,11 @@ type IPackageManagerServer interface {
 	CanonicalToCurrentPackageNames(ctx context.Context, names []string) ([]string, error)
 	GetApplicationInfo(ctx context.Context, packageName string, flags int64) (ApplicationInfo, error)
 	GetTargetSdkVersion(ctx context.Context, packageName string) (int32, error)
-	GetActivityInfo(ctx context.Context, className interface{}, flags int64) (ActivityInfo, error)
-	ActivitySupportsIntentAsUser(ctx context.Context, className interface{}, intent interface{}, resolvedType string) (bool, error)
-	GetReceiverInfo(ctx context.Context, className interface{}, flags int64) (ActivityInfo, error)
-	GetServiceInfo(ctx context.Context, className interface{}, flags int64) (ServiceInfo, error)
-	GetProviderInfo(ctx context.Context, className interface{}, flags int64) (ProviderInfo, error)
+	GetActivityInfo(ctx context.Context, className content.ComponentName, flags int64) (ActivityInfo, error)
+	ActivitySupportsIntentAsUser(ctx context.Context, className content.ComponentName, intent content.Intent, resolvedType string) (bool, error)
+	GetReceiverInfo(ctx context.Context, className content.ComponentName, flags int64) (ActivityInfo, error)
+	GetServiceInfo(ctx context.Context, className content.ComponentName, flags int64) (ServiceInfo, error)
+	GetProviderInfo(ctx context.Context, className content.ComponentName, flags int64) (ProviderInfo, error)
 	IsProtectedBroadcast(ctx context.Context, actionName string) (bool, error)
 	CheckSignatures(ctx context.Context, pkg1 string, pkg2 string) (int32, error)
 	CheckUidSignatures(ctx context.Context, uid1 int32, uid2 int32) (int32, error)
@@ -12780,15 +13418,15 @@ type IPackageManagerServer interface {
 	GetFlagsForUid(ctx context.Context, uid int32) (int32, error)
 	GetPrivateFlagsForUid(ctx context.Context, uid int32) (int32, error)
 	IsUidPrivileged(ctx context.Context, uid int32) (bool, error)
-	ResolveIntent(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ResolveInfo, error)
-	FindPersistentPreferredActivity(ctx context.Context, intent interface{}) (ResolveInfo, error)
-	CanForwardTo(ctx context.Context, intent interface{}, resolvedType string, sourceUserId int32, targetUserId int32) (bool, error)
-	QueryIntentActivities(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ParceledListSlice, error)
-	QueryIntentActivityOptions(ctx context.Context, caller interface{}, specifics []interface{}, specificTypes []string, intent interface{}, resolvedType string, flags int64) (ParceledListSlice, error)
-	QueryIntentReceivers(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ParceledListSlice, error)
-	ResolveService(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ResolveInfo, error)
-	QueryIntentServices(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ParceledListSlice, error)
-	QueryIntentContentProviders(ctx context.Context, intent interface{}, resolvedType string, flags int64) (ParceledListSlice, error)
+	ResolveIntent(ctx context.Context, intent content.Intent, resolvedType string, flags int64) (ResolveInfo, error)
+	FindPersistentPreferredActivity(ctx context.Context, intent content.Intent) (ResolveInfo, error)
+	CanForwardTo(ctx context.Context, intent content.Intent, resolvedType string, sourceUserId int32, targetUserId int32) (bool, error)
+	QueryIntentActivities(ctx context.Context, intent content.Intent, resolvedType string, flags int64) (ParceledListSlice, error)
+	QueryIntentActivityOptions(ctx context.Context, caller content.ComponentName, specifics []content.Intent, specificTypes []string, intent content.Intent, resolvedType string, flags int64) (ParceledListSlice, error)
+	QueryIntentReceivers(ctx context.Context, intent content.Intent, resolvedType string, flags int64) (ParceledListSlice, error)
+	ResolveService(ctx context.Context, intent content.Intent, resolvedType string, flags int64) (ResolveInfo, error)
+	QueryIntentServices(ctx context.Context, intent content.Intent, resolvedType string, flags int64) (ParceledListSlice, error)
+	QueryIntentContentProviders(ctx context.Context, intent content.Intent, resolvedType string, flags int64) (ParceledListSlice, error)
 	GetInstalledPackages(ctx context.Context, flags int64) (ParceledListSlice, error)
 	GetAppMetadataFd(ctx context.Context, packageName string) (int32, error)
 	GetPackagesHoldingPermissions(ctx context.Context, permissions []string, flags int64) (ParceledListSlice, error)
@@ -12797,7 +13435,7 @@ type IPackageManagerServer interface {
 	ResolveContentProvider(ctx context.Context, name string, flags int64) (ProviderInfo, error)
 	QuerySyncProviders(ctx context.Context, outNames []string, outInfo []ProviderInfo) error
 	QueryContentProviders(ctx context.Context, processName string, uid int32, flags int64, metaDataKey string) (ParceledListSlice, error)
-	GetInstrumentationInfoAsUser(ctx context.Context, className interface{}, flags int32) (InstrumentationInfo, error)
+	GetInstrumentationInfoAsUser(ctx context.Context, className content.ComponentName, flags int32) (InstrumentationInfo, error)
 	QueryInstrumentationAsUser(ctx context.Context, targetPackage string, flags int32) (ParceledListSlice, error)
 	FinishPackageInstall(ctx context.Context, token int32, didLaunch bool) error
 	SetInstallerPackageName(ctx context.Context, targetPackage string, installerPackageName string) error
@@ -12809,17 +13447,17 @@ type IPackageManagerServer interface {
 	GetInstallerPackageName(ctx context.Context, packageName string) (string, error)
 	GetInstallSourceInfo(ctx context.Context, packageName string) (InstallSourceInfo, error)
 	ResetApplicationPreferences(ctx context.Context) error
-	GetLastChosenActivity(ctx context.Context, intent interface{}, resolvedType string, flags int32) (ResolveInfo, error)
-	SetLastChosenActivity(ctx context.Context, intent interface{}, resolvedType string, flags int32, filter interface{}, match int32, activity interface{}) error
-	AddPreferredActivity(ctx context.Context, filter interface{}, match int32, set []interface{}, activity interface{}, removeExisting bool) error
-	ReplacePreferredActivity(ctx context.Context, filter interface{}, match int32, set []interface{}, activity interface{}) error
+	GetLastChosenActivity(ctx context.Context, intent content.Intent, resolvedType string, flags int32) (ResolveInfo, error)
+	SetLastChosenActivity(ctx context.Context, intent content.Intent, resolvedType string, flags int32, filter content.IntentFilter, match int32, activity content.ComponentName) error
+	AddPreferredActivity(ctx context.Context, filter content.IntentFilter, match int32, set []content.ComponentName, activity content.ComponentName, removeExisting bool) error
+	ReplacePreferredActivity(ctx context.Context, filter content.IntentFilter, match int32, set []content.ComponentName, activity content.ComponentName) error
 	ClearPackagePreferredActivities(ctx context.Context, packageName string) error
-	GetPreferredActivities(ctx context.Context, outFilters []interface{}, outActivities []interface{}, packageName string) (int32, error)
-	AddPersistentPreferredActivity(ctx context.Context, filter interface{}, activity interface{}) error
+	GetPreferredActivities(ctx context.Context, outFilters []content.IntentFilter, outActivities []content.ComponentName, packageName string) (int32, error)
+	AddPersistentPreferredActivity(ctx context.Context, filter content.IntentFilter, activity content.ComponentName) error
 	ClearPackagePersistentPreferredActivities(ctx context.Context, packageName string) error
-	ClearPersistentPreferredActivity(ctx context.Context, filter interface{}) error
-	AddCrossProfileIntentFilter(ctx context.Context, intentFilter interface{}, ownerPackage string, sourceUserId int32, targetUserId int32, flags int32) error
-	RemoveCrossProfileIntentFilter(ctx context.Context, intentFilter interface{}, ownerPackage string, sourceUserId int32, targetUserId int32, flags int32) (bool, error)
+	ClearPersistentPreferredActivity(ctx context.Context, filter content.IntentFilter) error
+	AddCrossProfileIntentFilter(ctx context.Context, intentFilter content.IntentFilter, ownerPackage string, sourceUserId int32, targetUserId int32, flags int32) error
+	RemoveCrossProfileIntentFilter(ctx context.Context, intentFilter content.IntentFilter, ownerPackage string, sourceUserId int32, targetUserId int32, flags int32) (bool, error)
 	ClearCrossProfileIntentFilters(ctx context.Context, sourceUserId int32, ownerPackage string) error
 	SetDistractingPackageRestrictionsAsUser(ctx context.Context, packageNames []string, restrictionFlags int32) ([]string, error)
 	SetPackagesSuspendedAsUser(ctx context.Context, packageNames []string, suspended bool, appExtras interface{}, launcherExtras interface{}, dialogInfo SuspendDialogInfo, flags int32, suspendingPackage string, suspendingUserId int32, targetUserId int32) ([]string, error)
@@ -12835,20 +13473,20 @@ type IPackageManagerServer interface {
 	RestoreDefaultApps(ctx context.Context, backup []byte) error
 	GetDomainVerificationBackup(ctx context.Context) ([]byte, error)
 	RestoreDomainVerification(ctx context.Context, backup []byte) error
-	GetHomeActivities(ctx context.Context, outHomeCandidates []ResolveInfo) (interface{}, error)
-	SetHomeActivity(ctx context.Context, className interface{}) error
-	OverrideLabelAndIcon(ctx context.Context, componentName interface{}, nonLocalizedLabel string, icon int32) error
-	RestoreLabelAndIcon(ctx context.Context, componentName interface{}) error
-	SetComponentEnabledSetting(ctx context.Context, componentName interface{}, newState int32, flags int32) error
+	GetHomeActivities(ctx context.Context, outHomeCandidates []ResolveInfo) (content.ComponentName, error)
+	SetHomeActivity(ctx context.Context, className content.ComponentName) error
+	OverrideLabelAndIcon(ctx context.Context, componentName content.ComponentName, nonLocalizedLabel string, icon int32) error
+	RestoreLabelAndIcon(ctx context.Context, componentName content.ComponentName) error
+	SetComponentEnabledSetting(ctx context.Context, componentName content.ComponentName, newState int32, flags int32) error
 	SetComponentEnabledSettings(ctx context.Context, settings []PackageManagerComponentEnabledSetting) error
-	GetComponentEnabledSetting(ctx context.Context, componentName interface{}) (int32, error)
+	GetComponentEnabledSetting(ctx context.Context, componentName content.ComponentName) (int32, error)
 	SetApplicationEnabledSetting(ctx context.Context, packageName string, newState int32, flags int32) error
 	GetApplicationEnabledSetting(ctx context.Context, packageName string) (int32, error)
 	LogAppProcessStartIfNeeded(ctx context.Context, packageName string, processName string, uid int32, seinfo string, apkFile string, pid int32) error
 	FlushPackageRestrictionsAsUser(ctx context.Context) error
 	SetPackageStoppedState(ctx context.Context, packageName string, stopped bool) error
 	FreeStorageAndNotify(ctx context.Context, volumeUuid string, freeStorageSize int64, storageFlags int32, observer IPackageDataObserver) error
-	FreeStorage(ctx context.Context, volumeUuid string, freeStorageSize int64, storageFlags int32, pi interface{}) error
+	FreeStorage(ctx context.Context, volumeUuid string, freeStorageSize int64, storageFlags int32, pi content.IntentSender) error
 	DeleteApplicationCacheFiles(ctx context.Context, packageName string, observer IPackageDataObserver) error
 	DeleteApplicationCacheFilesAsUser(ctx context.Context, packageName string, observer IPackageDataObserver) error
 	ClearApplicationUserData(ctx context.Context, packageName string, observer IPackageDataObserver) error
@@ -12915,9 +13553,9 @@ type IPackageManagerServer interface {
 	GetDeclaredSharedLibraries(ctx context.Context, packageName string, flags int64) (ParceledListSlice, error)
 	CanRequestPackageInstalls(ctx context.Context, packageName string) (bool, error)
 	DeletePreloadsFileCache(ctx context.Context) error
-	GetInstantAppResolverComponent(ctx context.Context) (interface{}, error)
-	GetInstantAppResolverSettingsComponent(ctx context.Context) (interface{}, error)
-	GetInstantAppInstallerComponent(ctx context.Context) (interface{}, error)
+	GetInstantAppResolverComponent(ctx context.Context) (content.ComponentName, error)
+	GetInstantAppResolverSettingsComponent(ctx context.Context) (content.ComponentName, error)
+	GetInstantAppInstallerComponent(ctx context.Context) (content.ComponentName, error)
 	GetInstantAppAndroidId(ctx context.Context, packageName string) (string, error)
 	GetArtManager(ctx context.Context) (dex.IArtManager, error)
 	SetHarmfulAppWarning(ctx context.Context, packageName string, warning interface{}) error
@@ -12941,7 +13579,7 @@ type IPackageManagerServer interface {
 	SetRuntimePermissionsVersion(ctx context.Context, version int32) error
 	NotifyPackagesReplacedReceived(ctx context.Context, packages []string) error
 	RequestPackageChecksums(ctx context.Context, packageName string, includeSplits bool, optional int32, required int32, trustedInstallers []interface{}, onChecksumsReadyListener IOnChecksumsReadyListener) error
-	GetLaunchIntentSenderForPackage(ctx context.Context, packageName string, featureId string) (interface{}, error)
+	GetLaunchIntentSenderForPackage(ctx context.Context, packageName string, featureId string) (content.IntentSender, error)
 	GetAppOpPermissionPackages(ctx context.Context, permissionName string) ([]string, error)
 	GetPermissionGroupInfo(ctx context.Context, name string, flags int32) (PermissionGroupInfo, error)
 	AddPermission(ctx context.Context, info PermissionInfo) (bool, error)
@@ -12972,7 +13610,7 @@ type IPackageManagerServer interface {
 	GetArchivedAppIcon(ctx context.Context, packageName string, user interface{}, callingPackageName string) (graphics.Bitmap, error)
 	IsAppArchivable(ctx context.Context, packageName string, user interface{}) (bool, error)
 	GetAppMetadataSource(ctx context.Context, packageName string) (int32, error)
-	GetDomainVerificationAgent(ctx context.Context) (interface{}, error)
+	GetDomainVerificationAgent(ctx context.Context) (content.ComponentName, error)
 	SetPageSizeAppCompatFlagsSettingsOverride(ctx context.Context, packageName string, enabled bool) error
 	IsPageSizeCompatEnabled(ctx context.Context, packageName string) (bool, error)
 	GetPageSizeCompatWarningMessage(ctx context.Context, packageName string) (string, error)
@@ -13065,7 +13703,7 @@ func (w *packageManagerStubWrapper) GetTargetSdkVersion(
 
 func (w *packageManagerStubWrapper) GetActivityInfo(
 	ctx context.Context,
-	className interface{},
+	className content.ComponentName,
 	flags int64,
 ) (ActivityInfo, error) {
 	return w.impl.GetActivityInfo(ctx, className, flags)
@@ -13073,8 +13711,8 @@ func (w *packageManagerStubWrapper) GetActivityInfo(
 
 func (w *packageManagerStubWrapper) ActivitySupportsIntentAsUser(
 	ctx context.Context,
-	className interface{},
-	intent interface{},
+	className content.ComponentName,
+	intent content.Intent,
 	resolvedType string,
 ) (bool, error) {
 	return w.impl.ActivitySupportsIntentAsUser(ctx, className, intent, resolvedType)
@@ -13082,7 +13720,7 @@ func (w *packageManagerStubWrapper) ActivitySupportsIntentAsUser(
 
 func (w *packageManagerStubWrapper) GetReceiverInfo(
 	ctx context.Context,
-	className interface{},
+	className content.ComponentName,
 	flags int64,
 ) (ActivityInfo, error) {
 	return w.impl.GetReceiverInfo(ctx, className, flags)
@@ -13090,7 +13728,7 @@ func (w *packageManagerStubWrapper) GetReceiverInfo(
 
 func (w *packageManagerStubWrapper) GetServiceInfo(
 	ctx context.Context,
-	className interface{},
+	className content.ComponentName,
 	flags int64,
 ) (ServiceInfo, error) {
 	return w.impl.GetServiceInfo(ctx, className, flags)
@@ -13098,7 +13736,7 @@ func (w *packageManagerStubWrapper) GetServiceInfo(
 
 func (w *packageManagerStubWrapper) GetProviderInfo(
 	ctx context.Context,
-	className interface{},
+	className content.ComponentName,
 	flags int64,
 ) (ProviderInfo, error) {
 	return w.impl.GetProviderInfo(ctx, className, flags)
@@ -13184,7 +13822,7 @@ func (w *packageManagerStubWrapper) IsUidPrivileged(
 
 func (w *packageManagerStubWrapper) ResolveIntent(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int64,
 ) (ResolveInfo, error) {
@@ -13193,14 +13831,14 @@ func (w *packageManagerStubWrapper) ResolveIntent(
 
 func (w *packageManagerStubWrapper) FindPersistentPreferredActivity(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 ) (ResolveInfo, error) {
 	return w.impl.FindPersistentPreferredActivity(ctx, intent)
 }
 
 func (w *packageManagerStubWrapper) CanForwardTo(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	sourceUserId int32,
 	targetUserId int32,
@@ -13210,7 +13848,7 @@ func (w *packageManagerStubWrapper) CanForwardTo(
 
 func (w *packageManagerStubWrapper) QueryIntentActivities(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int64,
 ) (ParceledListSlice, error) {
@@ -13219,10 +13857,10 @@ func (w *packageManagerStubWrapper) QueryIntentActivities(
 
 func (w *packageManagerStubWrapper) QueryIntentActivityOptions(
 	ctx context.Context,
-	caller interface{},
-	specifics []interface{},
+	caller content.ComponentName,
+	specifics []content.Intent,
 	specificTypes []string,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int64,
 ) (ParceledListSlice, error) {
@@ -13231,7 +13869,7 @@ func (w *packageManagerStubWrapper) QueryIntentActivityOptions(
 
 func (w *packageManagerStubWrapper) QueryIntentReceivers(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int64,
 ) (ParceledListSlice, error) {
@@ -13240,7 +13878,7 @@ func (w *packageManagerStubWrapper) QueryIntentReceivers(
 
 func (w *packageManagerStubWrapper) ResolveService(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int64,
 ) (ResolveInfo, error) {
@@ -13249,7 +13887,7 @@ func (w *packageManagerStubWrapper) ResolveService(
 
 func (w *packageManagerStubWrapper) QueryIntentServices(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int64,
 ) (ParceledListSlice, error) {
@@ -13258,7 +13896,7 @@ func (w *packageManagerStubWrapper) QueryIntentServices(
 
 func (w *packageManagerStubWrapper) QueryIntentContentProviders(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int64,
 ) (ParceledListSlice, error) {
@@ -13329,7 +13967,7 @@ func (w *packageManagerStubWrapper) QueryContentProviders(
 
 func (w *packageManagerStubWrapper) GetInstrumentationInfoAsUser(
 	ctx context.Context,
-	className interface{},
+	className content.ComponentName,
 	flags int32,
 ) (InstrumentationInfo, error) {
 	return w.impl.GetInstrumentationInfoAsUser(ctx, className, flags)
@@ -13424,7 +14062,7 @@ func (w *packageManagerStubWrapper) ResetApplicationPreferences(
 
 func (w *packageManagerStubWrapper) GetLastChosenActivity(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int32,
 ) (ResolveInfo, error) {
@@ -13433,22 +14071,22 @@ func (w *packageManagerStubWrapper) GetLastChosenActivity(
 
 func (w *packageManagerStubWrapper) SetLastChosenActivity(
 	ctx context.Context,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	flags int32,
-	filter interface{},
+	filter content.IntentFilter,
 	match int32,
-	activity interface{},
+	activity content.ComponentName,
 ) error {
 	return w.impl.SetLastChosenActivity(ctx, intent, resolvedType, flags, filter, match, activity)
 }
 
 func (w *packageManagerStubWrapper) AddPreferredActivity(
 	ctx context.Context,
-	filter interface{},
+	filter content.IntentFilter,
 	match int32,
-	set []interface{},
-	activity interface{},
+	set []content.ComponentName,
+	activity content.ComponentName,
 	removeExisting bool,
 ) error {
 	return w.impl.AddPreferredActivity(ctx, filter, match, set, activity, removeExisting)
@@ -13456,10 +14094,10 @@ func (w *packageManagerStubWrapper) AddPreferredActivity(
 
 func (w *packageManagerStubWrapper) ReplacePreferredActivity(
 	ctx context.Context,
-	filter interface{},
+	filter content.IntentFilter,
 	match int32,
-	set []interface{},
-	activity interface{},
+	set []content.ComponentName,
+	activity content.ComponentName,
 ) error {
 	return w.impl.ReplacePreferredActivity(ctx, filter, match, set, activity)
 }
@@ -13473,8 +14111,8 @@ func (w *packageManagerStubWrapper) ClearPackagePreferredActivities(
 
 func (w *packageManagerStubWrapper) GetPreferredActivities(
 	ctx context.Context,
-	outFilters []interface{},
-	outActivities []interface{},
+	outFilters []content.IntentFilter,
+	outActivities []content.ComponentName,
 	packageName string,
 ) (int32, error) {
 	return w.impl.GetPreferredActivities(ctx, outFilters, outActivities, packageName)
@@ -13482,8 +14120,8 @@ func (w *packageManagerStubWrapper) GetPreferredActivities(
 
 func (w *packageManagerStubWrapper) AddPersistentPreferredActivity(
 	ctx context.Context,
-	filter interface{},
-	activity interface{},
+	filter content.IntentFilter,
+	activity content.ComponentName,
 ) error {
 	return w.impl.AddPersistentPreferredActivity(ctx, filter, activity)
 }
@@ -13497,14 +14135,14 @@ func (w *packageManagerStubWrapper) ClearPackagePersistentPreferredActivities(
 
 func (w *packageManagerStubWrapper) ClearPersistentPreferredActivity(
 	ctx context.Context,
-	filter interface{},
+	filter content.IntentFilter,
 ) error {
 	return w.impl.ClearPersistentPreferredActivity(ctx, filter)
 }
 
 func (w *packageManagerStubWrapper) AddCrossProfileIntentFilter(
 	ctx context.Context,
-	intentFilter interface{},
+	intentFilter content.IntentFilter,
 	ownerPackage string,
 	sourceUserId int32,
 	targetUserId int32,
@@ -13515,7 +14153,7 @@ func (w *packageManagerStubWrapper) AddCrossProfileIntentFilter(
 
 func (w *packageManagerStubWrapper) RemoveCrossProfileIntentFilter(
 	ctx context.Context,
-	intentFilter interface{},
+	intentFilter content.IntentFilter,
 	ownerPackage string,
 	sourceUserId int32,
 	targetUserId int32,
@@ -13639,20 +14277,20 @@ func (w *packageManagerStubWrapper) RestoreDomainVerification(
 func (w *packageManagerStubWrapper) GetHomeActivities(
 	ctx context.Context,
 	outHomeCandidates []ResolveInfo,
-) (interface{}, error) {
+) (content.ComponentName, error) {
 	return w.impl.GetHomeActivities(ctx, outHomeCandidates)
 }
 
 func (w *packageManagerStubWrapper) SetHomeActivity(
 	ctx context.Context,
-	className interface{},
+	className content.ComponentName,
 ) error {
 	return w.impl.SetHomeActivity(ctx, className)
 }
 
 func (w *packageManagerStubWrapper) OverrideLabelAndIcon(
 	ctx context.Context,
-	componentName interface{},
+	componentName content.ComponentName,
 	nonLocalizedLabel string,
 	icon int32,
 ) error {
@@ -13661,14 +14299,14 @@ func (w *packageManagerStubWrapper) OverrideLabelAndIcon(
 
 func (w *packageManagerStubWrapper) RestoreLabelAndIcon(
 	ctx context.Context,
-	componentName interface{},
+	componentName content.ComponentName,
 ) error {
 	return w.impl.RestoreLabelAndIcon(ctx, componentName)
 }
 
 func (w *packageManagerStubWrapper) SetComponentEnabledSetting(
 	ctx context.Context,
-	componentName interface{},
+	componentName content.ComponentName,
 	newState int32,
 	flags int32,
 ) error {
@@ -13684,7 +14322,7 @@ func (w *packageManagerStubWrapper) SetComponentEnabledSettings(
 
 func (w *packageManagerStubWrapper) GetComponentEnabledSetting(
 	ctx context.Context,
-	componentName interface{},
+	componentName content.ComponentName,
 ) (int32, error) {
 	return w.impl.GetComponentEnabledSetting(ctx, componentName)
 }
@@ -13746,7 +14384,7 @@ func (w *packageManagerStubWrapper) FreeStorage(
 	volumeUuid string,
 	freeStorageSize int64,
 	storageFlags int32,
-	pi interface{},
+	pi content.IntentSender,
 ) error {
 	return w.impl.FreeStorage(ctx, volumeUuid, freeStorageSize, storageFlags, pi)
 }
@@ -14236,19 +14874,19 @@ func (w *packageManagerStubWrapper) DeletePreloadsFileCache(
 
 func (w *packageManagerStubWrapper) GetInstantAppResolverComponent(
 	ctx context.Context,
-) (interface{}, error) {
+) (content.ComponentName, error) {
 	return w.impl.GetInstantAppResolverComponent(ctx)
 }
 
 func (w *packageManagerStubWrapper) GetInstantAppResolverSettingsComponent(
 	ctx context.Context,
-) (interface{}, error) {
+) (content.ComponentName, error) {
 	return w.impl.GetInstantAppResolverSettingsComponent(ctx)
 }
 
 func (w *packageManagerStubWrapper) GetInstantAppInstallerComponent(
 	ctx context.Context,
-) (interface{}, error) {
+) (content.ComponentName, error) {
 	return w.impl.GetInstantAppInstallerComponent(ctx)
 }
 
@@ -14416,7 +15054,7 @@ func (w *packageManagerStubWrapper) GetLaunchIntentSenderForPackage(
 	ctx context.Context,
 	packageName string,
 	featureId string,
-) (interface{}, error) {
+) (content.IntentSender, error) {
 	return w.impl.GetLaunchIntentSenderForPackage(ctx, packageName, featureId)
 }
 
@@ -14651,7 +15289,7 @@ func (w *packageManagerStubWrapper) GetAppMetadataSource(
 
 func (w *packageManagerStubWrapper) GetDomainVerificationAgent(
 	ctx context.Context,
-) (interface{}, error) {
+) (content.ComponentName, error) {
 	return w.impl.GetDomainVerificationAgent(ctx)
 }
 

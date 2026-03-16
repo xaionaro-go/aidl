@@ -3,6 +3,7 @@ package os
 import (
 	"context"
 	"fmt"
+	content "github.com/xaionaro-go/binder/android/content"
 	pm "github.com/xaionaro-go/binder/android/content/pm"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
 	"github.com/xaionaro-go/binder/binder"
@@ -218,7 +219,7 @@ type IUserManager interface {
 	IsForegroundUserAdmin(ctx context.Context) (bool, error)
 	IsUserNameSet(ctx context.Context) (bool, error)
 	HasRestrictedProfiles(ctx context.Context) (bool, error)
-	RequestQuietModeEnabled(ctx context.Context, enableQuietMode bool, target interface{}, flags int32) (bool, error)
+	RequestQuietModeEnabled(ctx context.Context, enableQuietMode bool, target content.IntentSender, flags int32) (bool, error)
 	GetUserName(ctx context.Context) (string, error)
 	GetUserStartRealtime(ctx context.Context) (int64, error)
 	GetUserUnlockRealtime(ctx context.Context) (int64, error)
@@ -3395,7 +3396,7 @@ func (p *UserManagerProxy) HasRestrictedProfiles(
 func (p *UserManagerProxy) RequestQuietModeEnabled(
 	ctx context.Context,
 	enableQuietMode bool,
-	target interface{},
+	target content.IntentSender,
 	flags int32,
 ) (bool, error) {
 	var _result bool
@@ -3405,6 +3406,10 @@ func (p *UserManagerProxy) RequestQuietModeEnabled(
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteBool(enableQuietMode)
 	_data.WriteInt32(_identity.UserID)
+	_data.WriteInt32(1)
+	if _err := target.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "requestQuietModeEnabled")
@@ -5459,7 +5464,18 @@ func (s *UserManagerStub) OnTransaction(
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
-		var _arg_target interface{}
+		var _arg_target content.IntentSender
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_target.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_flags, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -5686,7 +5702,7 @@ type IUserManagerServer interface {
 	IsForegroundUserAdmin(ctx context.Context) (bool, error)
 	IsUserNameSet(ctx context.Context) (bool, error)
 	HasRestrictedProfiles(ctx context.Context) (bool, error)
-	RequestQuietModeEnabled(ctx context.Context, enableQuietMode bool, target interface{}, flags int32) (bool, error)
+	RequestQuietModeEnabled(ctx context.Context, enableQuietMode bool, target content.IntentSender, flags int32) (bool, error)
 	GetUserName(ctx context.Context) (string, error)
 	GetUserStartRealtime(ctx context.Context) (int64, error)
 	GetUserUnlockRealtime(ctx context.Context) (int64, error)
@@ -6350,7 +6366,7 @@ func (w *userManagerStubWrapper) HasRestrictedProfiles(
 func (w *userManagerStubWrapper) RequestQuietModeEnabled(
 	ctx context.Context,
 	enableQuietMode bool,
-	target interface{},
+	target content.IntentSender,
 	flags int32,
 ) (bool, error) {
 	return w.impl.RequestQuietModeEnabled(ctx, enableQuietMode, target, flags)

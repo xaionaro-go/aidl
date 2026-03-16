@@ -3,6 +3,7 @@ package window
 import (
 	"context"
 	"fmt"
+	app "github.com/xaionaro-go/binder/android/app"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -18,7 +19,7 @@ const (
 
 type IGlobalDragListener interface {
 	AsBinder() binder.IBinder
-	OnCrossWindowDrop(ctx context.Context, taskInfo interface{}) error
+	OnCrossWindowDrop(ctx context.Context, taskInfo app.ActivityManagerRunningTaskInfo) error
 	OnUnhandledDrop(ctx context.Context, event interface{}, callback IUnhandledDragCallback) error
 }
 
@@ -40,10 +41,14 @@ var _ IGlobalDragListener = (*GlobalDragListenerProxy)(nil)
 
 func (p *GlobalDragListenerProxy) OnCrossWindowDrop(
 	ctx context.Context,
-	taskInfo interface{},
+	taskInfo app.ActivityManagerRunningTaskInfo,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGlobalDragListener)
+	_data.WriteInt32(1)
+	if _err := taskInfo.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGlobalDragListener, "onCrossWindowDrop")
 	if _err != nil {
@@ -90,7 +95,18 @@ func (s *GlobalDragListenerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_taskInfo interface{}
+		var _arg_taskInfo app.ActivityManagerRunningTaskInfo
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_taskInfo.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.OnCrossWindowDrop(ctx, _arg_taskInfo)
 		_ = _err
 		return nil, nil
@@ -114,7 +130,7 @@ func (s *GlobalDragListenerStub) OnTransaction(
 // provide to NewGlobalDragListenerStub. It contains only the business methods,
 // without AsBinder (which is provided by the stub itself).
 type IGlobalDragListenerServer interface {
-	OnCrossWindowDrop(ctx context.Context, taskInfo interface{}) error
+	OnCrossWindowDrop(ctx context.Context, taskInfo app.ActivityManagerRunningTaskInfo) error
 	OnUnhandledDrop(ctx context.Context, event interface{}, callback IUnhandledDragCallback) error
 }
 
@@ -129,7 +145,7 @@ func (w *globalDragListenerStubWrapper) AsBinder() binder.IBinder {
 
 func (w *globalDragListenerStubWrapper) OnCrossWindowDrop(
 	ctx context.Context,
-	taskInfo interface{},
+	taskInfo app.ActivityManagerRunningTaskInfo,
 ) error {
 	return w.impl.OnCrossWindowDrop(ctx, taskInfo)
 }

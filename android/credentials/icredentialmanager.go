@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	ondeviceintelligence "github.com/xaionaro-go/binder/android/app/ondeviceintelligence"
+	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -37,7 +38,7 @@ type ICredentialManager interface {
 	SetEnabledProviders(ctx context.Context, primaryProviders []string, providers []string, callback ISetEnabledProvidersCallback) error
 	RegisterCredentialDescription(ctx context.Context, request RegisterCredentialDescriptionRequest) error
 	UnregisterCredentialDescription(ctx context.Context, request UnregisterCredentialDescriptionRequest) error
-	IsEnabledCredentialProviderService(ctx context.Context, componentName interface{}) (bool, error)
+	IsEnabledCredentialProviderService(ctx context.Context, componentName content.ComponentName) (bool, error)
 	GetCredentialProviderServices(ctx context.Context, providerFilter int32) ([]CredentialProviderInfo, error)
 	GetCredentialProviderServicesForTesting(ctx context.Context, providerFilter int32) ([]CredentialProviderInfo, error)
 	IsServiceEnabled(ctx context.Context) (bool, error)
@@ -368,12 +369,16 @@ func (p *CredentialManagerProxy) UnregisterCredentialDescription(
 
 func (p *CredentialManagerProxy) IsEnabledCredentialProviderService(
 	ctx context.Context,
-	componentName interface{},
+	componentName content.ComponentName,
 ) (bool, error) {
 	var _result bool
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICredentialManager)
+	_data.WriteInt32(1)
+	if _err := componentName.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "isEnabledCredentialProviderService")
@@ -771,7 +776,18 @@ func (s *CredentialManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_componentName interface{}
+		var _arg_componentName content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_componentName.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
@@ -853,7 +869,7 @@ type ICredentialManagerServer interface {
 	SetEnabledProviders(ctx context.Context, primaryProviders []string, providers []string, callback ISetEnabledProvidersCallback) error
 	RegisterCredentialDescription(ctx context.Context, request RegisterCredentialDescriptionRequest) error
 	UnregisterCredentialDescription(ctx context.Context, request UnregisterCredentialDescriptionRequest) error
-	IsEnabledCredentialProviderService(ctx context.Context, componentName interface{}) (bool, error)
+	IsEnabledCredentialProviderService(ctx context.Context, componentName content.ComponentName) (bool, error)
 	GetCredentialProviderServices(ctx context.Context, providerFilter int32) ([]CredentialProviderInfo, error)
 	GetCredentialProviderServicesForTesting(ctx context.Context, providerFilter int32) ([]CredentialProviderInfo, error)
 	IsServiceEnabled(ctx context.Context) (bool, error)
@@ -935,7 +951,7 @@ func (w *credentialManagerStubWrapper) UnregisterCredentialDescription(
 
 func (w *credentialManagerStubWrapper) IsEnabledCredentialProviderService(
 	ctx context.Context,
-	componentName interface{},
+	componentName content.ComponentName,
 ) (bool, error) {
 	return w.impl.IsEnabledCredentialProviderService(ctx, componentName)
 }

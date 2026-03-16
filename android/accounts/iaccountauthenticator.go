@@ -3,7 +3,6 @@ package accounts
 import (
 	"context"
 	"fmt"
-	os "github.com/xaionaro-go/binder/android/os"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -31,19 +30,19 @@ const (
 
 type IAccountAuthenticator interface {
 	AsBinder() binder.IBinder
-	AddAccount(ctx context.Context, response IAccountAuthenticatorResponse, accountType string, authTokenType string, requiredFeatures []string, options os.Bundle) error
-	ConfirmCredentials(ctx context.Context, response IAccountAuthenticatorResponse, account Account, options os.Bundle) error
-	GetAuthToken(ctx context.Context, response IAccountAuthenticatorResponse, account Account, authTokenType string, options os.Bundle) error
+	AddAccount(ctx context.Context, response IAccountAuthenticatorResponse, accountType string, authTokenType string, requiredFeatures []string, options interface{}) error
+	ConfirmCredentials(ctx context.Context, response IAccountAuthenticatorResponse, account Account, options interface{}) error
+	GetAuthToken(ctx context.Context, response IAccountAuthenticatorResponse, account Account, authTokenType string, options interface{}) error
 	GetAuthTokenLabel(ctx context.Context, response IAccountAuthenticatorResponse, authTokenType string) error
-	UpdateCredentials(ctx context.Context, response IAccountAuthenticatorResponse, account Account, authTokenType string, options os.Bundle) error
+	UpdateCredentials(ctx context.Context, response IAccountAuthenticatorResponse, account Account, authTokenType string, options interface{}) error
 	EditProperties(ctx context.Context, response IAccountAuthenticatorResponse, accountType string) error
 	HasFeatures(ctx context.Context, response IAccountAuthenticatorResponse, account Account, features []string) error
 	GetAccountRemovalAllowed(ctx context.Context, response IAccountAuthenticatorResponse, account Account) error
 	GetAccountCredentialsForCloning(ctx context.Context, response IAccountAuthenticatorResponse, account Account) error
-	AddAccountFromCredentials(ctx context.Context, response IAccountAuthenticatorResponse, account Account, accountCredentials os.Bundle) error
-	StartAddAccountSession(ctx context.Context, response IAccountAuthenticatorResponse, accountType string, authTokenType string, requiredFeatures []string, options os.Bundle) error
-	StartUpdateCredentialsSession(ctx context.Context, response IAccountAuthenticatorResponse, account Account, authTokenType string, options os.Bundle) error
-	FinishSession(ctx context.Context, response IAccountAuthenticatorResponse, accountType string, sessionBundle os.Bundle) error
+	AddAccountFromCredentials(ctx context.Context, response IAccountAuthenticatorResponse, account Account, accountCredentials interface{}) error
+	StartAddAccountSession(ctx context.Context, response IAccountAuthenticatorResponse, accountType string, authTokenType string, requiredFeatures []string, options interface{}) error
+	StartUpdateCredentialsSession(ctx context.Context, response IAccountAuthenticatorResponse, account Account, authTokenType string, options interface{}) error
+	FinishSession(ctx context.Context, response IAccountAuthenticatorResponse, accountType string, sessionBundle interface{}) error
 	IsCredentialsUpdateSuggested(ctx context.Context, response IAccountAuthenticatorResponse, account Account, statusToken string) error
 }
 
@@ -69,7 +68,7 @@ func (p *AccountAuthenticatorProxy) AddAccount(
 	accountType string,
 	authTokenType string,
 	requiredFeatures []string,
-	options os.Bundle,
+	options interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountAuthenticator)
@@ -83,10 +82,6 @@ func (p *AccountAuthenticatorProxy) AddAccount(
 		for _, _item := range requiredFeatures {
 			_data.WriteString16(_item)
 		}
-	}
-	_data.WriteInt32(1)
-	if _err := options.MarshalParcel(_data); _err != nil {
-		return _err
 	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountAuthenticator, "addAccount")
@@ -102,17 +97,13 @@ func (p *AccountAuthenticatorProxy) ConfirmCredentials(
 	ctx context.Context,
 	response IAccountAuthenticatorResponse,
 	account Account,
-	options os.Bundle,
+	options interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountAuthenticator)
 	binder.WriteBinderToParcel(ctx, _data, response.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := account.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := options.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 
@@ -130,7 +121,7 @@ func (p *AccountAuthenticatorProxy) GetAuthToken(
 	response IAccountAuthenticatorResponse,
 	account Account,
 	authTokenType string,
-	options os.Bundle,
+	options interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountAuthenticator)
@@ -140,10 +131,6 @@ func (p *AccountAuthenticatorProxy) GetAuthToken(
 		return _err
 	}
 	_data.WriteString16(authTokenType)
-	_data.WriteInt32(1)
-	if _err := options.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountAuthenticator, "getAuthToken")
 	if _err != nil {
@@ -178,7 +165,7 @@ func (p *AccountAuthenticatorProxy) UpdateCredentials(
 	response IAccountAuthenticatorResponse,
 	account Account,
 	authTokenType string,
-	options os.Bundle,
+	options interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountAuthenticator)
@@ -188,10 +175,6 @@ func (p *AccountAuthenticatorProxy) UpdateCredentials(
 		return _err
 	}
 	_data.WriteString16(authTokenType)
-	_data.WriteInt32(1)
-	if _err := options.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountAuthenticator, "updateCredentials")
 	if _err != nil {
@@ -300,17 +283,13 @@ func (p *AccountAuthenticatorProxy) AddAccountFromCredentials(
 	ctx context.Context,
 	response IAccountAuthenticatorResponse,
 	account Account,
-	accountCredentials os.Bundle,
+	accountCredentials interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountAuthenticator)
 	binder.WriteBinderToParcel(ctx, _data, response.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := account.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := accountCredentials.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 
@@ -329,7 +308,7 @@ func (p *AccountAuthenticatorProxy) StartAddAccountSession(
 	accountType string,
 	authTokenType string,
 	requiredFeatures []string,
-	options os.Bundle,
+	options interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountAuthenticator)
@@ -343,10 +322,6 @@ func (p *AccountAuthenticatorProxy) StartAddAccountSession(
 		for _, _item := range requiredFeatures {
 			_data.WriteString16(_item)
 		}
-	}
-	_data.WriteInt32(1)
-	if _err := options.MarshalParcel(_data); _err != nil {
-		return _err
 	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountAuthenticator, "startAddAccountSession")
@@ -363,7 +338,7 @@ func (p *AccountAuthenticatorProxy) StartUpdateCredentialsSession(
 	response IAccountAuthenticatorResponse,
 	account Account,
 	authTokenType string,
-	options os.Bundle,
+	options interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountAuthenticator)
@@ -373,10 +348,6 @@ func (p *AccountAuthenticatorProxy) StartUpdateCredentialsSession(
 		return _err
 	}
 	_data.WriteString16(authTokenType)
-	_data.WriteInt32(1)
-	if _err := options.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountAuthenticator, "startUpdateCredentialsSession")
 	if _err != nil {
@@ -391,16 +362,12 @@ func (p *AccountAuthenticatorProxy) FinishSession(
 	ctx context.Context,
 	response IAccountAuthenticatorResponse,
 	accountType string,
-	sessionBundle os.Bundle,
+	sessionBundle interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountAuthenticator)
 	binder.WriteBinderToParcel(ctx, _data, response.AsBinder(), p.remote.Transport())
 	_data.WriteString16(accountType)
-	_data.WriteInt32(1)
-	if _err := sessionBundle.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountAuthenticator, "finishSession")
 	if _err != nil {
@@ -467,18 +434,7 @@ func (s *AccountAuthenticatorStub) OnTransaction(
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_requiredFeatures []string
 		_ = _arg_requiredFeatures
-		var _arg_options os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_options interface{}
 		_err = s.Impl.AddAccount(ctx, _arg_response, _arg_accountType, _arg_authTokenType, _arg_requiredFeatures, _arg_options)
 		_ = _err
 		return nil, nil
@@ -501,18 +457,7 @@ func (s *AccountAuthenticatorStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_options os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_options interface{}
 		_err := s.Impl.ConfirmCredentials(ctx, _arg_response, _arg_account, _arg_options)
 		_ = _err
 		return nil, nil
@@ -539,18 +484,7 @@ func (s *AccountAuthenticatorStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_options os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_options interface{}
 		_err = s.Impl.GetAuthToken(ctx, _arg_response, _arg_account, _arg_authTokenType, _arg_options)
 		_ = _err
 		return nil, nil
@@ -591,18 +525,7 @@ func (s *AccountAuthenticatorStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_options os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_options interface{}
 		_err = s.Impl.UpdateCredentials(ctx, _arg_response, _arg_account, _arg_authTokenType, _arg_options)
 		_ = _err
 		return nil, nil
@@ -708,18 +631,7 @@ func (s *AccountAuthenticatorStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_accountCredentials os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_accountCredentials.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_accountCredentials interface{}
 		_err := s.Impl.AddAccountFromCredentials(ctx, _arg_response, _arg_account, _arg_accountCredentials)
 		_ = _err
 		return nil, nil
@@ -741,18 +653,7 @@ func (s *AccountAuthenticatorStub) OnTransaction(
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_requiredFeatures []string
 		_ = _arg_requiredFeatures
-		var _arg_options os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_options interface{}
 		_err = s.Impl.StartAddAccountSession(ctx, _arg_response, _arg_accountType, _arg_authTokenType, _arg_requiredFeatures, _arg_options)
 		_ = _err
 		return nil, nil
@@ -779,18 +680,7 @@ func (s *AccountAuthenticatorStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_options os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_options interface{}
 		_err = s.Impl.StartUpdateCredentialsSession(ctx, _arg_response, _arg_account, _arg_authTokenType, _arg_options)
 		_ = _err
 		return nil, nil
@@ -805,18 +695,7 @@ func (s *AccountAuthenticatorStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_sessionBundle os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_sessionBundle.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_sessionBundle interface{}
 		_err = s.Impl.FinishSession(ctx, _arg_response, _arg_accountType, _arg_sessionBundle)
 		_ = _err
 		return nil, nil
@@ -855,19 +734,19 @@ func (s *AccountAuthenticatorStub) OnTransaction(
 // provide to NewAccountAuthenticatorStub. It contains only the business methods,
 // without AsBinder (which is provided by the stub itself).
 type IAccountAuthenticatorServer interface {
-	AddAccount(ctx context.Context, response IAccountAuthenticatorResponse, accountType string, authTokenType string, requiredFeatures []string, options os.Bundle) error
-	ConfirmCredentials(ctx context.Context, response IAccountAuthenticatorResponse, account Account, options os.Bundle) error
-	GetAuthToken(ctx context.Context, response IAccountAuthenticatorResponse, account Account, authTokenType string, options os.Bundle) error
+	AddAccount(ctx context.Context, response IAccountAuthenticatorResponse, accountType string, authTokenType string, requiredFeatures []string, options interface{}) error
+	ConfirmCredentials(ctx context.Context, response IAccountAuthenticatorResponse, account Account, options interface{}) error
+	GetAuthToken(ctx context.Context, response IAccountAuthenticatorResponse, account Account, authTokenType string, options interface{}) error
 	GetAuthTokenLabel(ctx context.Context, response IAccountAuthenticatorResponse, authTokenType string) error
-	UpdateCredentials(ctx context.Context, response IAccountAuthenticatorResponse, account Account, authTokenType string, options os.Bundle) error
+	UpdateCredentials(ctx context.Context, response IAccountAuthenticatorResponse, account Account, authTokenType string, options interface{}) error
 	EditProperties(ctx context.Context, response IAccountAuthenticatorResponse, accountType string) error
 	HasFeatures(ctx context.Context, response IAccountAuthenticatorResponse, account Account, features []string) error
 	GetAccountRemovalAllowed(ctx context.Context, response IAccountAuthenticatorResponse, account Account) error
 	GetAccountCredentialsForCloning(ctx context.Context, response IAccountAuthenticatorResponse, account Account) error
-	AddAccountFromCredentials(ctx context.Context, response IAccountAuthenticatorResponse, account Account, accountCredentials os.Bundle) error
-	StartAddAccountSession(ctx context.Context, response IAccountAuthenticatorResponse, accountType string, authTokenType string, requiredFeatures []string, options os.Bundle) error
-	StartUpdateCredentialsSession(ctx context.Context, response IAccountAuthenticatorResponse, account Account, authTokenType string, options os.Bundle) error
-	FinishSession(ctx context.Context, response IAccountAuthenticatorResponse, accountType string, sessionBundle os.Bundle) error
+	AddAccountFromCredentials(ctx context.Context, response IAccountAuthenticatorResponse, account Account, accountCredentials interface{}) error
+	StartAddAccountSession(ctx context.Context, response IAccountAuthenticatorResponse, accountType string, authTokenType string, requiredFeatures []string, options interface{}) error
+	StartUpdateCredentialsSession(ctx context.Context, response IAccountAuthenticatorResponse, account Account, authTokenType string, options interface{}) error
+	FinishSession(ctx context.Context, response IAccountAuthenticatorResponse, accountType string, sessionBundle interface{}) error
 	IsCredentialsUpdateSuggested(ctx context.Context, response IAccountAuthenticatorResponse, account Account, statusToken string) error
 }
 
@@ -886,7 +765,7 @@ func (w *accountAuthenticatorStubWrapper) AddAccount(
 	accountType string,
 	authTokenType string,
 	requiredFeatures []string,
-	options os.Bundle,
+	options interface{},
 ) error {
 	return w.impl.AddAccount(ctx, response, accountType, authTokenType, requiredFeatures, options)
 }
@@ -895,7 +774,7 @@ func (w *accountAuthenticatorStubWrapper) ConfirmCredentials(
 	ctx context.Context,
 	response IAccountAuthenticatorResponse,
 	account Account,
-	options os.Bundle,
+	options interface{},
 ) error {
 	return w.impl.ConfirmCredentials(ctx, response, account, options)
 }
@@ -905,7 +784,7 @@ func (w *accountAuthenticatorStubWrapper) GetAuthToken(
 	response IAccountAuthenticatorResponse,
 	account Account,
 	authTokenType string,
-	options os.Bundle,
+	options interface{},
 ) error {
 	return w.impl.GetAuthToken(ctx, response, account, authTokenType, options)
 }
@@ -923,7 +802,7 @@ func (w *accountAuthenticatorStubWrapper) UpdateCredentials(
 	response IAccountAuthenticatorResponse,
 	account Account,
 	authTokenType string,
-	options os.Bundle,
+	options interface{},
 ) error {
 	return w.impl.UpdateCredentials(ctx, response, account, authTokenType, options)
 }
@@ -965,7 +844,7 @@ func (w *accountAuthenticatorStubWrapper) AddAccountFromCredentials(
 	ctx context.Context,
 	response IAccountAuthenticatorResponse,
 	account Account,
-	accountCredentials os.Bundle,
+	accountCredentials interface{},
 ) error {
 	return w.impl.AddAccountFromCredentials(ctx, response, account, accountCredentials)
 }
@@ -976,7 +855,7 @@ func (w *accountAuthenticatorStubWrapper) StartAddAccountSession(
 	accountType string,
 	authTokenType string,
 	requiredFeatures []string,
-	options os.Bundle,
+	options interface{},
 ) error {
 	return w.impl.StartAddAccountSession(ctx, response, accountType, authTokenType, requiredFeatures, options)
 }
@@ -986,7 +865,7 @@ func (w *accountAuthenticatorStubWrapper) StartUpdateCredentialsSession(
 	response IAccountAuthenticatorResponse,
 	account Account,
 	authTokenType string,
-	options os.Bundle,
+	options interface{},
 ) error {
 	return w.impl.StartUpdateCredentialsSession(ctx, response, account, authTokenType, options)
 }
@@ -995,7 +874,7 @@ func (w *accountAuthenticatorStubWrapper) FinishSession(
 	ctx context.Context,
 	response IAccountAuthenticatorResponse,
 	accountType string,
-	sessionBundle os.Bundle,
+	sessionBundle interface{},
 ) error {
 	return w.impl.FinishSession(ctx, response, accountType, sessionBundle)
 }

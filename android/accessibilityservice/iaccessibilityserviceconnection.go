@@ -3,11 +3,9 @@ package accessibilityservice
 import (
 	"context"
 	"fmt"
-	pm "github.com/xaionaro-go/binder/android/content/pm"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
 	usb "github.com/xaionaro-go/binder/android/hardware/usb"
 	accessibility "github.com/xaionaro-go/binder/android/view/accessibility"
-	window "github.com/xaionaro-go/binder/android/window"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -109,13 +107,13 @@ type IAccessibilityServiceConnection interface {
 	SwitchToInputMethod(ctx context.Context, imeId string) (bool, error)
 	SetInputMethodEnabled(ctx context.Context, imeId string, enabled bool) (int32, error)
 	IsAccessibilityButtonAvailable(ctx context.Context) (bool, error)
-	SendGesture(ctx context.Context, sequence int32, gestureSteps pm.ParceledListSlice) error
-	DispatchGesture(ctx context.Context, sequence int32, gestureSteps pm.ParceledListSlice, displayId int32) error
+	SendGesture(ctx context.Context, sequence int32, gestureSteps interface{}) error
+	DispatchGesture(ctx context.Context, sequence int32, gestureSteps interface{}, displayId int32) error
 	IsFingerprintGestureDetectionAvailable(ctx context.Context) (bool, error)
 	GetOverlayWindowToken(ctx context.Context, displayid int32) (binder.IBinder, error)
 	GetWindowIdForLeashToken(ctx context.Context, token binder.IBinder) (int32, error)
 	TakeScreenshot(ctx context.Context, displayId int32, callback interface{}) error
-	TakeScreenshotOfWindow(ctx context.Context, accessibilityWindowId int32, interactionId int32, listener window.ScreenCaptureScreenCaptureListener, callback accessibility.IAccessibilityInteractionConnectionCallback) error
+	TakeScreenshotOfWindow(ctx context.Context, accessibilityWindowId int32, interactionId int32, listener interface{}, callback accessibility.IAccessibilityInteractionConnectionCallback) error
 	SetGestureDetectionPassthroughRegion(ctx context.Context, displayId int32, region graphics.Region) error
 	SetTouchExplorationPassthroughRegion(ctx context.Context, displayId int32, region graphics.Region) error
 	SetFocusAppearance(ctx context.Context, strokeWidth int32, color int32) error
@@ -1237,15 +1235,11 @@ func (p *AccessibilityServiceConnectionProxy) IsAccessibilityButtonAvailable(
 func (p *AccessibilityServiceConnectionProxy) SendGesture(
 	ctx context.Context,
 	sequence int32,
-	gestureSteps pm.ParceledListSlice,
+	gestureSteps interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityServiceConnection)
 	_data.WriteInt32(sequence)
-	_data.WriteInt32(1)
-	if _err := gestureSteps.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "sendGesture")
 	if _err != nil {
@@ -1268,16 +1262,12 @@ func (p *AccessibilityServiceConnectionProxy) SendGesture(
 func (p *AccessibilityServiceConnectionProxy) DispatchGesture(
 	ctx context.Context,
 	sequence int32,
-	gestureSteps pm.ParceledListSlice,
+	gestureSteps interface{},
 	displayId int32,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityServiceConnection)
 	_data.WriteInt32(sequence)
-	_data.WriteInt32(1)
-	if _err := gestureSteps.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteInt32(displayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "dispatchGesture")
@@ -1421,17 +1411,13 @@ func (p *AccessibilityServiceConnectionProxy) TakeScreenshotOfWindow(
 	ctx context.Context,
 	accessibilityWindowId int32,
 	interactionId int32,
-	listener window.ScreenCaptureScreenCaptureListener,
+	listener interface{},
 	callback accessibility.IAccessibilityInteractionConnectionCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityServiceConnection)
 	_data.WriteInt32(accessibilityWindowId)
 	_data.WriteInt32(interactionId)
-	_data.WriteInt32(1)
-	if _err := listener.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "takeScreenshotOfWindow")
@@ -2705,18 +2691,7 @@ func (s *AccessibilityServiceConnectionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_gestureSteps pm.ParceledListSlice
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_gestureSteps.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_gestureSteps interface{}
 		_err = s.Impl.SendGesture(ctx, _arg_sequence, _arg_gestureSteps)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2733,18 +2708,7 @@ func (s *AccessibilityServiceConnectionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_gestureSteps pm.ParceledListSlice
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_gestureSteps.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_gestureSteps interface{}
 		_arg_displayId, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -2833,18 +2797,7 @@ func (s *AccessibilityServiceConnectionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_listener window.ScreenCaptureScreenCaptureListener
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_listener.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_listener interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_callback accessibility.IAccessibilityInteractionConnectionCallback
 		_ = _arg_callback
@@ -3281,13 +3234,13 @@ type IAccessibilityServiceConnectionServer interface {
 	SwitchToInputMethod(ctx context.Context, imeId string) (bool, error)
 	SetInputMethodEnabled(ctx context.Context, imeId string, enabled bool) (int32, error)
 	IsAccessibilityButtonAvailable(ctx context.Context) (bool, error)
-	SendGesture(ctx context.Context, sequence int32, gestureSteps pm.ParceledListSlice) error
-	DispatchGesture(ctx context.Context, sequence int32, gestureSteps pm.ParceledListSlice, displayId int32) error
+	SendGesture(ctx context.Context, sequence int32, gestureSteps interface{}) error
+	DispatchGesture(ctx context.Context, sequence int32, gestureSteps interface{}, displayId int32) error
 	IsFingerprintGestureDetectionAvailable(ctx context.Context) (bool, error)
 	GetOverlayWindowToken(ctx context.Context, displayid int32) (binder.IBinder, error)
 	GetWindowIdForLeashToken(ctx context.Context, token binder.IBinder) (int32, error)
 	TakeScreenshot(ctx context.Context, displayId int32, callback interface{}) error
-	TakeScreenshotOfWindow(ctx context.Context, accessibilityWindowId int32, interactionId int32, listener window.ScreenCaptureScreenCaptureListener, callback accessibility.IAccessibilityInteractionConnectionCallback) error
+	TakeScreenshotOfWindow(ctx context.Context, accessibilityWindowId int32, interactionId int32, listener interface{}, callback accessibility.IAccessibilityInteractionConnectionCallback) error
 	SetGestureDetectionPassthroughRegion(ctx context.Context, displayId int32, region graphics.Region) error
 	SetTouchExplorationPassthroughRegion(ctx context.Context, displayId int32, region graphics.Region) error
 	SetFocusAppearance(ctx context.Context, strokeWidth int32, color int32) error
@@ -3570,7 +3523,7 @@ func (w *accessibilityServiceConnectionStubWrapper) IsAccessibilityButtonAvailab
 func (w *accessibilityServiceConnectionStubWrapper) SendGesture(
 	ctx context.Context,
 	sequence int32,
-	gestureSteps pm.ParceledListSlice,
+	gestureSteps interface{},
 ) error {
 	return w.impl.SendGesture(ctx, sequence, gestureSteps)
 }
@@ -3578,7 +3531,7 @@ func (w *accessibilityServiceConnectionStubWrapper) SendGesture(
 func (w *accessibilityServiceConnectionStubWrapper) DispatchGesture(
 	ctx context.Context,
 	sequence int32,
-	gestureSteps pm.ParceledListSlice,
+	gestureSteps interface{},
 	displayId int32,
 ) error {
 	return w.impl.DispatchGesture(ctx, sequence, gestureSteps, displayId)
@@ -3616,7 +3569,7 @@ func (w *accessibilityServiceConnectionStubWrapper) TakeScreenshotOfWindow(
 	ctx context.Context,
 	accessibilityWindowId int32,
 	interactionId int32,
-	listener window.ScreenCaptureScreenCaptureListener,
+	listener interface{},
 	callback accessibility.IAccessibilityInteractionConnectionCallback,
 ) error {
 	return w.impl.TakeScreenshotOfWindow(ctx, accessibilityWindowId, interactionId, listener, callback)

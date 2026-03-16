@@ -2,7 +2,6 @@ package IInputMethod
 
 import (
 	inputmethod "github.com/xaionaro-go/binder/android/view/inputmethod"
-	window "github.com/xaionaro-go/binder/android/window"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -15,7 +14,7 @@ type StartInputParams struct {
 	EditorInfo            inputmethod.EditorInfo
 	Restarting            bool
 	NavigationBarFlags    int32
-	ImeDispatcher         window.ImeOnBackInvokedDispatcher
+	ImeDispatcher         interface{}
 }
 
 var _ parcel.Parcelable = (*StartInputParams)(nil)
@@ -34,9 +33,6 @@ func (s *StartInputParams) MarshalParcel(
 	}
 	p.WriteBool(s.Restarting)
 	p.WriteInt32(s.NavigationBarFlags)
-	if _err := s.ImeDispatcher.MarshalParcel(p); _err != nil {
-		return _err
-	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil
@@ -67,10 +63,6 @@ func (s *StartInputParams) UnmarshalParcel(
 
 	s.NavigationBarFlags, _err = p.ReadInt32()
 	if _err != nil {
-		return _err
-	}
-
-	if _err = s.ImeDispatcher.UnmarshalParcel(p); _err != nil {
 		return _err
 	}
 

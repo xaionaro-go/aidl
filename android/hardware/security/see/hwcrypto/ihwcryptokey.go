@@ -3,7 +3,6 @@ package hwcrypto
 import (
 	"context"
 	"fmt"
-	hwcryptoIHwCryptoKey "github.com/xaionaro-go/binder/android/hardware/security/see/hwcrypto/IHwCryptoKey"
 	types "github.com/xaionaro-go/binder/android/hardware/security/see/hwcrypto/types"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
@@ -26,14 +25,14 @@ const (
 
 type IHwCryptoKey interface {
 	AsBinder() binder.IBinder
-	DeriveCurrentDicePolicyBoundKey(ctx context.Context, derivationKey hwcryptoIHwCryptoKey.DiceBoundDerivationKey) (hwcryptoIHwCryptoKey.DiceCurrentBoundKeyResult, error)
-	DeriveDicePolicyBoundKey(ctx context.Context, derivationKey hwcryptoIHwCryptoKey.DiceBoundDerivationKey, dicePolicyForKeyVersion []byte) (hwcryptoIHwCryptoKey.DiceBoundKeyResult, error)
-	DeriveKey(ctx context.Context, parameters hwcryptoIHwCryptoKey.DerivedKeyParameters) (hwcryptoIHwCryptoKey.DerivedKey, error)
+	DeriveCurrentDicePolicyBoundKey(ctx context.Context, derivationKey interface{}) (interface{}, error)
+	DeriveDicePolicyBoundKey(ctx context.Context, derivationKey interface{}, dicePolicyForKeyVersion []byte) (interface{}, error)
+	DeriveKey(ctx context.Context, parameters interface{}) (interface{}, error)
 	GetHwCryptoOperations(ctx context.Context) (IHwCryptoOperations, error)
 	ImportClearKey(ctx context.Context, keyMaterial types.ExplicitKeyMaterial, newKeyPolicy KeyPolicy) (IOpaqueKey, error)
 	GetCurrentDicePolicy(ctx context.Context) ([]byte, error)
 	KeyTokenImport(ctx context.Context, requestedKey types.OpaqueKeyToken, sealingDicePolicy []byte) (IOpaqueKey, error)
-	GetKeyslotData(ctx context.Context, slotId hwcryptoIHwCryptoKey.KeySlot) (IOpaqueKey, error)
+	GetKeyslotData(ctx context.Context, slotId interface{}) (IOpaqueKey, error)
 }
 
 type HwCryptoKeyProxy struct {
@@ -54,15 +53,11 @@ var _ IHwCryptoKey = (*HwCryptoKeyProxy)(nil)
 
 func (p *HwCryptoKeyProxy) DeriveCurrentDicePolicyBoundKey(
 	ctx context.Context,
-	derivationKey hwcryptoIHwCryptoKey.DiceBoundDerivationKey,
-) (hwcryptoIHwCryptoKey.DiceCurrentBoundKeyResult, error) {
-	var _result hwcryptoIHwCryptoKey.DiceCurrentBoundKeyResult
+	derivationKey interface{},
+) (interface{}, error) {
+	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHwCryptoKey)
-	_data.WriteInt32(1)
-	if _err := derivationKey.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHwCryptoKey, "deriveCurrentDicePolicyBoundKey")
 	if _err != nil {
@@ -79,30 +74,17 @@ func (p *HwCryptoKeyProxy) DeriveCurrentDicePolicyBoundKey(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
 func (p *HwCryptoKeyProxy) DeriveDicePolicyBoundKey(
 	ctx context.Context,
-	derivationKey hwcryptoIHwCryptoKey.DiceBoundDerivationKey,
+	derivationKey interface{},
 	dicePolicyForKeyVersion []byte,
-) (hwcryptoIHwCryptoKey.DiceBoundKeyResult, error) {
-	var _result hwcryptoIHwCryptoKey.DiceBoundKeyResult
+) (interface{}, error) {
+	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHwCryptoKey)
-	_data.WriteInt32(1)
-	if _err := derivationKey.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	if dicePolicyForKeyVersion == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -127,29 +109,16 @@ func (p *HwCryptoKeyProxy) DeriveDicePolicyBoundKey(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
 func (p *HwCryptoKeyProxy) DeriveKey(
 	ctx context.Context,
-	parameters hwcryptoIHwCryptoKey.DerivedKeyParameters,
-) (hwcryptoIHwCryptoKey.DerivedKey, error) {
-	var _result hwcryptoIHwCryptoKey.DerivedKey
+	parameters interface{},
+) (interface{}, error) {
+	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHwCryptoKey)
-	_data.WriteInt32(1)
-	if _err := parameters.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHwCryptoKey, "deriveKey")
 	if _err != nil {
@@ -166,15 +135,6 @@ func (p *HwCryptoKeyProxy) DeriveKey(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
@@ -333,12 +293,11 @@ func (p *HwCryptoKeyProxy) KeyTokenImport(
 
 func (p *HwCryptoKeyProxy) GetKeyslotData(
 	ctx context.Context,
-	slotId hwcryptoIHwCryptoKey.KeySlot,
+	slotId interface{},
 ) (IOpaqueKey, error) {
 	var _result IOpaqueKey
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHwCryptoKey)
-	_data.WriteInt32(int32(slotId))
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHwCryptoKey, "getKeyslotData")
 	if _err != nil {
@@ -381,18 +340,7 @@ func (s *HwCryptoKeyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_derivationKey hwcryptoIHwCryptoKey.DiceBoundDerivationKey
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_derivationKey.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_derivationKey interface{}
 		_result, _err := s.Impl.DeriveCurrentDicePolicyBoundKey(ctx, _arg_derivationKey)
 		_reply := parcel.New()
 		if _err != nil {
@@ -400,27 +348,13 @@ func (s *HwCryptoKeyStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIHwCryptoKeyDeriveDicePolicyBoundKey:
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_derivationKey hwcryptoIHwCryptoKey.DiceBoundDerivationKey
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_derivationKey.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_derivationKey interface{}
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_dicePolicyForKeyVersion []byte
 		_ = _arg_dicePolicyForKeyVersion
@@ -431,27 +365,13 @@ func (s *HwCryptoKeyStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIHwCryptoKeyDeriveKey:
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_parameters hwcryptoIHwCryptoKey.DerivedKeyParameters
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_parameters.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_parameters interface{}
 		_result, _err := s.Impl.DeriveKey(ctx, _arg_parameters)
 		_reply := parcel.New()
 		if _err != nil {
@@ -459,10 +379,7 @@ func (s *HwCryptoKeyStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIHwCryptoKeyGetHwCryptoOperations:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -563,11 +480,7 @@ func (s *HwCryptoKeyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_raw_slotId, _err := _data.ReadInt32()
-		if _err != nil {
-			return nil, _err
-		}
-		_arg_slotId := hwcryptoIHwCryptoKey.KeySlot(_raw_slotId)
+		var _arg_slotId interface{}
 		_result, _err := s.Impl.GetKeyslotData(ctx, _arg_slotId)
 		_reply := parcel.New()
 		if _err != nil {
@@ -587,14 +500,14 @@ func (s *HwCryptoKeyStub) OnTransaction(
 // provide to NewHwCryptoKeyStub. It contains only the business methods,
 // without AsBinder (which is provided by the stub itself).
 type IHwCryptoKeyServer interface {
-	DeriveCurrentDicePolicyBoundKey(ctx context.Context, derivationKey hwcryptoIHwCryptoKey.DiceBoundDerivationKey) (hwcryptoIHwCryptoKey.DiceCurrentBoundKeyResult, error)
-	DeriveDicePolicyBoundKey(ctx context.Context, derivationKey hwcryptoIHwCryptoKey.DiceBoundDerivationKey, dicePolicyForKeyVersion []byte) (hwcryptoIHwCryptoKey.DiceBoundKeyResult, error)
-	DeriveKey(ctx context.Context, parameters hwcryptoIHwCryptoKey.DerivedKeyParameters) (hwcryptoIHwCryptoKey.DerivedKey, error)
+	DeriveCurrentDicePolicyBoundKey(ctx context.Context, derivationKey interface{}) (interface{}, error)
+	DeriveDicePolicyBoundKey(ctx context.Context, derivationKey interface{}, dicePolicyForKeyVersion []byte) (interface{}, error)
+	DeriveKey(ctx context.Context, parameters interface{}) (interface{}, error)
 	GetHwCryptoOperations(ctx context.Context) (IHwCryptoOperations, error)
 	ImportClearKey(ctx context.Context, keyMaterial types.ExplicitKeyMaterial, newKeyPolicy KeyPolicy) (IOpaqueKey, error)
 	GetCurrentDicePolicy(ctx context.Context) ([]byte, error)
 	KeyTokenImport(ctx context.Context, requestedKey types.OpaqueKeyToken, sealingDicePolicy []byte) (IOpaqueKey, error)
-	GetKeyslotData(ctx context.Context, slotId hwcryptoIHwCryptoKey.KeySlot) (IOpaqueKey, error)
+	GetKeyslotData(ctx context.Context, slotId interface{}) (IOpaqueKey, error)
 }
 
 type hwCryptoKeyStubWrapper struct {
@@ -608,23 +521,23 @@ func (w *hwCryptoKeyStubWrapper) AsBinder() binder.IBinder {
 
 func (w *hwCryptoKeyStubWrapper) DeriveCurrentDicePolicyBoundKey(
 	ctx context.Context,
-	derivationKey hwcryptoIHwCryptoKey.DiceBoundDerivationKey,
-) (hwcryptoIHwCryptoKey.DiceCurrentBoundKeyResult, error) {
+	derivationKey interface{},
+) (interface{}, error) {
 	return w.impl.DeriveCurrentDicePolicyBoundKey(ctx, derivationKey)
 }
 
 func (w *hwCryptoKeyStubWrapper) DeriveDicePolicyBoundKey(
 	ctx context.Context,
-	derivationKey hwcryptoIHwCryptoKey.DiceBoundDerivationKey,
+	derivationKey interface{},
 	dicePolicyForKeyVersion []byte,
-) (hwcryptoIHwCryptoKey.DiceBoundKeyResult, error) {
+) (interface{}, error) {
 	return w.impl.DeriveDicePolicyBoundKey(ctx, derivationKey, dicePolicyForKeyVersion)
 }
 
 func (w *hwCryptoKeyStubWrapper) DeriveKey(
 	ctx context.Context,
-	parameters hwcryptoIHwCryptoKey.DerivedKeyParameters,
-) (hwcryptoIHwCryptoKey.DerivedKey, error) {
+	parameters interface{},
+) (interface{}, error) {
 	return w.impl.DeriveKey(ctx, parameters)
 }
 
@@ -658,7 +571,7 @@ func (w *hwCryptoKeyStubWrapper) KeyTokenImport(
 
 func (w *hwCryptoKeyStubWrapper) GetKeyslotData(
 	ctx context.Context,
-	slotId hwcryptoIHwCryptoKey.KeySlot,
+	slotId interface{},
 ) (IOpaqueKey, error) {
 	return w.impl.GetKeyslotData(ctx, slotId)
 }

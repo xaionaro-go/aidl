@@ -2,7 +2,6 @@ package bufferstreams
 
 import (
 	"fmt"
-	bufferstreamsBufferCacheUpdate "github.com/xaionaro-go/binder/android/graphics/bufferstreams/BufferCacheUpdate"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -15,37 +14,37 @@ const (
 
 type BufferCacheUpdate struct {
 	Tag           int32
-	CacheBuffers  bufferstreamsBufferCacheUpdate.CacheBuffers
-	ForgetBuffers bufferstreamsBufferCacheUpdate.ForgetBuffers
+	CacheBuffers  interface{}
+	ForgetBuffers interface{}
 }
 
 var _ parcel.Parcelable = (*BufferCacheUpdate)(nil)
 
-func (u *BufferCacheUpdate) GetCacheBuffers() (bufferstreamsBufferCacheUpdate.CacheBuffers, bool) {
+func (u *BufferCacheUpdate) GetCacheBuffers() (interface{}, bool) {
 	if u.Tag != BufferCacheUpdateTagCacheBuffers {
-		var _zero bufferstreamsBufferCacheUpdate.CacheBuffers
+		var _zero interface{}
 		return _zero, false
 	}
 	return u.CacheBuffers, true
 }
 
 func (u *BufferCacheUpdate) SetCacheBuffers(
-	v bufferstreamsBufferCacheUpdate.CacheBuffers,
+	v interface{},
 ) {
 	u.Tag = BufferCacheUpdateTagCacheBuffers
 	u.CacheBuffers = v
 }
 
-func (u *BufferCacheUpdate) GetForgetBuffers() (bufferstreamsBufferCacheUpdate.ForgetBuffers, bool) {
+func (u *BufferCacheUpdate) GetForgetBuffers() (interface{}, bool) {
 	if u.Tag != BufferCacheUpdateTagForgetBuffers {
-		var _zero bufferstreamsBufferCacheUpdate.ForgetBuffers
+		var _zero interface{}
 		return _zero, false
 	}
 	return u.ForgetBuffers, true
 }
 
 func (u *BufferCacheUpdate) SetForgetBuffers(
-	v bufferstreamsBufferCacheUpdate.ForgetBuffers,
+	v interface{},
 ) {
 	u.Tag = BufferCacheUpdateTagForgetBuffers
 	u.ForgetBuffers = v
@@ -59,13 +58,7 @@ func (u *BufferCacheUpdate) MarshalParcel(
 
 	switch u.Tag {
 	case BufferCacheUpdateTagCacheBuffers:
-		if _err := u.CacheBuffers.MarshalParcel(p); _err != nil {
-			return _err
-		}
 	case BufferCacheUpdateTagForgetBuffers:
-		if _err := u.ForgetBuffers.MarshalParcel(p); _err != nil {
-			return _err
-		}
 	default:
 		return fmt.Errorf("unknown union tag %d for BufferCacheUpdate", u.Tag)
 	}
@@ -89,13 +82,7 @@ func (u *BufferCacheUpdate) UnmarshalParcel(
 
 	switch u.Tag {
 	case BufferCacheUpdateTagCacheBuffers:
-		if _err = u.CacheBuffers.UnmarshalParcel(p); _err != nil {
-			return _err
-		}
 	case BufferCacheUpdateTagForgetBuffers:
-		if _err = u.ForgetBuffers.UnmarshalParcel(p); _err != nil {
-			return _err
-		}
 	default:
 		return fmt.Errorf("unknown union tag %d for BufferCacheUpdate", u.Tag)
 	}

@@ -3,6 +3,7 @@ package usb
 import (
 	"context"
 	"fmt"
+	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -103,7 +104,7 @@ type IUsbManager interface {
 	SetPortRoles(ctx context.Context, portId string, powerRole int32, dataRole int32) error
 	EnableLimitPowerTransfer(ctx context.Context, portId string, limit bool, operationId int32, callback IUsbOperationInternal) error
 	EnableContaminantDetection(ctx context.Context, portId string, enable bool) error
-	SetUsbDeviceConnectionHandler(ctx context.Context, usbDeviceConnectionHandler interface{}) error
+	SetUsbDeviceConnectionHandler(ctx context.Context, usbDeviceConnectionHandler content.ComponentName) error
 	RegisterForDisplayPortEvents(ctx context.Context, listener IDisplayPortAltModeInfoListener) (bool, error)
 	UnregisterForDisplayPortEvents(ctx context.Context, listener IDisplayPortAltModeInfoListener) error
 }
@@ -1484,10 +1485,14 @@ func (p *UsbManagerProxy) EnableContaminantDetection(
 
 func (p *UsbManagerProxy) SetUsbDeviceConnectionHandler(
 	ctx context.Context,
-	usbDeviceConnectionHandler interface{},
+	usbDeviceConnectionHandler content.ComponentName,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsbManager)
+	_data.WriteInt32(1)
+	if _err := usbDeviceConnectionHandler.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsbManager, "setUsbDeviceConnectionHandler")
 	if _err != nil {
@@ -2541,7 +2546,18 @@ func (s *UsbManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_usbDeviceConnectionHandler interface{}
+		var _arg_usbDeviceConnectionHandler content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_usbDeviceConnectionHandler.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.SetUsbDeviceConnectionHandler(ctx, _arg_usbDeviceConnectionHandler)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2632,7 +2648,7 @@ type IUsbManagerServer interface {
 	SetPortRoles(ctx context.Context, portId string, powerRole int32, dataRole int32) error
 	EnableLimitPowerTransfer(ctx context.Context, portId string, limit bool, operationId int32, callback IUsbOperationInternal) error
 	EnableContaminantDetection(ctx context.Context, portId string, enable bool) error
-	SetUsbDeviceConnectionHandler(ctx context.Context, usbDeviceConnectionHandler interface{}) error
+	SetUsbDeviceConnectionHandler(ctx context.Context, usbDeviceConnectionHandler content.ComponentName) error
 	RegisterForDisplayPortEvents(ctx context.Context, listener IDisplayPortAltModeInfoListener) (bool, error)
 	UnregisterForDisplayPortEvents(ctx context.Context, listener IDisplayPortAltModeInfoListener) error
 }
@@ -2979,7 +2995,7 @@ func (w *usbManagerStubWrapper) EnableContaminantDetection(
 
 func (w *usbManagerStubWrapper) SetUsbDeviceConnectionHandler(
 	ctx context.Context,
-	usbDeviceConnectionHandler interface{},
+	usbDeviceConnectionHandler content.ComponentName,
 ) error {
 	return w.impl.SetUsbDeviceConnectionHandler(ctx, usbDeviceConnectionHandler)
 }

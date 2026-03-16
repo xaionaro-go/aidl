@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	ondeviceintelligence "github.com/xaionaro-go/binder/android/app/ondeviceintelligence"
+	content "github.com/xaionaro-go/binder/android/content"
 	soundtrigger "github.com/xaionaro-go/binder/android/hardware/soundtrigger"
+	media "github.com/xaionaro-go/binder/android/media"
 	speech "github.com/xaionaro-go/binder/android/speech"
 	contentcapture "github.com/xaionaro-go/binder/android/view/contentcapture"
 	"github.com/xaionaro-go/binder/binder"
@@ -30,12 +32,12 @@ const (
 
 type ISandboxedDetectionService interface {
 	AsBinder() binder.IBinder
-	DetectFromDspSource(ctx context.Context, event soundtrigger.SoundTriggerKeyphraseRecognitionEvent, audioFormat interface{}, timeoutMillis int64, callback IDspHotwordDetectionCallback) error
-	DetectFromMicrophoneSource(ctx context.Context, audioStream int32, audioSource int32, audioFormat interface{}, options interface{}, callback IDspHotwordDetectionCallback) error
+	DetectFromDspSource(ctx context.Context, event soundtrigger.SoundTriggerKeyphraseRecognitionEvent, audioFormat media.AudioFormat, timeoutMillis int64, callback IDspHotwordDetectionCallback) error
+	DetectFromMicrophoneSource(ctx context.Context, audioStream int32, audioSource int32, audioFormat media.AudioFormat, options interface{}, callback IDspHotwordDetectionCallback) error
 	DetectWithVisualSignals(ctx context.Context, callback IDetectorSessionVisualQueryDetectionCallback) error
 	UpdateState(ctx context.Context, options interface{}, sharedMemory interface{}, callback ondeviceintelligence.IRemoteCallback) error
 	UpdateAudioFlinger(ctx context.Context, audioFlinger binder.IBinder) error
-	UpdateContentCaptureManager(ctx context.Context, contentCaptureManager contentcapture.IContentCaptureManager, options interface{}) error
+	UpdateContentCaptureManager(ctx context.Context, contentCaptureManager contentcapture.IContentCaptureManager, options content.ContentCaptureOptions) error
 	UpdateRecognitionServiceManager(ctx context.Context, recognitionServiceManager speech.IRecognitionServiceManager) error
 	Ping(ctx context.Context, callback ondeviceintelligence.IRemoteCallback) error
 	StopDetection(ctx context.Context) error
@@ -61,7 +63,7 @@ var _ ISandboxedDetectionService = (*SandboxedDetectionServiceProxy)(nil)
 func (p *SandboxedDetectionServiceProxy) DetectFromDspSource(
 	ctx context.Context,
 	event soundtrigger.SoundTriggerKeyphraseRecognitionEvent,
-	audioFormat interface{},
+	audioFormat media.AudioFormat,
 	timeoutMillis int64,
 	callback IDspHotwordDetectionCallback,
 ) error {
@@ -69,6 +71,10 @@ func (p *SandboxedDetectionServiceProxy) DetectFromDspSource(
 	_data.WriteInterfaceToken(DescriptorISandboxedDetectionService)
 	_data.WriteInt32(1)
 	if _err := event.MarshalParcel(_data); _err != nil {
+		return _err
+	}
+	_data.WriteInt32(1)
+	if _err := audioFormat.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 	_data.WriteInt64(timeoutMillis)
@@ -87,7 +93,7 @@ func (p *SandboxedDetectionServiceProxy) DetectFromMicrophoneSource(
 	ctx context.Context,
 	audioStream int32,
 	audioSource int32,
-	audioFormat interface{},
+	audioFormat media.AudioFormat,
 	options interface{},
 	callback IDspHotwordDetectionCallback,
 ) error {
@@ -95,6 +101,10 @@ func (p *SandboxedDetectionServiceProxy) DetectFromMicrophoneSource(
 	_data.WriteInterfaceToken(DescriptorISandboxedDetectionService)
 	_data.WriteFileDescriptor(audioStream)
 	_data.WriteInt32(audioSource)
+	_data.WriteInt32(1)
+	if _err := audioFormat.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISandboxedDetectionService, "detectFromMicrophoneSource")
@@ -162,11 +172,15 @@ func (p *SandboxedDetectionServiceProxy) UpdateAudioFlinger(
 func (p *SandboxedDetectionServiceProxy) UpdateContentCaptureManager(
 	ctx context.Context,
 	contentCaptureManager contentcapture.IContentCaptureManager,
-	options interface{},
+	options content.ContentCaptureOptions,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISandboxedDetectionService)
 	binder.WriteBinderToParcel(ctx, _data, contentCaptureManager.AsBinder(), p.remote.Transport())
+	_data.WriteInt32(1)
+	if _err := options.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorISandboxedDetectionService, "updateContentCaptureManager")
 	if _err != nil {
@@ -273,7 +287,18 @@ func (s *SandboxedDetectionServiceStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_audioFormat interface{}
+		var _arg_audioFormat media.AudioFormat
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_audioFormat.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_timeoutMillis, _err := _data.ReadInt64()
 		if _err != nil {
 			return nil, _err
@@ -296,7 +321,18 @@ func (s *SandboxedDetectionServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_audioFormat interface{}
+		var _arg_audioFormat media.AudioFormat
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_audioFormat.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		var _arg_options interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_callback IDspHotwordDetectionCallback
@@ -343,7 +379,18 @@ func (s *SandboxedDetectionServiceStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_contentCaptureManager contentcapture.IContentCaptureManager
 		_ = _arg_contentCaptureManager
-		var _arg_options interface{}
+		var _arg_options content.ContentCaptureOptions
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.UpdateContentCaptureManager(ctx, _arg_contentCaptureManager, _arg_options)
 		_ = _err
 		return nil, nil
@@ -393,12 +440,12 @@ func (s *SandboxedDetectionServiceStub) OnTransaction(
 // provide to NewSandboxedDetectionServiceStub. It contains only the business methods,
 // without AsBinder (which is provided by the stub itself).
 type ISandboxedDetectionServiceServer interface {
-	DetectFromDspSource(ctx context.Context, event soundtrigger.SoundTriggerKeyphraseRecognitionEvent, audioFormat interface{}, timeoutMillis int64, callback IDspHotwordDetectionCallback) error
-	DetectFromMicrophoneSource(ctx context.Context, audioStream int32, audioSource int32, audioFormat interface{}, options interface{}, callback IDspHotwordDetectionCallback) error
+	DetectFromDspSource(ctx context.Context, event soundtrigger.SoundTriggerKeyphraseRecognitionEvent, audioFormat media.AudioFormat, timeoutMillis int64, callback IDspHotwordDetectionCallback) error
+	DetectFromMicrophoneSource(ctx context.Context, audioStream int32, audioSource int32, audioFormat media.AudioFormat, options interface{}, callback IDspHotwordDetectionCallback) error
 	DetectWithVisualSignals(ctx context.Context, callback IDetectorSessionVisualQueryDetectionCallback) error
 	UpdateState(ctx context.Context, options interface{}, sharedMemory interface{}, callback ondeviceintelligence.IRemoteCallback) error
 	UpdateAudioFlinger(ctx context.Context, audioFlinger binder.IBinder) error
-	UpdateContentCaptureManager(ctx context.Context, contentCaptureManager contentcapture.IContentCaptureManager, options interface{}) error
+	UpdateContentCaptureManager(ctx context.Context, contentCaptureManager contentcapture.IContentCaptureManager, options content.ContentCaptureOptions) error
 	UpdateRecognitionServiceManager(ctx context.Context, recognitionServiceManager speech.IRecognitionServiceManager) error
 	Ping(ctx context.Context, callback ondeviceintelligence.IRemoteCallback) error
 	StopDetection(ctx context.Context) error
@@ -417,7 +464,7 @@ func (w *sandboxedDetectionServiceStubWrapper) AsBinder() binder.IBinder {
 func (w *sandboxedDetectionServiceStubWrapper) DetectFromDspSource(
 	ctx context.Context,
 	event soundtrigger.SoundTriggerKeyphraseRecognitionEvent,
-	audioFormat interface{},
+	audioFormat media.AudioFormat,
 	timeoutMillis int64,
 	callback IDspHotwordDetectionCallback,
 ) error {
@@ -428,7 +475,7 @@ func (w *sandboxedDetectionServiceStubWrapper) DetectFromMicrophoneSource(
 	ctx context.Context,
 	audioStream int32,
 	audioSource int32,
-	audioFormat interface{},
+	audioFormat media.AudioFormat,
 	options interface{},
 	callback IDspHotwordDetectionCallback,
 ) error {
@@ -461,7 +508,7 @@ func (w *sandboxedDetectionServiceStubWrapper) UpdateAudioFlinger(
 func (w *sandboxedDetectionServiceStubWrapper) UpdateContentCaptureManager(
 	ctx context.Context,
 	contentCaptureManager contentcapture.IContentCaptureManager,
-	options interface{},
+	options content.ContentCaptureOptions,
 ) error {
 	return w.impl.UpdateContentCaptureManager(ctx, contentCaptureManager, options)
 }

@@ -3,6 +3,7 @@ package autofill
 import (
 	"context"
 	"fmt"
+	content "github.com/xaionaro-go/binder/android/content"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
 	serviceAutofill "github.com/xaionaro-go/binder/android/service/autofill"
 	"github.com/xaionaro-go/binder/binder"
@@ -48,9 +49,9 @@ const (
 
 type IAutoFillManager interface {
 	AsBinder() binder.IBinder
-	AddClient(ctx context.Context, client IAutoFillManagerClient, componentName interface{}, result os.IResultReceiver, credmanRequested bool) error
+	AddClient(ctx context.Context, client IAutoFillManagerClient, componentName content.ComponentName, result os.IResultReceiver, credmanRequested bool) error
 	RemoveClient(ctx context.Context, client IAutoFillManagerClient) error
-	StartSession(ctx context.Context, activityToken binder.IBinder, appCallback binder.IBinder, autoFillId AutofillId, bounds graphics.Rect, value AutofillValue, hasCallback bool, flags int32, componentName interface{}, compatMode bool, result os.IResultReceiver) error
+	StartSession(ctx context.Context, activityToken binder.IBinder, appCallback binder.IBinder, autoFillId AutofillId, bounds graphics.Rect, value AutofillValue, hasCallback bool, flags int32, componentName content.ComponentName, compatMode bool, result os.IResultReceiver) error
 	GetFillEventHistory(ctx context.Context, result os.IResultReceiver) error
 	RestoreSession(ctx context.Context, sessionId int32, activityToken binder.IBinder, appCallback binder.IBinder, result os.IResultReceiver) error
 	UpdateSession(ctx context.Context, sessionId int32, id AutofillId, bounds graphics.Rect, value AutofillValue, action int32, flags int32) error
@@ -71,7 +72,7 @@ type IAutoFillManager interface {
 	GetAutofillServiceComponentName(ctx context.Context, result os.IResultReceiver) error
 	GetAvailableFieldClassificationAlgorithms(ctx context.Context, result os.IResultReceiver) error
 	GetDefaultFieldClassificationAlgorithm(ctx context.Context, result os.IResultReceiver) error
-	SetAugmentedAutofillWhitelist(ctx context.Context, packages []string, activities []interface{}, result os.IResultReceiver) error
+	SetAugmentedAutofillWhitelist(ctx context.Context, packages []string, activities []content.ComponentName, result os.IResultReceiver) error
 	NotifyNotExpiringResponseDuringAuth(ctx context.Context, sessionId int32) error
 	NotifyViewEnteredIgnoredDuringAuthCount(ctx context.Context, sessionId int32) error
 	SetAutofillIdsAttemptedForRefill(ctx context.Context, sessionId int32, ids []AutofillId) error
@@ -98,7 +99,7 @@ var _ IAutoFillManager = (*AutoFillManagerProxy)(nil)
 func (p *AutoFillManagerProxy) AddClient(
 	ctx context.Context,
 	client IAutoFillManagerClient,
-	componentName interface{},
+	componentName content.ComponentName,
 	result os.IResultReceiver,
 	credmanRequested bool,
 ) error {
@@ -106,6 +107,10 @@ func (p *AutoFillManagerProxy) AddClient(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillManager)
 	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
+	_data.WriteInt32(1)
+	if _err := componentName.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteInt32(_identity.UserID)
 	binder.WriteBinderToParcel(ctx, _data, result.AsBinder(), p.remote.Transport())
 	_data.WriteBool(credmanRequested)
@@ -147,7 +152,7 @@ func (p *AutoFillManagerProxy) StartSession(
 	value AutofillValue,
 	hasCallback bool,
 	flags int32,
-	componentName interface{},
+	componentName content.ComponentName,
 	compatMode bool,
 	result os.IResultReceiver,
 ) error {
@@ -171,6 +176,10 @@ func (p *AutoFillManagerProxy) StartSession(
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(hasCallback)
 	_data.WriteInt32(flags)
+	_data.WriteInt32(1)
+	if _err := componentName.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteBool(compatMode)
 	binder.WriteBinderToParcel(ctx, _data, result.AsBinder(), p.remote.Transport())
 
@@ -601,7 +610,7 @@ func (p *AutoFillManagerProxy) GetDefaultFieldClassificationAlgorithm(
 func (p *AutoFillManagerProxy) SetAugmentedAutofillWhitelist(
 	ctx context.Context,
 	packages []string,
-	activities []interface{},
+	activities []content.ComponentName,
 	result os.IResultReceiver,
 ) error {
 	_data := parcel.New()
@@ -618,6 +627,11 @@ func (p *AutoFillManagerProxy) SetAugmentedAutofillWhitelist(
 		_data.WriteInt32(-1)
 	} else {
 		_data.WriteInt32(int32(len(activities)))
+		for _, _item := range activities {
+			if _err := _item.MarshalParcel(_data); _err != nil {
+				return _err
+			}
+		}
 	}
 	binder.WriteBinderToParcel(ctx, _data, result.AsBinder(), p.remote.Transport())
 
@@ -761,7 +775,18 @@ func (s *AutoFillManagerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_client IAutoFillManagerClient
 		_ = _arg_client
-		var _arg_componentName interface{}
+		var _arg_componentName content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_componentName.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -845,7 +870,18 @@ func (s *AutoFillManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_componentName interface{}
+		var _arg_componentName content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_componentName.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_compatMode, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -1201,7 +1237,7 @@ func (s *AutoFillManagerStub) OnTransaction(
 		var _arg_packages []string
 		_ = _arg_packages
 		// TODO: array/list param unmarshaling not yet supported in stubs
-		var _arg_activities []interface{}
+		var _arg_activities []content.ComponentName
 		_ = _arg_activities
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_result os.IResultReceiver
@@ -1299,9 +1335,9 @@ func (s *AutoFillManagerStub) OnTransaction(
 // provide to NewAutoFillManagerStub. It contains only the business methods,
 // without AsBinder (which is provided by the stub itself).
 type IAutoFillManagerServer interface {
-	AddClient(ctx context.Context, client IAutoFillManagerClient, componentName interface{}, result os.IResultReceiver, credmanRequested bool) error
+	AddClient(ctx context.Context, client IAutoFillManagerClient, componentName content.ComponentName, result os.IResultReceiver, credmanRequested bool) error
 	RemoveClient(ctx context.Context, client IAutoFillManagerClient) error
-	StartSession(ctx context.Context, activityToken binder.IBinder, appCallback binder.IBinder, autoFillId AutofillId, bounds graphics.Rect, value AutofillValue, hasCallback bool, flags int32, componentName interface{}, compatMode bool, result os.IResultReceiver) error
+	StartSession(ctx context.Context, activityToken binder.IBinder, appCallback binder.IBinder, autoFillId AutofillId, bounds graphics.Rect, value AutofillValue, hasCallback bool, flags int32, componentName content.ComponentName, compatMode bool, result os.IResultReceiver) error
 	GetFillEventHistory(ctx context.Context, result os.IResultReceiver) error
 	RestoreSession(ctx context.Context, sessionId int32, activityToken binder.IBinder, appCallback binder.IBinder, result os.IResultReceiver) error
 	UpdateSession(ctx context.Context, sessionId int32, id AutofillId, bounds graphics.Rect, value AutofillValue, action int32, flags int32) error
@@ -1322,7 +1358,7 @@ type IAutoFillManagerServer interface {
 	GetAutofillServiceComponentName(ctx context.Context, result os.IResultReceiver) error
 	GetAvailableFieldClassificationAlgorithms(ctx context.Context, result os.IResultReceiver) error
 	GetDefaultFieldClassificationAlgorithm(ctx context.Context, result os.IResultReceiver) error
-	SetAugmentedAutofillWhitelist(ctx context.Context, packages []string, activities []interface{}, result os.IResultReceiver) error
+	SetAugmentedAutofillWhitelist(ctx context.Context, packages []string, activities []content.ComponentName, result os.IResultReceiver) error
 	NotifyNotExpiringResponseDuringAuth(ctx context.Context, sessionId int32) error
 	NotifyViewEnteredIgnoredDuringAuthCount(ctx context.Context, sessionId int32) error
 	SetAutofillIdsAttemptedForRefill(ctx context.Context, sessionId int32, ids []AutofillId) error
@@ -1342,7 +1378,7 @@ func (w *autoFillManagerStubWrapper) AsBinder() binder.IBinder {
 func (w *autoFillManagerStubWrapper) AddClient(
 	ctx context.Context,
 	client IAutoFillManagerClient,
-	componentName interface{},
+	componentName content.ComponentName,
 	result os.IResultReceiver,
 	credmanRequested bool,
 ) error {
@@ -1365,7 +1401,7 @@ func (w *autoFillManagerStubWrapper) StartSession(
 	value AutofillValue,
 	hasCallback bool,
 	flags int32,
-	componentName interface{},
+	componentName content.ComponentName,
 	compatMode bool,
 	result os.IResultReceiver,
 ) error {
@@ -1531,7 +1567,7 @@ func (w *autoFillManagerStubWrapper) GetDefaultFieldClassificationAlgorithm(
 func (w *autoFillManagerStubWrapper) SetAugmentedAutofillWhitelist(
 	ctx context.Context,
 	packages []string,
-	activities []interface{},
+	activities []content.ComponentName,
 	result os.IResultReceiver,
 ) error {
 	return w.impl.SetAugmentedAutofillWhitelist(ctx, packages, activities, result)

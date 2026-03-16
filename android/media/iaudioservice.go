@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	bluetooth "github.com/xaionaro-go/binder/android/bluetooth"
+	content "github.com/xaionaro-go/binder/android/content"
 	audiopolicy "github.com/xaionaro-go/binder/android/media/audiopolicy"
 	mediaProjection "github.com/xaionaro-go/binder/android/media/projection"
 	net "github.com/xaionaro-go/binder/android/net"
@@ -362,7 +363,7 @@ type IAudioService interface {
 	IsSurroundFormatEnabled(ctx context.Context, audioFormat int32) (bool, error)
 	SetEncodedSurroundMode(ctx context.Context, mode int32) (bool, error)
 	GetEncodedSurroundMode(ctx context.Context, targetSdkVersion int32) (int32, error)
-	SetSpeakerphoneOn(ctx context.Context, cb binder.IBinder, on bool, attributionSource interface{}) error
+	SetSpeakerphoneOn(ctx context.Context, cb binder.IBinder, on bool, attributionSource content.AttributionSource) error
 	IsSpeakerphoneOn(ctx context.Context) (bool, error)
 	SetBluetoothScoOn(ctx context.Context, on bool) error
 	SetA2dpSuspended(ctx context.Context, on bool) error
@@ -374,9 +375,9 @@ type IAudioService interface {
 	AbandonAudioFocus(ctx context.Context, fd IAudioFocusDispatcher, clientId string, aa AudioAttributes, callingPackageName string) (int32, error)
 	UnregisterAudioFocusClient(ctx context.Context, clientId string) error
 	GetCurrentAudioFocus(ctx context.Context) (int32, error)
-	StartBluetoothSco(ctx context.Context, cb binder.IBinder, targetSdkVersion int32, attributionSource interface{}) error
-	StartBluetoothScoVirtualCall(ctx context.Context, cb binder.IBinder, attributionSource interface{}) error
-	StopBluetoothSco(ctx context.Context, cb binder.IBinder, attributionSource interface{}) error
+	StartBluetoothSco(ctx context.Context, cb binder.IBinder, targetSdkVersion int32, attributionSource content.AttributionSource) error
+	StartBluetoothScoVirtualCall(ctx context.Context, cb binder.IBinder, attributionSource content.AttributionSource) error
+	StopBluetoothSco(ctx context.Context, cb binder.IBinder, attributionSource content.AttributionSource) error
 	ForceVolumeControlStream(ctx context.Context, streamType int32, cb binder.IBinder) error
 	SetRingtonePlayer(ctx context.Context, player IRingtonePlayer) error
 	GetRingtonePlayer(ctx context.Context) (IRingtonePlayer, error)
@@ -415,7 +416,7 @@ type IAudioService interface {
 	IsBluetoothAudioDeviceCategoryFixed(ctx context.Context, address string) (bool, error)
 	SetHdmiSystemAudioSupported(ctx context.Context, on bool) (int32, error)
 	IsHdmiSystemAudioSupported(ctx context.Context) (bool, error)
-	RegisterAudioPolicy(ctx context.Context, policyConfig AudioPolicyConfig, pcb audiopolicy.IAudioPolicyCallback, hasFocusListener bool, isFocusPolicy bool, isTestFocusPolicy bool, isVolumeController bool, projection mediaProjection.IMediaProjection, attributionSource interface{}) (string, error)
+	RegisterAudioPolicy(ctx context.Context, policyConfig AudioPolicyConfig, pcb audiopolicy.IAudioPolicyCallback, hasFocusListener bool, isFocusPolicy bool, isTestFocusPolicy bool, isVolumeController bool, projection mediaProjection.IMediaProjection, attributionSource content.AttributionSource) (string, error)
 	UnregisterAudioPolicyAsync(ctx context.Context, pcb audiopolicy.IAudioPolicyCallback) error
 	GetRegisteredPolicyMixes(ctx context.Context) ([]AudioMix, error)
 	UnregisterAudioPolicy(ctx context.Context, pcb audiopolicy.IAudioPolicyCallback) error
@@ -480,7 +481,7 @@ type IAudioService interface {
 	IsMusicActive(ctx context.Context, remotely bool) (bool, error)
 	GetDeviceMaskForStream(ctx context.Context, streamType int32) (int32, error)
 	GetAvailableCommunicationDeviceIds(ctx context.Context) ([]int32, error)
-	SetCommunicationDevice(ctx context.Context, cb binder.IBinder, portId int32, attributionSource interface{}) (bool, error)
+	SetCommunicationDevice(ctx context.Context, cb binder.IBinder, portId int32, attributionSource content.AttributionSource) (bool, error)
 	GetCommunicationDevice(ctx context.Context) (int32, error)
 	RegisterCommunicationDeviceDispatcher(ctx context.Context, dispatcher ICommunicationDeviceDispatcher) error
 	UnregisterCommunicationDeviceDispatcher(ctx context.Context, dispatcher ICommunicationDeviceDispatcher) error
@@ -2557,12 +2558,16 @@ func (p *AudioServiceProxy) SetSpeakerphoneOn(
 	ctx context.Context,
 	cb binder.IBinder,
 	on bool,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	binder.WriteBinderToParcel(ctx, _data, cb, p.remote.Transport())
 	_data.WriteBool(on)
+	_data.WriteInt32(1)
+	if _err := attributionSource.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "setSpeakerphoneOn")
 	if _err != nil {
@@ -2924,12 +2929,16 @@ func (p *AudioServiceProxy) StartBluetoothSco(
 	ctx context.Context,
 	cb binder.IBinder,
 	targetSdkVersion int32,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	binder.WriteBinderToParcel(ctx, _data, cb, p.remote.Transport())
 	_data.WriteInt32(targetSdkVersion)
+	_data.WriteInt32(1)
+	if _err := attributionSource.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "startBluetoothSco")
 	if _err != nil {
@@ -2952,11 +2961,15 @@ func (p *AudioServiceProxy) StartBluetoothSco(
 func (p *AudioServiceProxy) StartBluetoothScoVirtualCall(
 	ctx context.Context,
 	cb binder.IBinder,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	binder.WriteBinderToParcel(ctx, _data, cb, p.remote.Transport())
+	_data.WriteInt32(1)
+	if _err := attributionSource.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "startBluetoothScoVirtualCall")
 	if _err != nil {
@@ -2979,11 +2992,15 @@ func (p *AudioServiceProxy) StartBluetoothScoVirtualCall(
 func (p *AudioServiceProxy) StopBluetoothSco(
 	ctx context.Context,
 	cb binder.IBinder,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	binder.WriteBinderToParcel(ctx, _data, cb, p.remote.Transport())
+	_data.WriteInt32(1)
+	if _err := attributionSource.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "stopBluetoothSco")
 	if _err != nil {
@@ -4048,7 +4065,7 @@ func (p *AudioServiceProxy) RegisterAudioPolicy(
 	isTestFocusPolicy bool,
 	isVolumeController bool,
 	projection mediaProjection.IMediaProjection,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 ) (string, error) {
 	var _result string
 	_data := parcel.New()
@@ -4063,6 +4080,10 @@ func (p *AudioServiceProxy) RegisterAudioPolicy(
 	_data.WriteBool(isTestFocusPolicy)
 	_data.WriteBool(isVolumeController)
 	binder.WriteBinderToParcel(ctx, _data, projection.AsBinder(), p.remote.Transport())
+	_data.WriteInt32(1)
+	if _err := attributionSource.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerAudioPolicy")
 	if _err != nil {
@@ -6089,13 +6110,17 @@ func (p *AudioServiceProxy) SetCommunicationDevice(
 	ctx context.Context,
 	cb binder.IBinder,
 	portId int32,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	binder.WriteBinderToParcel(ctx, _data, cb, p.remote.Transport())
 	_data.WriteInt32(portId)
+	_data.WriteInt32(1)
+	if _err := attributionSource.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "setCommunicationDevice")
 	if _err != nil {
@@ -10085,7 +10110,18 @@ func (s *AudioServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource interface{}
+		var _arg_attributionSource content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err = s.Impl.SetSpeakerphoneOn(ctx, _arg_cb, _arg_on, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -10330,7 +10366,18 @@ func (s *AudioServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource interface{}
+		var _arg_attributionSource content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err = s.Impl.StartBluetoothSco(ctx, _arg_cb, _arg_targetSdkVersion, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -10346,7 +10393,18 @@ func (s *AudioServiceStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_cb binder.IBinder
 		_ = _arg_cb
-		var _arg_attributionSource interface{}
+		var _arg_attributionSource content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.StartBluetoothScoVirtualCall(ctx, _arg_cb, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -10362,7 +10420,18 @@ func (s *AudioServiceStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_cb binder.IBinder
 		_ = _arg_cb
-		var _arg_attributionSource interface{}
+		var _arg_attributionSource content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.StopBluetoothSco(ctx, _arg_cb, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -10993,7 +11062,18 @@ func (s *AudioServiceStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_projection mediaProjection.IMediaProjection
 		_ = _arg_projection
-		var _arg_attributionSource interface{}
+		var _arg_attributionSource content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_result, _err := s.Impl.RegisterAudioPolicy(ctx, _arg_policyConfig, _arg_pcb, _arg_hasFocusListener, _arg_isFocusPolicy, _arg_isTestFocusPolicy, _arg_isVolumeController, _arg_projection, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -12294,7 +12374,18 @@ func (s *AudioServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource interface{}
+		var _arg_attributionSource content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_result, _err := s.Impl.SetCommunicationDevice(ctx, _arg_cb, _arg_portId, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -14039,7 +14130,7 @@ type IAudioServiceServer interface {
 	IsSurroundFormatEnabled(ctx context.Context, audioFormat int32) (bool, error)
 	SetEncodedSurroundMode(ctx context.Context, mode int32) (bool, error)
 	GetEncodedSurroundMode(ctx context.Context, targetSdkVersion int32) (int32, error)
-	SetSpeakerphoneOn(ctx context.Context, cb binder.IBinder, on bool, attributionSource interface{}) error
+	SetSpeakerphoneOn(ctx context.Context, cb binder.IBinder, on bool, attributionSource content.AttributionSource) error
 	IsSpeakerphoneOn(ctx context.Context) (bool, error)
 	SetBluetoothScoOn(ctx context.Context, on bool) error
 	SetA2dpSuspended(ctx context.Context, on bool) error
@@ -14051,9 +14142,9 @@ type IAudioServiceServer interface {
 	AbandonAudioFocus(ctx context.Context, fd IAudioFocusDispatcher, clientId string, aa AudioAttributes, callingPackageName string) (int32, error)
 	UnregisterAudioFocusClient(ctx context.Context, clientId string) error
 	GetCurrentAudioFocus(ctx context.Context) (int32, error)
-	StartBluetoothSco(ctx context.Context, cb binder.IBinder, targetSdkVersion int32, attributionSource interface{}) error
-	StartBluetoothScoVirtualCall(ctx context.Context, cb binder.IBinder, attributionSource interface{}) error
-	StopBluetoothSco(ctx context.Context, cb binder.IBinder, attributionSource interface{}) error
+	StartBluetoothSco(ctx context.Context, cb binder.IBinder, targetSdkVersion int32, attributionSource content.AttributionSource) error
+	StartBluetoothScoVirtualCall(ctx context.Context, cb binder.IBinder, attributionSource content.AttributionSource) error
+	StopBluetoothSco(ctx context.Context, cb binder.IBinder, attributionSource content.AttributionSource) error
 	ForceVolumeControlStream(ctx context.Context, streamType int32, cb binder.IBinder) error
 	SetRingtonePlayer(ctx context.Context, player IRingtonePlayer) error
 	GetRingtonePlayer(ctx context.Context) (IRingtonePlayer, error)
@@ -14092,7 +14183,7 @@ type IAudioServiceServer interface {
 	IsBluetoothAudioDeviceCategoryFixed(ctx context.Context, address string) (bool, error)
 	SetHdmiSystemAudioSupported(ctx context.Context, on bool) (int32, error)
 	IsHdmiSystemAudioSupported(ctx context.Context) (bool, error)
-	RegisterAudioPolicy(ctx context.Context, policyConfig AudioPolicyConfig, pcb audiopolicy.IAudioPolicyCallback, hasFocusListener bool, isFocusPolicy bool, isTestFocusPolicy bool, isVolumeController bool, projection mediaProjection.IMediaProjection, attributionSource interface{}) (string, error)
+	RegisterAudioPolicy(ctx context.Context, policyConfig AudioPolicyConfig, pcb audiopolicy.IAudioPolicyCallback, hasFocusListener bool, isFocusPolicy bool, isTestFocusPolicy bool, isVolumeController bool, projection mediaProjection.IMediaProjection, attributionSource content.AttributionSource) (string, error)
 	UnregisterAudioPolicyAsync(ctx context.Context, pcb audiopolicy.IAudioPolicyCallback) error
 	GetRegisteredPolicyMixes(ctx context.Context) ([]AudioMix, error)
 	UnregisterAudioPolicy(ctx context.Context, pcb audiopolicy.IAudioPolicyCallback) error
@@ -14157,7 +14248,7 @@ type IAudioServiceServer interface {
 	IsMusicActive(ctx context.Context, remotely bool) (bool, error)
 	GetDeviceMaskForStream(ctx context.Context, streamType int32) (int32, error)
 	GetAvailableCommunicationDeviceIds(ctx context.Context) ([]int32, error)
-	SetCommunicationDevice(ctx context.Context, cb binder.IBinder, portId int32, attributionSource interface{}) (bool, error)
+	SetCommunicationDevice(ctx context.Context, cb binder.IBinder, portId int32, attributionSource content.AttributionSource) (bool, error)
 	GetCommunicationDevice(ctx context.Context) (int32, error)
 	RegisterCommunicationDeviceDispatcher(ctx context.Context, dispatcher ICommunicationDeviceDispatcher) error
 	UnregisterCommunicationDeviceDispatcher(ctx context.Context, dispatcher ICommunicationDeviceDispatcher) error
@@ -14746,7 +14837,7 @@ func (w *audioServiceStubWrapper) SetSpeakerphoneOn(
 	ctx context.Context,
 	cb binder.IBinder,
 	on bool,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 ) error {
 	return w.impl.SetSpeakerphoneOn(ctx, cb, on, attributionSource)
 }
@@ -14839,7 +14930,7 @@ func (w *audioServiceStubWrapper) StartBluetoothSco(
 	ctx context.Context,
 	cb binder.IBinder,
 	targetSdkVersion int32,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 ) error {
 	return w.impl.StartBluetoothSco(ctx, cb, targetSdkVersion, attributionSource)
 }
@@ -14847,7 +14938,7 @@ func (w *audioServiceStubWrapper) StartBluetoothSco(
 func (w *audioServiceStubWrapper) StartBluetoothScoVirtualCall(
 	ctx context.Context,
 	cb binder.IBinder,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 ) error {
 	return w.impl.StartBluetoothScoVirtualCall(ctx, cb, attributionSource)
 }
@@ -14855,7 +14946,7 @@ func (w *audioServiceStubWrapper) StartBluetoothScoVirtualCall(
 func (w *audioServiceStubWrapper) StopBluetoothSco(
 	ctx context.Context,
 	cb binder.IBinder,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 ) error {
 	return w.impl.StopBluetoothSco(ctx, cb, attributionSource)
 }
@@ -15130,7 +15221,7 @@ func (w *audioServiceStubWrapper) RegisterAudioPolicy(
 	isTestFocusPolicy bool,
 	isVolumeController bool,
 	projection mediaProjection.IMediaProjection,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 ) (string, error) {
 	return w.impl.RegisterAudioPolicy(ctx, policyConfig, pcb, hasFocusListener, isFocusPolicy, isTestFocusPolicy, isVolumeController, projection, attributionSource)
 }
@@ -15632,7 +15723,7 @@ func (w *audioServiceStubWrapper) SetCommunicationDevice(
 	ctx context.Context,
 	cb binder.IBinder,
 	portId int32,
-	attributionSource interface{},
+	attributionSource content.AttributionSource,
 ) (bool, error) {
 	return w.impl.SetCommunicationDevice(ctx, cb, portId, attributionSource)
 }

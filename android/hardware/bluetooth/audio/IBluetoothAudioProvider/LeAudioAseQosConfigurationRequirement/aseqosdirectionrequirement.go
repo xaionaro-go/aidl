@@ -1,6 +1,7 @@
 package LeAudioAseQosConfigurationRequirement
 
 import (
+	audio "github.com/xaionaro-go/binder/android/hardware/bluetooth/audio"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -8,14 +9,14 @@ import (
 
 type AseQosDirectionRequirement struct {
 	Framing                         interface{}
-	PreferredPhy                    []interface{}
+	PreferredPhy                    []audio.Phy
 	PreferredRetransmissionNum      int32
 	MaxTransportLatencyMs           int32
 	PresentationDelayMinUs          int32
 	PresentationDelayMaxUs          int32
 	PreferredPresentationDelayMinUs int32
 	PreferredPresentationDelayMaxUs int32
-	AseConfiguration                interface{}
+	AseConfiguration                audio.LeAudioAseConfiguration
 }
 
 var _ parcel.Parcelable = (*AseQosDirectionRequirement)(nil)
@@ -28,6 +29,9 @@ func (s *AseQosDirectionRequirement) MarshalParcel(
 		p.WriteInt32(-1)
 	} else {
 		p.WriteInt32(int32(len(s.PreferredPhy)))
+		for _, _item := range s.PreferredPhy {
+			p.WritePaddedByte(byte(_item))
+		}
 	}
 	p.WriteInt32(s.PreferredRetransmissionNum)
 	p.WriteInt32(s.MaxTransportLatencyMs)
@@ -35,6 +39,9 @@ func (s *AseQosDirectionRequirement) MarshalParcel(
 	p.WriteInt32(s.PresentationDelayMaxUs)
 	p.WriteInt32(s.PreferredPresentationDelayMinUs)
 	p.WriteInt32(s.PreferredPresentationDelayMaxUs)
+	if _err := s.AseConfiguration.MarshalParcel(p); _err != nil {
+		return _err
+	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil
@@ -54,8 +61,13 @@ func (s *AseQosDirectionRequirement) UnmarshalParcel(
 		return _err
 	}
 	if _count0 >= 0 {
-		s.PreferredPhy = make([]interface{}, _count0)
+		s.PreferredPhy = make([]audio.Phy, _count0)
 		for _i := int32(0); _i < _count0; _i++ {
+			_raw, _err := p.ReadPaddedByte()
+			if _err != nil {
+				return _err
+			}
+			s.PreferredPhy[_i] = audio.Phy(_raw)
 		}
 	}
 
@@ -86,6 +98,10 @@ func (s *AseQosDirectionRequirement) UnmarshalParcel(
 
 	s.PreferredPresentationDelayMaxUs, _err = p.ReadInt32()
 	if _err != nil {
+		return _err
+	}
+
+	if _err = s.AseConfiguration.UnmarshalParcel(p); _err != nil {
 		return _err
 	}
 

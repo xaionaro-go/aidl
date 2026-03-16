@@ -3,7 +3,7 @@ package session
 import (
 	"context"
 	"fmt"
-	app "github.com/xaionaro-go/binder/android/app"
+	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -39,9 +39,9 @@ type ISession interface {
 	GetController(ctx context.Context) (ISessionController, error)
 	SetFlags(ctx context.Context, flags int32) error
 	SetActive(ctx context.Context, active bool) error
-	SetMediaButtonReceiver(ctx context.Context, mbr app.PendingIntent) error
-	SetMediaButtonBroadcastReceiver(ctx context.Context, broadcastReceiver interface{}) error
-	SetLaunchPendingIntent(ctx context.Context, pi app.PendingIntent) error
+	SetMediaButtonReceiver(ctx context.Context, mbr interface{}) error
+	SetMediaButtonBroadcastReceiver(ctx context.Context, broadcastReceiver content.ComponentName) error
+	SetLaunchPendingIntent(ctx context.Context, pi interface{}) error
 	DestroySession(ctx context.Context) error
 	SetMetadata(ctx context.Context, metadata interface{}, duration int64, metadataDescription string) error
 	SetPlaybackState(ctx context.Context, state PlaybackState) error
@@ -182,14 +182,10 @@ func (p *SessionProxy) SetActive(
 
 func (p *SessionProxy) SetMediaButtonReceiver(
 	ctx context.Context,
-	mbr app.PendingIntent,
+	mbr interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISession)
-	_data.WriteInt32(1)
-	if _err := mbr.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorISession, "setMediaButtonReceiver")
 	if _err != nil {
@@ -211,10 +207,14 @@ func (p *SessionProxy) SetMediaButtonReceiver(
 
 func (p *SessionProxy) SetMediaButtonBroadcastReceiver(
 	ctx context.Context,
-	broadcastReceiver interface{},
+	broadcastReceiver content.ComponentName,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISession)
+	_data.WriteInt32(1)
+	if _err := broadcastReceiver.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorISession, "setMediaButtonBroadcastReceiver")
 	if _err != nil {
@@ -236,14 +236,10 @@ func (p *SessionProxy) SetMediaButtonBroadcastReceiver(
 
 func (p *SessionProxy) SetLaunchPendingIntent(
 	ctx context.Context,
-	pi app.PendingIntent,
+	pi interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISession)
-	_data.WriteInt32(1)
-	if _err := pi.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorISession, "setLaunchPendingIntent")
 	if _err != nil {
@@ -637,18 +633,7 @@ func (s *SessionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_mbr app.PendingIntent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_mbr.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_mbr interface{}
 		_err := s.Impl.SetMediaButtonReceiver(ctx, _arg_mbr)
 		_reply := parcel.New()
 		if _err != nil {
@@ -661,7 +646,18 @@ func (s *SessionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_broadcastReceiver interface{}
+		var _arg_broadcastReceiver content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_broadcastReceiver.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.SetMediaButtonBroadcastReceiver(ctx, _arg_broadcastReceiver)
 		_reply := parcel.New()
 		if _err != nil {
@@ -674,18 +670,7 @@ func (s *SessionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_pi app.PendingIntent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_pi.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_pi interface{}
 		_err := s.Impl.SetLaunchPendingIntent(ctx, _arg_pi)
 		_reply := parcel.New()
 		if _err != nil {
@@ -885,9 +870,9 @@ type ISessionServer interface {
 	GetController(ctx context.Context) (ISessionController, error)
 	SetFlags(ctx context.Context, flags int32) error
 	SetActive(ctx context.Context, active bool) error
-	SetMediaButtonReceiver(ctx context.Context, mbr app.PendingIntent) error
-	SetMediaButtonBroadcastReceiver(ctx context.Context, broadcastReceiver interface{}) error
-	SetLaunchPendingIntent(ctx context.Context, pi app.PendingIntent) error
+	SetMediaButtonReceiver(ctx context.Context, mbr interface{}) error
+	SetMediaButtonBroadcastReceiver(ctx context.Context, broadcastReceiver content.ComponentName) error
+	SetLaunchPendingIntent(ctx context.Context, pi interface{}) error
 	DestroySession(ctx context.Context) error
 	SetMetadata(ctx context.Context, metadata interface{}, duration int64, metadataDescription string) error
 	SetPlaybackState(ctx context.Context, state PlaybackState) error
@@ -940,21 +925,21 @@ func (w *sessionStubWrapper) SetActive(
 
 func (w *sessionStubWrapper) SetMediaButtonReceiver(
 	ctx context.Context,
-	mbr app.PendingIntent,
+	mbr interface{},
 ) error {
 	return w.impl.SetMediaButtonReceiver(ctx, mbr)
 }
 
 func (w *sessionStubWrapper) SetMediaButtonBroadcastReceiver(
 	ctx context.Context,
-	broadcastReceiver interface{},
+	broadcastReceiver content.ComponentName,
 ) error {
 	return w.impl.SetMediaButtonBroadcastReceiver(ctx, broadcastReceiver)
 }
 
 func (w *sessionStubWrapper) SetLaunchPendingIntent(
 	ctx context.Context,
-	pi app.PendingIntent,
+	pi interface{},
 ) error {
 	return w.impl.SetLaunchPendingIntent(ctx, pi)
 }

@@ -3,7 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
-	pm "github.com/xaionaro-go/binder/android/content/pm"
+	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -23,11 +23,11 @@ const (
 
 type ISearchManager interface {
 	AsBinder() binder.IBinder
-	GetSearchableInfo(ctx context.Context, launchActivity interface{}) (SearchableInfo, error)
+	GetSearchableInfo(ctx context.Context, launchActivity content.ComponentName) (SearchableInfo, error)
 	GetSearchablesInGlobalSearch(ctx context.Context) ([]SearchableInfo, error)
-	GetGlobalSearchActivities(ctx context.Context) ([]pm.ResolveInfo, error)
-	GetGlobalSearchActivity(ctx context.Context) (interface{}, error)
-	GetWebSearchActivity(ctx context.Context) (interface{}, error)
+	GetGlobalSearchActivities(ctx context.Context) ([]interface{}, error)
+	GetGlobalSearchActivity(ctx context.Context) (content.ComponentName, error)
+	GetWebSearchActivity(ctx context.Context) (content.ComponentName, error)
 	LaunchAssist(ctx context.Context, args interface{}) error
 }
 
@@ -49,11 +49,15 @@ var _ ISearchManager = (*SearchManagerProxy)(nil)
 
 func (p *SearchManagerProxy) GetSearchableInfo(
 	ctx context.Context,
-	launchActivity interface{},
+	launchActivity content.ComponentName,
 ) (SearchableInfo, error) {
 	var _result SearchableInfo
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISearchManager)
+	_data.WriteInt32(1)
+	if _err := launchActivity.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorISearchManager, "getSearchableInfo")
 	if _err != nil {
@@ -122,8 +126,8 @@ func (p *SearchManagerProxy) GetSearchablesInGlobalSearch(
 
 func (p *SearchManagerProxy) GetGlobalSearchActivities(
 	ctx context.Context,
-) ([]pm.ResolveInfo, error) {
-	var _result []pm.ResolveInfo
+) ([]interface{}, error) {
+	var _result []interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISearchManager)
 
@@ -148,11 +152,8 @@ func (p *SearchManagerProxy) GetGlobalSearchActivities(
 	}
 
 	if _count >= 0 {
-		_result = make([]pm.ResolveInfo, _count)
+		_result = make([]interface{}, _count)
 		for _i := int32(0); _i < _count; _i++ {
-			if _err = _result[_i].UnmarshalParcel(_reply); _err != nil {
-				return _result, _err
-			}
 		}
 	}
 	return _result, nil
@@ -160,8 +161,8 @@ func (p *SearchManagerProxy) GetGlobalSearchActivities(
 
 func (p *SearchManagerProxy) GetGlobalSearchActivity(
 	ctx context.Context,
-) (interface{}, error) {
-	var _result interface{}
+) (content.ComponentName, error) {
+	var _result content.ComponentName
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISearchManager)
 
@@ -180,13 +181,22 @@ func (p *SearchManagerProxy) GetGlobalSearchActivity(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
 func (p *SearchManagerProxy) GetWebSearchActivity(
 	ctx context.Context,
-) (interface{}, error) {
-	var _result interface{}
+) (content.ComponentName, error) {
+	var _result content.ComponentName
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISearchManager)
 
@@ -205,6 +215,15 @@ func (p *SearchManagerProxy) GetWebSearchActivity(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
@@ -253,7 +272,18 @@ func (s *SearchManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_launchActivity interface{}
+		var _arg_launchActivity content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_launchActivity.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_result, _err := s.Impl.GetSearchableInfo(ctx, _arg_launchActivity)
 		_reply := parcel.New()
 		if _err != nil {
@@ -305,7 +335,10 @@ func (s *SearchManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionISearchManagerGetWebSearchActivity:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -318,7 +351,10 @@ func (s *SearchManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionISearchManagerLaunchAssist:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -345,11 +381,11 @@ func (s *SearchManagerStub) OnTransaction(
 // provide to NewSearchManagerStub. It contains only the business methods,
 // without AsBinder (which is provided by the stub itself).
 type ISearchManagerServer interface {
-	GetSearchableInfo(ctx context.Context, launchActivity interface{}) (SearchableInfo, error)
+	GetSearchableInfo(ctx context.Context, launchActivity content.ComponentName) (SearchableInfo, error)
 	GetSearchablesInGlobalSearch(ctx context.Context) ([]SearchableInfo, error)
-	GetGlobalSearchActivities(ctx context.Context) ([]pm.ResolveInfo, error)
-	GetGlobalSearchActivity(ctx context.Context) (interface{}, error)
-	GetWebSearchActivity(ctx context.Context) (interface{}, error)
+	GetGlobalSearchActivities(ctx context.Context) ([]interface{}, error)
+	GetGlobalSearchActivity(ctx context.Context) (content.ComponentName, error)
+	GetWebSearchActivity(ctx context.Context) (content.ComponentName, error)
 	LaunchAssist(ctx context.Context, args interface{}) error
 }
 
@@ -364,7 +400,7 @@ func (w *searchManagerStubWrapper) AsBinder() binder.IBinder {
 
 func (w *searchManagerStubWrapper) GetSearchableInfo(
 	ctx context.Context,
-	launchActivity interface{},
+	launchActivity content.ComponentName,
 ) (SearchableInfo, error) {
 	return w.impl.GetSearchableInfo(ctx, launchActivity)
 }
@@ -377,19 +413,19 @@ func (w *searchManagerStubWrapper) GetSearchablesInGlobalSearch(
 
 func (w *searchManagerStubWrapper) GetGlobalSearchActivities(
 	ctx context.Context,
-) ([]pm.ResolveInfo, error) {
+) ([]interface{}, error) {
 	return w.impl.GetGlobalSearchActivities(ctx)
 }
 
 func (w *searchManagerStubWrapper) GetGlobalSearchActivity(
 	ctx context.Context,
-) (interface{}, error) {
+) (content.ComponentName, error) {
 	return w.impl.GetGlobalSearchActivity(ctx)
 }
 
 func (w *searchManagerStubWrapper) GetWebSearchActivity(
 	ctx context.Context,
-) (interface{}, error) {
+) (content.ComponentName, error) {
 	return w.impl.GetWebSearchActivity(ctx)
 }
 

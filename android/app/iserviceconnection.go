@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -17,7 +18,7 @@ const (
 
 type IServiceConnection interface {
 	AsBinder() binder.IBinder
-	Connected(ctx context.Context, name interface{}, service binder.IBinder, dead bool) error
+	Connected(ctx context.Context, name content.ComponentName, service binder.IBinder, dead bool) error
 }
 
 type ServiceConnectionProxy struct {
@@ -38,12 +39,16 @@ var _ IServiceConnection = (*ServiceConnectionProxy)(nil)
 
 func (p *ServiceConnectionProxy) Connected(
 	ctx context.Context,
-	name interface{},
+	name content.ComponentName,
 	service binder.IBinder,
 	dead bool,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIServiceConnection)
+	_data.WriteInt32(1)
+	if _err := name.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	binder.WriteBinderToParcel(ctx, _data, service, p.remote.Transport())
 	_data.WriteBool(dead)
 
@@ -74,7 +79,18 @@ func (s *ServiceConnectionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_name interface{}
+		var _arg_name content.ComponentName
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_name.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_service binder.IBinder
 		_ = _arg_service
@@ -94,7 +110,7 @@ func (s *ServiceConnectionStub) OnTransaction(
 // provide to NewServiceConnectionStub. It contains only the business methods,
 // without AsBinder (which is provided by the stub itself).
 type IServiceConnectionServer interface {
-	Connected(ctx context.Context, name interface{}, service binder.IBinder, dead bool) error
+	Connected(ctx context.Context, name content.ComponentName, service binder.IBinder, dead bool) error
 }
 
 type serviceConnectionStubWrapper struct {
@@ -108,7 +124,7 @@ func (w *serviceConnectionStubWrapper) AsBinder() binder.IBinder {
 
 func (w *serviceConnectionStubWrapper) Connected(
 	ctx context.Context,
-	name interface{},
+	name content.ComponentName,
 	service binder.IBinder,
 	dead bool,
 ) error {

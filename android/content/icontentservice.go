@@ -6,7 +6,6 @@ import (
 	accounts "github.com/xaionaro-go/binder/android/accounts"
 	database "github.com/xaionaro-go/binder/android/database"
 	net "github.com/xaionaro-go/binder/android/net"
-	os "github.com/xaionaro-go/binder/android/os"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -64,7 +63,7 @@ type IContentService interface {
 	UnregisterContentObserver(ctx context.Context, observer database.IContentObserver) error
 	RegisterContentObserver(ctx context.Context, uri net.Uri, notifyForDescendants bool, observer database.IContentObserver, targetSdkVersion int32) error
 	NotifyChange(ctx context.Context, uris []net.Uri, observer database.IContentObserver, observerWantsSelfNotifications bool, flags int32, targetSdkVersion int32) error
-	RequestSync(ctx context.Context, account accounts.Account, authority string, extras os.Bundle) error
+	RequestSync(ctx context.Context, account accounts.Account, authority string, extras interface{}) error
 	Sync(ctx context.Context, request SyncRequest) error
 	SyncAsUser(ctx context.Context, request SyncRequest) error
 	CancelSync(ctx context.Context, account accounts.Account, authority string, cname ComponentName) error
@@ -75,8 +74,8 @@ type IContentService interface {
 	SetSyncAutomatically(ctx context.Context, account accounts.Account, providerName string, sync bool) error
 	SetSyncAutomaticallyAsUser(ctx context.Context, account accounts.Account, providerName string, sync bool) error
 	GetPeriodicSyncs(ctx context.Context, account accounts.Account, providerName string, cname ComponentName) ([]PeriodicSync, error)
-	AddPeriodicSync(ctx context.Context, account accounts.Account, providerName string, extras os.Bundle, pollFrequency int64) error
-	RemovePeriodicSync(ctx context.Context, account accounts.Account, providerName string, extras os.Bundle) error
+	AddPeriodicSync(ctx context.Context, account accounts.Account, providerName string, extras interface{}, pollFrequency int64) error
+	RemovePeriodicSync(ctx context.Context, account accounts.Account, providerName string, extras interface{}) error
 	GetIsSyncable(ctx context.Context, account accounts.Account, providerName string) (int32, error)
 	GetIsSyncableAsUser(ctx context.Context, account accounts.Account, providerName string) (int32, error)
 	SetIsSyncable(ctx context.Context, account accounts.Account, providerName string, syncable int32) error
@@ -98,8 +97,8 @@ type IContentService interface {
 	IsSyncPendingAsUser(ctx context.Context, account accounts.Account, authority string, cname ComponentName) (bool, error)
 	AddStatusChangeListener(ctx context.Context, mask int32, callback ISyncStatusObserver) error
 	RemoveStatusChangeListener(ctx context.Context, callback ISyncStatusObserver) error
-	PutCache(ctx context.Context, packageName string, key net.Uri, value os.Bundle) error
-	GetCache(ctx context.Context, packageName string, key net.Uri) (os.Bundle, error)
+	PutCache(ctx context.Context, packageName string, key net.Uri, value interface{}) error
+	GetCache(ctx context.Context, packageName string, key net.Uri) (interface{}, error)
 	ResetTodayStats(ctx context.Context) error
 	OnDbCorruption(ctx context.Context, tag string, message string, stacktrace string) error
 }
@@ -233,7 +232,7 @@ func (p *ContentServiceProxy) RequestSync(
 	ctx context.Context,
 	account accounts.Account,
 	authority string,
-	extras os.Bundle,
+	extras interface{},
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
@@ -243,10 +242,6 @@ func (p *ContentServiceProxy) RequestSync(
 		return _err
 	}
 	_data.WriteString16(authority)
-	_data.WriteInt32(1)
-	if _err := extras.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "requestSync")
@@ -629,7 +624,7 @@ func (p *ContentServiceProxy) AddPeriodicSync(
 	ctx context.Context,
 	account accounts.Account,
 	providerName string,
-	extras os.Bundle,
+	extras interface{},
 	pollFrequency int64,
 ) error {
 	_data := parcel.New()
@@ -639,10 +634,6 @@ func (p *ContentServiceProxy) AddPeriodicSync(
 		return _err
 	}
 	_data.WriteString16(providerName)
-	_data.WriteInt32(1)
-	if _err := extras.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteInt64(pollFrequency)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "addPeriodicSync")
@@ -667,7 +658,7 @@ func (p *ContentServiceProxy) RemovePeriodicSync(
 	ctx context.Context,
 	account accounts.Account,
 	providerName string,
-	extras os.Bundle,
+	extras interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
@@ -676,10 +667,6 @@ func (p *ContentServiceProxy) RemovePeriodicSync(
 		return _err
 	}
 	_data.WriteString16(providerName)
-	_data.WriteInt32(1)
-	if _err := extras.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "removePeriodicSync")
 	if _err != nil {
@@ -1466,7 +1453,7 @@ func (p *ContentServiceProxy) PutCache(
 	ctx context.Context,
 	packageName string,
 	key net.Uri,
-	value os.Bundle,
+	value interface{},
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
@@ -1474,10 +1461,6 @@ func (p *ContentServiceProxy) PutCache(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(1)
 	if _err := key.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := value.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 	_data.WriteInt32(_identity.UserID)
@@ -1504,8 +1487,8 @@ func (p *ContentServiceProxy) GetCache(
 	ctx context.Context,
 	packageName string,
 	key net.Uri,
-) (os.Bundle, error) {
-	var _result os.Bundle
+) (interface{}, error) {
+	var _result interface{}
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
@@ -1531,15 +1514,6 @@ func (p *ContentServiceProxy) GetCache(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
@@ -1720,18 +1694,7 @@ func (s *ContentServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_extras os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_extras.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_extras interface{}
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
@@ -2097,18 +2060,7 @@ func (s *ContentServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_extras os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_extras.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_extras interface{}
 		_arg_pollFrequency, _err := _data.ReadInt64()
 		if _err != nil {
 			return nil, _err
@@ -2141,18 +2093,7 @@ func (s *ContentServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_extras os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_extras.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_extras interface{}
 		_err = s.Impl.RemovePeriodicSync(ctx, _arg_account, _arg_providerName, _arg_extras)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2731,18 +2672,7 @@ func (s *ContentServiceStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_value os.Bundle
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_value.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_value interface{}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -2784,10 +2714,7 @@ func (s *ContentServiceStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIContentServiceResetTodayStats:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -2837,7 +2764,7 @@ type IContentServiceServer interface {
 	UnregisterContentObserver(ctx context.Context, observer database.IContentObserver) error
 	RegisterContentObserver(ctx context.Context, uri net.Uri, notifyForDescendants bool, observer database.IContentObserver, targetSdkVersion int32) error
 	NotifyChange(ctx context.Context, uris []net.Uri, observer database.IContentObserver, observerWantsSelfNotifications bool, flags int32, targetSdkVersion int32) error
-	RequestSync(ctx context.Context, account accounts.Account, authority string, extras os.Bundle) error
+	RequestSync(ctx context.Context, account accounts.Account, authority string, extras interface{}) error
 	Sync(ctx context.Context, request SyncRequest) error
 	SyncAsUser(ctx context.Context, request SyncRequest) error
 	CancelSync(ctx context.Context, account accounts.Account, authority string, cname ComponentName) error
@@ -2848,8 +2775,8 @@ type IContentServiceServer interface {
 	SetSyncAutomatically(ctx context.Context, account accounts.Account, providerName string, sync bool) error
 	SetSyncAutomaticallyAsUser(ctx context.Context, account accounts.Account, providerName string, sync bool) error
 	GetPeriodicSyncs(ctx context.Context, account accounts.Account, providerName string, cname ComponentName) ([]PeriodicSync, error)
-	AddPeriodicSync(ctx context.Context, account accounts.Account, providerName string, extras os.Bundle, pollFrequency int64) error
-	RemovePeriodicSync(ctx context.Context, account accounts.Account, providerName string, extras os.Bundle) error
+	AddPeriodicSync(ctx context.Context, account accounts.Account, providerName string, extras interface{}, pollFrequency int64) error
+	RemovePeriodicSync(ctx context.Context, account accounts.Account, providerName string, extras interface{}) error
 	GetIsSyncable(ctx context.Context, account accounts.Account, providerName string) (int32, error)
 	GetIsSyncableAsUser(ctx context.Context, account accounts.Account, providerName string) (int32, error)
 	SetIsSyncable(ctx context.Context, account accounts.Account, providerName string, syncable int32) error
@@ -2871,8 +2798,8 @@ type IContentServiceServer interface {
 	IsSyncPendingAsUser(ctx context.Context, account accounts.Account, authority string, cname ComponentName) (bool, error)
 	AddStatusChangeListener(ctx context.Context, mask int32, callback ISyncStatusObserver) error
 	RemoveStatusChangeListener(ctx context.Context, callback ISyncStatusObserver) error
-	PutCache(ctx context.Context, packageName string, key net.Uri, value os.Bundle) error
-	GetCache(ctx context.Context, packageName string, key net.Uri) (os.Bundle, error)
+	PutCache(ctx context.Context, packageName string, key net.Uri, value interface{}) error
+	GetCache(ctx context.Context, packageName string, key net.Uri) (interface{}, error)
 	ResetTodayStats(ctx context.Context) error
 	OnDbCorruption(ctx context.Context, tag string, message string, stacktrace string) error
 }
@@ -2918,7 +2845,7 @@ func (w *contentServiceStubWrapper) RequestSync(
 	ctx context.Context,
 	account accounts.Account,
 	authority string,
-	extras os.Bundle,
+	extras interface{},
 ) error {
 	return w.impl.RequestSync(ctx, account, authority, extras)
 }
@@ -3009,7 +2936,7 @@ func (w *contentServiceStubWrapper) AddPeriodicSync(
 	ctx context.Context,
 	account accounts.Account,
 	providerName string,
-	extras os.Bundle,
+	extras interface{},
 	pollFrequency int64,
 ) error {
 	return w.impl.AddPeriodicSync(ctx, account, providerName, extras, pollFrequency)
@@ -3019,7 +2946,7 @@ func (w *contentServiceStubWrapper) RemovePeriodicSync(
 	ctx context.Context,
 	account accounts.Account,
 	providerName string,
-	extras os.Bundle,
+	extras interface{},
 ) error {
 	return w.impl.RemovePeriodicSync(ctx, account, providerName, extras)
 }
@@ -3187,7 +3114,7 @@ func (w *contentServiceStubWrapper) PutCache(
 	ctx context.Context,
 	packageName string,
 	key net.Uri,
-	value os.Bundle,
+	value interface{},
 ) error {
 	return w.impl.PutCache(ctx, packageName, key, value)
 }
@@ -3196,7 +3123,7 @@ func (w *contentServiceStubWrapper) GetCache(
 	ctx context.Context,
 	packageName string,
 	key net.Uri,
-) (os.Bundle, error) {
+) (interface{}, error) {
 	return w.impl.GetCache(ctx, packageName, key)
 }
 

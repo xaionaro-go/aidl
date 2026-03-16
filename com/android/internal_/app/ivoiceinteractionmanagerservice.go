@@ -3,9 +3,10 @@ package app
 import (
 	"context"
 	"fmt"
+	content "github.com/xaionaro-go/binder/android/content"
 	Descriptor "github.com/xaionaro-go/binder/android/hardware/audio/effect/Descriptor"
 	soundtrigger "github.com/xaionaro-go/binder/android/hardware/soundtrigger"
-	voice "github.com/xaionaro-go/binder/android/service/voice"
+	media "github.com/xaionaro-go/binder/android/media"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -74,11 +75,11 @@ const (
 type IVoiceInteractionManagerService interface {
 	AsBinder() binder.IBinder
 	ShowSession(ctx context.Context, sessionArgs interface{}, flags int32) error
-	DeliverNewSession(ctx context.Context, token binder.IBinder, session voice.IVoiceInteractionSession, interactor IVoiceInteractor) (bool, error)
+	DeliverNewSession(ctx context.Context, token binder.IBinder, session interface{}, interactor IVoiceInteractor) (bool, error)
 	ShowSessionFromSession(ctx context.Context, token binder.IBinder, sessionArgs interface{}, flags int32) (bool, error)
 	HideSessionFromSession(ctx context.Context, token binder.IBinder) (bool, error)
-	StartVoiceActivity(ctx context.Context, token binder.IBinder, intent interface{}, resolvedType string) (int32, error)
-	StartAssistantActivity(ctx context.Context, token binder.IBinder, intent interface{}, resolvedType string, bundle interface{}) (int32, error)
+	StartVoiceActivity(ctx context.Context, token binder.IBinder, intent content.Intent, resolvedType string) (int32, error)
+	StartAssistantActivity(ctx context.Context, token binder.IBinder, intent content.Intent, resolvedType string, bundle interface{}) (int32, error)
 	SetKeepAwake(ctx context.Context, token binder.IBinder, keepAwake bool) error
 	CloseSystemDialogs(ctx context.Context, token binder.IBinder) error
 	Finish(ctx context.Context, token binder.IBinder) error
@@ -91,7 +92,7 @@ type IVoiceInteractionManagerService interface {
 	SetModelDatabaseForTestEnabled(ctx context.Context, enabled bool, token binder.IBinder) error
 	IsEnrolledForKeyphrase(ctx context.Context, keyphraseId int32, bcp47Locale string) (bool, error)
 	GetEnrolledKeyphraseMetadata(ctx context.Context, keyphrase string, bcp47Locale string) (soundtrigger.KeyphraseMetadata, error)
-	GetActiveServiceComponentName(ctx context.Context) (interface{}, error)
+	GetActiveServiceComponentName(ctx context.Context) (content.ComponentName, error)
 	ShowSessionForActiveService(ctx context.Context, args interface{}, sourceFlags int32, showCallback IVoiceInteractionSessionShowCallback, activityToken binder.IBinder) (bool, error)
 	HideCurrentSession(ctx context.Context) error
 	LaunchVoiceAssistFromKeyguard(ctx context.Context) error
@@ -114,11 +115,11 @@ type IVoiceInteractionManagerService interface {
 	SubscribeVisualQueryRecognitionStatus(ctx context.Context, listener IVisualQueryRecognitionStatusListener) error
 	EnableVisualQueryDetection(ctx context.Context, Listener IVisualQueryDetectionAttentionListener) error
 	DisableVisualQueryDetection(ctx context.Context) error
-	StartPerceiving(ctx context.Context, callback voice.IVisualQueryDetectionVoiceInteractionCallback) error
+	StartPerceiving(ctx context.Context, callback interface{}) error
 	StopPerceiving(ctx context.Context) error
-	StartListeningFromMic(ctx context.Context, audioFormat interface{}, callback voice.IMicrophoneHotwordDetectionVoiceInteractionCallback) error
+	StartListeningFromMic(ctx context.Context, audioFormat media.AudioFormat, callback interface{}) error
 	StopListeningFromMic(ctx context.Context) error
-	StartListeningFromExternalSource(ctx context.Context, audioStream int32, audioFormat interface{}, options interface{}, token binder.IBinder, callback voice.IMicrophoneHotwordDetectionVoiceInteractionCallback) error
+	StartListeningFromExternalSource(ctx context.Context, audioStream int32, audioFormat media.AudioFormat, options interface{}, token binder.IBinder, callback interface{}) error
 	TriggerHardwareRecognitionEventForTest(ctx context.Context, event soundtrigger.SoundTriggerKeyphraseRecognitionEvent, callback IHotwordRecognitionStatusCallback) error
 	StartListeningVisibleActivityChanged(ctx context.Context, token binder.IBinder) error
 	StopListeningVisibleActivityChanged(ctx context.Context, token binder.IBinder) error
@@ -177,14 +178,13 @@ func (p *VoiceInteractionManagerServiceProxy) ShowSession(
 func (p *VoiceInteractionManagerServiceProxy) DeliverNewSession(
 	ctx context.Context,
 	token binder.IBinder,
-	session voice.IVoiceInteractionSession,
+	session interface{},
 	interactor IVoiceInteractor,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
-	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	binder.WriteBinderToParcel(ctx, _data, interactor.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "deliverNewSession")
@@ -279,7 +279,7 @@ func (p *VoiceInteractionManagerServiceProxy) HideSessionFromSession(
 func (p *VoiceInteractionManagerServiceProxy) StartVoiceActivity(
 	ctx context.Context,
 	token binder.IBinder,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 ) (int32, error) {
 	var _result int32
@@ -287,6 +287,10 @@ func (p *VoiceInteractionManagerServiceProxy) StartVoiceActivity(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
+	_data.WriteInt32(1)
+	if _err := intent.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteString16(resolvedType)
 	_data.WriteString16(_identity.AttributionTag)
 
@@ -315,7 +319,7 @@ func (p *VoiceInteractionManagerServiceProxy) StartVoiceActivity(
 func (p *VoiceInteractionManagerServiceProxy) StartAssistantActivity(
 	ctx context.Context,
 	token binder.IBinder,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	bundle interface{},
 ) (int32, error) {
@@ -324,6 +328,10 @@ func (p *VoiceInteractionManagerServiceProxy) StartAssistantActivity(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
+	_data.WriteInt32(1)
+	if _err := intent.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 	_data.WriteString16(resolvedType)
 	_data.WriteString16(_identity.AttributionTag)
 
@@ -719,8 +727,8 @@ func (p *VoiceInteractionManagerServiceProxy) GetEnrolledKeyphraseMetadata(
 
 func (p *VoiceInteractionManagerServiceProxy) GetActiveServiceComponentName(
 	ctx context.Context,
-) (interface{}, error) {
-	var _result interface{}
+) (content.ComponentName, error) {
+	var _result content.ComponentName
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 
@@ -739,6 +747,15 @@ func (p *VoiceInteractionManagerServiceProxy) GetActiveServiceComponentName(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
@@ -1396,11 +1413,10 @@ func (p *VoiceInteractionManagerServiceProxy) DisableVisualQueryDetection(
 
 func (p *VoiceInteractionManagerServiceProxy) StartPerceiving(
 	ctx context.Context,
-	callback voice.IVisualQueryDetectionVoiceInteractionCallback,
+	callback interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
-	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "startPerceiving")
 	if _err != nil {
@@ -1446,12 +1462,15 @@ func (p *VoiceInteractionManagerServiceProxy) StopPerceiving(
 
 func (p *VoiceInteractionManagerServiceProxy) StartListeningFromMic(
 	ctx context.Context,
-	audioFormat interface{},
-	callback voice.IMicrophoneHotwordDetectionVoiceInteractionCallback,
+	audioFormat media.AudioFormat,
+	callback interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
-	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
+	_data.WriteInt32(1)
+	if _err := audioFormat.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "startListeningFromMic")
 	if _err != nil {
@@ -1498,16 +1517,19 @@ func (p *VoiceInteractionManagerServiceProxy) StopListeningFromMic(
 func (p *VoiceInteractionManagerServiceProxy) StartListeningFromExternalSource(
 	ctx context.Context,
 	audioStream int32,
-	audioFormat interface{},
+	audioFormat media.AudioFormat,
 	options interface{},
 	token binder.IBinder,
-	callback voice.IMicrophoneHotwordDetectionVoiceInteractionCallback,
+	callback interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
 	_data.WriteFileDescriptor(audioStream)
+	_data.WriteInt32(1)
+	if _err := audioFormat.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
-	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionManagerService, "startListeningFromExternalSource")
 	if _err != nil {
@@ -1761,9 +1783,7 @@ func (s *VoiceInteractionManagerServiceStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_session voice.IVoiceInteractionSession
-		_ = _arg_session
+		var _arg_session interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_interactor IVoiceInteractor
 		_ = _arg_interactor
@@ -1823,7 +1843,18 @@ func (s *VoiceInteractionManagerServiceStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
-		var _arg_intent interface{}
+		var _arg_intent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -1847,7 +1878,18 @@ func (s *VoiceInteractionManagerServiceStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
-		var _arg_intent interface{}
+		var _arg_intent content.Intent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -2101,7 +2143,10 @@ func (s *VoiceInteractionManagerServiceStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIVoiceInteractionManagerServiceShowSessionForActiveService:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -2513,9 +2558,7 @@ func (s *VoiceInteractionManagerServiceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_callback voice.IVisualQueryDetectionVoiceInteractionCallback
-		_ = _arg_callback
+		var _arg_callback interface{}
 		_err := s.Impl.StartPerceiving(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2540,10 +2583,19 @@ func (s *VoiceInteractionManagerServiceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_audioFormat interface{}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_callback voice.IMicrophoneHotwordDetectionVoiceInteractionCallback
-		_ = _arg_callback
+		var _arg_audioFormat media.AudioFormat
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_audioFormat.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
+		var _arg_callback interface{}
 		_err := s.Impl.StartListeningFromMic(ctx, _arg_audioFormat, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2572,14 +2624,23 @@ func (s *VoiceInteractionManagerServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_audioFormat interface{}
+		var _arg_audioFormat media.AudioFormat
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_audioFormat.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		var _arg_options interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_callback voice.IMicrophoneHotwordDetectionVoiceInteractionCallback
-		_ = _arg_callback
+		var _arg_callback interface{}
 		_err = s.Impl.StartListeningFromExternalSource(ctx, _arg_audioStream, _arg_audioFormat, _arg_options, _arg_token, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2721,11 +2782,11 @@ func (s *VoiceInteractionManagerServiceStub) OnTransaction(
 // without AsBinder (which is provided by the stub itself).
 type IVoiceInteractionManagerServiceServer interface {
 	ShowSession(ctx context.Context, sessionArgs interface{}, flags int32) error
-	DeliverNewSession(ctx context.Context, token binder.IBinder, session voice.IVoiceInteractionSession, interactor IVoiceInteractor) (bool, error)
+	DeliverNewSession(ctx context.Context, token binder.IBinder, session interface{}, interactor IVoiceInteractor) (bool, error)
 	ShowSessionFromSession(ctx context.Context, token binder.IBinder, sessionArgs interface{}, flags int32) (bool, error)
 	HideSessionFromSession(ctx context.Context, token binder.IBinder) (bool, error)
-	StartVoiceActivity(ctx context.Context, token binder.IBinder, intent interface{}, resolvedType string) (int32, error)
-	StartAssistantActivity(ctx context.Context, token binder.IBinder, intent interface{}, resolvedType string, bundle interface{}) (int32, error)
+	StartVoiceActivity(ctx context.Context, token binder.IBinder, intent content.Intent, resolvedType string) (int32, error)
+	StartAssistantActivity(ctx context.Context, token binder.IBinder, intent content.Intent, resolvedType string, bundle interface{}) (int32, error)
 	SetKeepAwake(ctx context.Context, token binder.IBinder, keepAwake bool) error
 	CloseSystemDialogs(ctx context.Context, token binder.IBinder) error
 	Finish(ctx context.Context, token binder.IBinder) error
@@ -2738,7 +2799,7 @@ type IVoiceInteractionManagerServiceServer interface {
 	SetModelDatabaseForTestEnabled(ctx context.Context, enabled bool, token binder.IBinder) error
 	IsEnrolledForKeyphrase(ctx context.Context, keyphraseId int32, bcp47Locale string) (bool, error)
 	GetEnrolledKeyphraseMetadata(ctx context.Context, keyphrase string, bcp47Locale string) (soundtrigger.KeyphraseMetadata, error)
-	GetActiveServiceComponentName(ctx context.Context) (interface{}, error)
+	GetActiveServiceComponentName(ctx context.Context) (content.ComponentName, error)
 	ShowSessionForActiveService(ctx context.Context, args interface{}, sourceFlags int32, showCallback IVoiceInteractionSessionShowCallback, activityToken binder.IBinder) (bool, error)
 	HideCurrentSession(ctx context.Context) error
 	LaunchVoiceAssistFromKeyguard(ctx context.Context) error
@@ -2761,11 +2822,11 @@ type IVoiceInteractionManagerServiceServer interface {
 	SubscribeVisualQueryRecognitionStatus(ctx context.Context, listener IVisualQueryRecognitionStatusListener) error
 	EnableVisualQueryDetection(ctx context.Context, Listener IVisualQueryDetectionAttentionListener) error
 	DisableVisualQueryDetection(ctx context.Context) error
-	StartPerceiving(ctx context.Context, callback voice.IVisualQueryDetectionVoiceInteractionCallback) error
+	StartPerceiving(ctx context.Context, callback interface{}) error
 	StopPerceiving(ctx context.Context) error
-	StartListeningFromMic(ctx context.Context, audioFormat interface{}, callback voice.IMicrophoneHotwordDetectionVoiceInteractionCallback) error
+	StartListeningFromMic(ctx context.Context, audioFormat media.AudioFormat, callback interface{}) error
 	StopListeningFromMic(ctx context.Context) error
-	StartListeningFromExternalSource(ctx context.Context, audioStream int32, audioFormat interface{}, options interface{}, token binder.IBinder, callback voice.IMicrophoneHotwordDetectionVoiceInteractionCallback) error
+	StartListeningFromExternalSource(ctx context.Context, audioStream int32, audioFormat media.AudioFormat, options interface{}, token binder.IBinder, callback interface{}) error
 	TriggerHardwareRecognitionEventForTest(ctx context.Context, event soundtrigger.SoundTriggerKeyphraseRecognitionEvent, callback IHotwordRecognitionStatusCallback) error
 	StartListeningVisibleActivityChanged(ctx context.Context, token binder.IBinder) error
 	StopListeningVisibleActivityChanged(ctx context.Context, token binder.IBinder) error
@@ -2796,7 +2857,7 @@ func (w *voiceInteractionManagerServiceStubWrapper) ShowSession(
 func (w *voiceInteractionManagerServiceStubWrapper) DeliverNewSession(
 	ctx context.Context,
 	token binder.IBinder,
-	session voice.IVoiceInteractionSession,
+	session interface{},
 	interactor IVoiceInteractor,
 ) (bool, error) {
 	return w.impl.DeliverNewSession(ctx, token, session, interactor)
@@ -2821,7 +2882,7 @@ func (w *voiceInteractionManagerServiceStubWrapper) HideSessionFromSession(
 func (w *voiceInteractionManagerServiceStubWrapper) StartVoiceActivity(
 	ctx context.Context,
 	token binder.IBinder,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 ) (int32, error) {
 	return w.impl.StartVoiceActivity(ctx, token, intent, resolvedType)
@@ -2830,7 +2891,7 @@ func (w *voiceInteractionManagerServiceStubWrapper) StartVoiceActivity(
 func (w *voiceInteractionManagerServiceStubWrapper) StartAssistantActivity(
 	ctx context.Context,
 	token binder.IBinder,
-	intent interface{},
+	intent content.Intent,
 	resolvedType string,
 	bundle interface{},
 ) (int32, error) {
@@ -2927,7 +2988,7 @@ func (w *voiceInteractionManagerServiceStubWrapper) GetEnrolledKeyphraseMetadata
 
 func (w *voiceInteractionManagerServiceStubWrapper) GetActiveServiceComponentName(
 	ctx context.Context,
-) (interface{}, error) {
+) (content.ComponentName, error) {
 	return w.impl.GetActiveServiceComponentName(ctx)
 }
 
@@ -3102,7 +3163,7 @@ func (w *voiceInteractionManagerServiceStubWrapper) DisableVisualQueryDetection(
 
 func (w *voiceInteractionManagerServiceStubWrapper) StartPerceiving(
 	ctx context.Context,
-	callback voice.IVisualQueryDetectionVoiceInteractionCallback,
+	callback interface{},
 ) error {
 	return w.impl.StartPerceiving(ctx, callback)
 }
@@ -3115,8 +3176,8 @@ func (w *voiceInteractionManagerServiceStubWrapper) StopPerceiving(
 
 func (w *voiceInteractionManagerServiceStubWrapper) StartListeningFromMic(
 	ctx context.Context,
-	audioFormat interface{},
-	callback voice.IMicrophoneHotwordDetectionVoiceInteractionCallback,
+	audioFormat media.AudioFormat,
+	callback interface{},
 ) error {
 	return w.impl.StartListeningFromMic(ctx, audioFormat, callback)
 }
@@ -3130,10 +3191,10 @@ func (w *voiceInteractionManagerServiceStubWrapper) StopListeningFromMic(
 func (w *voiceInteractionManagerServiceStubWrapper) StartListeningFromExternalSource(
 	ctx context.Context,
 	audioStream int32,
-	audioFormat interface{},
+	audioFormat media.AudioFormat,
 	options interface{},
 	token binder.IBinder,
-	callback voice.IMicrophoneHotwordDetectionVoiceInteractionCallback,
+	callback interface{},
 ) error {
 	return w.impl.StartListeningFromExternalSource(ctx, audioStream, audioFormat, options, token, callback)
 }

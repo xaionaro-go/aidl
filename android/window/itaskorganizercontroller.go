@@ -3,6 +3,7 @@ package window
 import (
 	"context"
 	"fmt"
+	app "github.com/xaionaro-go/binder/android/app"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -29,8 +30,8 @@ type ITaskOrganizerController interface {
 	UnregisterTaskOrganizer(ctx context.Context, organizer ITaskOrganizer) error
 	CreateRootTask(ctx context.Context, displayId int32, windowingMode int32, launchCookie binder.IBinder, removeWithTaskOrganizer bool) error
 	DeleteRootTask(ctx context.Context, task WindowContainerToken) (bool, error)
-	GetChildTasks(ctx context.Context, parent WindowContainerToken, activityTypes []int32) ([]interface{}, error)
-	GetRootTasks(ctx context.Context, displayId int32, activityTypes []int32) ([]interface{}, error)
+	GetChildTasks(ctx context.Context, parent WindowContainerToken, activityTypes []int32) ([]app.ActivityManagerRunningTaskInfo, error)
+	GetRootTasks(ctx context.Context, displayId int32, activityTypes []int32) ([]app.ActivityManagerRunningTaskInfo, error)
 	GetImeTarget(ctx context.Context, display int32) (WindowContainerToken, error)
 	SetInterceptBackPressedOnTaskRoot(ctx context.Context, task WindowContainerToken, interceptBackPressed bool) error
 	RestartTaskTopActivityProcessIfVisible(ctx context.Context, task WindowContainerToken) error
@@ -175,8 +176,8 @@ func (p *TaskOrganizerControllerProxy) GetChildTasks(
 	ctx context.Context,
 	parent WindowContainerToken,
 	activityTypes []int32,
-) ([]interface{}, error) {
-	var _result []interface{}
+) ([]app.ActivityManagerRunningTaskInfo, error) {
+	var _result []app.ActivityManagerRunningTaskInfo
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITaskOrganizerController)
 	_data.WriteInt32(1)
@@ -213,8 +214,11 @@ func (p *TaskOrganizerControllerProxy) GetChildTasks(
 	}
 
 	if _count >= 0 {
-		_result = make([]interface{}, _count)
+		_result = make([]app.ActivityManagerRunningTaskInfo, _count)
 		for _i := int32(0); _i < _count; _i++ {
+			if _err = _result[_i].UnmarshalParcel(_reply); _err != nil {
+				return _result, _err
+			}
 		}
 	}
 	return _result, nil
@@ -224,8 +228,8 @@ func (p *TaskOrganizerControllerProxy) GetRootTasks(
 	ctx context.Context,
 	displayId int32,
 	activityTypes []int32,
-) ([]interface{}, error) {
-	var _result []interface{}
+) ([]app.ActivityManagerRunningTaskInfo, error) {
+	var _result []app.ActivityManagerRunningTaskInfo
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITaskOrganizerController)
 	_data.WriteInt32(displayId)
@@ -259,8 +263,11 @@ func (p *TaskOrganizerControllerProxy) GetRootTasks(
 	}
 
 	if _count >= 0 {
-		_result = make([]interface{}, _count)
+		_result = make([]app.ActivityManagerRunningTaskInfo, _count)
 		for _i := int32(0); _i < _count; _i++ {
+			if _err = _result[_i].UnmarshalParcel(_reply); _err != nil {
+				return _result, _err
+			}
 		}
 	}
 	return _result, nil
@@ -594,8 +601,8 @@ type ITaskOrganizerControllerServer interface {
 	UnregisterTaskOrganizer(ctx context.Context, organizer ITaskOrganizer) error
 	CreateRootTask(ctx context.Context, displayId int32, windowingMode int32, launchCookie binder.IBinder, removeWithTaskOrganizer bool) error
 	DeleteRootTask(ctx context.Context, task WindowContainerToken) (bool, error)
-	GetChildTasks(ctx context.Context, parent WindowContainerToken, activityTypes []int32) ([]interface{}, error)
-	GetRootTasks(ctx context.Context, displayId int32, activityTypes []int32) ([]interface{}, error)
+	GetChildTasks(ctx context.Context, parent WindowContainerToken, activityTypes []int32) ([]app.ActivityManagerRunningTaskInfo, error)
+	GetRootTasks(ctx context.Context, displayId int32, activityTypes []int32) ([]app.ActivityManagerRunningTaskInfo, error)
 	GetImeTarget(ctx context.Context, display int32) (WindowContainerToken, error)
 	SetInterceptBackPressedOnTaskRoot(ctx context.Context, task WindowContainerToken, interceptBackPressed bool) error
 	RestartTaskTopActivityProcessIfVisible(ctx context.Context, task WindowContainerToken) error
@@ -645,7 +652,7 @@ func (w *taskOrganizerControllerStubWrapper) GetChildTasks(
 	ctx context.Context,
 	parent WindowContainerToken,
 	activityTypes []int32,
-) ([]interface{}, error) {
+) ([]app.ActivityManagerRunningTaskInfo, error) {
 	return w.impl.GetChildTasks(ctx, parent, activityTypes)
 }
 
@@ -653,7 +660,7 @@ func (w *taskOrganizerControllerStubWrapper) GetRootTasks(
 	ctx context.Context,
 	displayId int32,
 	activityTypes []int32,
-) ([]interface{}, error) {
+) ([]app.ActivityManagerRunningTaskInfo, error) {
 	return w.impl.GetRootTasks(ctx, displayId, activityTypes)
 }
 
