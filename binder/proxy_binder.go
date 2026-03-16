@@ -83,6 +83,11 @@ func (b *ProxyBinder) Handle() uint32 {
 	return b.handle
 }
 
+// Cookie returns 0 for remote proxies (only local stubs have a cookie).
+func (b *ProxyBinder) Cookie() uintptr {
+	return 0
+}
+
 // Transport returns the underlying VersionAwareTransport used by this ProxyBinder.
 func (b *ProxyBinder) Transport() VersionAwareTransport {
 	return b.transport

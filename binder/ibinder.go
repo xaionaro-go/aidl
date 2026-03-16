@@ -28,6 +28,7 @@ type IBinder interface {
 	UnlinkToDeath(ctx context.Context, recipient DeathRecipient) (_err error)
 	IsAlive(ctx context.Context) bool
 	Handle() uint32
+	Cookie() uintptr
 	Transport() VersionAwareTransport
 	Identity() CallerIdentity
 }

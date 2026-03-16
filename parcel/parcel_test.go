@@ -717,9 +717,11 @@ func TestMultipleStrongBinders(t *testing.T) {
 	p.WriteStrongBinder(10)
 	p.WriteStrongBinder(20)
 
+	// Each binder object is flat_binder_object (24 bytes) + int32 stability (4 bytes) = 28 bytes.
+	binderWithStabilitySize := uint64(flatBinderObjectSize + 4)
 	assert.Len(t, p.Objects(), 2)
 	assert.Equal(t, uint64(0), p.Objects()[0])
-	assert.Equal(t, uint64(flatBinderObjectSize), p.Objects()[1])
+	assert.Equal(t, binderWithStabilitySize, p.Objects()[1])
 
 	p.SetPosition(0)
 

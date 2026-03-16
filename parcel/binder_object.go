@@ -14,18 +14,44 @@ const (
 	// Kernel value: B_PACK_CHARS('s','h','*',0x85) = 0x73682a85.
 	binderTypeHandle = uint32(0x73682a85)
 
-	// binderFlagsAcceptFDs combines the default priority mask (0x7f) with
-	// FLAT_BINDER_FLAG_ACCEPTS_FDS (0x100).
-	binderFlagsAcceptFDs = uint32(0x7f | 0x100)
+	// binderFlagsAcceptFDs is FLAT_BINDER_FLAG_ACCEPTS_FDS (0x100) OR'd
+	// with the default scheduling bits. Android sets SCHED_NORMAL (0)
+	// with priority 19 (nice 19, lowest), giving schedBits = 0x13.
+	binderFlagsAcceptFDs = uint32(0x100 | 0x13)
 
 	// flatBinderObjectSize is the size of a flat_binder_object (24 bytes on 64-bit).
 	flatBinderObjectSize = 24
+
+	// Binder stability levels from android/binder/Stability.h.
+	// Written as int32 after each flat_binder_object by
+	// Parcel::finishFlattenBinder / read by finishUnflattenBinder.
+
+	// StabilityUndeclared is the default stability for null binder objects.
+	StabilityUndeclared = int32(0)
+
+	// StabilitySystem is the stability for system (non-VNDK) binder objects.
+	// This matches getLocalLevel() in system builds.
+	StabilitySystem = int32(0b001100) // 12
 )
 
 // WriteLocalBinder writes a local binder object to the parcel.
-// The cookie identifies the object for incoming BR_TRANSACTION dispatch.
-// The kernel converts this to a handle in the remote process.
+//
+// binderPtr is the binder node address -- the kernel uses it to find or
+// create the binder_node that represents this object. It must be a unique,
+// non-zero process-space address (analogous to BBinder::getWeakRefs() in
+// the C++ implementation).
+//
+// cookie is echoed back in incoming BR_TRANSACTION events and is used by
+// the process for dispatch (analogous to the BBinder* pointer in C++).
+// It must also be a non-zero process-space address.
+//
+// The kernel converts this BINDER_TYPE_BINDER into BINDER_TYPE_HANDLE in
+// the receiving process.
+//
+// After the flat_binder_object, an int32 stability level is written
+// (matching Android's Parcel::finishFlattenBinder).
 func (p *Parcel) WriteLocalBinder(
+	binderPtr uintptr,
 	cookie uintptr,
 ) {
 	offset := uint64(p.Len())
@@ -39,15 +65,21 @@ func (p *Parcel) WriteLocalBinder(
 	// flags (uint32, offset 4)
 	binary.LittleEndian.PutUint32(buf[4:], binderFlagsAcceptFDs)
 
-	// binder (binder_uintptr_t, offset 8)
-	binary.LittleEndian.PutUint64(buf[8:], uint64(cookie))
+	// binder (binder_uintptr_t, offset 8) — kernel node identity
+	binary.LittleEndian.PutUint64(buf[8:], uint64(binderPtr))
 
-	// cookie (binder_uintptr_t, offset 16)
+	// cookie (binder_uintptr_t, offset 16) — dispatch key
 	binary.LittleEndian.PutUint64(buf[16:], uint64(cookie))
+
+	// Stability level — Android writes this via finishFlattenBinder.
+	// System-level binders use SYSTEM stability (12).
+	p.WriteInt32(StabilitySystem)
 }
 
 // WriteStrongBinder writes a flat_binder_object with the given handle.
 // Records the offset in the parcel's objects array.
+// After the flat_binder_object, an int32 stability level is written
+// (matching Android's Parcel::finishFlattenBinder).
 func (p *Parcel) WriteStrongBinder(
 	handle uint32,
 ) {
@@ -70,11 +102,15 @@ func (p *Parcel) WriteStrongBinder(
 
 	// cookie (uint64, offset 16)
 	binary.LittleEndian.PutUint64(buf[16:], 0)
+
+	// Stability level — system-level for handle references.
+	p.WriteInt32(StabilitySystem)
 }
 
 // ReadStrongBinder reads a flat_binder_object and returns the handle.
 // Accepts both BINDER_TYPE_HANDLE and BINDER_TYPE_BINDER; for both types,
 // reads the uint32 at offset 8 (handle or low 32 bits of binder pointer).
+// Also reads the int32 stability level that follows the flat_binder_object.
 func (p *Parcel) ReadStrongBinder() (uint32, error) {
 	b, err := p.read(flatBinderObjectSize)
 	if err != nil {
@@ -88,14 +124,24 @@ func (p *Parcel) ReadStrongBinder() (uint32, error) {
 	}
 
 	handle := binary.LittleEndian.Uint32(b[8:])
+
+	// Read and discard the stability level (finishUnflattenBinder).
+	if _, err := p.ReadInt32(); err != nil {
+		return 0, fmt.Errorf("parcel: reading binder stability: %w", err)
+	}
+
 	return handle, nil
 }
 
-// WriteNullStrongBinder writes a null flat_binder_object (all zeros).
+// WriteNullStrongBinder writes a null flat_binder_object (all zeros)
+// followed by the UNDECLARED stability level.
 func (p *Parcel) WriteNullStrongBinder() {
 	offset := uint64(p.Len())
 	p.objects = append(p.objects, offset)
 	p.grow(flatBinderObjectSize)
+
+	// Null binder uses UNDECLARED stability.
+	p.WriteInt32(StabilityUndeclared)
 }
 
 // ReadNullableStrongBinder reads a flat_binder_object that may be null.
@@ -103,6 +149,7 @@ func (p *Parcel) WriteNullStrongBinder() {
 // or 0 and false if the binder is null.
 // Null is detected as: type==0 (all-zero object) or BINDER_TYPE_BINDER with
 // binder pointer==0 (Android's representation of a null IBinder).
+// Also reads the int32 stability level that follows the flat_binder_object.
 func (p *Parcel) ReadNullableStrongBinder() (uint32, bool, error) {
 	b, err := p.read(flatBinderObjectSize)
 	if err != nil {
@@ -110,6 +157,12 @@ func (p *Parcel) ReadNullableStrongBinder() (uint32, bool, error) {
 	}
 
 	objType := binary.LittleEndian.Uint32(b[0:])
+
+	// Read the stability level (always present after the flat_binder_object).
+	if _, err := p.ReadInt32(); err != nil {
+		return 0, false, fmt.Errorf("parcel: reading binder stability: %w", err)
+	}
+
 	if objType == 0 {
 		return 0, false, nil
 	}

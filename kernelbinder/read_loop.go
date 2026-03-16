@@ -19,16 +19,25 @@ import (
 // RegisterReceiver associates a TransactionReceiver with a unique cookie
 // and starts the read loop if it has not been started yet.
 // Returns the cookie that identifies this receiver in incoming BR_TRANSACTION events.
+//
+// The cookie is the heap address of a receiverEntry allocated for this
+// registration. The kernel binder driver uses the flat_binder_object.binder
+// and .cookie fields to create/lookup binder nodes and to dispatch incoming
+// transactions. Both fields must be non-zero process-space addresses --
+// synthetic counter values (1, 2, 3 ...) are rejected by the kernel.
+// Storing the *receiverEntry in the receivers map keeps the object reachable,
+// so its address remains valid until UnregisterReceiver is called.
 func (d *Driver) RegisterReceiver(
 	ctx context.Context,
 	receiver binder.TransactionReceiver,
 ) uintptr {
 	logger.Tracef(ctx, "RegisterReceiver")
 
-	cookie := d.nextCookie.Add(1)
+	entry := &receiverEntry{receiver: receiver}
+	cookie := uintptr(unsafe.Pointer(entry))
 
 	d.receiversMu.Lock()
-	d.receivers[cookie] = receiver
+	d.receivers[cookie] = entry
 	d.receiversMu.Unlock()
 
 	d.readLoopOnce.Do(func() {
@@ -37,7 +46,7 @@ func (d *Driver) RegisterReceiver(
 		go d.runReadLoop(ctx)
 	})
 
-	logger.Tracef(ctx, "/RegisterReceiver: cookie=%d", cookie)
+	logger.Tracef(ctx, "/RegisterReceiver: cookie=0x%x", cookie)
 	return cookie
 }
 
@@ -61,7 +70,12 @@ func (d *Driver) lookupReceiver(
 ) binder.TransactionReceiver {
 	d.receiversMu.RLock()
 	defer d.receiversMu.RUnlock()
-	return d.receivers[cookie]
+
+	entry := d.receivers[cookie]
+	if entry == nil {
+		return nil
+	}
+	return entry.receiver
 }
 
 // runReadLoop is the background goroutine that reads BR_* events
@@ -83,10 +97,7 @@ func (d *Driver) runReadLoop(
 	enterBuf := make([]byte, 4)
 	binary.LittleEndian.PutUint32(enterBuf[0:4], bcEnterLooper)
 
-	d.mu.Lock()
-	err := d.writeCommand(ctx, enterBuf)
-	d.mu.Unlock()
-	if err != nil {
+	if err := d.writeCommand(ctx, enterBuf); err != nil {
 		logger.Errorf(ctx, "failed to send BC_ENTER_LOOPER: %v", err)
 		return
 	}
@@ -105,7 +116,6 @@ func (d *Driver) runReadLoop(
 			readBuffer: uint64(uintptr(unsafe.Pointer(&readBuf[0]))),
 		}
 
-		d.mu.Lock()
 		var errno unix.Errno
 		for {
 			_, _, errno = unix.Syscall(
@@ -119,7 +129,6 @@ func (d *Driver) runReadLoop(
 			}
 			break
 		}
-		d.mu.Unlock()
 
 		if errno != 0 {
 			// If the fd was closed (e.g. during shutdown), stop gracefully.
@@ -145,9 +154,6 @@ func (d *Driver) sendExitLooper(
 ) {
 	exitBuf := make([]byte, 4)
 	binary.LittleEndian.PutUint32(exitBuf[0:4], bcExitLooper)
-
-	d.mu.Lock()
-	defer d.mu.Unlock()
 
 	if err := d.writeCommand(ctx, exitBuf); err != nil {
 		logger.Warnf(ctx, "failed to send BC_EXIT_LOOPER: %v", err)
@@ -276,12 +282,8 @@ func (d *Driver) handleRefCommand(
 	binary.LittleEndian.PutUint32(ackBuf[0:4], doneCmd)
 	copy(ackBuf[4:], ptrCookieBuf)
 
-	d.mu.Lock()
-	err := d.writeCommand(ctx, ackBuf)
-	d.mu.Unlock()
-
-	if err != nil {
-		logger.Warnf(ctx, "read loop: failed to send ref acknowledgment 0x%08x: %v", doneCmd, err)
+	if err := d.writeCommand(ctx, ackBuf); err != nil {
+		logger.Warnf(ctx, "failed to send ref acknowledgment 0x%08x: %v", doneCmd, err)
 	}
 }
 
@@ -307,10 +309,7 @@ func (d *Driver) handleIncomingTransaction(
 
 	// Free the mmap'd buffer as soon as we have copied the data.
 	if txn.dataSize > 0 {
-		d.mu.Lock()
-		err := d.freeBuffer(ctx, txn.dataBuffer)
-		d.mu.Unlock()
-		if err != nil {
+		if err := d.freeBuffer(ctx, txn.dataBuffer); err != nil {
 			logger.Warnf(ctx, "failed to free transaction buffer: %v", err)
 		}
 	}
@@ -352,16 +351,13 @@ func (d *Driver) sendReply(
 	ctx context.Context,
 	reply *parcel.Parcel,
 ) {
-	d.mu.Lock()
-	defer d.mu.Unlock()
-
 	if err := d.Reply(ctx, reply); err != nil {
 		logger.Warnf(ctx, "failed to send BC_REPLY: %v", err)
 	}
 }
 
 // Reply sends BC_REPLY with the given parcel data back to the
-// transaction originator. Must be called with d.mu held.
+// transaction originator.
 func (d *Driver) Reply(
 	ctx context.Context,
 	reply *parcel.Parcel,

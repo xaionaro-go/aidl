@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"runtime"
 	"sync"
-	"sync/atomic"
 	"unsafe"
 
 	"github.com/facebookincubator/go-belt/tool/logger"
@@ -27,7 +26,17 @@ var (
 )
 
 // readBufferSize is the size of the read buffer for BINDER_WRITE_READ ioctl responses.
-const readBufferSize = 256
+// Must be large enough to hold multiple BR_* responses in a single ioctl read
+// (e.g., BR_TRANSACTION_COMPLETE + BR_INCREFS + BR_ACQUIRE + BR_REPLY).
+const readBufferSize = 1024
+
+// receiverEntry holds a registered TransactionReceiver together with the
+// heap-allocated anchor whose address is used as the binder cookie.
+// Storing the entry as a map value (*receiverEntry) keeps it reachable by the
+// GC, so its address remains valid for the kernel binder driver.
+type receiverEntry struct {
+	receiver binder.TransactionReceiver
+}
 
 // Driver implements binder.Transport using /dev/binder.
 type Driver struct {
@@ -37,9 +46,12 @@ type Driver struct {
 	mu              sync.Mutex
 	acquiredHandles map[uint32]bool // tracks handles acquired via BC_INCREFS + BC_ACQUIRE
 
-	receivers   map[uintptr]binder.TransactionReceiver
+	// receivers maps cookie values (heap addresses of receiverEntry) to
+	// the entries themselves. Using *receiverEntry as the map value keeps
+	// each entry reachable, preventing the GC from collecting the object
+	// whose address the kernel holds as a cookie.
+	receivers   map[uintptr]*receiverEntry
 	receiversMu sync.RWMutex
-	nextCookie  atomic.Uintptr
 
 	readLoopOnce sync.Once
 	readLoopDone chan struct{} // closed when the read loop exits
@@ -118,7 +130,7 @@ func Open(
 		mapped:          mapped,
 		mapSize:         mapSize,
 		acquiredHandles: make(map[uint32]bool),
-		receivers:       make(map[uintptr]binder.TransactionReceiver),
+		receivers:       make(map[uintptr]*receiverEntry),
 		readLoopDone:    make(chan struct{}),
 	}
 
@@ -136,7 +148,12 @@ func (d *Driver) Close(
 
 	// Release all acquired binder handles before closing the fd,
 	// so the kernel does not leak handle references.
-	for handle := range d.acquiredHandles {
+	d.mu.Lock()
+	handles := d.acquiredHandles
+	d.acquiredHandles = nil
+	d.mu.Unlock()
+
+	for handle := range handles {
 		logger.Debugf(ctx, "releasing handle %d on close", handle)
 		buf := make([]byte, 16)
 		binary.LittleEndian.PutUint32(buf[0:4], bcRelease)
@@ -147,7 +164,6 @@ func (d *Driver) Close(
 			errs = append(errs, fmt.Errorf("release handle %d: %w", handle, err))
 		}
 	}
-	d.acquiredHandles = nil
 
 	if d.mapped != nil {
 		if err := unix.Munmap(d.mapped); err != nil {
@@ -234,7 +250,7 @@ func (d *Driver) Transact(
 	// prevent the read loop from acknowledging BR_INCREFS/BR_ACQUIRE
 	// callbacks, causing deadlock when the kernel expects acknowledgment
 	// before sending BR_REPLY.
-	if err := d.lockedIoctl(&bwr); err != nil {
+	if err := d.doIoctl(&bwr); err != nil {
 		return nil, err
 	}
 
@@ -260,7 +276,7 @@ func (d *Driver) Transact(
 		bwr.writeSize = 0
 		bwr.writeConsumed = 0
 		bwr.readConsumed = 0
-		if err := d.lockedIoctl(&bwr); err != nil {
+		if err := d.doIoctl(&bwr); err != nil {
 			return nil, err
 		}
 	}
@@ -270,6 +286,10 @@ func (d *Driver) Transact(
 // Returns the reply parcel and whether BR_REPLY was seen.
 // gotReply is false when only BR_TRANSACTION_COMPLETE was received
 // (the service hasn't responded yet — caller should read again).
+//
+// The kernel may deliver BR_INCREFS, BR_ACQUIRE, BR_RELEASE, BR_DECREFS,
+// and even BR_TRANSACTION to the transacting thread before BR_REPLY.
+// All of these are handled inline to prevent deadlock.
 func (d *Driver) parseReadBuffer(
 	ctx context.Context,
 	buf []byte,
@@ -279,6 +299,8 @@ func (d *Driver) parseReadBuffer(
 
 	offset := 0
 	gotTransactionComplete := false
+	txnSize := int(unsafe.Sizeof(binderTransactionData{}))
+	ptrCookieSize := int(binderPtrCookieSize)
 
 	for offset < len(buf) {
 		if offset+4 > len(buf) {
@@ -291,37 +313,31 @@ func (d *Driver) parseReadBuffer(
 		switch cmd {
 		case brNoop:
 			logger.Debugf(ctx, "BR_NOOP")
-			continue
 
 		case brTransactionComplete:
 			logger.Debugf(ctx, "BR_TRANSACTION_COMPLETE")
 			gotTransactionComplete = true
-			continue
 
 		case brReply:
 			logger.Debugf(ctx, "BR_REPLY")
-			txnSize := int(unsafe.Sizeof(binderTransactionData{}))
 			if offset+txnSize > len(buf) {
 				return nil, true, fmt.Errorf("binder: truncated BR_REPLY data at offset %d", offset)
 			}
 
 			var txn binderTransactionData
 			copyBytesToStruct(unsafe.Pointer(&txn), buf[offset:], unsafe.Sizeof(txn))
+			offset += txnSize
+
+			logger.Debugf(ctx, "BR_REPLY: flags=0x%x dataSize=%d offsetsSize=%d", txn.flags, txn.dataSize, txn.offsetsSize)
 
 			if txn.dataSize == 0 {
 				return parcel.New(), true, nil
 			}
 
-			// Copy data from the mmap'd region into a new parcel.
 			replyData := d.copyFromMapped(txn.dataBuffer, txn.dataSize)
 
-			// When the kernel sets TF_STATUS_CODE, the 4-byte data is a
-			// status_t error code, not a regular parcel response.
 			if txn.flags&tfStatusCode != 0 {
-				d.mu.Lock()
-				freeErr := d.freeBuffer(ctx, txn.dataBuffer)
-				d.mu.Unlock()
-				if freeErr != nil {
+				if freeErr := d.freeBuffer(ctx, txn.dataBuffer); freeErr != nil {
 					logger.Warnf(ctx, "failed to free binder buffer: %v", freeErr)
 				}
 				if len(replyData) >= 4 {
@@ -333,19 +349,56 @@ func (d *Driver) parseReadBuffer(
 				return parcel.New(), true, nil
 			}
 
-			// Acquire references for any binder handles in the reply
-			// BEFORE freeing the buffer, otherwise the kernel drops
-			// the handle references.
-			d.mu.Lock()
 			d.acquireReplyHandles(ctx, replyData, txn.offsetsBuffer, txn.offsetsSize)
 
-			// Free the mmap'd buffer.
 			if err := d.freeBuffer(ctx, txn.dataBuffer); err != nil {
 				logger.Warnf(ctx, "failed to free binder buffer: %v", err)
 			}
-			d.mu.Unlock()
 
 			return parcel.FromBytes(replyData), true, nil
+
+		case brTransaction:
+			logger.Debugf(ctx, "parseReadBuffer: BR_TRANSACTION (inline)")
+			if offset+txnSize > len(buf) {
+				return nil, false, fmt.Errorf("binder: truncated BR_TRANSACTION at offset %d", offset)
+			}
+
+			var txn binderTransactionData
+			copyBytesToStruct(unsafe.Pointer(&txn), buf[offset:], unsafe.Sizeof(txn))
+			offset += txnSize
+
+			// Handle the incoming transaction inline (same as the read loop).
+			d.handleIncomingTransaction(ctx, &txn)
+
+		case brIncRefs:
+			logger.Debugf(ctx, "parseReadBuffer: BR_INCREFS")
+			if offset+ptrCookieSize > len(buf) {
+				return nil, false, fmt.Errorf("binder: truncated BR_INCREFS at offset %d", offset)
+			}
+			d.handleRefCommand(ctx, bcIncRefsDone, buf[offset:offset+ptrCookieSize])
+			offset += ptrCookieSize
+
+		case brAcquire:
+			logger.Debugf(ctx, "parseReadBuffer: BR_ACQUIRE")
+			if offset+ptrCookieSize > len(buf) {
+				return nil, false, fmt.Errorf("binder: truncated BR_ACQUIRE at offset %d", offset)
+			}
+			d.handleRefCommand(ctx, bcAcquireDone, buf[offset:offset+ptrCookieSize])
+			offset += ptrCookieSize
+
+		case brRelease:
+			logger.Debugf(ctx, "parseReadBuffer: BR_RELEASE")
+			if offset+ptrCookieSize > len(buf) {
+				return nil, false, fmt.Errorf("binder: truncated BR_RELEASE at offset %d", offset)
+			}
+			offset += ptrCookieSize
+
+		case brDecrefs:
+			logger.Debugf(ctx, "parseReadBuffer: BR_DECREFS")
+			if offset+ptrCookieSize > len(buf) {
+				return nil, false, fmt.Errorf("binder: truncated BR_DECREFS at offset %d", offset)
+			}
+			offset += ptrCookieSize
 
 		case brDeadReply:
 			logger.Debugf(ctx, "BR_DEAD_REPLY")
@@ -364,11 +417,11 @@ func (d *Driver) parseReadBuffer(
 				return nil, false, fmt.Errorf("binder: truncated BR_ERROR data")
 			}
 			errCode := int32(binary.LittleEndian.Uint32(buf[offset:]))
+			offset += 4
 			return nil, false, fmt.Errorf("binder: BR_ERROR %d", errCode)
 
 		case brSpawnLooper:
 			logger.Debugf(ctx, "BR_SPAWN_LOOPER (ignored)")
-			continue
 
 		default:
 			logger.Warnf(ctx, "binder: unknown BR code 0x%08x at offset %d", cmd, offset-4)
@@ -427,7 +480,9 @@ func (d *Driver) acquireReplyHandles(
 				logger.Warnf(ctx, "failed to acquire handle %d: %v", handle, err)
 				continue
 			}
+			d.mu.Lock()
 			d.acquiredHandles[handle] = true
+			d.mu.Unlock()
 		}
 	}
 }
@@ -456,7 +511,9 @@ func (d *Driver) AcquireHandle(
 	if err := d.writeHandleCommand(ctx, bcAcquire, handle); err != nil {
 		return err
 	}
+	d.mu.Lock()
 	d.acquiredHandles[handle] = true
+	d.mu.Unlock()
 	return nil
 }
 
@@ -471,7 +528,9 @@ func (d *Driver) ReleaseHandle(
 	if err := d.writeHandleCommand(ctx, bcRelease, handle); err != nil {
 		return err
 	}
+	d.mu.Lock()
 	delete(d.acquiredHandles, handle)
+	d.mu.Unlock()
 	return nil
 }
 
@@ -565,14 +624,16 @@ func (d *Driver) writeCommand(
 	}
 }
 
-// lockedIoctl executes a BINDER_WRITE_READ ioctl while holding d.mu,
-// retrying on EINTR.
-func (d *Driver) lockedIoctl(
+// doIoctl executes a BINDER_WRITE_READ ioctl, retrying on EINTR.
+// The binder fd supports concurrent ioctl calls from different OS threads
+// (each thread has its own transaction state in the kernel), so no
+// process-wide mutex is held around the syscall. Holding a mutex across a
+// blocking ioctl would deadlock when the kernel needs the read-loop thread
+// to acknowledge BR_INCREFS/BR_ACQUIRE before delivering BR_REPLY to the
+// transacting thread.
+func (d *Driver) doIoctl(
 	bwr *binderWriteRead,
 ) error {
-	d.mu.Lock()
-	defer d.mu.Unlock()
-
 	for {
 		_, _, errno := unix.Syscall(
 			unix.SYS_IOCTL,

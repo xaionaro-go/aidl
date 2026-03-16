@@ -200,7 +200,8 @@ func (sm *ServiceManager) AddService(
 
 	transport := sm.transport()
 
-	cookie := transport.RegisterReceiver(ctx, service)
+	stub := binder.NewStubBinder(service)
+	stub.RegisterWithTransport(ctx, transport)
 
 	code, err := sm.remote.ResolveCode(serviceManagerDescriptor, "addService")
 	if err != nil {
@@ -210,7 +211,7 @@ func (sm *ServiceManager) AddService(
 	data := parcel.New()
 	data.WriteInterfaceToken(serviceManagerDescriptor)
 	data.WriteString16(string(name))
-	data.WriteLocalBinder(cookie)
+	binder.WriteBinderToParcel(ctx, data, stub, transport)
 
 	var allowIsolatedInt int32
 	if allowIsolated {
